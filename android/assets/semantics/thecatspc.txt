@@ -1,0 +1,9 @@
+keyboard
+cat
+fish
+rabbit
+alarm clock
+supermarket
+banner
+engine
+door

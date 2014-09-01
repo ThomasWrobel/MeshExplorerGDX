@@ -1,0 +1,8 @@
+cat
+fish
+rabbit
+human
+tree
+bacteria
+chimp
+eagle

@@ -1,0 +1,49 @@
+package com.lostagain.nl.LocationGUI;
+
+import java.util.logging.Logger;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
+
+public class DefaultStyles {
+
+	static Logger Log = Logger.getLogger("ME.DefaultStyles");
+
+	
+	public static final Color lockedLabel = new Color(200f, 0f, 0f, 0.5f);
+	public static final Color unlockedLabel = new Color(0f, 200f, 0f, 0.5f);
+	
+			//Color.rgba8888(200f, 0f, 0f, 0.5f);
+	
+	
+
+	static Skin linkstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
+
+	static Skin buttonstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
+	
+	static Skin colors = new Skin();
+	
+	//static ProgressBarStyle barStyle = new ProgressBarStyle(Skin.newDrawable("white", Color.DARK_GRAY), textureBar);
+	
+	
+	public static void setupStyles(){
+		
+		
+
+    	Log.info("___________setupStyles___");
+
+		// Generate a 1x1 white texture and store it in the skin named "white".
+		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
+		pixmap.setColor(Color.WHITE);
+		pixmap.fill();
+		colors.add("white", new Texture(pixmap));
+		
+		
+	}
+	
+}

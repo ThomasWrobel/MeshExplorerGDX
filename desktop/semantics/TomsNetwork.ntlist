@@ -1,0 +1,64 @@
+@prefix drwhoswho: <http://darkflame.co.uk/ontology/drwhoswho.n3#> 
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+@prefix owl: <http://www.w3.org/2002/07/owl#>
+@prefix me: <http://darkflame.co.uk/meshexplorer#> 
+ 
+profpp rdfs:subClassOf  me:Computer.
+alicespc rdfs:subClassOf  me:Computer.
+thecatspc rdfs:subClassOf  me:Computer.
+BobsOutpost  rdfs:subClassOf  me:Computer.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subClassOf me:Computer.
+
+profpp me:visibleTo me:everyone.
+alicespc me:visibleTo BobsOutpost.
+thecatspc me:visibleTo alicespc.
+BobsOutpost me:visibleTo me:everyone.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo me:everyone.
+
+profpp me:SecuredBy MaxsFirewall.
+MaxsFirewall rdfs:subClassOf  me:Security.
+MaxsFirewall me:queryPass "Fruit Color=Green".
+MaxsFirewall me:clueText "Something Fruity and Green".
+MaxsFirewall me:ReqNum 2.
+
+thecatspc me:SecuredBy VertFirewall.
+VertFirewall rdfs:subClassOf  me:Security.
+VertFirewall me:queryPass "Alive Chordate".
+
+alicespccontents.txt rdfs:subClassOf me:software.
+alicespccontents.txt me:ison alicespc.
+
+alicesemailindex.txt rdfs:subClassOf me:messages.
+alicesemailindex.txt me:ison alicespc.
+ 
+bobspcmessages.txt rdfs:subClassOf me:messages.
+bobspcmessages.txt me:ison BobsOutpost.
+
+bobspccontents.txt rdfs:subClassOf me:software.
+bobspccontents.txt me:ison BobsOutpost.
+
+thecatspc.txt rdfs:subClassOf me:software.
+thecatspc.txt me:ison thecatspc.
+
+isApple.txt rdfs:subClassOf Apple.
+isFruit.txt rdfs:subClassOf Fruit.
+isAlive.txt rdfs:subClassOf Alive. 
+
+Chordate rdfs:subClassOf Alive. 
+isChordates.txt rdfs:subClassOf Chordate.
+ 
+Craniata rdfs:subClassOf Chordate.
+isCraniata.txt rdfs:subClassOf Craniata.
+
+Vertebrate rdfs:subClassOf Craniata.
+isVertebrate.txt rdfs:subClassOf Vertebrate.
+
+isSameAsMyGreen.txt owl:equivalentClass Green.
+isSameAsMyFruit.txt owl:equivalentClass Fruit.
+    			         
+isColor_Green.txt http://dbpedia.org/ontology/Colour Green.
+
+isMore_Green.txt http://dbpedia.org/ontology/Colour Green;
+	      			         "color" "green".
+
