@@ -48,6 +48,7 @@ public class ContentsScreen extends Table implements LocationScreen {
 					if (objectsBeingDownloaded.size()==0){
 	   					objectDownloader.stop();
 	   					isRunning=false;
+	   					return;
 	   				}
 					
 	   				int SPEEDSTEP = (DownloadSpeed / objectsBeingDownloaded.size())+1; 

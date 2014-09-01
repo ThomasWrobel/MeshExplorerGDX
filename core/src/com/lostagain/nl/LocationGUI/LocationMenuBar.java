@@ -13,10 +13,10 @@ import com.lostagain.nl.ME;
 
 public class LocationMenuBar extends VerticalGroup {
 	
-	MenuLink infoLink;
-	MenuLink emailLink ;
-	MenuLink dataLink;
-	MenuLink linkLinks;
+	MenuLink infoButton;
+	MenuLink emailButton ;
+	MenuLink dataButton;
+	MenuLink linkButton;
 	
 	ArrayList<MenuLink> allLinks = new ArrayList<MenuLink>();
 	
@@ -26,31 +26,35 @@ public class LocationMenuBar extends VerticalGroup {
 		super();
 		
 		//create links
-		infoLink = new MenuLink("(INFO)",skin,true);
-		emailLink = new MenuLink("(EMAIL)",skin,false);
-		dataLink = new MenuLink("(DATA)",skin,false);
-		linkLinks = new MenuLink("(LINKS)",skin,true);
+		infoButton = new MenuLink("(INFO) ",skin,true);
+		emailButton = new MenuLink("(EMAIL) ",skin,false);
+		dataButton = new MenuLink("(DATA) ",skin,false);
+		linkButton = new MenuLink("(LINKS) ",skin,true);
 		
-		infoLink.setAlignment(Align.center);
-		dataLink.setAlignment(Align.center);
-		emailLink.setAlignment(Align.center);
-		linkLinks.setAlignment(Align.center);
+		infoButton.setAlignment(Align.center);
+		dataButton.setAlignment(Align.center);
+		emailButton.setAlignment(Align.center);
+		linkButton.setAlignment(Align.center);
 		
 		
-		infoLink.addListener(new ClickListener () {
+		infoButton.addListener(new ClickListener () {
 			
 			@Override
 			public void clicked(InputEvent ev, float x , float y){
 				
-
 				if (!locked){
 					parentLocationContainer.gotoSecplace();
+					
+					//change all styles to down
+					setAllButtonsUp();
+					
+					infoButton.setDownStyle();
 				}
 				
 			}
 						
 		});
-		emailLink.addListener(new ClickListener () {
+		emailButton.addListener(new ClickListener () {
 			
 			@Override
 			public void clicked(InputEvent ev, float x , float y){
@@ -58,42 +62,55 @@ public class LocationMenuBar extends VerticalGroup {
 
 				if (!locked){
 					parentLocationContainer.gotoEmail();
+					
+
+					//change all styles to down
+					setAllButtonsUp();
+					
+					emailButton.setDownStyle();
 				
 				}
 				
 			}
 						
 		});
-		dataLink.addListener(new ClickListener () {
+		dataButton.addListener(new ClickListener () {
 			
 			@Override
 			public void clicked(InputEvent ev, float x , float y){
 				
 				if (!locked){
 					parentLocationContainer.gotoContents();
+					
+
+					//change all styles to down
+					setAllButtonsUp();
+					
+					dataButton.setDownStyle();
 				}
 				
 			}
 						
 		});
 		
-		linkLinks.addListener(new ClickListener () {
+		linkButton.addListener(new ClickListener () {
 			
 			@Override
 			public void clicked(InputEvent ev, float x , float y){
 				
 				if (!locked){
 					parentLocationContainer.gotoLinks();
+					
 				}
 				
 			}
 						
 		});
 				
-		allLinks.add(infoLink);
-		allLinks.add(emailLink);
-		allLinks.add(dataLink);
-		allLinks.add(linkLinks);
+		allLinks.add(infoButton);
+		allLinks.add(emailButton);
+		allLinks.add(dataButton);
+		allLinks.add(linkButton);
 		
 	
 		refreshlinks();
@@ -107,6 +124,18 @@ public class LocationMenuBar extends VerticalGroup {
 	}
 
 	
+	protected void setAllButtonsUp() {
+		
+		for (MenuLink link : allLinks) {
+			
+				link.setUpStyle();
+			
+			
+		}
+		
+	}
+
+
 	private void refreshlinks() {
 		super.clearChildren();
 		super.align(Align.center);
@@ -122,15 +151,15 @@ public class LocationMenuBar extends VerticalGroup {
 
 	public void setNumberOfMessages(int emails) {
 		
-		emailLink.setText("Emails ("+emails+")");
+		emailButton.setText("Emails ("+emails+") ");
 		
 		if (emails==0){
 			
-			emailLink.isVisible=false;
+			emailButton.isVisible=false;
 			
 			
 		}  else {
-			emailLink.isVisible=true;
+			emailButton.isVisible=true;
 		}
 		
 		refreshlinks();
@@ -139,15 +168,15 @@ public class LocationMenuBar extends VerticalGroup {
 
 	public void setNumberOfDataObjects(int objects) {
 		
-		dataLink.setText("Data ("+objects+")");
+		dataButton.setText("Data ("+objects+") ");
 		
 		if (objects==0){
 			
-			dataLink.isVisible=false;
+			dataButton.isVisible=false;
 			
 			
 		}  else {
-			dataLink.isVisible=true;
+			dataButton.isVisible=true;
 		}
 		
 		refreshlinks();
@@ -156,15 +185,15 @@ public class LocationMenuBar extends VerticalGroup {
 
 	public void setNumberOfLinks(int links) {
 		
-		linkLinks.setText("Links ("+links+")");
+		linkButton.setText("Links ("+links+") ");
 		
 		if (links==0){
 			
-			linkLinks.isVisible=false;
+			linkButton.isVisible=false;
 			
 			
 		}  else {
-			linkLinks.isVisible=true;
+			linkButton.isVisible=true;
 		}
 		
 		refreshlinks();
@@ -178,23 +207,45 @@ public class LocationMenuBar extends VerticalGroup {
 		if (locked){
 			
 			//locked style
-			infoLink.setColor(DefaultStyles.lockedLabel);			
-			dataLink.setColor(DefaultStyles.lockedLabel);
-			emailLink.setColor(DefaultStyles.lockedLabel);
-			linkLinks.setColor(DefaultStyles.lockedLabel);
+			infoButton.setColor(DefaultStyles.lockedLabel);			
+			dataButton.setColor(DefaultStyles.lockedLabel);
+			emailButton.setColor(DefaultStyles.lockedLabel);
+			linkButton.setColor(DefaultStyles.lockedLabel);
 			
 		} else {
 			
 			//unlocked style
-			infoLink.setColor(DefaultStyles.unlockedLabel);			
-			dataLink.setColor(DefaultStyles.unlockedLabel);
-			emailLink.setColor(DefaultStyles.unlockedLabel);
-			linkLinks.setColor(DefaultStyles.unlockedLabel);			
+			infoButton.setColor(DefaultStyles.unlockedLabel);			
+			dataButton.setColor(DefaultStyles.unlockedLabel);
+			emailButton.setColor(DefaultStyles.unlockedLabel);
+			linkButton.setColor(DefaultStyles.unlockedLabel);			
 			
 		}
 		
 	}
+	public void setinfoButtonUp() {
+		setAllButtonsUp();
+		
+		infoButton.setDownStyle();
+	}
 	
+
+	public void setLinkButtonUp() {
+		setAllButtonsUp();
+		
+		linkButton.setDownStyle();
+	}
+	public void setEmailButtonUp() {
+		setAllButtonsUp();
+		
+		emailButton.setDownStyle();
+	}
+	
+	public void setDataButtonUp() {
+		setAllButtonsUp();
+		
+		dataButton.setDownStyle();
+	}
 	
 }
 
@@ -209,13 +260,22 @@ class MenuLink extends Label {
 		super(name,skin);
 		this.isVisible=isVisible;
 		
-		super.setAlignment(Align.center);
+		super.setAlignment(Align.center);		
 		
+	}
+	public void setUpStyle(){
 		
+		super.setColor( DefaultStyles.unlockedLabel);
 		
 		
 	}
-	
+		
+	public void setDownStyle(){
+		
+		super.setColor( DefaultStyles.labelpressed);
+		
+		
+	}
 	
 }
 

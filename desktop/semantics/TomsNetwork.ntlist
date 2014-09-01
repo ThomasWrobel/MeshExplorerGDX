@@ -10,11 +10,13 @@ thecatspc rdfs:subClassOf  me:Computer.
 BobsOutpost  rdfs:subClassOf  me:Computer.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subClassOf me:Computer.
 
-profpp me:visibleTo me:everyone.
+profpp me:visibleTo BobsOutpost.
 alicespc me:visibleTo BobsOutpost.
 thecatspc me:visibleTo alicespc.
 BobsOutpost me:visibleTo me:everyone.
-http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo me:everyone.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo alicespc.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo thecatspc.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo profpp.
 
 profpp me:SecuredBy MaxsFirewall.
 MaxsFirewall rdfs:subClassOf  me:Security.

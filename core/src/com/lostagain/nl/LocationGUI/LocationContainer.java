@@ -160,11 +160,12 @@ public class LocationContainer extends Table {
 		menucontainer = new LocationMenuBar(this, skin);
 		menucontainer.setlocked(locked);
 
-
+		lowersplit.debug();
+		
 		lowersplit.add(menucontainer).top().left().fillY().expandY();
 
 		//	mainPages.setFillParent(true);
-		super.setDebug(true,true);
+	//	super.setDebug(true,true);
 
 		//setting up the security requires getting its security node
 		//thus its set up here in a function for neatness
@@ -221,24 +222,30 @@ public class LocationContainer extends Table {
 
 
 	public void gotoLinks() {
+		
 		hideAllPages();
 		linksPage.setVisible(true);
+		menucontainer.setLinkButtonUp();
+		
 	}
 
 	public void gotoSecplace(){
 		hideAllPages();
 		securityPage.setVisible(true);
+		menucontainer.setinfoButtonUp();
 
 	}
 	public void gotoContents(){
 		hideAllPages();
 		contentsPage.setVisible(true);
+		menucontainer.setDataButtonUp();
 
 	}
 
 	public void gotoEmail(){
 		hideAllPages();
 		emailPage.setVisible(true);
+		menucontainer.setEmailButtonUp();
 
 	}
 

@@ -84,7 +84,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		currentParent = parent; //should be changed if viewed from elsewhere
 			
 		super.setFillParent(true);
-		
+		super.setDebug(true, true);
 	
 		
 		//default back

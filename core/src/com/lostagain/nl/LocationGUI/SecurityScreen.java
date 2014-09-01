@@ -56,10 +56,10 @@ public class SecurityScreen extends Group  implements LocationScreen {
 
 	private boolean readyForAnswer = false; //is true when everything is loaded and is ready to accept an answer
 		
-	Label LockedText = new Label ("COMPUTER LOCKED : ", DefaultStyles.linkstyle);
+	Label LockedText = new Label ("LOCATION LOCKED : ", DefaultStyles.linkstyle);
 	Label RequirementsText = new Label ("Requirements : ", DefaultStyles.linkstyle);
-	Label UnlockedLabel= new Label ("(COMPUTER UNLOCKED)", DefaultStyles.linkstyle);
-
+	Label UnlockedLabel= new Label ("(LOCATION UNLOCKED)", DefaultStyles.linkstyle);
+	Label DetailsLabel= new Label ("(LOCATION UNLOCKED)", DefaultStyles.linkstyle);
 	
 	ArrayList<ObjectRequester> allObjectsRequested = new ArrayList<ObjectRequester>();
 	
@@ -98,6 +98,7 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		RequirementsText.setPosition(10, super.getHeight()-60);	
 		
 		UnlockedLabel.setCenterPosition((getWidth()/2),(getHeight()/2));
+		DetailsLabel.setCenterPosition((getWidth()/2),(getHeight()/2)-30);
 		
 		//UnlockedLabel.setPosition((getWidth()/2),(getHeight()/2)-30);
 
@@ -129,7 +130,9 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		}
 		
 		//add unlocked message and details
-		UnlockedLabel = addText("(COMPUTER UNLOCKED)",10,super.getHeight()-30);
+		UnlockedLabel = addText("(LOCATION UNLOCKED)",10,super.getHeight()-30);
+		//add details
+		DetailsLabel = addText("(Details Here)",10,super.getHeight()-50);
 		
 		
 		
@@ -185,7 +188,7 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		
 		//me:queryPass
 		//add interface elements (non-dragable)
-		 LockedText = addText("COMPUTER LOCKED : ",10,super.getHeight()-10);
+		 LockedText = addText("LOCATION LOCKED : ",10,super.getHeight()-10);
 		// RequirementsText = addText("Requirements Not Yet Met:", 10, super.getHeight()-	40);
 		 RequirementsText.setText("Requirements Not Yet Met:");
 		 

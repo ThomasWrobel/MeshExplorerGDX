@@ -15,15 +15,21 @@ public class DefaultStyles {
 	static Logger Log = Logger.getLogger("ME.DefaultStyles");
 
 	
-	public static final Color lockedLabel = new Color(200f, 0f, 0f, 0.5f);
-	public static final Color unlockedLabel = new Color(0f, 200f, 0f, 0.5f);
-	
+	public static final Color lockedLabel = new Color(1f, 0f, 0f, 0.5f);
+	public static final Color unlockedLabel = new Color(0f, 1f, 0f, 0.5f);
+
+	public static final Color lighterAmount = new Color(0.5f,0.5f, 0.5f, 0.5f);
+	public static final Color labelpressed = new Color(unlockedLabel).add(lighterAmount);
 			//Color.rgba8888(200f, 0f, 0f, 0.5f);
+
+
+	public static final Skin defaultStyles = new Skin(Gdx.files.internal("data/uiskin.json"));
+	
+	
 	
 	
 
 	static Skin linkstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
-
 	static Skin buttonstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
 	
 	static Skin colors = new Skin();

@@ -10,11 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackError;
@@ -49,17 +51,16 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 	       // text3.setWrap(true);
 
 	        scrollTable = new Table();
-	       // scrollTable.add(text).expandX().fillX();
-	      //  scrollTable.row();
-	       // scrollTable.add(text2).expandX().fillX();
-	      //  scrollTable.row();
-	       // scrollTable.add(text3).expandX().fillX();
-	        //scrollTable.setFillParent(true);
 	        scrollTable.setX(0);
 	        scrollTable.setY(0);
-	        scrollTable.bottom();
 	        
 	        scroller = new ScrollPane(scrollTable);
+	        
+	       // ScrollPaneStyle scrollerstyle = new ScrollPaneStyle(DefaultStyles.defaultStyles.get(ScrollPaneStyle.class));
+	       // scrollerstyle.background = DefaultStyles.colors.newDrawable("white", Color.RED);
+	       // scroller.setStyle(scrollerstyle);
+	        
+	        
 	        scrollTable.setBackground(DefaultStyles.colors.newDrawable("white", Color.DARK_GRAY));
 	        scroller.setX(0);
 	        scroller.setY(0);
@@ -70,37 +71,13 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 	       // table.setFillParent(true);
 	      //  table.add(scroller).fill().expand();
 
-	        super.left();
-	        super.top();
+	        super.left();	       
+	        super.bottom();
+	        
         super.setActor(scroller);
-        super.setFillParent(true);
+   
         
-        /*
-        final ScrollPane scroller = new ScrollPane(scrollTable);
-
-        final Table table = new Table();
-        table.setFillParent(true);
-        table.add(scroller).fill().expand();
-
-		
-		*/
         
-		/*
-		super.setFillParent(true);		
-		super.setWidget(container);
-		
-		
-		super.setWidth(100);
-		super.setHeight(100);
-		
-		
-		container.left();
-		container.top();
-		
-		
-		Label title = new Label("Emails:",skin);
-		container.add(title);
-		container.row();*/
 
 	}
 	
@@ -108,7 +85,10 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		
 		
 		super.validate();
+		
 		scroller.validate();
+		scroller.setHeight(super.getParent().getHeight());
+		
 		scrollTable.validate();
 		
 
@@ -214,6 +194,8 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 			 super(contents,DefaultStyles.linkstyle);				 
 			 super.setWrap(true);
 			 invalidate();
+			 super.setDebug(true);
+			 
 			 
 		 }
 		 

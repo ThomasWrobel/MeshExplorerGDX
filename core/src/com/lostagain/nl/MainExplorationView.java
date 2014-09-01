@@ -236,7 +236,7 @@ public class MainExplorationView implements Screen {
     	  background.setup();
     	  
     	  
-    	gameStage.setDebugAll(true);
+    	//gameStage.setDebugAll(true);
     	
        
 

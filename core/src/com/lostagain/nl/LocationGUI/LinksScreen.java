@@ -53,6 +53,7 @@ public class LinksScreen extends Table implements LocationScreen {
 		super();
 		super.setFillParent(true);
 		this.parentLocationContainer=parentLocationContainer;
+		super.setDebug(true, true);
 		
 		//Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		linkDownloadTask = new Task() {
