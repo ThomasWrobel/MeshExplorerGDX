@@ -50,7 +50,9 @@ public class MainExplorationView implements Screen {
 
 	static Logger Log = Logger.getLogger("ME.MainExplorationView");
     final ME game;
-    
+
+	static LocationContainer currentlyOpenLocation;
+	
 	static Stage gameStage;
 	
 	static Stage guiStage;
@@ -405,32 +407,6 @@ public class MainExplorationView implements Screen {
         
 
         
-        /*
-
-        
-        
-        // check if we need to create a new raindrop
-       
-        if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
-        {
-            spawnRaindrop();
-        }
-        // move the raindrops, remove any that are beneath the bottom edge of
-        // the screen or that hit the bucket. In the later case we increase the 
-        // value our drops counter and add a sound effect.
-        Iterator<Rectangle> iter = raindrops.iterator();
-        while (iter.hasNext()) {
-            Rectangle raindrop = iter.next();
-            raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
-            if (raindrop.y + 64 < 0)
-                iter.remove();
-            if (raindrop.overlaps(bucket)) {
-                dropsGathered++;
-                dropSound.play();
-                iter.remove();
-            }
-        }
-        */
         
         //now update the gui
         guiStage.draw();
@@ -501,9 +477,7 @@ public class MainExplorationView implements Screen {
     
 	public static void gotoLocation(SSSNode linksToThisPC) {
 		
-		  //The user is considered to be home straight away, if they are heading home
-		  // we dont wait till after the "push" animation
-	      // because the "new network node" being created makes use of this variable
+		  //flag if the user is home
 		  if (linksToThisPC.equals(PlayersData.computersuri)){
 			  isAtHome = true;
 		  } else {
@@ -516,15 +490,9 @@ public class MainExplorationView implements Screen {
 		  LocationContainer screen = LocationContainer.getLocation(linksToThisPC);
 		  
 		  
-		  ME.currentlyOpenLocation = screen;
+		  currentlyOpenLocation = screen;
 		  
-		  //get the x and y of the location and goto it
-		//  float x = screen.getCenterX();
-		 // float y = screen.getCenterY();
-		  
-		  
-		  
-		  centerViewOn(ME.currentlyOpenLocation);
+		  centerViewOn(currentlyOpenLocation);
 		  
 		
 	}

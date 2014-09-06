@@ -14,6 +14,7 @@ profpp me:visibleTo BobsOutpost.
 alicespc me:visibleTo BobsOutpost.
 thecatspc me:visibleTo alicespc.
 BobsOutpost me:visibleTo me:everyone.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo me:everyone.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo alicespc.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo thecatspc.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo profpp.
@@ -39,6 +40,9 @@ bobspcmessages.txt me:ison BobsOutpost.
 
 bobspccontents.txt rdfs:subClassOf me:software.
 bobspccontents.txt me:ison BobsOutpost.
+
+profpcmessages.txt rdfs:subClassOf me:messages.
+profpcmessages.txt me:ison profpp.
 
 thecatspc.txt rdfs:subClassOf me:software.
 thecatspc.txt me:ison thecatspc.

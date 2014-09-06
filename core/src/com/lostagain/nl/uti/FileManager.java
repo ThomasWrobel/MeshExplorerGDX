@@ -18,15 +18,16 @@ import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.net.HttpParametersUtils;
+import com.badlogic.gdx.net.HttpStatus;
 import com.darkflame.client.interfaces.SSSGenericFileManager;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackError;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackRunnable;
 
 
 public class FileManager implements SSSGenericFileManager{
-
 	
 	static Logger Log = Logger.getLogger("sss.JavaFileManager");
+	Boolean useTextFetcher=false;
 	
 	@Override
 	public void getText(String location,
@@ -68,6 +69,11 @@ public class FileManager implements SSSGenericFileManager{
 
 		public void handleHttpResponse(HttpResponse httpResponse) {
 			
+			if (httpResponse.getStatus().getStatusCode()!=HttpStatus.SC_OK){
+				
+				Log.info("status code="+httpResponse.getStatus().getStatusCode());
+				
+			}
 			runoncomplete.run(httpResponse.getResultAsString(), httpResponse.getStatus().getStatusCode());
 			
 			
@@ -92,6 +98,10 @@ public class FileManager implements SSSGenericFileManager{
 		
 		HttpRequest newrequest;
 		
+		if (!useTextFetcher){
+			forcePost = false; //temp override - we should only use POST if we are using textFetcher and its requested to be used 
+		}
+		
 		if (!forcePost) {
 			newrequest = new HttpRequest(HttpMethods.GET);
 		} else {
@@ -100,11 +110,16 @@ public class FileManager implements SSSGenericFileManager{
 		
 		newrequest.setUrl(location);
 		
+		//newrequest.setHeader(name, value);
+		
+		
 		//followed used somehow to send variables, we use this if using the textfetcher.php system
-		//to bipass SOP issues
+		//to bypass SOP issues
 		//newrequest.setContent(HttpParametersUtils.convertHttpParameters(parameters));
 		
 		HttpResponseListener httpResponseListener = new MEFileResponseListener(location,runoncomplete,runonerror);
+		
+		Log.info("getting file at:"+location+" with  a "+newrequest.getMethod());
 		
 		
 		Gdx.net.sendHttpRequest(newrequest, httpResponseListener);
@@ -245,17 +260,23 @@ public class FileManager implements SSSGenericFileManager{
 		//if not then, as this is a Java and thus local we use File to get the absolute
 		//path:		
 		File f = new File(relativepath);
-
+		String can =  "ERROR_GETTING_CANONICAL PATHNAME";
 		try {
-			String can = f.getCanonicalPath();
+			
+			can = f.getCanonicalPath();
+			
 			Log.info("path now:"+can);
-
-			return can;
-		} catch (IOException e) {
+			if (can==null){	
+				Log.info("path null");
+			}
+			
+		} catch (Exception e) {
 
 			Log.severe("can not get canonical pathname of :"+relativepath+" "+e.getLocalizedMessage());
-			return "ERROR_GETTING_CANONICAL PATHNAME";
+			can =  "ERROR_GETTING_CANONICAL PATHNAME";
 		}
+		
+		return can;
 		
 	}
 	

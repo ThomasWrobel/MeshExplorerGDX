@@ -1,5 +1,6 @@
 package com.lostagain.nl.LocationGUI;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import com.badlogic.gdx.graphics.Color;
@@ -22,13 +23,15 @@ import com.lostagain.nl.PlayersData;
 
 public class GUIBar extends WidgetGroup {
 
-	static Logger Log = Logger.getLogger("GUIBar");
+	static Logger Log = Logger.getLogger("ME.GUIBar");
 
 	InterfaceButton myHome =     new InterfaceButton("My  Home",true);
-	InterfaceButton myContents = new InterfaceButton("My  Data",true);
+	InterfaceButton myContents = new InterfaceButton("My  Data",false); //not visible unless we have data
 	InterfaceButton myLinks =    new InterfaceButton("My Links",true);
 	InterfaceButton myEmails =   new InterfaceButton("My Emails",true);
 
+	ArrayList<InterfaceButton> allLinks = new ArrayList<InterfaceButton>();
+	
 	boolean closed = true;	
 	boolean justopened=false;
 
@@ -65,6 +68,9 @@ public class GUIBar extends WidgetGroup {
 			public void clicked(InputEvent ev, float x , float y){
 
 				MainExplorationView.gotoHomeLoc();	
+				PlayersData.homeLoc.gotoSecplace();
+				
+				setOnlyButtonDown(myHome);
 				
 		}});
 		
@@ -75,6 +81,8 @@ public class GUIBar extends WidgetGroup {
 				MainExplorationView.gotoHomeLoc();
 				PlayersData.homeLoc.gotoEmail();
 				
+				setOnlyButtonDown(myEmails);
+				
 		}});
 
 		myLinks.addListener(new ClickListener () {			
@@ -84,19 +92,17 @@ public class GUIBar extends WidgetGroup {
 				MainExplorationView.gotoHomeLoc();
 				PlayersData.homeLoc.gotoLinks();
 				
+
+				setOnlyButtonDown(myLinks);
+				
 		}});
 		
-		myHome.setPosition(5,440);		
-		super.addActor(myHome);
-		
-		myEmails.setPosition(5,410);				
-		super.addActor(myEmails);
 
-		myLinks.setPosition(5,380);		
-		super.addActor(myLinks);
 		
-		myContents.setPosition(5,350);		
-		super.addActor(myContents);
+		//myHome.setPosition(5,440);	
+		//myEmails.setPosition(5,410);
+	//	myLinks.setPosition(5,380);				
+		//myContents.setPosition(5,350);		
 
 		myContents.addListener(new ClickListener () {			
 			@Override
@@ -112,13 +118,63 @@ public class GUIBar extends WidgetGroup {
 		});
 
 
+		allLinks.add(myHome);
+		allLinks.add(myEmails);
+		allLinks.add(myLinks);
+		allLinks.add(myContents);
+		
 		Log.info("setting up");
 		ME.playersInventory.setVisible(false);
-		super.addActor(ME.playersInventory);
+	
 		
-		
+		refreshlinks();
 
 		super.validate();
+	}
+	
+	protected void setOnlyButtonDown(InterfaceButton thisone) {
+		
+		for (InterfaceButton link : allLinks) {
+			
+			//the data button is left alone as that toggles on/off separately
+			if (link==myContents){
+				continue;
+			}
+			
+			if (link!=thisone){
+				link.setUpStyle();
+			} else {
+				thisone.setDownStyle();
+			}
+			
+		}
+		
+	}
+
+
+	public void setDataVisible(boolean visible){
+		
+		myContents.isVisible=visible;
+		
+		 refreshlinks();
+		 setupInventory(); 
+	}
+	
+	private void refreshlinks() {
+		super.clearChildren();
+		super.addActor(ME.playersInventory);
+		int y = 440; //start at 440 and work our way down the page with each new shortcut
+		
+		for (InterfaceButton link : allLinks) {		
+			
+			if (link.isVisible==true){
+				
+				link.setPosition(5,y);	
+				super.addActor(link);
+				y=y-30;
+			}
+			
+		}
 	}
 
 	private void triggerInventoryView() {

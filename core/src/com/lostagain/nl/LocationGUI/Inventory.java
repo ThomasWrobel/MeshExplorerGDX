@@ -19,6 +19,7 @@ import java.util.HashSet;
 
 
 
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
@@ -44,6 +45,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.LocationGUI.Inventory.Item;
 
 /** handles the various semantic objects you can aquire and use **/
 public class Inventory extends Table {
@@ -80,7 +82,42 @@ public class Inventory extends Table {
 		
 		
 	}
+	public void removeItem(SSSNode itemsnode)
+	{
 	
+
+		PlayersData.playerslocationcontents.removeNodeFromThisSet(itemsnode);
+		
+		//update the home machines location
+		if (PlayersData.homeLoc!=null){
+		    PlayersData.homeLoc.refreshContents();
+		}
+		
+		Iterator<Item> allItemsit = allItems.iterator();
+		
+	 while (allItemsit.hasNext()) {
+		 
+		Item citem = allItemsit.next();
+		 
+		if (citem.itemsnode==itemsnode){
+			allItemsit.remove();
+
+			 super.removeActor(citem);
+		}
+				
+	}
+	
+
+		pack();
+		super.validate();
+		
+		
+		//if theres no items left the users GUI should have its data tab disabled
+		if (allItems.size()==0){
+		   MainExplorationView.usersGUI.setDataVisible(true);
+		}
+		
+	}
 	public  void addItem(SSSNode itemsnode){
 		
 		
@@ -89,8 +126,10 @@ public class Inventory extends Table {
 		
 		//update the home machines location
 		if (PlayersData.homeLoc!=null){
-		   PlayersData.homeLoc.refreshContents();
+		    PlayersData.homeLoc.refreshContents();
 		}
+		
+		
 		
 		//SSSNodesWithCommonProperty usersInventory  = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, PlayersStartingLocation.computersuri);
 		//usersInventory.add(itemsnode);
@@ -114,9 +153,13 @@ public class Inventory extends Table {
 
 		pack();
 		super.validate();
+
+		//update the GUI bar in case the inventory tab isnt there yet
+		MainExplorationView.usersGUI.setDataVisible(true);
 		
 		
 	}
+	
 	
 	protected static void setCurrentlyHeld(SSSNode itemsnode2) {
 		

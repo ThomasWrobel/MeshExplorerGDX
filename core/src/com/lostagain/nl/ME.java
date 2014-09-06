@@ -28,28 +28,31 @@ import com.lostagain.nl.temp.SpiffyGenericTween;
 import com.lostagain.nl.temp.SpiffyTweenConstructor;
 import com.lostagain.nl.uti.FileManager;
 
-
+/**
+ * Mesh Explorer. An open source, distributed game of deduction and exploration.
+ * Powered by SuperSimpleSemantics
+ * 
+ * Home class will manage game setup and provide convience shortcuts for major game
+ * classes and variables.
+ * 
+ * @author Thomas Wrobel (at least, the first author....)
+ * 
+ * **/
 public class ME extends Game {
 
-	static Logger Log = Logger.getLogger("MeshExplorer");
+	static Logger Log = Logger.getLogger("ME");
 	
-	public final static String INTERNALNS = "http://darkflame.co.uk/meshexplorer#";//"INTERNAL/meshexplorer#";
-
-	static LocationContainer currentlyOpenLocation;
-	
-	
+	//semantics
+	public final static String INTERNALNS = "http://darkflame.co.uk/meshexplorer#";		
 	public final static HashSet<String> knownDatabases = new HashSet<String>();
-	
-    
-    
+	       
 
     //global game stuff
-    static public Inventory playersInventory;
-    
+	static ME game;
+    static public Inventory playersInventory;   
 
 	static public SpriteBatch batch;
-    public static BitmapFont font;
-    static ME game;
+    public static BitmapFont font;  
     static MainMenuScreen menu;
     
 	 
@@ -58,28 +61,24 @@ public class ME extends Game {
     	game=this;
     	font = new BitmapFont();
     	batch = new SpriteBatch();
-    	//SpiffyGenericTween<Number> test = SpiffyTweenConstructor.Create(0,10,100);
-    	Log.info("loading..");
     	
-
-    	Log.info("_________startgame_____");
+    	Log.info("loading..");
     	
     	//create styles
     	DefaultStyles.setupStyles();
 
-    	Log.info("______________");
+    	Log.info("____");
     	//create inventory
     	playersInventory = new Inventory();
 
-    	Log.info("______________");
+    	Log.info("________");
     	//we clear the semantics before adding the player data (because that contains semantics
     	SuperSimpleSemantics.clearAllIndexsAndNodes();
 
     	//create starting computer
 	  	PlayersData.setup();
     	
-
-    	Log.info("______________");
+    	Log.info("_____________");
      //   
     	menu= new MainMenuScreen(game);
     	game.setScreen(menu);
@@ -91,16 +90,18 @@ public class ME extends Game {
         
     }
 
+    /** setup the semantic database/processing which is the core engine for the games 
+     * locations,puzzles and..well..everything **/
     public void setupSemantics()
     {
   	  //turn some logs off
     //	Log.setLevel(Level.OFF);
     	   Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
-    	 // Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.OFF);
+    	  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.OFF);
     	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
-    	//  Logger.getLogger("sss.SSSNode").setLevel(Level.WARNING);
+    	  Logger.getLogger("sss.SSSNode").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.QueryEngine").setLevel(Level.OFF);
-    	  Logger.getLogger("sss.JavaFileManager").setLevel(Level.OFF);    		  
+    	 // Logger.getLogger("sss.JavaFileManager").setLevel(Level.OFF);    		  
     	  Logger.getLogger("sss.SSSIndex").setLevel(Level.WARNING);
     	  
     		  
@@ -146,7 +147,7 @@ public class ME extends Game {
 						}
     	        		
     	        	};
-    	        	
+    	        /*
     	        	Timer.schedule(new Task(){
 
 						@Override
@@ -197,7 +198,7 @@ public class ME extends Game {
 		    	        		
 								Log.info("____Pair____result="+set.getCommonPrec().getPURI()+":"+set.getCommonValue().getPURI());
 								
-							}*/
+							}
 		    	        	
 		    	        	//NOTE: http://www.darkflame.co.uk/semantics/darksnet.ntlist#green
 		    	        	// THE WWW is wrong.
@@ -220,6 +221,7 @@ public class ME extends Game {
 						}
     	        		
     	        	}, 3);
+    	  */
     	        	
     	        	
     			}

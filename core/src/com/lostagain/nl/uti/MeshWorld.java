@@ -4,9 +4,10 @@ import java.util.logging.Logger;
 
 import com.badlogic.gdx.math.Vector2;
 
+/** a class providing utilities for the whole meshworld **/
 public class MeshWorld {
 
-	static Logger Log = Logger.getLogger("MeshWorld");
+	static Logger Log = Logger.getLogger("ME.MeshWorld");
 	
 	final static int TOTALX = 1000;
 	final static int TOTALY = 1000;
@@ -36,10 +37,18 @@ public class MeshWorld {
 	Log.info("Xletters="+Xletters);
 	Log.info("Yletters="+Yletters);
 		
-		int Xlex = Xletters.compareTo("AAAAAAAAAAAAAAAAAAAAAAA")*50;
-		int Ylex = Yletters.compareTo("AAAAAAAAAAAAAAAAAAAAAAA")*50;
+		int Xlex = (Xletters.compareTo("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")-10)*50;
+		int Ylex = (Yletters.compareTo("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")-10)*50;
+		/*
+		int TestValue = "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ".compareTo("AAAAAAAAAAAAAAAAAAAAAAA");		
+		Log.info("TestValue="+TestValue); 25
+
+		 TestValue = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA".compareTo("AAAAAAAAAAAAAAAAAAAAAAA");		
+		Log.info("TestValue="+TestValue); 14
 		
-			
+		 TestValue = "AAAAAAAAAAAAAAAAAAA".compareTo("AAAAAAAAAAAAAAAAAAAAAAA");		
+			Log.info("TestValue="+TestValue); -4
+			*/
 		return new Vector2(Xlex,Ylex);
 		
 	}

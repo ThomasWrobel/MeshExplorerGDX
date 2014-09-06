@@ -14,7 +14,7 @@ import com.lostagain.nl.ME;
 public class LocationMenuBar extends VerticalGroup {
 	
 	MenuLink infoButton;
-	MenuLink emailButton ;
+	MenuLink emailButton;
 	MenuLink dataButton;
 	MenuLink linkButton;
 	
