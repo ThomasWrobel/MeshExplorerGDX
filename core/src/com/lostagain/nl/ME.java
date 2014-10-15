@@ -113,7 +113,7 @@ public class ME extends Game {
   	  //turn some logs off
     //	Log.setLevel(Level.OFF);
     	   Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
-    	  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.OFF);
+    	  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
     	  Logger.getLogger("sss.SSSNode").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.QueryEngine").setLevel(Level.OFF);

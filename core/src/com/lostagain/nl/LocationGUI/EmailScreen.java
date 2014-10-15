@@ -92,6 +92,8 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		
 		
 		loadingEmails++;
+
+		Log.info("Adding email location________________");
 		
 		
 		
@@ -130,8 +132,50 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 			
 		};
 		
-		String url = "semantics\\"+sssNode.getPLabel();
+		//String url = "semantics\\"+sssNode.getPLabel();
 		
+		String uri = sssNode.getPURI();
+		
+		Log.info("getting email from uri:"+uri);
+		Log.info("getting email from label:"+sssNode.getPLabel());
+		
+		//strip the uri to its path and add the label too it
+		//this turns the URI location into a file location
+		
+		//ie http://darkflame.co.uk/semantics/darksnet.ntlist#darkspc\message2.txt
+		// should become
+		// http://darkflame.co.uk/semantics/message2.txt
+		String directory = "";
+				
+		//crop to # 
+		if (uri.contains("#")){
+			uri = uri.substring(0,uri.indexOf("#"));
+		}
+		
+		Log.info("getting email from uri:"+uri);
+		//as we know at least one is present we can just look or the largest index
+		int endslash = 0;
+		int endslash2 =0;
+		
+		//remove to /
+		if (uri.contains("/")){
+			endslash =  uri.lastIndexOf("/");
+		}
+		//remove to \
+		if (uri.contains("\\")){
+			endslash2 = uri.lastIndexOf("\\");
+			
+		}
+		//using the maths command
+		endslash = Math.max(endslash, endslash2);
+		
+		directory = uri.substring(0, endslash);
+
+		Log.info("directory:"+directory);
+		String url = directory+"/"+sssNode.getPLabel();
+		
+		Log.info("url::"+url);
+				
 		//trigger the file retrieval
 		SuperSimpleSemantics.fileManager.getText(url, runoncomplete, runonerror, false);
 		

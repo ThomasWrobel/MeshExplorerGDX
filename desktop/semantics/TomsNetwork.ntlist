@@ -17,6 +17,7 @@ alicespc me:visibleTo thecatspc.
 thecatspc me:visibleTo alicespc.
 BobsOutpost me:visibleTo me:everyone.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo profpp.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo me:everyone.
 
 profpp me:SecuredBy MaxsFirewall.
 MaxsFirewall rdfs:subClassOf  me:Security.

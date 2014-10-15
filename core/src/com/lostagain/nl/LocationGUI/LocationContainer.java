@@ -399,9 +399,11 @@ public class LocationContainer extends Table {
 	/** populates the contents on this machine from the supplied nodes **/
 	protected void populateContents(ArrayList<SSSNode> testresult) {
 
+
+		Log.info("populateContents for "+LocationsNode);
+		
 		//clear existing lists in case they have changed
 		contentsPage.removeAllContents();
-
 
 		Log.info("removing emails ");
 		emailPage.removeAllMessages();

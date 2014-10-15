@@ -18,8 +18,8 @@ public class PlayersData {
 	 //default software contents
 	static SSSNode coin = SSSNode.createSSSNode("coin",ME.INTERNALNS+"coin", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.software});
 
-	 //default message contents
-	static SSSNode homemessage = SSSNode.createSSSNode("homepc/WelcomeMessage.txt","homepc/WelcomeMessage.txt", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
+	 //default message contents semantics\TomsNetwork.ntlist
+	static SSSNode homemessage = SSSNode.createSSSNode("\"homepc/WelcomeMessage.txt\"","semantics\\TomsNetwork.ntlist#", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
 	
 	//stores the computers description
 	static SSSNodesWithCommonProperty homediscription = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.DescriptionOf, computersuri);
@@ -59,6 +59,7 @@ public class PlayersData {
 
 	public static void setup() {
 		
+		Log.info("home message uri="+homemessage.PURI);
 		
 		
 		//This perhaps should be turned into a NTList to keep the players starting information external
