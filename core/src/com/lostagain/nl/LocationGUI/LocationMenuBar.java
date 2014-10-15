@@ -13,12 +13,12 @@ import com.lostagain.nl.ME;
 
 public class LocationMenuBar extends VerticalGroup {
 	
-	MenuLink infoButton;
-	MenuLink emailButton;
-	MenuLink dataButton;
-	MenuLink linkButton;
+	InterfaceButton infoButton;
+	InterfaceButton emailButton;
+	InterfaceButton dataButton;
+	InterfaceButton linkButton;
 	
-	ArrayList<MenuLink> allLinks = new ArrayList<MenuLink>();
+	ArrayList<InterfaceButton> allLinks = new ArrayList<InterfaceButton>();
 	
 	boolean locked;
 	
@@ -26,10 +26,10 @@ public class LocationMenuBar extends VerticalGroup {
 		super();
 		
 		//create links
-		infoButton = new MenuLink("(INFO) ",skin,true);
-		emailButton = new MenuLink("(EMAIL) ",skin,false);
-		dataButton = new MenuLink("(DATA) ",skin,false);
-		linkButton = new MenuLink("(LINKS) ",skin,true);
+		infoButton = new InterfaceButton("(INFO) ",true);
+		emailButton = new InterfaceButton("(EMAIL) ",false);
+		dataButton = new InterfaceButton("(DATA) ",false);
+		linkButton = new InterfaceButton("(LINKS) ",true);
 		
 		infoButton.setAlignment(Align.center);
 		dataButton.setAlignment(Align.center);
@@ -126,10 +126,11 @@ public class LocationMenuBar extends VerticalGroup {
 	
 	protected void setAllButtonsUp() {
 		
-		for (MenuLink link : allLinks) {
-			
+		for (InterfaceButton link : allLinks) {
+				
+			if (!link.isDisabled){
 				link.setUpStyle();
-			
+			}
 			
 		}
 		
@@ -139,7 +140,7 @@ public class LocationMenuBar extends VerticalGroup {
 	private void refreshlinks() {
 		super.clearChildren();
 		super.align(Align.center);
-		for (MenuLink link : allLinks) {
+		for (InterfaceButton link : allLinks) {
 			
 			if (link.isVisible==true){
 				super.addActor(link);
@@ -207,18 +208,18 @@ public class LocationMenuBar extends VerticalGroup {
 		if (locked){
 			
 			//locked style
-			infoButton.setColor(DefaultStyles.lockedLabel);			
-			dataButton.setColor(DefaultStyles.lockedLabel);
-			emailButton.setColor(DefaultStyles.lockedLabel);
-			linkButton.setColor(DefaultStyles.lockedLabel);
+			infoButton.setDisabledStyle();		
+			dataButton.setDisabledStyle();	
+			emailButton.setDisabledStyle();	
+			linkButton.setDisabledStyle();	
 			
 		} else {
 			
 			//unlocked style
-			infoButton.setColor(DefaultStyles.unlockedLabel);			
-			dataButton.setColor(DefaultStyles.unlockedLabel);
-			emailButton.setColor(DefaultStyles.unlockedLabel);
-			linkButton.setColor(DefaultStyles.unlockedLabel);			
+			infoButton.setUpStyle();			
+			dataButton.setUpStyle();	
+			emailButton.setUpStyle();	
+			linkButton.setUpStyle();			
 			
 		}
 		
@@ -250,34 +251,7 @@ public class LocationMenuBar extends VerticalGroup {
 }
 
 
-/** a link that represents a page on the computer  **/
-class MenuLink extends Label {
-	
-	Boolean isVisible = true;
-	
-	public MenuLink(String name,Skin skin,Boolean isVisible){
-			
-		super(name,skin);
-		this.isVisible=isVisible;
-		
-		super.setAlignment(Align.center);		
-		
-	}
-	public void setUpStyle(){
-		
-		super.setColor( DefaultStyles.unlockedLabel);
-		
-		
-	}
-		
-	public void setDownStyle(){
-		
-		super.setColor( DefaultStyles.labelpressed);
-		
-		
-	}
-	
-}
+
 
 
 

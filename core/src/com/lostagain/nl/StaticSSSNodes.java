@@ -10,6 +10,8 @@ public class StaticSSSNodes {
 	public static final SSSNode Computer =  SSSNode.createSSSNode(ME.INTERNALNS+"computer", ME.INTERNALNS);
 	public static final SSSNode SecuredBy =  SSSNode.createSSSNode(ME.INTERNALNS+"SecuredBy", ME.INTERNALNS);
 	public static final SSSNode UnlockedBy =  SSSNode.createSSSNode(ME.INTERNALNS+"UnlockedBy", ME.INTERNALNS);
+	public static final SSSNode DescriptionOf =  SSSNode.createSSSNode(ME.INTERNALNS+"DescriptionOf", ME.INTERNALNS);
+	
 	
 	public static final SSSNode Security =  SSSNode.createSSSNode(ME.INTERNALNS+"Security", ME.INTERNALNS);
 	public static final SSSNode queryPass =  SSSNode.createSSSNode(ME.INTERNALNS+"queryPass", ME.INTERNALNS);
@@ -23,6 +25,12 @@ public class StaticSSSNodes {
 	public static final SSSNode software= SSSNode.createSSSNode(ME.INTERNALNS+"software", ME.INTERNALNS);
 	public static final SSSNode messages= SSSNode.createSSSNode(ME.INTERNALNS+"messages", ME.INTERNALNS);
 	
+	//Language
+	public static final SSSNode language =  SSSNode.createSSSNode(ME.INTERNALNS+"language", ME.INTERNALNS);
+	public static final SSSNode writtenin =  SSSNode.createSSSNode(ME.INTERNALNS+"writtenin", ME.INTERNALNS);
 	
+	//default language
+	public static final SSSNode stdascii =  SSSNode.createSSSNode(ME.INTERNALNS+"stdascii",ME.INTERNALNS+"stdascii", ME.INTERNALNS,new SSSNode[]{language});
+
 
 }

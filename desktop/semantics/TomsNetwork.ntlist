@@ -11,23 +11,26 @@ BobsOutpost  rdfs:subClassOf  me:Computer.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subClassOf me:Computer.
 
 profpp me:visibleTo BobsOutpost.
+profpp me:visibleTo alicespc. 
 alicespc me:visibleTo BobsOutpost.
+alicespc me:visibleTo thecatspc.
 thecatspc me:visibleTo alicespc.
 BobsOutpost me:visibleTo me:everyone.
-http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo me:everyone.
-http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo alicespc.
-http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo thecatspc.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo profpp.
 
 profpp me:SecuredBy MaxsFirewall.
 MaxsFirewall rdfs:subClassOf  me:Security.
 MaxsFirewall me:queryPass "Fruit Color=Green".
-MaxsFirewall me:clueText "Something Fruity and Green".
+MaxsFirewall me:clueText "Two Different Fruity Green Things".
 MaxsFirewall me:ReqNum 2.
 
 thecatspc me:SecuredBy VertFirewall.
 VertFirewall rdfs:subClassOf  me:Security.
-VertFirewall me:queryPass "Alive Chordate".
+VertFirewall me:queryPass "Alive Chordate".	
+
+
+
+"Home of the worlds first cyptro-encryptologiest. Me." me:DescriptionOf alicespc.
 
 alicespccontents.txt rdfs:subClassOf me:software.
 alicespccontents.txt me:ison alicespc.
@@ -35,14 +38,21 @@ alicespccontents.txt me:ison alicespc.
 alicesemailindex.txt rdfs:subClassOf me:messages.
 alicesemailindex.txt me:ison alicespc.
  
+"I'm Bob.This is me outpost. -ProfP gave it to me to help his research. " me:DescriptionOf BobsOutpost.
+                                                                      
 bobspcmessages.txt rdfs:subClassOf me:messages.
 bobspcmessages.txt me:ison BobsOutpost.
 
 bobspccontents.txt rdfs:subClassOf me:software.
 bobspccontents.txt me:ison BobsOutpost.
 
+"My hub of new frontier research" me:DescriptionOf profpp.
+
 profpcmessages.txt rdfs:subClassOf me:messages.
 profpcmessages.txt me:ison profpp.
+profpcmessages.txt me:writtenin me:stdascii.
+
+"Moewww!" me:DescriptionOf thecatspc.
 
 thecatspc.txt rdfs:subClassOf me:software.
 thecatspc.txt me:ison thecatspc.

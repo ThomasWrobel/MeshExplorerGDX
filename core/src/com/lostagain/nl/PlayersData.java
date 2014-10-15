@@ -20,7 +20,11 @@ public class PlayersData {
 
 	 //default message contents
 	static SSSNode homemessage = SSSNode.createSSSNode("homepc/WelcomeMessage.txt","homepc/WelcomeMessage.txt", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
-
+	
+	//stores the computers description
+	static SSSNodesWithCommonProperty homediscription = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.DescriptionOf, computersuri);
+	
+	
 	//make a new common property set to store what this pc has unlocked	
 	static SSSNodesWithCommonProperty playersunlocks = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.UnlockedBy, computersuri);
 	
@@ -34,7 +38,9 @@ public class PlayersData {
 	private static ArrayList<SSSNode> hasVisitedArray = new  ArrayList<SSSNode>();
 	
 	
-	
+
+	/** mains a list of all the nodes of all known languages **/
+	private static ArrayList<SSSNode> hasLanguage = new  ArrayList<SSSNode>();
 	
 	
 	
@@ -52,6 +58,9 @@ public class PlayersData {
 
 
 	public static void setup() {
+		
+		
+		
 		//This perhaps should be turned into a NTList to keep the players starting information external
 		// would make editing easier
 		
@@ -62,6 +71,11 @@ public class PlayersData {
 		//ME.playersInventory.addItem(coin);
 		
 		//add starting messages
+		//adding label
+
+		SSSNode homeDisLabel = SSSNode.createSSSNode("Something bob gave me a copy of. Hope he wont get in trouble for it.","HomeMachineDiscription",ME.INTERNALNS);
+		homediscription.add(homeDisLabel);
+		
 		Log.info("adding message");
 		
 		playerslocationcontents.addNodeToThisSet(homemessage, "local");
@@ -81,6 +95,10 @@ public class PlayersData {
 			Log.info("____homemessagep____result="+set.PURI );
 			
 		}
+		
+		
+		hasLanguage.add(StaticSSSNodes.stdascii);
+		
 		
 	}
 
@@ -102,6 +120,13 @@ public class PlayersData {
 	public static void addToVisitedLocations(SSSNode locationsNode) {
 		hasVisitedArray.add(locationsNode);
 		return; 
+		
+	}
+
+
+	public static boolean knownsLanguage(SSSNode language) {
+		
+		return hasLanguage.contains(language);
 		
 	} 	
 	

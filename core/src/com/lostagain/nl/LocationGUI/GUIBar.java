@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.lostagain.nl.ME;
@@ -25,11 +24,12 @@ public class GUIBar extends WidgetGroup {
 
 	static Logger Log = Logger.getLogger("ME.GUIBar");
 
+	InterfaceButton goback =     new InterfaceButton("<< Back",true);
 	InterfaceButton myHome =     new InterfaceButton("My  Home",true);
 	InterfaceButton myContents = new InterfaceButton("My  Data",false); //not visible unless we have data
 	InterfaceButton myLinks =    new InterfaceButton("My Links",true);
 	InterfaceButton myEmails =   new InterfaceButton("My Emails",true);
-
+	Label backgroundobject;
 	ArrayList<InterfaceButton> allLinks = new ArrayList<InterfaceButton>();
 	
 	boolean closed = true;	
@@ -56,11 +56,11 @@ public class GUIBar extends WidgetGroup {
 		
 		
 				
-		Label backgroundobject = new Label("",back);
+		backgroundobject = new Label("",back);
 		
-		backgroundobject.setSize(85, 250);
+		//backgroundobject.setSize(85, 250);
 		backgroundobject.setPosition(0,340);	
-		super.addActor(backgroundobject);
+		
 		
 		
 		myHome.addListener(new ClickListener () {			
@@ -117,7 +117,17 @@ public class GUIBar extends WidgetGroup {
 
 		});
 
+		
+		goback.addListener(new ClickListener () {			
+			@Override
+			public void clicked(InputEvent ev, float x , float y){
+				goback.setDownForABit();
+				MainExplorationView.gotoLastLocation();
+			}
 
+		});
+		
+		allLinks.add(goback);
 		allLinks.add(myHome);
 		allLinks.add(myEmails);
 		allLinks.add(myLinks);
@@ -162,6 +172,7 @@ public class GUIBar extends WidgetGroup {
 	
 	private void refreshlinks() {
 		super.clearChildren();
+		super.addActor(backgroundobject);
 		super.addActor(ME.playersInventory);
 		int y = 440; //start at 440 and work our way down the page with each new shortcut
 		
@@ -175,6 +186,12 @@ public class GUIBar extends WidgetGroup {
 			}
 			
 		}
+
+		backgroundobject.setSize(85, 200);
+		backgroundobject.setPosition(0,y+20);			
+			
+
+		
 	}
 
 	private void triggerInventoryView() {
@@ -273,44 +290,6 @@ public class GUIBar extends WidgetGroup {
 
 	}
 	*/
-	
-	/** a link that represents a page on the computer  **/
-	class InterfaceButton extends Label {
-		
-		Boolean isVisible = true;
-		
-		public InterfaceButton(String name,Boolean isVisible){				
-			super(name,DefaultStyles.buttonstyle);
-			this.isVisible=isVisible;
-			
-			//LabelStyle back = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));
-			//back.fontColor = DefaultStyles.unlockedLabel;		
-					
-			//back.background = DefaultStyles.colors.newDrawable("white", Color.DARK_GRAY);
-		//	back.font = DefaultStyles.linkstyle.getFont("default");
-			
-			
-		//	super.setStyle(back);
-			super.setColor( DefaultStyles.unlockedLabel);
-			
-			super.setAlignment(Align.center);
-			
-		}
-		public void setUpStyle(){
-			
-			super.setColor( DefaultStyles.unlockedLabel);
-			
-			
-		}
-			
-		public void setDownStyle(){
-			
-			super.setColor( DefaultStyles.labelpressed);
-			
-			
-		}
-				
-	}
 	
 	
 

@@ -5,10 +5,14 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Timer;
@@ -40,7 +44,9 @@ import com.lostagain.nl.uti.FileManager;
  * **/
 public class ME extends Game {
 
-	static Logger Log = Logger.getLogger("ME");
+	final static String logstag = "ME";
+	
+//	static Logger Log = Logger.getLogger("ME");
 	
 	//semantics
 	public final static String INTERNALNS = "http://darkflame.co.uk/meshexplorer#";		
@@ -59,26 +65,36 @@ public class ME extends Game {
     public void create() {
     	
     	game=this;
-    	font = new BitmapFont();
+    	
+    	Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), true);
+    	//texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+    	texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear); // linear filtering in nearest mipmap image
+    	
+    	//when we  figure out how to use bitmap fonts in ui elements, we use the following
+    	
+    	font = new BitmapFont();//Gdx.files.internal("data/dfield.fnt"), new TextureRegion(texture), false);
+    	
+    //	font = new BitmapFont();
     	batch = new SpriteBatch();
     	
-    	Log.info("loading..");
+    	Gdx.app.setLogLevel(Application.LOG_INFO);
+    	Gdx.app.log(logstag, "loading..");
     	
     	//create styles
     	DefaultStyles.setupStyles();
 
-    	Log.info("____");
+    	Gdx.app.log(logstag,"____");
     	//create inventory
     	playersInventory = new Inventory();
 
-    	Log.info("________");
+    	Gdx.app.log(logstag,"________");
     	//we clear the semantics before adding the player data (because that contains semantics
     	SuperSimpleSemantics.clearAllIndexsAndNodes();
 
     	//create starting computer
 	  	PlayersData.setup();
     	
-    	Log.info("_____________");
+    	Gdx.app.log(logstag,"_____________"); //stops after this in html version
      //   
     	menu= new MainMenuScreen(game);
     	game.setScreen(menu);
@@ -117,7 +133,7 @@ public class ME extends Game {
     			@Override
     			public void run() {
 
-    	        	Log.info("_____________loaded ___");
+    	        	Gdx.app.log(logstag,"_____________loaded ___");
     	        	
     		        //Use LibGDX's default Arial font.
     		      //  
@@ -133,14 +149,14 @@ public class ME extends Game {
 						public void run(ArrayList<SSSNode> newnodes,
 								boolean invert) {
 							
-							Log.info("_____got results:______"+newnodes.size());
+							Gdx.app.log(logstag,"_____got results:______"+newnodes.size());
 
-							Log.info("_____results:______"+newnodes.toString());
+							Gdx.app.log(logstag,"_____results:______"+newnodes.toString());
 																					
 		    	        	
 		    	        	for (SSSNode sssNode : newnodes) {
 		    	        		
-								Log.info("________result="+sssNode.PURI);
+								Gdx.app.log(logstag,"________result="+sssNode.PURI);
 								
 							}
 							
@@ -154,24 +170,24 @@ public class ME extends Game {
 						public void run() {
 
 						  	/*
-		    	        	Log.info("_____________running tests___");
+		    	        	Gdx.app.log(logstag,"_____________running tests___");
 							
 							SSSNode greennode  = SSSNode.getNodeByLabel("green");
-		    	        	Log.info("_______g_______"+greennode.getEquivilentsAsString());
-		    	        	Log.info("_______g_______"+greennode.getPURI());
+		    	        	Gdx.app.log(logstag,"_______g_______"+greennode.getEquivilentsAsString());
+		    	        	Gdx.app.log(logstag,"_______g_______"+greennode.getPURI());
 		    	        	
 		    	        	SSSNode ColorNode = SSSNode.getNodeByLabel("color");
 		    	        	
 		    	        	
-		    	        	Log.info("______f_______|_"+SSSNode.getNodeByLabel("green").PURI);
-		    	        	Log.info("______f_______|_"+ColorNode.PURI);
+		    	        	Gdx.app.log(logstag,"______f_______|_"+SSSNode.getNodeByLabel("green").PURI);
+		    	        	Gdx.app.log(logstag,"______f_______|_"+ColorNode.PURI);
 		    	        	
 
 		    				ArrayList<SSSNode> allSecuredPCs = SSSNodesWithCommonProperty.getAllNodesWithPredicate(StaticSSSNodes.SecuredBy);
 
 		    				for (SSSNode set : allSecuredPCs) {
 		    	        		
-								Log.info("________result="+set.getPURI());
+								Gdx.app.log(logstag,"________result="+set.getPURI());
 								
 							}
 
@@ -181,11 +197,11 @@ public class ME extends Game {
 		    	        	//SSSNodesWithCommonProperty.getAllNodesWithProperty(ColorNode, greennode, display, null);
 		    	        	/*
 		    	        	HashSet<SSSNodesWithCommonProperty> sets = SSSNodesWithCommonProperty.getCommonPropertySetsContaining("http://darkflame.co.uk/semantics/darksnet.ntlist#pear");
-		    	        	Log.info("_______result s="+sets.size());
+		    	        	Gdx.app.log(logstag,"_______result s="+sets.size());
 		    	        	
 		    	        	for (SSSNodesWithCommonProperty set : sets) {
 		    	        		
-								Log.info("____Pear____result="+set.getCommonPrec().getPURI()+":"+set.getCommonValue().getPURI());
+								Gdx.app.log(logstag,"____Pear____result="+set.getCommonPrec().getPURI()+":"+set.getCommonValue().getPURI());
 								
 							}
 
@@ -193,10 +209,10 @@ public class ME extends Game {
 		    	        	
 		    	        	sets = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(gma.PURI);
 		    	        	
-		    	        	 Log.info("______result s="+sets.size());
+		    	        	 Gdx.app.log(logstag,"______result s="+sets.size());
 		    	        	for (SSSNodesWithCommonProperty set : sets) {
 		    	        		
-								Log.info("____Pair____result="+set.getCommonPrec().getPURI()+":"+set.getCommonValue().getPURI());
+								Gdx.app.log(logstag,"____Pair____result="+set.getCommonPrec().getPURI()+":"+set.getCommonValue().getPURI());
 								
 							}
 		    	        	
@@ -214,8 +230,8 @@ public class ME extends Game {
 		    	        	//final Query test = Query.createQuerySafely("fruit (color=green)");
 		    	        	
 		    	        	// AND http://dbpedia.org/ontology/colour<~semantics\TomsNetwork.ntlist#green
-		    	        	//Log.info("______________"+test.getAsString());
-		    	        	//Log.info("______________"+test.hasNoErrors());
+		    	        	//Gdx.app.log(logstag,"______________"+test.getAsString());
+		    	        	//Gdx.app.log(logstag,"______________"+test.hasNoErrors());
 		    	        	
 							//QueryEngine.processQuery(test, false, null, display);
 						}
@@ -274,20 +290,20 @@ public static Boolean checkForUnloadedDatabase(SSSNode linksToThisPC) {
 	
 	String label = linksToThisPC.getPURI();
 
-	Log.info("testing uri:"+label);
+	Gdx.app.log(logstag,"testing uri:"+label);
 	
 	if (label.contains(".ntlist#")){
 	
-		Log.info("detected database");
+		Gdx.app.log(logstag,"detected database");
 		String databaseurl = label.substring(0, label.indexOf("#"));
 		
-		Log.info("database url:"+databaseurl);
+		Gdx.app.log(logstag,"database url:"+databaseurl);
 		
 		
 		//test if already loaded
 		if (!knownDatabases.contains(databaseurl)){
 
-			Log.info("_____________________database not loaded:");
+			Gdx.app.log(logstag,"_____________________database not loaded:");
 			SuperSimpleSemantics.loadIndexAt(databaseurl);
 			
 			knownDatabases.add(databaseurl);

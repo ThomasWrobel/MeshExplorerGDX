@@ -22,6 +22,8 @@ import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackError;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackRunnable;
 import com.darkflame.client.semantic.SSSNode;
+import com.lostagain.nl.PlayersData;
+import com.lostagain.nl.StaticSSSNodes;
 
 public class EmailScreen extends Container<ScrollPane>  implements LocationScreen {
 
@@ -30,7 +32,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 	//private Table container = new Table();
 	private ArrayList<Message> AllMessages = new ArrayList<Message>();
 	final Table scrollTable;
-	static Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+	//static Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 	 final ScrollPane scroller;
 	 
 	public int numOfEmails=0;
@@ -42,13 +44,6 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		super.setY(0);
 		
 		
-
-	      //  final Label text2 = new Label("This is a short string!", skin);
-	      //  text2.setAlignment(Align.center);
-	      //  text2.setWrap(true);
-	       // final Label text3 = new Label("fghghjgjh", skin);
-	      //  text3.setAlignment(Align.center);
-	       // text3.setWrap(true);
 
 	        scrollTable = new Table();
 	        scrollTable.setX(0);
@@ -93,7 +88,8 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		
 
 	}
-	public void addEmailLocation(SSSNode sssNode) {
+	public void addEmailLocation(SSSNode sssNode,final SSSNode language) {
+		
 		
 		loadingEmails++;
 		
@@ -108,7 +104,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 			public void run(String responseData, int responseCode) {
 				loadingEmails--;
 				
-				addEmail(responseData);
+				addEmail(responseData,language);
 				invalidate();
 				checkForEmailsFinnishedLoading();
 				
@@ -127,7 +123,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 				
 				Log.info(errorData);
 				
-				addEmail(errorData);
+				addEmail(errorData,null);
 
 				checkForEmailsFinnishedLoading();
 			}
@@ -166,8 +162,13 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 	}
 	
 	
-	protected void addEmail(String data) {
-		Message newmessage = new Message(data);
+	protected void addEmail(String data,SSSNode lan) {
+		Message newmessage; 
+		if (lan==null){
+			 newmessage = new Message(data,StaticSSSNodes.stdascii);
+		} else {
+			 newmessage = new Message(data,lan);
+		}
 
 		scrollTable.row();
 		scrollTable.top();
@@ -189,12 +190,22 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 
 	 protected static class Message extends Label 
 	 {
-		 public Message(String contents){
+		 public Message(String contents,SSSNode language){
 			 
 			 super(contents,DefaultStyles.linkstyle);				 
 			 super.setWrap(true);
 			 invalidate();
 			 super.setDebug(true);
+
+			 //set to scrambled if language isnt known
+			 if (language!=null&&!PlayersData.knownsLanguage(language)){
+				 
+				 LabelStyle labstyle = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));
+			 	labstyle.font = DefaultStyles.scramabledFont;
+			 	labstyle.font.setScale(0.3f);
+
+			 	super.setStyle(labstyle);
+			 }
 			 
 			 
 		 }

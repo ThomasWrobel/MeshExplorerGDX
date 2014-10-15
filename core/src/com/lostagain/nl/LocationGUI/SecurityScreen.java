@@ -57,6 +57,8 @@ public class SecurityScreen extends Group  implements LocationScreen {
 	private boolean readyForAnswer = false; //is true when everything is loaded and is ready to accept an answer
 		
 	Label LockedText = new Label ("LOCATION LOCKED : ", DefaultStyles.linkstyle);
+	Label SupplyData = new Label ("Supply Needed Data : ", DefaultStyles.linkstyle);
+	
 	Label RequirementsText = new Label ("Requirements : ", DefaultStyles.linkstyle);
 	Label UnlockedLabel= new Label ("(LOCATION UNLOCKED)", DefaultStyles.linkstyle);
 	Label DetailsLabel= new Label ("(LOCATION UNLOCKED)", DefaultStyles.linkstyle);
@@ -95,10 +97,12 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		super.setSize(WIDTH, HEIGHT);
 		
 		LockedText.setPosition(10, super.getHeight()-30);
-		RequirementsText.setPosition(10, super.getHeight()-60);	
+		SupplyData.setPosition(10, super.getHeight()-50); 
 		
-		UnlockedLabel.setCenterPosition((getWidth()/2),(getHeight()/2));
-		DetailsLabel.setCenterPosition((getWidth()/2),(getHeight()/2)-30);
+		RequirementsText.setPosition(10, super.getHeight()-70);	
+		
+		UnlockedLabel.setCenterPosition((getWidth()/2),(getHeight()/2)+30);
+		DetailsLabel.setCenterPosition((getWidth()/2),(getHeight()/2));
 		
 		//UnlockedLabel.setPosition((getWidth()/2),(getHeight()/2)-30);
 
@@ -107,7 +111,7 @@ public class SecurityScreen extends Group  implements LocationScreen {
 			
 			// req.setPosition(getCenterX()-75, getCenterY()-50);
 
-				req.setPosition(20+(i*(req.getWidth()+10)),getCenterY());
+				req.setPosition(25+(i*(req.getWidth()+10)),getCenterY());
 				 i++;
 		}
 		 
@@ -123,17 +127,33 @@ public class SecurityScreen extends Group  implements LocationScreen {
 			PlayersData.addUnlockedLink(locationProtectedByThis.LocationsNode);
 		}
 		
+		
 		//remove existing text if present
 		if (LockedText!=null){
 			super.removeActor(LockedText);
+			super.removeActor(SupplyData);
 			super.removeActor(RequirementsText);
 		}
 		
-		//add unlocked message and details
-		UnlockedLabel = addText("(LOCATION UNLOCKED)",10,super.getHeight()-30);
-		//add details
-		DetailsLabel = addText("(Details Here)",10,super.getHeight()-50);
+		//get details		
+		SSSNodesWithCommonProperty DiscriptionSet = SSSNodesWithCommonProperty.getSetFor(StaticSSSNodes.DescriptionOf, locationProtectedByThis.LocationsNode);
 		
+		Log.info("Getting discription for location:"+locationProtectedByThis.LocationsNode.getPLabel());
+		
+		
+		String Discription = "(No Details)";
+		if (DiscriptionSet!=null)
+		{
+			 Discription = DiscriptionSet.get(0).getPLabel();
+		}
+		
+		
+		//add unlocked message and details
+		UnlockedLabel = addText("(LOCATION UNLOCKED)",10,super.getHeight()-20);
+		
+		//add details
+		DetailsLabel = addText(Discription,10,super.getHeight()-40);
+		DetailsLabel.setWidth(300);
 		
 		
 		
@@ -147,6 +167,9 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		
 		Label textlabel = new Label(string,DefaultStyles.linkstyle);
 		textlabel.setPosition(x, f);
+		textlabel.setWrap(true);
+		
+		
 		super.addActor(textlabel);
 		
 		
@@ -188,8 +211,17 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		
 		//me:queryPass
 		//add interface elements (non-dragable)
-		 LockedText = addText("LOCATION LOCKED : ",10,super.getHeight()-10);
-		// RequirementsText = addText("Requirements Not Yet Met:", 10, super.getHeight()-	40);
+		
+		
+		// LockedText = addText("LOCATION LOCKED : ",10,super.getHeight()-10);
+		 
+		 LockedText.setPosition(10, super.getHeight()-10);
+		 SupplyData.setPosition(10, super.getHeight()-20);
+		 super.addActor(LockedText);		 
+		 super.addActor(SupplyData);
+		 
+		 
+		 // RequirementsText = addText("Requirements Not Yet Met:", 10, super.getHeight()-	40);
 		 RequirementsText.setText("Requirements Not Yet Met:");
 		 
 		 
@@ -353,6 +385,17 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		
 	}
 	
+
+	public void setAllRequestObjectsFaded(){
+		
+		for (ObjectRequester objreq : allObjectsRequested) {
+			
+			objreq.setModeFaded();
+			
+			
+		}
+	}
+	
 	public void testAllRequestedObjectS(){
 		
 		Boolean locked = false;
@@ -367,10 +410,13 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		
 		if (!locked){
 			
-			Log.info("unlocking");
-			
+			Log.info("unlocking");			
 			setAsUnlocked();
-			
+
+			Log.info("setAllRequestObjectsFaded");	
+			setAllRequestObjectsFaded();
+
+			validate(); 
 		}
 		
 	}
@@ -438,11 +484,16 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		}
 		
 	
+		public void setModeFaded() {
+
+			setColor(0.1f, 0.8f, 0.1f, 0.2f);
+		}
+
+
 		protected void setModeAccepted(SSSNode itemNode) {
 			
 			this.setText(itemNode.getPLabel());
-			
-			
+						
 			setColor(0.1f, 0.8f, 0.1f, 1.0f);
 									
 			isAnwsered = true;

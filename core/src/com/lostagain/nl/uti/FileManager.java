@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -256,6 +258,26 @@ public class FileManager implements SSSGenericFileManager{
 			
 		}
 		
+		if(Gdx.app.getType()==ApplicationType.WebGL) {
+
+			Log.info("running in webmode so we ignore");
+			//FileHandle test1 = Gdx.app.getFiles().absolute(relativepath);
+			FileHandle test2 = Gdx.app.getFiles().getFileHandle(relativepath, FileType.Internal);
+		//	FileHandle test3 = Gdx.app.getFiles().getFileHandle(relativepath, FileType.Classpath); //doesnt work in gwt
+		//	FileHandle test4 = Gdx.app.getFiles().getFileHandle(relativepath, FileType.External);
+		//	FileHandle test5 = Gdx.app.getFiles().getFileHandle(relativepath, FileType.Local);
+
+			//Log.info("paths:"+test1.path());
+			Log.info("paths:"+test2.path());
+		//	Log.info("paths:"+test3.path());
+			//Log.info("paths:"+test4.path());
+		//	Log.info("paths:"+test5.path());
+			
+			
+			Log.info("paths:"+Gdx.files.classpath(relativepath));
+			
+			return relativepath;
+		}
 		
 		//if not then, as this is a Java and thus local we use File to get the absolute
 		//path:		

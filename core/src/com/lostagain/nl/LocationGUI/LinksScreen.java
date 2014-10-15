@@ -26,7 +26,6 @@ public class LinksScreen extends Table implements LocationScreen {
 	static Logger Log = Logger.getLogger("LinksScreen");
 	
 		
-
 	Label title = new Label("Links:",DefaultStyles.linkstyle);
 
 	
@@ -106,6 +105,7 @@ public class LinksScreen extends Table implements LocationScreen {
 
 	
 	public void addLink(SSSNode sssNode) {
+		
 		
 	//	Label linkLabel = new Label(sssNode.getPLabel(),DefaultStyles.linkstyle);	
 	//	linkLabel.setHeight(20);

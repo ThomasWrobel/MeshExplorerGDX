@@ -9,5 +9,12 @@
 	<inherits name='ME' />
 	<entry-point class='com.lostagain.nl.client.HtmlLauncher' />
 	
+	
+    <inherits name="com.google.gwt.logging.Logging"/>   
+    
+    <set-property name="gwt.logging.popupHandler" value="DISABLED"/> 
+  
+   <set-property name="gwt.logging.enabled" value="TRUE"/>    
+	
 	<set-configuration-property name="gdx.assetpath" value="../android/assets" />
 </module>

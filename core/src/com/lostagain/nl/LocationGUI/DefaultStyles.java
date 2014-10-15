@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 
@@ -35,7 +37,10 @@ public class DefaultStyles {
 	static Skin colors = new Skin();
 	
 	//static ProgressBarStyle barStyle = new ProgressBarStyle(Skin.newDrawable("white", Color.DARK_GRAY), textureBar);
-	
+	static Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), true);
+	static BitmapFont scramabledFont = new BitmapFont(Gdx.files.internal("data/dfieldscrambled.fnt"), new TextureRegion(texture), false);
+	static BitmapFont standdardFont = new BitmapFont(Gdx.files.internal("data/dfield.fnt"), new TextureRegion(texture), false);
+
 	
 	public static void setupStyles(){
 		
@@ -49,7 +54,8 @@ public class DefaultStyles {
 		pixmap.fill();
 		colors.add("white", new Texture(pixmap));
 		
-		
+
+    	
 	}
 	
 }

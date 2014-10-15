@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -58,9 +59,11 @@ public class LocationContainer extends Table {
 
 	ArrayList<LocationScreen> AllPages = new ArrayList<LocationScreen>(); 
 
-	//page information
-	SSSNode LocationsNode;
+	//page information	
+	public SSSNode LocationsNode;
 
+	//this location
+	LocationContainer thisLocation = this;
 	//Locations name and URI cropped to fit the window
 	String displayLocation = "";
 	String displayURI = "";
@@ -74,7 +77,6 @@ public class LocationContainer extends Table {
 	SecurityScreen securityPage;	
 	ContentsScreen contentsPage;
 	LinksScreen linksPage;
-
 
 	//page currently open
 	LocationScreen CurrentlyOpenPage = emailPage;
@@ -213,9 +215,54 @@ public class LocationContainer extends Table {
 		validateAllPages();
 
 		AllLocationContainers.put(LocationsNode,this);
+		/*
+		super.addListener(new ClickListener () {			
+			@Override
+			public void clicked(InputEvent ev, float x , float y){
+				
+					 
+					 Log.info("clicked "+thisLocation.LocationsNode.getPLabel());
+				
+					 MainExplorationView.cancelDrag();
+					 
+					 
+				 
+			}
+
+		});*/
+		
+		//any page that might have a scroll should disable the drag
+		
+		emailPage.addListener(new InputListener() {
+		 	@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+		 		Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
+
+				 Log.info("clicked "+thisLocation.LocationsNode.getPLabel());
+			
+				 MainExplorationView.disableDrag();
+				 
+		 		return false;
+		 	}
+		 });
 
 
+/*
+		super.addListener(new ClickListener () {			
+			@Override
+			public void clicked(InputEvent ev, float x , float y){
+				
+				 if (thisLocation!=MainExplorationView.LastLocation.peekLast()){
+					 
+					 Log.info("adding "+thisLocation.LocationsNode.getPLabel());					 
+					 MainExplorationView.LastLocation.add(thisLocation);
+				}
+				 
+			}
 
+		});*/
+		
+		
 	}
 
 
@@ -339,8 +386,10 @@ public class LocationContainer extends Table {
 
 		for (SSSNode sssNode : testresult) {
 
-			linksPage.addLink(sssNode);
-
+			//add to link list if its not the current pc
+			if (sssNode!=this.LocationsNode){			
+				linksPage.addLink(sssNode);
+			}
 
 		}
 
@@ -374,8 +423,26 @@ public class LocationContainer extends Table {
 			if (sssNode.isOrHasParentClass(StaticSSSNodes.messages.getPURI())){
 
 				Log.info(" adding email");
-				emailPage.addEmailLocation(sssNode);
-
+				
+				//First we check if its got a language specified 
+				
+				//note still using this messy method
+				//SSS really needs a neater way to get a nodes property rather then just its classes
+				SSSNode writtenIn =null;
+				HashSet<SSSNodesWithCommonProperty> propertysOfEmail = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(sssNode.getPURI());
+				for (SSSNodesWithCommonProperty ep : propertysOfEmail) {
+					if (ep.getCommonPrec() == StaticSSSNodes.writtenin){
+						Log.info("detected language spec");
+						 writtenIn = ep.getCommonValue();
+						Log.info("detected language written in:"+writtenIn.getPLabel());
+					}					
+				}
+				
+				
+				
+				emailPage.addEmailLocation(sssNode,writtenIn);
+				
+				
 				emails++;
 			}
 
@@ -497,20 +564,21 @@ public class LocationContainer extends Table {
 
 			Vector2 loc =  MeshWorld.locationFromDomain(domain);
 
-
+		
 
 
 			int X = (int) loc.x;  //(int) (Math.random()*2500);
 			int Y = (int) loc.y; //500;
-
+			
+			//random y very slightly just for stylistic effect
+			Y = (int) (Y + (Math.random()*200 -10));
+			
 			Log.info("getting unused location. Testing:"+X+","+Y);
 
 			X = getNextUnusedLocation(X,Y);
 
-
 			MainExplorationView.addnewlocation(newloc,X, Y);
-
-
+			
 
 			return newloc;
 
