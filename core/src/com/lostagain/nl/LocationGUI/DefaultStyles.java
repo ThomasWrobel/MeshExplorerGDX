@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 
@@ -20,12 +21,19 @@ public class DefaultStyles {
 	public static final Color lockedLabel = new Color(1f, 0f, 0f, 0.5f);
 	public static final Color unlockedLabel = new Color(0f, 1f, 0f, 0.5f);
 
+	public static final Color SpecialDownloadLabel = new Color(0.9f,0.7f, 0.3f, 1f);
+
 	public static final Color lighterAmount = new Color(0.5f,0.5f, 0.5f, 0.5f);
 	public static final Color labelpressed = new Color(unlockedLabel).add(lighterAmount);
 			//Color.rgba8888(200f, 0f, 0f, 0.5f);
 
 
 	public static final Skin defaultStyles = new Skin(Gdx.files.internal("data/uiskin.json"));
+
+
+	
+	
+	
 	
 	
 	

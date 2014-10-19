@@ -40,7 +40,7 @@ public class LinksScreen extends Table implements LocationScreen {
 	final Timer	 linkDownloader = new Timer();
 	final Task linkDownloadTask;
 
-
+	ArrayList<Link> allLinks = new ArrayList<Link>();
 
 	LocationContainer parentLocationContainer;
 	
@@ -119,8 +119,21 @@ public class LinksScreen extends Table implements LocationScreen {
 		newlink.validate();
 		super.row();
 		
+		allLinks.add(newlink);
+		
 	}
 
+	public void recheckLinkLines(){
+		
+		for (Link linktocheck : allLinks) {
+			
+			linktocheck.refreshBasedOnMode();
+			
+			
+		}
+		
+	}
+	
 	public void startScanningLink(final Link ObjectFile){
 		Log.info("startScanningLink");
 		
@@ -136,7 +149,7 @@ public class LinksScreen extends Table implements LocationScreen {
 			if (!linkDownloadTask.isScheduled()){
 
 				Log.info("scheduleTask");		
-			  linkDownloader.scheduleTask(linkDownloadTask, 0.1f, 0.1f);
+				linkDownloader.scheduleTask(linkDownloadTask, 0.1f, 0.1f);
 			}
 			linkDownloader.start();
 			

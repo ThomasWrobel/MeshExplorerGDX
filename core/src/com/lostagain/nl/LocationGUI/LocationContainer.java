@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -43,6 +44,7 @@ import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
+import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
@@ -150,7 +152,42 @@ public class LocationContainer extends Table {
 		super.center();
 		super.debug();
 		super.top();
-		super.add(nameLabel).fillX().expandX();
+
+		Label refresh = new Label("(R)",skin);
+		
+		Table titlebar = new Table();
+		titlebar.setHeight(50f);
+		refresh.setWidth(135f);
+		
+		titlebar.add(nameLabel).expandX() .fillX().fillY();
+		titlebar.add(refresh).align(Align.center).fillY().fillX();
+		
+		titlebar.validate();		
+		titlebar.setDebug(true,true);
+		
+		refresh.addListener(new InputListener() {
+		 	@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+		 		Gdx.app.log("LocationContainer", "refresh clicked");
+				if (!locked){
+					//only refresh if unlocked
+					refreshContents();
+			 		
+				}
+				validateAllPages();
+				
+		 		return false;
+		 	}
+		 });
+		
+		//refresh.setAlignment(Align.right);
+		
+		//refresh.setFillParent(true);
+		//nameLabel.setFillParent(true);
+		
+		super.add(titlebar).fillX().expandX().expandY();
+		
+		
 		super.row();
 		super.add(addressLabel).fillX().expandX();
 		super.row();
@@ -215,21 +252,7 @@ public class LocationContainer extends Table {
 		validateAllPages();
 
 		AllLocationContainers.put(LocationsNode,this);
-		/*
-		super.addListener(new ClickListener () {			
-			@Override
-			public void clicked(InputEvent ev, float x , float y){
-				
-					 
-					 Log.info("clicked "+thisLocation.LocationsNode.getPLabel());
-				
-					 MainExplorationView.cancelDrag();
-					 
-					 
-				 
-			}
-
-		});*/
+	
 		
 		//any page that might have a scroll should disable the drag
 		
@@ -341,6 +364,14 @@ public class LocationContainer extends Table {
 	public void refreshContents(){
 
 		getContentOfMachine(LocationsNode);
+		
+		//recheck if we need to draw new link links
+		//(for example, if new links have been unlocked since the last check)
+		if (MainExplorationView.gameStage.getActors().contains(this, true))			
+		{
+			Log.info("rechecking link lines");
+			linksPage.recheckLinkLines();
+		}
 	}
 
 

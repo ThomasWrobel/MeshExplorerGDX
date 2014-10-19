@@ -99,8 +99,16 @@ public class ObjectFile extends WidgetGroup {
 			
 		if (currentMode == ObjectFileState.Normal){
 			
-			ObjectsLabel.setText(objectsnode.getPLabel());
+			ObjectsLabel.setText("  "+objectsnode.getPLabel());
 			
+			//if its an ability we give it special styling
+			if (objectsnode.isOrHasParentClass(StaticSSSNodes.ability.getPURI())){
+
+				ObjectsLabel.setText("  ~~"+objectsnode.getPLabel()+"~~");
+			
+				ObjectsLabel.setColor(DefaultStyles.SpecialDownloadLabel);
+				
+			}
 			
 		}
 		

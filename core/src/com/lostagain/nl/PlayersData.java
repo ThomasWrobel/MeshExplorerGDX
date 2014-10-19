@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
+import com.darkflame.client.query.Query;
+import com.darkflame.client.semantic.QueryEngine;
+import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.LocationGUI.LocationContainer;
@@ -21,15 +24,17 @@ public class PlayersData {
 	 //default message contents semantics\TomsNetwork.ntlist
 	static SSSNode homemessage = SSSNode.createSSSNode("\"homepc/WelcomeMessage.txt\"","semantics\\TomsNetwork.ntlist#", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
 	
-	//stores the computers description
-	static SSSNodesWithCommonProperty homediscription = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.DescriptionOf, computersuri);
+	 //stores the computers description
+	static SSSNode homeDisLabel = SSSNode.createSSSNode("Something bob gave me a copy of. Hope he wont get in trouble for it.","HomeMachineDiscription",ME.INTERNALNS);
+	
+	static SSSNodesWithCommonProperty homediscription = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.DescriptionOf, computersuri, new SSSNode[]{homeDisLabel});
 	
 	
 	//make a new common property set to store what this pc has unlocked	
 	static SSSNodesWithCommonProperty playersunlocks = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.UnlockedBy, computersuri);
 	
 	//and what is currently on this pc
-	public static SSSNodesWithCommonProperty playerslocationcontents = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, computersuri);
+	public static SSSNodesWithCommonProperty playerslocationcontents = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, computersuri, new SSSNode[]{homemessage,StaticSSSNodes.asciidecoder});
 
 	/** the home location container **/
 	public static LocationContainer homeLoc;
@@ -40,7 +45,7 @@ public class PlayersData {
 	
 
 	/** mains a list of all the nodes of all known languages **/
-	private static ArrayList<SSSNode> hasLanguage = new  ArrayList<SSSNode>();
+	//private static ArrayList<SSSNode> hasLanguage = new  ArrayList<SSSNode>();
 	
 	
 	
@@ -74,12 +79,11 @@ public class PlayersData {
 		//add starting messages
 		//adding label
 
-		SSSNode homeDisLabel = SSSNode.createSSSNode("Something bob gave me a copy of. Hope he wont get in trouble for it.","HomeMachineDiscription",ME.INTERNALNS);
-		homediscription.add(homeDisLabel);
+		//homediscription.add(homeDisLabel);
 		
 		Log.info("adding message");
 		
-		playerslocationcontents.addNodeToThisSet(homemessage, "local");
+		//playerslocationcontents.addNodeToThisSet(homemessage, "local");
 		
 		
 		HashSet<SSSNodesWithCommonProperty> sets = 	SSSNodesWithCommonProperty.getCommonPropertySetsContaining(PlayersData.homemessage.PURI);
@@ -98,7 +102,12 @@ public class PlayersData {
 		}
 		
 		
-		hasLanguage.add(StaticSSSNodes.stdascii);
+		//hasLanguage.add(StaticSSSNodes.stdascii);
+		
+		
+
+		//playerslocationcontents.addNodeToThisSet(StaticSSSNodes.asciidecoder, "local");
+		//playerslocationcontents.addNodeToThisSet(StaticSSSNodes.scram1decoder, "local");
 		
 		
 	}
@@ -125,9 +134,61 @@ public class PlayersData {
 	}
 
 
-	public static boolean knownsLanguage(SSSNode language) {
+	public static void knownsLanguage(SSSNode language,final Runnable firesIfTrue,final Runnable firesIfFalse) {
 		
-		return hasLanguage.contains(language);
+		//look for a decoder of the specified language
+		//HashSet<SSSNode> AllKnownDecoders =  SSSNodesWithCommonProperty.getAllCurrentNodesInSetsFor(SSSNode.SubClassOf, StaticSSSNodes.decoder);
+		
+		//We look for a decoder thats on the players machine which knows this language
+		//if necessary this stuff can be cached here to do it more efficiently.
+		//but then, part of the point of this game is to test the SSS database system!
+		
+		//Decoder KnowsLanguage=language isOn=PlayersMachine
+		
+		
+		Log.info("______________testing if player has decoder for language");
+		
+		Query realQuery = new Query(ME.INTERNALNS+"knows="+language.getPURI() +" "+ME.INTERNALNS+"decoder me:isOn="+computersuri);
+		
+		if (realQuery.hasNoErrors()){
+			Log.info("______no errors in query");
+			
+		}
+		
+		Log.info("______no errors in query");
+		
+		
+		Log.info(":::"+realQuery.allUsedNodes().toString());
+		
+		
+		
+
+		DoSomethingWithNodesRunnable RunWhenDone = new DoSomethingWithNodesRunnable() {
+			
+			@Override
+			public void run(ArrayList<SSSNode> newnodes, boolean invert) {
+				
+				Log.info("got results from language test:"+newnodes.toString());
+				if (newnodes!=null && newnodes.get(0)!=SSSNode.NOTFOUND){
+					
+					//language
+					//http://darkflame.co.uk/meshexplorer#asciidecoder
+										
+					firesIfTrue.run();
+					
+				} else {
+					firesIfFalse.run();
+					
+				}
+				
+			}
+		};
+		
+		QueryEngine.processQuery(realQuery, false, null, RunWhenDone);
+		
+		
+		
+		return;
 		
 	} 	
 	

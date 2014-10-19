@@ -57,8 +57,9 @@ public class MainExplorationView implements Screen {
 
 	static LocationContainer currentlyOpenLocation;
 
-	static Stage gameStage;
+	public static Stage gameStage;
 
+	
 	static Stage guiStage;
 
 	static Float CurrentX = 100f;
@@ -410,7 +411,7 @@ public class MainExplorationView implements Screen {
 		//regardless of 3d positions within that layer
 		background.modelBatch.begin( camera);
 		background.modelBatch.render(background.instances);
-		background.modelBatch.end();
+		background.modelBatch.end();	
 
 		gameStage.getViewport().setCamera(camera);
 
@@ -537,7 +538,7 @@ public class MainExplorationView implements Screen {
 			MotionDisX = (MotionDisX / (1+(0.8f*delta)));
 			MotionDisY = (MotionDisY / (1+(0.8f*delta)));
 			
-			Gdx.app.log(logstag,"\n slow by:"+(1+(0.8f*delta)));
+			//Gdx.app.log(logstag,"\n slow by:"+(1+(0.8f*delta)));
 			
 			// stop
 			Boolean isMoving = false;

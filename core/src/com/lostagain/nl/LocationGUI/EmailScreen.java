@@ -211,6 +211,8 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		if (lan==null){
 			 newmessage = new Message(data,StaticSSSNodes.stdascii);
 		} else {
+			Log.info("message written in:"+lan.getPURI());
+			
 			 newmessage = new Message(data,lan);
 		}
 
@@ -241,14 +243,42 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 			 invalidate();
 			 super.setDebug(true);
 
-			 //set to scrambled if language isnt known
-			 if (language!=null&&!PlayersData.knownsLanguage(language)){
-				 
+			 //set to scrambled till language is cofirmed to be known
+			 
+			 
+			 if (language!=null){
+
 				 LabelStyle labstyle = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));
 			 	labstyle.font = DefaultStyles.scramabledFont;
 			 	labstyle.font.setScale(0.3f);
-
+			 	
+			 	//save the default style (means if it changes this wont need to be be)
+			 	final LabelStyle defaultStyle = super.getStyle();
+			 	
 			 	super.setStyle(labstyle);
+			 	
+				 PlayersData.knownsLanguage(language, new Runnable(){
+
+					@Override
+					public void run() {
+						
+						Log.info("has lan decoder!!!!!!!!!!!!");						
+						setStyle(defaultStyle);
+						
+					}
+					 
+				 }, new Runnable(){
+
+						@Override
+						public void run() {
+							
+							Log.info("done not have lan decoder!!!!!!!!!!!!");	
+							
+						}
+						 
+					 });
+				 
+				 
 			 }
 			 
 			 

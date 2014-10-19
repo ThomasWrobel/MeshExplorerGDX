@@ -2,6 +2,7 @@ package com.lostagain.nl.LocationGUI;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -35,6 +36,8 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	
 	String Location = "";
 	String LinkName = "";
+	
+	ModelInstance Linksline;
 	//Label ProgressBar = new Label ("--->",DefaultStyles.linkstyle);
 	ProgressBar scanPercentage = new ProgressBar(0, 100, 1, false, DefaultStyles.linkstyle);
 	
@@ -292,7 +295,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		ComputerOpen = true;
 		
 		//pre-prepare location
-		LocationContainer newlocation =  LocationContainer.getLocation(linksToThisPC);
+		//LocationContainer newlocation =  LocationContainer.getLocation(linksToThisPC);
 		
 		//detect if its secured by anything 
 		if (linksToThisPC!=null){
@@ -312,7 +315,6 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 				
 			} else {
 
-				
 				//add too unlocked list
 				PlayersData.addUnlockedLink(linksToThisPC);
 				
@@ -320,17 +322,29 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 						
 		}
 
-		//add line
-		LocationContainer from = currentParent.parentLocationContainer;
-		LocationContainer to = newlocation;
-		
-		MainExplorationView.background.addConnectingLine(from,to);
 		
 		
 		
-			refreshBasedOnMode();
+		refreshBasedOnMode();
 		
 		
+	}
+
+	void reCheckLinkLine() {
+		if (Linksline==null){
+							
+			LocationContainer newlocation =  LocationContainer.getLocation(linksToThisPC);
+		
+			LocationContainer from = currentParent.parentLocationContainer;
+			LocationContainer to = newlocation;
+			
+			//only refresh if the To and From are attached
+			if (MainExplorationView.gameStage.getActors().contains(from, true) && MainExplorationView.gameStage.getActors().contains(to, true))			
+			{
+				Linksline = MainExplorationView.background.addConnectingLine(from,to);
+			}
+		
+		}
 	}
 	
 	public void stepForwardDownloadingAmount(int SPEEDSTEP) {
@@ -356,25 +370,34 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	
 	
 	
-	private void refreshBasedOnMode() {
+	public void refreshBasedOnMode() {
 		
 		if (!ComputerOpen){
 			currentMode = LinkMode.Locked;
 			setLockedStyle();
 			gotoLinkButton.setText(LOCKED+Location+" )");
 			gotoLinkButton.setColor( 220,0, 10, 30);
-			
+
 		} else {
 			
 			currentMode = LinkMode.Open;
+			
 			setOpenStyle();
 			gotoLinkButton.setText(Location);
 			gotoLinkButton.setAlignment(Align.center);
 			gotoLinkButton.setColor(0, 210, 10, 40);
 			
+			
+		}
+
+		gotoLinkButton.pack();
+		
+		if (currentMode == LinkMode.Locked || currentMode == LinkMode.Open){
+
+			Log.info("rechecking link lines");
+			reCheckLinkLine();
 		}
 		
-		gotoLinkButton.pack();
 	}
 
 	
