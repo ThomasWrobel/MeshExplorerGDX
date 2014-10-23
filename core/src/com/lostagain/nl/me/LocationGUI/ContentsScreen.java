@@ -1,4 +1,4 @@
-package com.lostagain.nl.LocationGUI;
+package com.lostagain.nl.me.LocationGUI;
 
 import java.util.ArrayList;
 
@@ -19,25 +19,31 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.darkflame.client.semantic.SSSNode;
-import com.lostagain.nl.LocationGUI.ObjectFile.ObjectFileState;
+import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
 
 public class ContentsScreen extends Table implements LocationScreen {
+	static Logger Log = Logger.getLogger("ContentsScreen");
 
-
-	static Logger Log = Logger.getLogger("LinksScreen");
-	int DownloadSpeed = 10;	
+	Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+	
+	int DownloadSpeed = 10;	//will become players connection speed
 	ArrayList<ObjectFile> objectsBeingDownloaded = new ArrayList<ObjectFile>();
 	
 	final Timer	 objectDownloader = new Timer();
 
 	final Task objectDownloadTask;
+	private ArrayList<SSSNode> allContentsNodes = new  ArrayList<SSSNode>();
 	
 	static Boolean isRunning = false;
 		
-	public ContentsScreen(LocationContainer parentLocationContainer, SSSNode securedBy) {
+	String contentsTitle = "Contents:";
+	Label title  = new Label(contentsTitle,skin);
+	
+	public ContentsScreen(LocationsHub parentLocationContainer, SSSNode securedBy, String contentsTitle) {
 		super();
 		super.setFillParent(true);
 		
+		this.contentsTitle = contentsTitle;
 
 		objectDownloadTask = new Task(){
 
@@ -78,14 +84,13 @@ public class ContentsScreen extends Table implements LocationScreen {
 	   		};
 	   		
 	   	 
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		
-		Label title = new Label("Contents:",skin);
-		title.setX(150);
-		title.setY(50);
-		
-		super.addActor(title);
-		
+		Label title = new Label(contentsTitle,skin);
+		//title.setX(150);
+	//	title.setY(50);
+		super.add(title).fillX().height(30).expandX();
+		//super.addActor(title);
+		super.row();
 		
 	}
 
@@ -112,8 +117,16 @@ public class ContentsScreen extends Table implements LocationScreen {
 	}
 	public void addObjectFile(ObjectFile ObjectFile){
 		
+		//ensure its not already on here
+		if (allContentsNodes.contains(ObjectFile.objectsnode)){			
+			return;
+		};
+		
+		allContentsNodes.add(ObjectFile.objectsnode);
 		super.left();
 		super.top();
+		
+		
 		super.add(ObjectFile).fillX().height(30).expandX();
 		ObjectFile.validate();
 		
@@ -124,15 +137,20 @@ public class ContentsScreen extends Table implements LocationScreen {
 	public void addObjectFile(SSSNode sssNode) {
 		Gdx.app.log("", "adding node:"+sssNode.PURI);
 		
-		//make a ObjectFile from this sssnode (which should identify a pc on the games network) 
-		ObjectFile newObjectFile = new ObjectFile(sssNode,this);
+		//make a ObjectFile from this sssnode rk) 
+		ObjectFile newObjectFile = new ObjectFile(sssNode,this);		
 		addObjectFile(newObjectFile);
+	
 	}
 
 	public void removeAllContents() {
 		
 		super.clearChildren();
+		allContentsNodes.clear();
 		
+		//read add title at top
+		super.add(title).fillX().height(30).expandX();
+		super.row();
 	}
 	
 	

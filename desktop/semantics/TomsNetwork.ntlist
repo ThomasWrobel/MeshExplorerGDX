@@ -10,14 +10,26 @@ thecatspc rdfs:subClassOf  me:Computer.
 BobsOutpost  rdfs:subClassOf  me:Computer.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subClassOf me:Computer.
 
-profpp me:visibleTo BobsOutpost.
-profpp me:visibleTo alicespc. 
-alicespc me:visibleTo BobsOutpost.
-alicespc me:visibleTo thecatspc.
-thecatspc me:visibleTo alicespc.
-BobsOutpost me:visibleTo me:everyone.
-http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo profpp.
-http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:visibleTo me:everyone.
+BobsOutpost me:populatedBy smallInfovorPopulation.
+
+smallInfovorPopulation rdfs:subClassOf me:population.
+smallInfovorPopulation me:quanity 10.
+smallInfovorPopulation me:drop dropdata1.
+smallInfovorPopulation me:drop dropdata2.
+smallInfovorPopulation me:drop dropdata3.
+
+profpp me:connectedTo BobsOutpost.
+profpp me:connectedTo alicespc. 
+alicespc me:connectedTo BobsOutpost.
+alicespc me:connectedTo thecatspc.
+thecatspc me:connectedTo alicespc.
+BobsOutpost me:connectedTo me:everyone.
+
+http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#test rdfs:subClassOf me:Computer.
+http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#test me:connectedTo http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost.
+
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:connectedTo profpp.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:connectedTo me:everyone.
 
 profpp me:SecuredBy MaxsFirewall.
 MaxsFirewall rdfs:subClassOf  me:Security.

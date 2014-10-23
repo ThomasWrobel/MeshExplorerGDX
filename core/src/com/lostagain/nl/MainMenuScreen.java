@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.lostagain.nl.LocationGUI.LocationContainer;
+import com.lostagain.nl.me.LocationGUI.LocationsHub;
 
 public class MainMenuScreen implements Screen {
 

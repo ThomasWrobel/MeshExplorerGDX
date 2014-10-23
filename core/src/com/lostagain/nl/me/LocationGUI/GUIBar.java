@@ -1,4 +1,4 @@
-package com.lostagain.nl.LocationGUI;
+package com.lostagain.nl.me.LocationGUI;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -175,7 +175,8 @@ public class GUIBar extends WidgetGroup {
 		super.addActor(backgroundobject);
 		super.addActor(ME.playersInventory);
 		int y = 440; //start at 440 and work our way down the page with each new shortcut
-		
+
+		ME.playersInventory.validate();
 		for (InterfaceButton link : allLinks) {		
 			
 			if (link.isVisible==true){

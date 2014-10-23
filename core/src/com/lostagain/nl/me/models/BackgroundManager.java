@@ -1,14 +1,21 @@
-package com.lostagain.nl;
+package com.lostagain.nl.me.models;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -24,28 +31,45 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.lostagain.nl.LocationGUI.LocationContainer;
+import com.lostagain.nl.me.LocationGUI.LocationsHub;
+import com.lostagain.nl.uti.TestAnimation;
 
 public class BackgroundManager {
 
-	static Logger Log = Logger.getLogger("ME.BackgroundManager");
+//;	static Logger Log = Logger.getLogger("ME.BackgroundManager");
 
+	final static String logstag = "ME.BackgroundManager";
 	//3d bits
 	public Model model;
 	public ModelInstance instance;
 	public ModelBatch modelBatch;
 
-	Array<ModelInstance> instances = new Array<ModelInstance>();
+	//public static Array<ModelInstance> instances = new Array<ModelInstance>();
+	
 	ModelBuilder modelBuilder = new ModelBuilder();
 
 	Array<ModelInstance> lines = new Array<ModelInstance>();
 
+	 //Experiments
+	
+	static Pixmap pixmap;
+	static ByteBuffer temp;
+	
+	static TestAnimation testbounc = new TestAnimation();
+	
+	private static ArrayList<ModelInstance> animatedbacks = new ArrayList<ModelInstance>();
+	
+	
 	public void setup(){
 
 		modelBatch = new ModelBatch();
-
-
+		
+		Gdx.app.log(logstag,"creating testbounc");
+		testbounc.create();
+		
 		Model  model1 = modelBuilder.createBox(150f, 15f, 15f, 
 				new Material(ColorAttribute.createDiffuse(Color.GREEN)),
 				Usage.Position | Usage.Normal);
@@ -63,11 +87,23 @@ public class BackgroundManager {
 
 
 		instance = new ModelInstance(model1);        
-		instances.add(instance);
+		ModelManagment.addmodel(instance);
 
 		ModelInstance instance2 = new ModelInstance(model2);        
-		instances.add(instance2);
-
+		ModelManagment.addmodel(instance2);
+		
+		
+		
+		Gdx.app.log(logstag,"texture test=");
+		
+	//	Node tshirtNode = instance3.nodes.get(0);
+//	Material material = tshirtNode.parts.get(0).material;
+		
+		Gdx.app.log(logstag,"texture test=2");
+		
+		
+		
+		
 		/*
         ModelInstance instance3 = new ModelInstance(model3);        
         instances.add(instance3);
@@ -84,25 +120,63 @@ public class BackgroundManager {
 
 	}
 
-
-	public ModelInstance addConnectingLine(LocationContainer From,LocationContainer To){
-
-		Log.info("___________AddConnectingLine:"+From.getWidth());
-		Log.info("___________AddConnectingLine:"+From.isVisible());
-		Log.info("___________AddConnectingLine:"+From.getCenterX()+","+From.getCenterY()+" to "+To.getCenterX()+","+To.getCenterY());
-		Log.info("___________AddConnectingLine From:"+From.LocationsNode.getPLabel());
-		Log.info("___________AddConnectingLine To:"+To.LocationsNode.getPLabel());
+	public void updateAnimatedBacks(float deltatime){
 		
-		float x = From.getCenterX();
-		float y = From.getCenterY();
+		TextureRegion currentimage = testbounc.getKeyFrame(deltatime);
+		
+		for (ModelInstance instance : animatedbacks) {
+			
+			TextureAttribute attribute = instance.materials.get(0).get(TextureAttribute.class, TextureAttribute.Diffuse);
+			
+			if (attribute!=null){			
+				attribute.set(currentimage );		
+			} else {
+				Gdx.app.log(logstag,"________************________________attribute is null:");
+			}
+					
+		}
+		
+		
+	}
+	
+	public static ModelInstance addNoiseRectangle(int x, int y, int w, int h) {
+		
+		
+		ModelInstance newmodel  = new ModelInstance(createNoiseRectangle(x, y, x+w,y+h, -110, Color.BLACK));
+		ModelManagment.addmodel(newmodel);		
+		
+		animatedbacks.add(newmodel);
+				
+		return newmodel;
+	}
+	
+	public static void removeModelInstance(ModelInstance model){
+		
+		
+		ModelManagment.removeModel(model);
+		
+		animatedbacks.remove(model);
+		
+	}
 
+
+	public ModelInstance addConnectingLine(LocationsHub From,LocationsHub To){
+
+		Gdx.app.log(logstag,"___________AddConnectingLine:"+From.getWidth());
+		Gdx.app.log(logstag,"___________AddConnectingLine:"+From.isVisible());
+		Gdx.app.log(logstag,"___________AddConnectingLine:"+From.getX(Align.center)+","+From.getY(Align.center)+" to "+To.getX(Align.center)+","+To.getY(Align.center));
+		Gdx.app.log(logstag,"___________AddConnectingLine From:"+From.LocationsNode.getPLabel());
+		Gdx.app.log(logstag,"___________AddConnectingLine To:"+To.LocationsNode.getPLabel());
+		
+		float x = From.getX(Align.center);
+		float y = From.getY(Align.center);
 		float width = 30;
 		float height = 500;
 
 		
 		//get angle
-		float x2 = To.getCenterX();
-		float y2 = To.getCenterY();
+		float x2 = To.getX(Align.center);
+		float y2 = To.getY(Align.center);;
 
 		Vector2 corner2 = new Vector2(x,y);
 		Vector2 corner3 = new Vector2(x2,y2);
@@ -125,13 +199,14 @@ public class BackgroundManager {
 		//newlinetop.transform.mul(newmatrix);
 				
 		lines.add(newline);
-		instances.add(newline);
-
+		//instances.add(newline);
+		ModelManagment.addmodel(newline);
+		
 		//lines.add(newlinetop);
 		//instances.add(newlinetop);
 		
 
-		Log.info("x="+x+"y="+y);
+		Gdx.app.log(logstag,"x="+x+"y="+y);
 
 
 
@@ -144,7 +219,7 @@ public class BackgroundManager {
 	private ModelInstance createRectangleAt(float x,float y,float width,float height,float z) {
 
 		Color MColor = Color.RED;
-		Model newractangle =  createRectangle(0,height,width,0,0,MColor);
+		Model newractangle =  createGlowingRectangle(0,height,width,0,0,MColor);
 
 		ModelInstance newinstance = new ModelInstance(newractangle); 
 
@@ -155,7 +230,7 @@ public class BackgroundManager {
 	}
 
 
-	private Model createRectangle(float x1,float y1,float x2,float y2,float z,Color MColor) {
+	private Model createGlowingRectangle(float x1,float y1,float x2,float y2,float z,Color MColor) {
 		//x1 =0
 		//y1 =height
 		//x2 =width
@@ -333,6 +408,7 @@ public class BackgroundManager {
 				0,
 				1,
 				0);
+		
 		//now the glow end blob (bit smaller)
 		
 		
@@ -394,4 +470,164 @@ public class BackgroundManager {
 
 	}
 
+	
+	private static void sortTransparentObjects(final Camera camera){
+		/*
+		
+		instances.sort(new Comparator<ModelInstance>() {
+			
+			private final Vector3 tmpV1 = new Vector3();
+			private final Vector3 tmpV2 = new Vector3();
+			
+			@Override
+			public int compare(ModelInstance o1, ModelInstance o2) {
+				
+				
+				//Rather then single bits look for any;
+												
+			
+				//OMLY TESTS FIRST MATERIAL NODE OF EACH OBJECT (should test all)
+				final boolean b1 = o1.materials.get(0).has(BlendingAttribute.Type) && ((BlendingAttribute)o1.materials.get(0).get(BlendingAttribute.Type)).blended;
+				final boolean b2 = o2.materials.get(0).has(BlendingAttribute.Type) && ((BlendingAttribute)o2.materials.get(0).get(BlendingAttribute.Type)).blended;
+				
+				if (b1 != b2) return b1 ? 1 : -1;
+				
+				
+				// FIXME implement better sorting algorithm
+				// final boolean same = o1.shader == o2.shader && o1.mesh == o2.mesh && (o1.lights == null) == (o2.lights == null) &&
+				// o1.material.equals(o2.material);
+				
+				o1.transform.getTranslation(tmpV1);				
+				o2.transform.getTranslation(tmpV2);
+				
+				//o1.worldTransform.getTranslation(tmpV1);
+				//o2.worldTransform.getTranslation(tmpV2);
+				
+				final float dst = (int)(1000f * camera.position.dst2(tmpV1)) - (int)(1000f * camera.position.dst2(tmpV2));
+				final int result = dst < 0 ? -1 : (dst > 0 ? 1 : 0);
+				
+				return b1 ? -result : result;
+				
+			}
+		});
+		*/
+		
+	}
+	private static Model createNoiseRectangle(float x1,float y1,float x2,float y2,float z,Color MColor) {
+		
+
+       // BlendingAttribute blendingAttribute = new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.1f);
+
+		
+		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f);
+		
+    Texture texture = new Texture(createNoiseImage(300,300));
+    //ColorAttribute.createDiffuse(MColor), new BlendingAttribute(0.5f), 
+        Material mat = new Material(
+				ColorAttribute.createSpecular(Color.WHITE),
+				FloatAttribute.createShininess(16f));
+        
+        mat.set(TextureAttribute.createDiffuse(texture));
+     mat.set(blendingAttribute2);
+     
+     
+        
+        return createRectangle( x1, y1, x2, y2, z, MColor, mat );
+        
+	}
+	
+	
+	
+	
+	static private Model createRectangle(float x1,float y1,float x2,float y2,float z,Color MColor,Material mat ) {
+		//x1 =0
+		//y1 =height
+		//x2 =width
+		//y2 =0
+		
+	//	float width = Math.abs(x1-x2);
+		//
+	//	float vertdisp = width/2;
+		
+		
+		//(-10f,500f,10f,-500f,0f);
+		//(x,,,y                      )
+		
+		Vector3 corner1 = new Vector3(x1,y1,z);
+		Vector3 corner2 = new Vector3(x2,y1,z);
+		Vector3 corner3 = new Vector3(x2,y2,z);
+		Vector3 corner4 = new Vector3(x1,y2,z);	
+		
+		/*
+		Vector3 corner1 = new Vector3(0,0,0);
+		Vector3 corner2 = new Vector3(444,0,0);
+		Vector3 corner3 = new Vector3(444,444,0);
+		Vector3 corner4 = new Vector3(0,444,0);	
+		 */
+
+     // FileHandle imageFileHandle3 = Gdx.files.internal("data/beam_blob.png"); 
+        //Texture blobtexture = new Texture(imageFileHandle3);
+    
+		ModelBuilder modelBuilder = new ModelBuilder();
+		modelBuilder.begin();
+		MeshPartBuilder meshBuilder;
+
+		//Node node = modelBuilder.node();
+		//node.translation.set(11,11,5);		
+		
+		meshBuilder = modelBuilder.part("bit", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal|Usage.TextureCoordinates, mat);
+
+		
+		//meshBuilder.cone(5, 5, 5, 10);
+		
+		VertexInfo newtest1 = new VertexInfo();
+		Vector3 testnorm=new Vector3(0,1,0);
+		newtest1.set(corner1, testnorm, Color.WHITE, new Vector2(0f,0f));
+
+		VertexInfo newtest2 = new VertexInfo();
+		newtest2.set(corner2, testnorm, Color.WHITE, new Vector2(0f,1f));
+
+		VertexInfo newtest3 = new VertexInfo();
+		newtest3.set(corner3, testnorm, Color.WHITE, new Vector2(1f,1f));
+		
+		VertexInfo newtest4 = new VertexInfo();
+		newtest4.set(corner4, testnorm, Color.WHITE, new Vector2(1f,0f));
+		
+		meshBuilder.rect(newtest1, newtest2, newtest3, newtest4);
+	 
+		
+
+		Model model = modelBuilder.end();
+		
+		
+
+		return model;
+	}
+
+	
+	public static Pixmap createNoiseImage(int w, int h){
+		
+		
+		pixmap = new Pixmap(w, h, Format.RGBA8888);
+		pixmap.setColor(22f, 22f, 22f, 0f);
+		
+		pixmap.fill();
+		
+		 temp = pixmap.getPixels();
+				
+	for (int i = 0; i < temp.limit() ; i++) {
+		//byte val = temp.get(i);
+		
+		byte val = (byte) (Math.random()*200);
+		temp.put(val);
+		
+	}
+	temp.flip();
+	//40000
+	
+		return pixmap;
+		
+	}
+	
+	
 }

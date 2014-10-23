@@ -1,4 +1,4 @@
-package com.lostagain.nl.LocationGUI;
+package com.lostagain.nl.me.LocationGUI;
 
 import java.util.ArrayList;
 
@@ -34,7 +34,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	
 	Label gotoLinkButton =  new Label("",DefaultStyles.linkstyle);
 	
-	String Location = "";
+	String LocationsName = "";
 	String LinkName = "";
 	
 	ModelInstance Linksline;
@@ -45,7 +45,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	final static String SCANNING = "SCANNING- ";
 	int PercentageScanned = 0;
 	
-	final static String LOCKED = "LOCKED ( ";
+	final static String CLOSED = "CLOSED ( ";
 	
 	//the current parent panel this is being viewed on.
 	//(this determines where to send the clicks to start scanning,
@@ -53,7 +53,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	LinksScreen currentParent = null;
 	
 	enum LinkMode {
-		Unknown,Scanning,Locked,Open;
+		Unknown,Scanning,Closed,Open;
 	}
 
 	LinkMode currentMode =  LinkMode.Unknown;
@@ -93,11 +93,11 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		//default back
 		//super.setStyles(Style.BACKGROUND.is(Background.solid(Color.argb(255, 250,50, 55))));
 		
-		Location = location;
+		LocationsName = location;
 		
 		//remove start if too long
-		if (Location.length()>33){
-			Location="..."+Location.substring(Location.length()-33, Location.length() );
+		if (LocationsName.length()>33){
+			LocationsName="..."+LocationsName.substring(LocationsName.length()-33, LocationsName.length() );
 		}
 		
 		
@@ -105,7 +105,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 
 		gotoLinkButton.setX(0);
 		scanPercentage.setX(0);
-		gotoLinkButton.setText(UNKNOWEN+Location);
+		gotoLinkButton.setText(UNKNOWEN+LocationsName);
 	
 		gotoLinkButton.setFillParent(true);
 		gotoLinkButton.setWidth(44);
@@ -126,7 +126,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 					case Unknown:
 						 scan();
 						break;
-					case Locked:
+					case Closed:
 						//as we already know its locked, we could probably
 						//put a flag here to stop a re-check later?
 						MainExplorationView.gotoLocation(linksToThisPC);
@@ -181,7 +181,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		
 		currentMode = LinkMode.Scanning;
 		
-		gotoLinkButton.setText(SCANNING+Location);
+		gotoLinkButton.setText(SCANNING+LocationsName);
 		gotoLinkButton.pack();
 		//super.setStyles(Style.BACKGROUND.is(Background.solid(Color.argb(255, 50,50, 255))));
 		
@@ -196,7 +196,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 			
 			Log.info("triggering scan");
 			currentParent.startScanningLink(this);
-			
+			realscan=false;
 		} else {
 
 			Log.info("triggering remote scan");
@@ -322,7 +322,12 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 						
 		}
 
-		
+
+		if (!ComputerOpen){
+			currentMode = LinkMode.Closed;
+		} else {
+			currentMode = LinkMode.Open;
+		}
 		
 		
 		refreshBasedOnMode();
@@ -333,10 +338,10 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	void reCheckLinkLine() {
 		if (Linksline==null){
 							
-			LocationContainer newlocation =  LocationContainer.getLocation(linksToThisPC);
+			LocationsHub newlocation =  Location.getLocation(linksToThisPC);
 		
-			LocationContainer from = currentParent.parentLocationContainer;
-			LocationContainer to = newlocation;
+			LocationsHub from = currentParent.parentLocationContainer;
+			LocationsHub to = newlocation;
 			
 			//only refresh if the To and From are attached
 			if (MainExplorationView.gameStage.getActors().contains(from, true) && MainExplorationView.gameStage.getActors().contains(to, true))			
@@ -372,18 +377,26 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	
 	public void refreshBasedOnMode() {
 		
-		if (!ComputerOpen){
-			currentMode = LinkMode.Locked;
+		if (currentMode == LinkMode.Unknown){
+			return;
+		}
+		if (currentMode == LinkMode.Scanning){
+			return;
+		}
+		if (currentMode == LinkMode.Closed){
+			currentMode = LinkMode.Closed;
 			setLockedStyle();
-			gotoLinkButton.setText(LOCKED+Location+" )");
+			gotoLinkButton.setText(CLOSED+LocationsName+" )");
 			gotoLinkButton.setColor( 220,0, 10, 30);
 
-		} else {
+		} 
+		
+		if (currentMode == LinkMode.Open) {
 			
 			currentMode = LinkMode.Open;
 			
 			setOpenStyle();
-			gotoLinkButton.setText(Location);
+			gotoLinkButton.setText(LocationsName);
 			gotoLinkButton.setAlignment(Align.center);
 			gotoLinkButton.setColor(0, 210, 10, 40);
 			
@@ -392,7 +405,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 
 		gotoLinkButton.pack();
 		
-		if (currentMode == LinkMode.Locked || currentMode == LinkMode.Open){
+		if (currentMode == LinkMode.Closed || currentMode == LinkMode.Open){
 
 			Log.info("rechecking link lines");
 			reCheckLinkLine();

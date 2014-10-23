@@ -24,13 +24,13 @@ import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
-import com.lostagain.nl.LocationGUI.DefaultStyles;
-import com.lostagain.nl.LocationGUI.Inventory;
-import com.lostagain.nl.LocationGUI.LocationContainer;
-import com.lostagain.nl.LocationGUI.LocationScreen;
-import com.lostagain.nl.temp.SpiffyGenericTween;
-import com.lostagain.nl.temp.SpiffyTweenConstructor;
+import com.lostagain.nl.me.LocationGUI.DefaultStyles;
+import com.lostagain.nl.me.LocationGUI.Inventory;
+import com.lostagain.nl.me.LocationGUI.LocationsHub;
+import com.lostagain.nl.me.LocationGUI.LocationScreen;
 import com.lostagain.nl.uti.FileManager;
+import com.lostagain.nl.uti.SpiffyGenericTween;
+import com.lostagain.nl.uti.SpiffyTweenConstructor;
 
 /**
  * Mesh Explorer. An open source, distributed game of deduction and exploration.
@@ -111,7 +111,8 @@ public class ME extends Game {
     public void setupSemantics()
     {
   	  //turn some logs off
-    //	Log.setLevel(Level.OFF);
+    //Log.setLevel(Level.OFF);
+    	  Logger.getLogger("sss");
     	   Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
     	  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);

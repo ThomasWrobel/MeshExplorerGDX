@@ -1,8 +1,9 @@
-package com.lostagain.nl.LocationGUI;
+package com.lostagain.nl.me.LocationGUI;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Logger;
+
 
 
 
@@ -30,15 +31,21 @@ import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
-import com.lostagain.nl.LocationGUI.ObjectFile.ObjectFileState;
+import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
 
-public class SecurityScreen extends Group  implements LocationScreen {
+/**
+ * A repair screen displays the required nodes to unlock the location
+ * initialy the player will think these are security screens, only later
+ * realising they are simply broken and need repair to work
+ * 
+ * **/
+public class RepairScreen extends Group  implements LocationScreen {
 
-	static Logger Log = Logger.getLogger("ME.SecurityScreen");
+	static Logger Log = Logger.getLogger("ME.RepairScreen");
 	  
-	LocationContainer locationProtectedByThis;
+	LocationsHub locationProtectedByThis;
 	
-	private SSSNode securedBy;
+	private SSSNode neededData;
 
 	/** if the security is making the user pass a query, this string is the query **/
 	private String QueryPass;
@@ -56,23 +63,23 @@ public class SecurityScreen extends Group  implements LocationScreen {
 
 	private boolean readyForAnswer = false; //is true when everything is loaded and is ready to accept an answer
 		
-	Label LockedText = new Label ("LOCATION LOCKED : ", DefaultStyles.linkstyle);
-	Label SupplyData = new Label ("Supply Needed Data : ", DefaultStyles.linkstyle);
+	Label LocationClosedText = new Label ("DATA NODES REQUIRED : ", DefaultStyles.linkstyle);
+	Label SupplyData = new Label ("Supply Needed NODES : ", DefaultStyles.linkstyle);
 	
 	Label RequirementsText = new Label ("Requirements : ", DefaultStyles.linkstyle);
-	Label UnlockedLabel= new Label ("(LOCATION UNLOCKED)", DefaultStyles.linkstyle);
-	Label DetailsLabel= new Label ("(LOCATION UNLOCKED)", DefaultStyles.linkstyle);
+	Label UnlockedLabel= new Label ("(LOCATION OPEN)", DefaultStyles.linkstyle);
+	Label DetailsLabel= new Label ("(LOCATION OPEN)", DefaultStyles.linkstyle);
 	
 	ArrayList<ObjectRequester> allObjectsRequested = new ArrayList<ObjectRequester>();
 	
 	
-	public SecurityScreen(LocationContainer parentLocationContainer, SSSNode securedBy) {
+	public RepairScreen(LocationsHub parentLocationContainer, SSSNode securedBy) {
 		super();
 		
 	//	Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		
 		locationProtectedByThis = parentLocationContainer;
-		this.securedBy = securedBy;
+		this.neededData = securedBy;
 		
 		
 		//securedBy = securedByThis;
@@ -96,13 +103,17 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		
 		super.setSize(WIDTH, HEIGHT);
 		
-		LockedText.setPosition(10, super.getHeight()-30);
+		LocationClosedText.setPosition(10, super.getHeight()-30);
 		SupplyData.setPosition(10, super.getHeight()-50); 
 		
 		RequirementsText.setPosition(10, super.getHeight()-70);	
 		
-		UnlockedLabel.setCenterPosition((getWidth()/2),(getHeight()/2)+30);
-		DetailsLabel.setCenterPosition((getWidth()/2),(getHeight()/2));
+	//	UnlockedLabel.setCenterPosition((getWidth()/2),(getHeight()/2)+30);
+		UnlockedLabel.setOrigin(Align.center);
+		
+		
+		//DetailsLabel.setCenterPosition((getWidth()/2),(getHeight()/2));
+		DetailsLabel.setOrigin(Align.center);
 		
 		//UnlockedLabel.setPosition((getWidth()/2),(getHeight()/2)-30);
 
@@ -111,7 +122,7 @@ public class SecurityScreen extends Group  implements LocationScreen {
 			
 			// req.setPosition(getCenterX()-75, getCenterY()-50);
 
-				req.setPosition(25+(i*(req.getWidth()+10)),getCenterY());
+				req.setPosition(25+(i*(req.getWidth()+10)),getY(Align.center));
 				 i++;
 		}
 		 
@@ -129,8 +140,8 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		
 		
 		//remove existing text if present
-		if (LockedText!=null){
-			super.removeActor(LockedText);
+		if (LocationClosedText!=null){
+			super.removeActor(LocationClosedText);
 			super.removeActor(SupplyData);
 			super.removeActor(RequirementsText);
 		}
@@ -179,7 +190,7 @@ public class SecurityScreen extends Group  implements LocationScreen {
 	}
 
 
-	private void addAnswerDropTarget() {
+	private void addAnswerDropTargets() {
 		
 		//adds the area to click on to supply the answer
 		//we might in future drag to this location if
@@ -193,7 +204,7 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		
 		allObjectsRequested.add(newObjRequester);
 		
-		newObjRequester.setPosition(20+(i*newObjRequester.getWidth()),getCenterY());
+		newObjRequester.setPosition(20+(i*newObjRequester.getWidth()),getY(Align.center));
 		
 		super.addActor(newObjRequester);
 
@@ -215,9 +226,11 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		
 		// LockedText = addText("LOCATION LOCKED : ",10,super.getHeight()-10);
 		 
-		 LockedText.setPosition(10, super.getHeight()-10);
-		 SupplyData.setPosition(10, super.getHeight()-20);
-		 super.addActor(LockedText);		 
+
+		LocationClosedText.setPosition(10, super.getHeight()-30);
+		SupplyData.setPosition(10, super.getHeight()-50); 
+		
+		 super.addActor(LocationClosedText);		 
 		 super.addActor(SupplyData);
 		 
 		 
@@ -228,7 +241,8 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		// Log.info("__________________getting protection string_________________________");
 		 
 		//get protection string
-		HashSet<SSSNodesWithCommonProperty> securitysPropertys = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(securedBy.PURI);
+		HashSet<SSSNodesWithCommonProperty> securitysPropertys = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(neededData.PURI);
+		
 		
 		 //Log.info("__________________tings secured by: "+securedBy.PURI+" = "+securitysPropertys.size()+" _________________________");
 		 
@@ -280,7 +294,7 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		retrieveAnswersAsycn(protectionString);
 		
 		
-		addAnswerDropTarget(); 
+		addAnswerDropTargets(); 
 		
 	}
 
@@ -375,13 +389,13 @@ public class SecurityScreen extends Group  implements LocationScreen {
 
 
 	public SSSNode getSecuredBy() {
-		return securedBy;
+		return neededData;
 	}
 
 
 
 	public void setSecuredBy(SSSNode securedBy) {
-		this.securedBy = securedBy;
+		this.neededData = securedBy;
 		
 	}
 	
@@ -430,7 +444,7 @@ public class SecurityScreen extends Group  implements LocationScreen {
 		
 		Boolean isAnwsered = false;
 		
-		public ObjectRequester(final ArrayList<SSSNode> acceptableAnswers,final SecurityScreen source){
+		public ObjectRequester(final ArrayList<SSSNode> acceptableAnswers,final RepairScreen source){
 			super("(-----)",DefaultStyles.linkstyle);
 
 			setColor(0.8f, 0.1f, 0.1f, 1.0f);
@@ -439,14 +453,15 @@ public class SecurityScreen extends Group  implements LocationScreen {
 			
 			super.setAlignment(Align.center);
 
-			super.setCenterPosition(-50, -37);
+			//super.setCenterPosition(-50, -37);
+			super.setOrigin(Align.center);
 			
 			super.addListener(new ClickListener () {
 				
 				@Override
 				public void clicked(InputEvent ev, float x , float y){
 					
-					SSSNode ItemNode = ME.playersInventory.currentlyHeld;
+					SSSNode ItemNode = Inventory.currentlyHeld;
 					
 					//if not carrying item ignore
 					if (Inventory.currentlyHeld==null){

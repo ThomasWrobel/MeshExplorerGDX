@@ -32,18 +32,23 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkflame.client.semantic.SSSNode;
-import com.lostagain.nl.LocationGUI.GUIBar;
-import com.lostagain.nl.LocationGUI.Inventory;
-import com.lostagain.nl.LocationGUI.Link;
-import com.lostagain.nl.LocationGUI.LocationContainer;
-import com.lostagain.nl.temp.SpiffyGenericTween;
-import com.lostagain.nl.temp.SpiffyTweenConstructor;
+import com.lostagain.nl.me.LocationGUI.GUIBar;
+import com.lostagain.nl.me.LocationGUI.Inventory;
+import com.lostagain.nl.me.LocationGUI.Link;
+import com.lostagain.nl.me.LocationGUI.Location;
+import com.lostagain.nl.me.LocationGUI.LocationsHub;
+import com.lostagain.nl.me.creatures.BasicInfovore;
+import com.lostagain.nl.me.models.BackgroundManager;
+import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.uti.SpiffyGenericTween;
+import com.lostagain.nl.uti.SpiffyTweenConstructor;
 
 /** The main exploration view, which lets them see LocationURIs 
  * **/
@@ -55,7 +60,7 @@ public class MainExplorationView implements Screen {
 
 	final ME game;
 
-	static LocationContainer currentlyOpenLocation;
+	static LocationsHub currentlyOpenLocation;
 
 	public static Stage gameStage;
 
@@ -86,8 +91,9 @@ public class MainExplorationView implements Screen {
 
 	Sound dropSound;
 	Music rainMusic;
-	Camera camera;
+	public static Camera camera;
 
+	
 	Rectangle bucket;
 	Array<Rectangle> raindrops;
 	long lastDropTime;
@@ -134,8 +140,8 @@ public class MainExplorationView implements Screen {
 
 
 
-	public static  LinkedList<LocationContainer> LastLocation = new LinkedList<LocationContainer>();
-	static LocationContainer currentTargetLocation;
+	public static  LinkedList<LocationsHub> LastLocation = new LinkedList<LocationsHub>();
+	static LocationsHub currentTargetLocation;
 	
 
 
@@ -243,6 +249,10 @@ public class MainExplorationView implements Screen {
 		// camera.direction.set(-1, 0, 0);
 
 
+
+		//create background
+
+
 		Gdx.app.log(logstag,"creating game stage");
 
 		gameStage = new Stage();
@@ -258,9 +268,12 @@ public class MainExplorationView implements Screen {
 		gameStage.getCamera().update();
 
 		camera.update(true);
+		
+		Gdx.app.log(logstag,"creating background");
+		background.setup();
+		
 
-
-		PlayersData.homeLoc = new LocationContainer(PlayersData.computersuri);
+		PlayersData.homeLoc = new LocationsHub(PlayersData.computersuri);
 
 		addnewlocation( PlayersData.homeLoc,200,500);
 
@@ -269,9 +282,6 @@ public class MainExplorationView implements Screen {
 
 		centerViewOn( PlayersData.homeLoc);
 
-
-		//create background
-		background.setup();
 
 
 		//gameStage.setDebugAll(true);
@@ -290,18 +300,27 @@ public class MainExplorationView implements Screen {
 
 	}
 
-	public static void addnewlocation(LocationContainer homeLoc,int x,int y) {
+	public static void addnewlocation(LocationsHub newloc,int x,int y) {
 
-		homeLoc.setPosition(x,y);
+		newloc.setPosition(x,y);
+		newloc.setClip(false);
 
-		homeLoc.setClip(false);
+		gameStage.addActor(newloc);
+		
+		//add noise back if closed and added to stage
+		if (newloc.closed){
+			newloc.addClosedBackground();
+			
+		}
+		
 
-		gameStage.addActor(homeLoc);
-
+		//add some test creatures
+		BasicInfovore creature1 = new BasicInfovore(x,y,null);
+		BasicInfovore creature2 = new BasicInfovore(x+44,y+44,null);
 	}
 
 
-	public static void centerViewOn(LocationContainer locationcontainer){
+	public static void centerViewOn(LocationsHub locationcontainer){
 		
 		coasting = false;
 		dragging = false;
@@ -311,13 +330,13 @@ public class MainExplorationView implements Screen {
 	}
 
 
-	public static void centerViewOn(LocationContainer locationcontainer, boolean addLocationToUndo){
+	public static void centerViewOn(LocationsHub locationcontainer, boolean addLocationToUndo){
 
 		//CurrentX=locationcontainer.getCenterX();  //getX()+(locationcontainer.getWidth()/2);
 		//CurrentY=locationcontainer.getCenterY(); //getY()+(locationcontainer.getHeight()/2);
 
-		float newX = locationcontainer.getCenterX();
-		float newY = locationcontainer.getCenterY();
+		float newX = locationcontainer.getX(Align.center);
+		float newY = locationcontainer.getY(Align.center);
 
 		//asign new tweens
 		currentCameraTweenX = SpiffyTweenConstructor.Create(CurrentX.doubleValue(),newX, 25);
@@ -334,7 +353,7 @@ public class MainExplorationView implements Screen {
 		
 		//add the requested location to the  array list, but only if its different from
 				//the last location.
-		LocationContainer lastlocstored =null;;
+		LocationsHub lastlocstored =null;;
 		try {
 			lastlocstored = LastLocation.getLast();
 		} catch (Exception e) {
@@ -350,7 +369,7 @@ public class MainExplorationView implements Screen {
 
 				LastLocation.add(locationcontainer);
 				
-				for (LocationContainer test : LastLocation) {
+				for (LocationsHub test : LastLocation) {
 					
 					Gdx.app.log(logstag,"LastLocation="+test.LocationsNode.getPLabel());
 					
@@ -360,7 +379,7 @@ public class MainExplorationView implements Screen {
 			
 		} else {
 			
-			for (LocationContainer test : LastLocation) {
+			for (LocationsHub test : LastLocation) {
 				
 				Gdx.app.log(logstag,"LastLocation="+test.LocationsNode.getPLabel());
 				
@@ -409,13 +428,14 @@ public class MainExplorationView implements Screen {
 		//Note we draw this here because its in the background and should appear behind the other elements
 		//Each render is sort of like a "layer" and appears in the order they are rendered
 		//regardless of 3d positions within that layer
+		background.updateAnimatedBacks(delta);
 		background.modelBatch.begin( camera);
-		background.modelBatch.render(background.instances);
+		background.modelBatch.render(ModelManagment.allModelInstances);
 		background.modelBatch.end();	
 
 		gameStage.getViewport().setCamera(camera);
 
-		gameStage.act(Gdx.graphics.getDeltaTime());
+		gameStage.act(delta); //Gdx.graphics.getDeltaTime()
 		gameStage.draw();
 
 		// tell the SpriteBatch to render in the
@@ -682,7 +702,7 @@ public class MainExplorationView implements Screen {
 		//get the node screen.
 		//This will automatically check if it already exists
 		//else it will create a new one
-		LocationContainer screen = LocationContainer.getLocation(linksToThisPC);
+		LocationsHub screen = Location.getLocation(linksToThisPC);
 
 
 		currentlyOpenLocation = screen;
@@ -724,7 +744,7 @@ public class MainExplorationView implements Screen {
 
 		Gdx.app.log(logstag,"goto to last location");
 		
-		for (LocationContainer test : LastLocation) {
+		for (LocationsHub test : LastLocation) {
 			
 			Gdx.app.log(logstag,"LastLocations="+test.LocationsNode.getPLabel());
 			
@@ -737,7 +757,7 @@ public class MainExplorationView implements Screen {
 		LastLocation.removeLast();			
 		
 		//goto the last one if theres one
-		LocationContainer requested = LastLocation.getLast(); //gwt cant use peeklast
+		LocationsHub requested = LastLocation.getLast(); //gwt cant use peeklast
 
 		if (requested!=null){
 			

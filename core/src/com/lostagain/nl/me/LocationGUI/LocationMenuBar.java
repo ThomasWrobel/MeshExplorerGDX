@@ -1,4 +1,4 @@
-package com.lostagain.nl.LocationGUI;
+package com.lostagain.nl.me.LocationGUI;
 
 import java.util.ArrayList;
 
@@ -16,24 +16,27 @@ public class LocationMenuBar extends VerticalGroup {
 	InterfaceButton infoButton;
 	InterfaceButton emailButton;
 	InterfaceButton dataButton;
+	InterfaceButton abilityButton;
 	InterfaceButton linkButton;
 	
 	ArrayList<InterfaceButton> allLinks = new ArrayList<InterfaceButton>();
 	
 	boolean locked;
 	
-	public LocationMenuBar(final LocationContainer parentLocationContainer,Skin skin) {
+	public LocationMenuBar(final LocationsHub parentLocationContainer,Skin skin) {
 		super();
 		
 		//create links
 		infoButton = new InterfaceButton("(INFO) ",true);
 		emailButton = new InterfaceButton("(EMAIL) ",false);
 		dataButton = new InterfaceButton("(DATA) ",false);
+		abilityButton  = new InterfaceButton("(ABIL) ",false);
 		linkButton = new InterfaceButton("(LINKS) ",true);
 		
 		infoButton.setAlignment(Align.center);
 		dataButton.setAlignment(Align.center);
 		emailButton.setAlignment(Align.center);
+		abilityButton.setAlignment(Align.center);
 		linkButton.setAlignment(Align.center);
 		
 		
@@ -92,7 +95,24 @@ public class LocationMenuBar extends VerticalGroup {
 			}
 						
 		});
-		
+		abilityButton.addListener(new ClickListener () {
+			
+			@Override
+			public void clicked(InputEvent ev, float x , float y){
+				
+				if (!locked){
+					parentLocationContainer.gotoAbilitys();
+					
+
+					//change all styles to down
+					setAllButtonsUp();
+					
+					abilityButton.setDownStyle();
+				}
+				
+			}
+						
+		});
 		linkButton.addListener(new ClickListener () {
 			
 			@Override
@@ -110,6 +130,7 @@ public class LocationMenuBar extends VerticalGroup {
 		allLinks.add(infoButton);
 		allLinks.add(emailButton);
 		allLinks.add(dataButton);
+		allLinks.add(abilityButton);
 		allLinks.add(linkButton);
 		
 	
@@ -183,7 +204,23 @@ public class LocationMenuBar extends VerticalGroup {
 		refreshlinks();
 		
 	}
-
+	
+	public void setNumberOfAbilityObjects(int objects) {
+		
+		abilityButton.setText("ABIL ("+objects+") ");
+		
+		if (objects==0){
+			
+			abilityButton.isVisible=false;
+			
+			
+		}  else {
+			abilityButton.isVisible=true;
+		}
+		
+		refreshlinks();
+		
+	}
 	public void setNumberOfLinks(int links) {
 		
 		linkButton.setText("Links ("+links+") ");
@@ -210,6 +247,7 @@ public class LocationMenuBar extends VerticalGroup {
 			//locked style
 			infoButton.setDisabledStyle();		
 			dataButton.setDisabledStyle();	
+			abilityButton.setDisabledStyle();	
 			emailButton.setDisabledStyle();	
 			linkButton.setDisabledStyle();	
 			
@@ -217,7 +255,8 @@ public class LocationMenuBar extends VerticalGroup {
 			
 			//unlocked style
 			infoButton.setUpStyle();			
-			dataButton.setUpStyle();	
+			dataButton.setUpStyle();
+			abilityButton.setUpStyle();
 			emailButton.setUpStyle();	
 			linkButton.setUpStyle();			
 			
@@ -247,6 +286,13 @@ public class LocationMenuBar extends VerticalGroup {
 		
 		dataButton.setDownStyle();
 	}
+	
+	public void setAbilityButtonUp() {
+		setAllButtonsUp();
+		
+		abilityButton.setDownStyle();
+	}
+	
 	
 }
 

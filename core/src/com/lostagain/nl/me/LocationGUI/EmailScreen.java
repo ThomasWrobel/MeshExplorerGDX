@@ -1,4 +1,4 @@
-package com.lostagain.nl.LocationGUI;
+package com.lostagain.nl.me.LocationGUI;
 
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 	 
 	public int numOfEmails=0;
 	
-	public EmailScreen(LocationContainer parentLocationContainer, SSSNode securedBy) {
+	public EmailScreen(LocationsHub parentLocationContainer, SSSNode securedBy) {
 		
 		//super.setDebug(true);
 		super.setX(0);

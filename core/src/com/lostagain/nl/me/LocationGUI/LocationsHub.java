@@ -1,4 +1,4 @@
-package com.lostagain.nl.LocationGUI;
+package com.lostagain.nl.me.LocationGUI;
 
 import java.util.ArrayList;
 
@@ -14,9 +14,14 @@ import java.util.logging.Logger;
 
 
 
+
+
+
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -48,11 +53,10 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.models.BackgroundManager;
 import com.lostagain.nl.uti.MeshWorld;
 
-public class LocationContainer extends Table {
-
-	private static final HashMap<SSSNode,LocationContainer> AllLocationContainers = new HashMap<SSSNode,LocationContainer>();
+public class LocationsHub extends Table {
 
 
 	static Logger Log = Logger.getLogger("LocationContainer");
@@ -65,7 +69,7 @@ public class LocationContainer extends Table {
 	public SSSNode LocationsNode;
 
 	//this location
-	LocationContainer thisLocation = this;
+	LocationsHub thisLocation = this;
 	//Locations name and URI cropped to fit the window
 	String displayLocation = "";
 	String displayURI = "";
@@ -76,8 +80,9 @@ public class LocationContainer extends Table {
 	Stack mainPages = new Stack();
 
 	EmailScreen emailPage;	
-	SecurityScreen securityPage;	
+	RepairScreen repairPage;	
 	ContentsScreen contentsPage;
+	ContentsScreen abilityPage;
 	LinksScreen linksPage;
 
 	//page currently open
@@ -85,10 +90,13 @@ public class LocationContainer extends Table {
 	LocationMenuBar menucontainer;
 
 
-	public Boolean locked = true; //while its locked you can only access the security page
+	public Boolean closed = true; //while its locked you can only access the security page
 
 
-	public LocationContainer(SSSNode LocationsNode) {
+	private ModelInstance background;
+
+
+	public LocationsHub(SSSNode LocationsNode) {
 		super();
 		// add a test label
 		super.setSize(450,400);
@@ -99,13 +107,13 @@ public class LocationContainer extends Table {
 
 		if (LocationsNode == PlayersData.computersuri){
 
-			locked = false;
-			securityPage = new SecurityScreen(this,null); 
+			closed = false;
+			repairPage = new RepairScreen(this,null); 
 
 		} else {
 
 			//load the security, if any  
-			securityPage = getSecurity(LocationsNode);
+			repairPage = getSecurity(LocationsNode);
 
 
 			/*
@@ -124,6 +132,8 @@ public class LocationContainer extends Table {
 			 */
 
 		}
+		
+		
 
 
 		HorizontalGroup nameinfo = new HorizontalGroup();		
@@ -169,8 +179,8 @@ public class LocationContainer extends Table {
 		 	@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		 		Gdx.app.log("LocationContainer", "refresh clicked");
-				if (!locked){
-					//only refresh if unlocked
+				if (!closed){
+					//only refresh if locatiion not closed
 					refreshContents();
 			 		
 				}
@@ -197,7 +207,7 @@ public class LocationContainer extends Table {
 		super.add(lowersplit).expand().fill(); //.top()
 		//	lowersplit.fill();
 		menucontainer = new LocationMenuBar(this, skin);
-		menucontainer.setlocked(locked);
+		menucontainer.setlocked(closed);
 
 		lowersplit.debug();
 		
@@ -210,18 +220,21 @@ public class LocationContainer extends Table {
 		//thus its set up here in a function for neatness
 		//	securityPage = getSecurity(LocationsNode); 
 		//securityPage = new SecurityScreen(this,LocationsNode);
-		contentsPage = new ContentsScreen(this,LocationsNode);
+		contentsPage = new ContentsScreen(this,LocationsNode, "Data:");
+		abilityPage = new ContentsScreen(this,LocationsNode, "Abilitys:");
 		emailPage = new EmailScreen(this,LocationsNode);
 		linksPage =  new LinksScreen(this,LocationsNode);
 
 
-		AllPages.add(securityPage);		
+		AllPages.add(repairPage);		
 		AllPages.add(contentsPage);
+		AllPages.add(abilityPage);
 		AllPages.add(emailPage);		
 		AllPages.add(linksPage);
-
-		mainPages.add(securityPage);
+		
+		mainPages.add(repairPage);
 		mainPages.add(contentsPage);
+		mainPages.add(abilityPage);
 		mainPages.add(emailPage);
 		mainPages.add(linksPage);
 
@@ -229,7 +242,7 @@ public class LocationContainer extends Table {
 
 		lowersplit.add(mainPages).expand().fill();
 
-		if (locked) {
+		if (closed) {
 			gotoSecplace();
 		} else {
 
@@ -251,7 +264,7 @@ public class LocationContainer extends Table {
 		//ensure they are all sized correctly
 		validateAllPages();
 
-		AllLocationContainers.put(LocationsNode,this);
+	//	AllLocationContainers.put(LocationsNode,this);
 	
 		
 		//any page that might have a scroll should disable the drag
@@ -301,17 +314,23 @@ public class LocationContainer extends Table {
 
 	public void gotoSecplace(){
 		hideAllPages();
-		securityPage.setVisible(true);
+		repairPage.setVisible(true);
 		menucontainer.setinfoButtonUp();
 
 	}
+	
 	public void gotoContents(){
 		hideAllPages();
 		contentsPage.setVisible(true);
 		menucontainer.setDataButtonUp();
 
 	}
+	public void gotoAbilitys(){
+		hideAllPages();
+		abilityPage.setVisible(true);
+		menucontainer.setAbilityButtonUp();
 
+	}
 	public void gotoEmail(){
 		hideAllPages();
 		emailPage.setVisible(true);
@@ -375,9 +394,9 @@ public class LocationContainer extends Table {
 	}
 
 
-	private SecurityScreen getSecurity(SSSNode mycomputerdata) {
+	private RepairScreen getSecurity(SSSNode mycomputerdata) {
 
-		locked = false;
+		closed = false;
 		SSSNode securedBy = null;
 
 		Log.info("getting security for:"+mycomputerdata.PURI);
@@ -396,13 +415,13 @@ public class LocationContainer extends Table {
 				securedBy = sssNodesWithCommonProperty.getCommonValue();
 				Log.info("security found:"+securedBy.getPURI());
 
-				locked = true;
+				closed = true;
 				break;
 			}
 
 		}
 
-		return new SecurityScreen(this,securedBy); 
+		return new RepairScreen(this,securedBy); 
 
 		//find this machines security
 
@@ -441,15 +460,22 @@ public class LocationContainer extends Table {
 
 		int emails=0;
 		int data=0;
-
+		int abil=0;
 		Log.info("_____________contents:  "+testresult.size());
 
 		for (SSSNode sssNode : testresult) {
 
 			if (sssNode.isOrHasParentClass(StaticSSSNodes.software.getPURI())){
 
-				contentsPage.addObjectFile(sssNode);
-				data++;
+				//place on right page depending on type
+				if (sssNode.isOrHasParentClass(StaticSSSNodes.ability.getPURI())){
+					abilityPage.addObjectFile(sssNode);
+					abil++;
+				} else {
+					contentsPage.addObjectFile(sssNode);
+					data++;
+				}
+				
 			}
 
 
@@ -486,7 +512,9 @@ public class LocationContainer extends Table {
 		//hmz..need to way to ensure layout when all emails are loaded
 
 
-		menucontainer.setNumberOfDataObjects(data);		
+		menucontainer.setNumberOfDataObjects(data);	
+		menucontainer.setNumberOfAbilityObjects(abil);
+		
 		menucontainer.setNumberOfMessages(emails);
 		menucontainer.validate();
 
@@ -558,7 +586,7 @@ public class LocationContainer extends Table {
 		String thisPURI = tothisnode.getPURI(); ///"C:\\TomsProjects\\MeshExplorer\\bin/semantics/DefaultOntology.n3#bobspc";
 
 
-		Query realQuery = new Query("(me:visibleto=me:everyone)||(me:visibleto="+thisPURI+")");
+		Query realQuery = new Query("(me:connectedto=me:everyone)||(me:connectedto="+thisPURI+")");
 
 		//populate when its retrieved
 		DoSomethingWithNodesRunnable callback = new DoSomethingWithNodesRunnable(){
@@ -568,7 +596,7 @@ public class LocationContainer extends Table {
 
 
 
-				Log.warning("populateVisibleComputers");
+				Log.warning("populate connectedto Computers");
 				populateVisibleComputers(testresult);
 
 
@@ -583,112 +611,35 @@ public class LocationContainer extends Table {
 
 	}
 
-	public static LocationContainer getLocation(SSSNode linksToThisPC) {
-
-		if (AllLocationContainers.containsKey(linksToThisPC)){
-			return AllLocationContainers.get(linksToThisPC);
-		} else {
-
-			//creating new location
-			LocationContainer newloc = new LocationContainer(linksToThisPC);
-
-			String domain = linksToThisPC.getPURI();
-			Log.info("domain is="+domain);
-
-			Vector2 loc =  MeshWorld.locationFromDomain(domain);
-
-		
 
 
-			int X = (int) loc.x;  //(int) (Math.random()*2500);
-			int Y = (int) loc.y; //500;
-			
-			//random y very slightly just for stylistic effect
-			Y = (int) (Y + (Math.random()*200 -10));
-			
-			Log.info("getting unused location. Testing:"+X+","+Y);
-
-			X = getNextUnusedLocation(X,Y);
-
-			MainExplorationView.addnewlocation(newloc,X, Y);
-			
-
-			return newloc;
-
-		}
-
-	}
-
-	private static int getNextUnusedLocation(int x, int y) {
-
-		Boolean xchanged = true;
-
-		int CONHEIGHT = 500;
-		int CONWIDTH = 500;
-
-		while (xchanged)
-		{
-
-			xchanged = false;
-
-
-			Log.info("getting unused location. Testing:"+x);
-
-			//loop over all locations, displace X if its overlaps
-			for (LocationContainer con : AllLocationContainers.values()) {
-
-				float miny = con.getY();
-				float maxy = con.getY() + con.getHeight();
-
-				float minx = con.getX();
-				float maxx = con.getX() + con.getWidth();
-
-				Log.info("loc="+con.displayLocation);
-				Log.info("miny="+miny+" maxy="+maxy+" y="+y);
-				Log.info("minx="+minx+" maxx="+maxx+" x="+x);
-				//if within y with margin
-				if (((y+CONHEIGHT)>miny-5) && (y<maxy+5))
-				{
-					Log.info("within y");
-					if (((x+CONWIDTH)>minx-5) && (x<maxx+5)){
-
-						Log.info("within x");
-
-						x=(int) (x+con.getWidth());
-
-						Log.info("new x ="+x);
-						xchanged=true;
-
-						continue;
-
-					}
-
-				}
-
-
-
-			}
-
-		}
-
-		return x;
-	}
+	
 
 	public void unlockComputer() {
 
 		Log.info("unlocking location");
 
-		locked = false;
+		closed = false;
 
 
 		if (menucontainer!=null){
-			menucontainer.setlocked(locked);
+			menucontainer.setlocked(closed);
 		}
 
 		if (!(LocationsNode==null)){
 			PlayersData.addUnlockedLink(LocationsNode);
 		}
+		
+		BackgroundManager.removeModelInstance(background);
 
+	}
+
+
+
+
+	public void addClosedBackground() {
+		background = BackgroundManager.addNoiseRectangle((int)this.getX(),(int)this.getY(),(int)this.getWidth(),(int)this.getHeight());
+	
 	}
 
 }

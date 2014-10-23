@@ -1,4 +1,4 @@
-package com.lostagain.nl.LocationGUI;
+package com.lostagain.nl.me.LocationGUI;
 
 import java.util.HashSet;
 
@@ -45,7 +45,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
-import com.lostagain.nl.LocationGUI.Inventory.Item;
+import com.lostagain.nl.me.LocationGUI.Inventory.Item;
 
 /** handles the various semantic objects you can aquire and use **/
 public class Inventory extends Table {
@@ -79,6 +79,7 @@ public class Inventory extends Table {
 		
 		Label test = new Label("test",DefaultStyles.linkstyle);
 		super.add(test).fill();
+		super.setWidth(400);
 		
 		
 	}
@@ -143,7 +144,7 @@ public class Inventory extends Table {
 		if ((allItems.size()>6)&&(allItems.size() %8 == 0)){
 			
 			Log.info("______________slash 8_"+allItems.size());			
-			super.row();	
+			//super.row();	
 			
 		}
 
@@ -152,6 +153,8 @@ public class Inventory extends Table {
 		super.add(newitem).size(60, 30).top().left().fillY().expandY();
 
 		pack();
+		super.invalidate();
+		
 		super.validate();
 
 		//update the GUI bar in case the inventory tab isnt there yet

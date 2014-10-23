@@ -1,4 +1,4 @@
-package com.lostagain.nl.temp;
+package com.lostagain.nl.uti;
 
 public interface SpiffyGenericTween<T extends Number> {
 	public T next();

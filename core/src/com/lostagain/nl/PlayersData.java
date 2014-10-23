@@ -10,7 +10,7 @@ import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
-import com.lostagain.nl.LocationGUI.LocationContainer;
+import com.lostagain.nl.me.LocationGUI.LocationsHub;
 
 public class PlayersData {
 
@@ -37,7 +37,7 @@ public class PlayersData {
 	public static SSSNodesWithCommonProperty playerslocationcontents = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, computersuri, new SSSNode[]{homemessage,StaticSSSNodes.asciidecoder});
 
 	/** the home location container **/
-	public static LocationContainer homeLoc;
+	public static LocationsHub homeLoc;
 
 	/** mains a list of all the nodes of visited locations **/
 	private static ArrayList<SSSNode> hasVisitedArray = new  ArrayList<SSSNode>();

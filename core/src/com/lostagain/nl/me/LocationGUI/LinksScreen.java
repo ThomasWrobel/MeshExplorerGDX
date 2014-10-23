@@ -1,4 +1,4 @@
-package com.lostagain.nl.LocationGUI;
+package com.lostagain.nl.me.LocationGUI;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,8 +18,8 @@ import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
-import com.lostagain.nl.LocationGUI.Link.LinkMode;
-import com.lostagain.nl.LocationGUI.ObjectFile.ObjectFileState;
+import com.lostagain.nl.me.LocationGUI.Link.LinkMode;
+import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
 
 public class LinksScreen extends Table implements LocationScreen {
 
@@ -42,13 +42,13 @@ public class LinksScreen extends Table implements LocationScreen {
 
 	ArrayList<Link> allLinks = new ArrayList<Link>();
 
-	LocationContainer parentLocationContainer;
+	LocationsHub parentLocationContainer;
 	
 	
 	
 	static Boolean isDownloading = false;
 
-	public LinksScreen(LocationContainer parentLocationContainer, SSSNode securedBy) {
+	public LinksScreen(LocationsHub parentLocationContainer, SSSNode securedBy) {
 		super();
 		super.setFillParent(true);
 		this.parentLocationContainer=parentLocationContainer;
