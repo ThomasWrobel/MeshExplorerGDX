@@ -528,7 +528,7 @@ public class BackgroundManager {
 				FloatAttribute.createShininess(16f));
         
         mat.set(TextureAttribute.createDiffuse(texture));
-     mat.set(blendingAttribute2);
+        mat.set(blendingAttribute2);
      
      
         

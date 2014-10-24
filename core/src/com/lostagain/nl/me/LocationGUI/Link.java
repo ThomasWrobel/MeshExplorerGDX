@@ -338,10 +338,11 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	void reCheckLinkLine() {
 		if (Linksline==null){
 							
-			LocationsHub newlocation =  Location.getLocation(linksToThisPC);
+			Location newlocation =  Location.getLocationHub(linksToThisPC);
+			
 		
 			LocationsHub from = currentParent.parentLocationContainer;
-			LocationsHub to = newlocation;
+			LocationsHub to = newlocation.locationsHub;
 			
 			//only refresh if the To and From are attached
 			if (MainExplorationView.gameStage.getActors().contains(from, true) && MainExplorationView.gameStage.getActors().contains(to, true))			

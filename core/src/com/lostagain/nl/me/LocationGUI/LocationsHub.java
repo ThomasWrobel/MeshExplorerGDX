@@ -59,7 +59,7 @@ import com.lostagain.nl.uti.MeshWorld;
 public class LocationsHub extends Table {
 
 
-	static Logger Log = Logger.getLogger("LocationContainer");
+	static Logger Log = Logger.getLogger("LocationsHub");
 
 
 

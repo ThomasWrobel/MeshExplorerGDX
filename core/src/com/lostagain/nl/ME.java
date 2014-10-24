@@ -36,7 +36,7 @@ import com.lostagain.nl.uti.SpiffyTweenConstructor;
  * Mesh Explorer. An open source, distributed game of deduction and exploration.
  * Powered by SuperSimpleSemantics
  * 
- * Home class will manage game setup and provide convience shortcuts for major game
+ * Home class will manage game setup and provide convenience shortcuts for major game
  * classes and variables.
  * 
  * @author Thomas Wrobel (at least, the first author....)

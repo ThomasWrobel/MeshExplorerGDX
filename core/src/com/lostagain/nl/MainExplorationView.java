@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -60,7 +61,8 @@ public class MainExplorationView implements Screen {
 
 	final ME game;
 
-	static LocationsHub currentlyOpenLocation;
+	static Location currentlyOpenLocation;
+	
 
 	public static Stage gameStage;
 
@@ -124,6 +126,9 @@ public class MainExplorationView implements Screen {
     int drag_dis_x = 0;
     int drag_dis_y = 0;
     
+    boolean newtouch=true; //if a touch event has just started
+    
+	boolean touchedsomething = false;
     
  
 	//final thing should use perspective
@@ -140,8 +145,9 @@ public class MainExplorationView implements Screen {
 
 
 
-	public static  LinkedList<LocationsHub> LastLocation = new LinkedList<LocationsHub>();
-	static LocationsHub currentTargetLocation;
+	public static  LinkedList<Location> LastLocation = new LinkedList<Location>();
+	static Location currentTargetLocation;
+	
 	
 
 
@@ -260,8 +266,9 @@ public class MainExplorationView implements Screen {
 		InputMultiplexer multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(guiStage);
 		multiplexer.addProcessor(gameStage);
+		
 		Gdx.input.setInputProcessor(multiplexer);
-
+		
 		gameStage.getViewport().setCamera(camera);
 		// stage.getCamera().translate(0, 250, 0);
 
@@ -273,9 +280,9 @@ public class MainExplorationView implements Screen {
 		background.setup();
 		
 
-		PlayersData.homeLoc = new LocationsHub(PlayersData.computersuri);
+		PlayersData.homeLoc = new Location(PlayersData.computersuri,200,500);
 
-		addnewlocation( PlayersData.homeLoc,200,500);
+	//	addnewlocation( PlayersData.homeLoc.locationsHub,200,500);
 
 
 		Gdx.app.log(logstag,"centering cameraf");
@@ -314,29 +321,28 @@ public class MainExplorationView implements Screen {
 		}
 		
 
-		//add some test creatures
-		BasicInfovore creature1 = new BasicInfovore(x,y,null);
-		BasicInfovore creature2 = new BasicInfovore(x+44,y+44,null);
 	}
 
 
-	public static void centerViewOn(LocationsHub locationcontainer){
+	public static void centerViewOn(Location currentlyOpenLocation2){
+		
 		
 		coasting = false;
 		dragging = false;
 		
-		centerViewOn(locationcontainer, true);
+		centerViewOn(currentlyOpenLocation2, true);
+		
 		
 	}
 
 
-	public static void centerViewOn(LocationsHub locationcontainer, boolean addLocationToUndo){
+	public static void centerViewOn(Location locationcontainer, boolean addLocationToUndo){
 
 		//CurrentX=locationcontainer.getCenterX();  //getX()+(locationcontainer.getWidth()/2);
 		//CurrentY=locationcontainer.getCenterY(); //getY()+(locationcontainer.getHeight()/2);
 
-		float newX = locationcontainer.getX(Align.center);
-		float newY = locationcontainer.getY(Align.center);
+		float newX = locationcontainer.getHubsX(Align.center);
+		float newY = locationcontainer.getHubsY(Align.center);
 
 		//asign new tweens
 		currentCameraTweenX = SpiffyTweenConstructor.Create(CurrentX.doubleValue(),newX, 25);
@@ -353,7 +359,7 @@ public class MainExplorationView implements Screen {
 		
 		//add the requested location to the  array list, but only if its different from
 				//the last location.
-		LocationsHub lastlocstored =null;;
+		Location lastlocstored =null;;
 		try {
 			lastlocstored = LastLocation.getLast();
 		} catch (Exception e) {
@@ -365,13 +371,13 @@ public class MainExplorationView implements Screen {
  			
 			if (locationcontainer!=lastlocstored){
 				
-				Gdx.app.log(logstag,"adding="+locationcontainer.LocationsNode.toString());
+				Gdx.app.log(logstag,"adding="+locationcontainer.locationsnode.toString());
 
 				LastLocation.add(locationcontainer);
 				
-				for (LocationsHub test : LastLocation) {
+				for (Location test : LastLocation) {
 					
-					Gdx.app.log(logstag,"LastLocation="+test.LocationsNode.getPLabel());
+					Gdx.app.log(logstag,"LastLocation="+test.locationsnode.getPLabel());
 					
 				}
 				
@@ -379,9 +385,9 @@ public class MainExplorationView implements Screen {
 			
 		} else {
 			
-			for (LocationsHub test : LastLocation) {
+			for (Location test : LastLocation) {
 				
-				Gdx.app.log(logstag,"LastLocation="+test.LocationsNode.getPLabel());
+				Gdx.app.log(logstag,"LastLocation="+test.locationsnode.getPLabel());
 				
 			}
 			LastLocation.add(locationcontainer);
@@ -476,7 +482,19 @@ public class MainExplorationView implements Screen {
 		
 		if (Gdx.input.isTouched()) {
 			
-			if (!dragging && !cancelnextdragclick){
+			
+			//test if we clicked a 3d model
+			if (newtouch){
+				Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
+				touchedsomething = ModelManagment.testForHit(ray);
+			}
+			
+			if (touchedsomething){
+				Gdx.app.log(logstag,"_-touched a model-_");
+			}
+			
+			
+			if (!dragging && !cancelnextdragclick && !touchedsomething){
 				dragging = true;
 				dragstart = TimeUtils.millis();
 				
@@ -489,7 +507,7 @@ public class MainExplorationView implements Screen {
 				startdragx_exview = CurrentX;
 				startdragy_exview = CurrentY;
 				
-			} else if (!cancelnextdragclick) {
+			} else if (!cancelnextdragclick && !touchedsomething) {
 				
 				 drag_dis_x = Gdx.input.getX()-startdragxscreen;
 				 drag_dis_y = Gdx.input.getY()-startdragyscreen;
@@ -499,7 +517,8 @@ public class MainExplorationView implements Screen {
 				 
 			}
 			
-			
+
+			newtouch = false;
 
 		} else if (dragging == true){
 			Gdx.app.log(logstag,"setting drag to false click");
@@ -551,6 +570,15 @@ public class MainExplorationView implements Screen {
 			cancelnextdragclick = false;
 		}
 		
+		if (touchedsomething && !Gdx.input.isTouched()){
+			Gdx.app.log(logstag,"_-touched a model-_");
+			touchedsomething=false;
+			ModelManagment.untouchAll();
+		}
+		
+		if (!Gdx.input.isTouched()){
+		newtouch = true;
+		}
 		
 		if (coasting){
 			//update the position based on the speed of the coast
@@ -702,7 +730,8 @@ public class MainExplorationView implements Screen {
 		//get the node screen.
 		//This will automatically check if it already exists
 		//else it will create a new one
-		LocationsHub screen = Location.getLocation(linksToThisPC);
+		Location screen = Location.getLocationHub(linksToThisPC);
+		
 
 
 		currentlyOpenLocation = screen;
@@ -744,9 +773,9 @@ public class MainExplorationView implements Screen {
 
 		Gdx.app.log(logstag,"goto to last location");
 		
-		for (LocationsHub test : LastLocation) {
+		for (Location test : LastLocation) {
 			
-			Gdx.app.log(logstag,"LastLocations="+test.LocationsNode.getPLabel());
+			Gdx.app.log(logstag,"LastLocations="+test.locationsnode.getPLabel());
 			
 		}
 		
@@ -757,11 +786,12 @@ public class MainExplorationView implements Screen {
 		LastLocation.removeLast();			
 		
 		//goto the last one if theres one
-		LocationsHub requested = LastLocation.getLast(); //gwt cant use peeklast
+		Location requested = LastLocation.getLast(); //gwt cant use peeklast
+		
 
 		if (requested!=null){
 			
-			Gdx.app.log(logstag,"last location is:"+requested.LocationsNode.getPLabel());		
+			Gdx.app.log(logstag,"last location is:"+requested.locationsnode.getPLabel());		
 			LastLocation.removeLast();			
 			centerViewOn( requested,false );
 			

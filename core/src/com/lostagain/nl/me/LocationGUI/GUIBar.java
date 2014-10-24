@@ -68,7 +68,7 @@ public class GUIBar extends WidgetGroup {
 			public void clicked(InputEvent ev, float x , float y){
 
 				MainExplorationView.gotoHomeLoc();	
-				PlayersData.homeLoc.gotoSecplace();
+				PlayersData.homeLoc.locationsHub.gotoSecplace();
 				
 				setOnlyButtonDown(myHome);
 				
@@ -79,7 +79,7 @@ public class GUIBar extends WidgetGroup {
 			public void clicked(InputEvent ev, float x , float y){
 
 				MainExplorationView.gotoHomeLoc();
-				PlayersData.homeLoc.gotoEmail();
+				PlayersData.homeLoc.locationsHub.gotoEmail();
 				
 				setOnlyButtonDown(myEmails);
 				
@@ -90,7 +90,7 @@ public class GUIBar extends WidgetGroup {
 			public void clicked(InputEvent ev, float x , float y){
 
 				MainExplorationView.gotoHomeLoc();
-				PlayersData.homeLoc.gotoLinks();
+				PlayersData.homeLoc.locationsHub.gotoLinks();
 				
 
 				setOnlyButtonDown(myLinks);
@@ -225,7 +225,7 @@ public class GUIBar extends WidgetGroup {
 		
 		if (!setup){
 			setupInventory();
-			setup=true;
+		
 			
 		} 
 		
@@ -239,9 +239,12 @@ public class GUIBar extends WidgetGroup {
 	
 	
 	public void setupInventory() {
-	
+
+		if (setup){			
+			return;		
+		} 
 		Log.info("setupInventory");
-		
+
 		
 		ME.playersInventory.setPrefWidth(super.getWidth());
 
@@ -260,6 +263,7 @@ public class GUIBar extends WidgetGroup {
 		
 		
 		super.validate();
+		setup=true;
 	}
 
 	public void closeInventory() {

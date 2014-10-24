@@ -91,7 +91,7 @@ public class Inventory extends Table {
 		
 		//update the home machines location
 		if (PlayersData.homeLoc!=null){
-		    PlayersData.homeLoc.refreshContents();
+		    PlayersData.homeLoc.locationsHub.refreshContents();
 		}
 		
 		Iterator<Item> allItemsit = allItems.iterator();
@@ -127,7 +127,7 @@ public class Inventory extends Table {
 		
 		//update the home machines location
 		if (PlayersData.homeLoc!=null){
-		    PlayersData.homeLoc.refreshContents();
+		    PlayersData.homeLoc.locationsHub.refreshContents();
 		}
 		
 		
