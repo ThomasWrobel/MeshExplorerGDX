@@ -7,8 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 /** a class providing utilities for the whole meshworld **/
 public class MeshWorld {
 
-	static Logger Log = Logger.getLogger("ME.MeshWorld");
-	
+	static Logger Log = Logger.getLogger("ME.MeshWorld");	
 	final static int TOTALX = 1000;
 	final static int TOTALY = 1000;
 	

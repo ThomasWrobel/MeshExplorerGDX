@@ -152,10 +152,10 @@ public class Inventory extends Table {
 	//	super.add(newitem).size(60, 30).top().left().fill().expandY();
 		super.add(newitem).size(60, 30).top().left().fillY().expandY();
 
-		pack();
-		super.invalidate();
+		//pack();
+		//super.invalidate();
 		
-		super.validate();
+	//	super.validate();
 
 		//update the GUI bar in case the inventory tab isnt there yet
 		MainExplorationView.usersGUI.setDataVisible(true);

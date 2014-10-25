@@ -1,4 +1,4 @@
-package com.lostagain.nl.uti;
+package com.lostagain.nl.me.models;
 
 import java.util.logging.Logger;
 
@@ -10,11 +10,11 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class TestAnimation implements ApplicationListener {
+public class NoiseAnimation implements ApplicationListener {
 
 	//static Logger Log = Logger.getLogger("ME.TestAnimation");
 
-	final static String logstag = "ME.TestAnimation";
+	final static String logstag = "ME.NoiseAnimation";
 	
     private static final int    FRAME_COLS = 5;     // #1
     private static final int    FRAME_ROWS = 1;     // #2
@@ -29,7 +29,7 @@ public class TestAnimation implements ApplicationListener {
 
     @Override
     public void create() {
-    	Gdx.app.log(logstag,"creating TestAnimation");
+    	Gdx.app.log(logstag,"creating NoiseAnimation");
     	
     	//could be generated rather then from a file? Save space? Increasing loading time?
         noiseImages = new Texture(Gdx.files.internal("data/noise.png")); // #9
@@ -60,12 +60,13 @@ public class TestAnimation implements ApplicationListener {
     
     @Override
     public void render() {
+    	/*
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);                        // #14
         stateTime += Gdx.graphics.getDeltaTime();           // #15
         currentFrame = noiseAnimation.getKeyFrame(stateTime, true);  // #16
         spriteBatch.begin();
         spriteBatch.draw(currentFrame, 50, 50);             // #17
-        spriteBatch.end();
+        spriteBatch.end();*/
     }
 
 	@Override

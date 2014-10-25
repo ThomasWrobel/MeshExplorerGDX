@@ -110,7 +110,7 @@ public class GUIBar extends WidgetGroup {
 
 				triggerInventoryView();
 
-				ME.playersInventory.validate();
+				//ME.playersInventory.validate();
 				
 
 			}
@@ -164,10 +164,12 @@ public class GUIBar extends WidgetGroup {
 
 	public void setDataVisible(boolean visible){
 		
-		myContents.isVisible=visible;
+		if (myContents.isVisible!=true){
+			myContents.isVisible=visible;
 		
 		 refreshlinks();
 		 setupInventory(); 
+		}
 	}
 	
 	private void refreshlinks() {
@@ -244,7 +246,7 @@ public class GUIBar extends WidgetGroup {
 			return;		
 		} 
 		Log.info("setupInventory");
-
+		super.addActor(ME.playersInventory);
 		
 		ME.playersInventory.setPrefWidth(super.getWidth());
 
@@ -264,6 +266,7 @@ public class GUIBar extends WidgetGroup {
 		
 		super.validate();
 		setup=true;
+		
 	}
 
 	public void closeInventory() {

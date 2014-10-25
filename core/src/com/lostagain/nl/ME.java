@@ -119,7 +119,7 @@ public class ME extends Game {
     	  Logger.getLogger("sss.SSSNode").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.QueryEngine").setLevel(Level.OFF);
     	 // Logger.getLogger("sss.JavaFileManager").setLevel(Level.OFF);    		  
-    	  Logger.getLogger("sss.SSSIndex").setLevel(Level.WARNING);
+    	  Logger.getLogger("sss.SSSIndex").setLevel(Level.INFO);
     	  
     		  
     	  SuperSimpleSemantics.setFileManager(new FileManager());	  
@@ -247,12 +247,20 @@ public class ME extends Game {
 
     	  final ArrayList<String> trustedIndexs = new  ArrayList<String>();  	  
     	  
-    	  trustedIndexs.add("semantics\\TomsNetwork.ntlist");    
-
-    	//  trustedIndexs.add("http://darkflame.co.uk/semantics/darksnet.ntlist"); //testing  
+    	
+    	  String fullPathOfHomeOntology = SuperSimpleSemantics.fileManager.getAbsolutePath("semantics\\TomsNetwork.ntlist");
     	  
-    	  knownDatabases.add("semantics\\TomsNetwork.ntlist");
+    	  trustedIndexs.add("semantics\\TomsNetwork.ntlist");    
+ 
+    	  //its important to add the full path to the knowndatabases array
+    	  //necause the SSS will automaticaly expand short urls and filepaths to
+    	  //absolute when needed internally
+    	  //Thus if theres a "is this loaded already?" comparison, we need
+    	  //to check full path against full path
+    	  Gdx.app.log(logstag,"______fullPathOfHomeOntology________"+fullPathOfHomeOntology);
+    	  knownDatabases.add(fullPathOfHomeOntology);
 
+      	//  trustedIndexs.add("http://darkflame.co.uk/semantics/darksnet.ntlist"); //testing 
         //  knownDatabases.add("http://darkflame.co.uk/semantics/darksnet.ntlist");
     	  
     	  
@@ -299,6 +307,7 @@ public static Boolean checkForUnloadedDatabase(SSSNode linksToThisPC) {
 		String databaseurl = label.substring(0, label.indexOf("#"));
 		
 		Gdx.app.log(logstag,"database url:"+databaseurl);
+		Gdx.app.log(logstag,"databases known:"+knownDatabases);
 		
 		
 		//test if already loaded

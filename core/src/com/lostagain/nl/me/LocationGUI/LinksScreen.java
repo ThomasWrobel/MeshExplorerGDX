@@ -134,12 +134,12 @@ public class LinksScreen extends Table implements LocationScreen {
 		
 	}
 	
-	public void startScanningLink(final Link ObjectFile){
+	public void startScanningLink(final Link link){
 		Log.info("startScanningLink");
 		
-		ObjectFile.setScanningAmount(0);
+		link.setScanningAmount(0);
 	
-		boolean wasadded = linksBeingScanned.add(ObjectFile);
+		boolean wasadded = linksBeingScanned.add(link);
 		
 		
 		

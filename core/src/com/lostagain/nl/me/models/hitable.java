@@ -9,6 +9,10 @@ public interface hitable {
 	public Vector3 getCenter();
 	public int getRadius(); //hitradius
 	public Matrix4 getTransform();
+	public void fireTouchDown();
+	public void fireTouchUp();
+	
+	
 	
 
 }

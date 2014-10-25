@@ -50,7 +50,7 @@ public class Location {
 		
 		//creating new location
 		String domain = locationsnode.getPURI();
-		Gdx.app.log(logstag, "domain is="+domain);
+		Gdx.app.log(logstag, "domain s="+domain);
 
 		Vector2 loc =  MeshWorld.locationFromDomain(domain);
 
@@ -73,7 +73,7 @@ public class Location {
 		
 		//work out next free location around the domains natural position
 		String domain = locationsnode.getPURI();
-		Gdx.app.log(logstag, "domain is="+domain);
+		Gdx.app.log(logstag, "domain is=="+domain);
 
 		Vector2 loc =  MeshWorld.locationFromDomain(domain);
 
@@ -133,6 +133,8 @@ public class Location {
 	
 	
 	public void createNewHubAt(int X,int Y){
+
+		Gdx.app.log(logstag, "creating hub");
 		
 		locationsHub = new LocationsHub(locationsnode);
 		AllLocationContainers.put(locationsnode,locationsHub);

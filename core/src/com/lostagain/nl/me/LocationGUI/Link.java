@@ -2,6 +2,7 @@ package com.lostagain.nl.me.LocationGUI;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -200,8 +201,13 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		} else {
 
 			Log.info("triggering remote scan");
+			
 			realscan=true;
-			currentParent.startScanningLink(this);
+
+			this.setScanningAmount(0);
+			
+			//currentParent.startScanningLink(this);
+			
 			//we use the link as a loading bar for the real remote file!
 			//in future we need to do this separately as many bars could be loading remote
 			//sources at once
@@ -243,14 +249,15 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	//speed is based on Node timed security / scanner speed
 	public void setScanningAmount(int Percentage){
 		
-		//float pixals = (super.size().width()/100)*Percentage;
+		//float pixels = (super.size().width()/100)*Percentage;
 	//	ProgressBar.setText("-"+Percentage);
 		if (!realscan){
-			int combined = (RealScanAmount+Percentage/2);
-			scanPercentage.setValue(combined);
+			//int combined = (RealScanAmount+Percentage/2);
+			scanPercentage.setValue(Percentage);
 				
 		} else {
-			scanPercentage.setValue(Percentage);
+			int combined = (RealScanAmount+Percentage)/2;
+			scanPercentage.setValue(RealScanAmount);
 		}
 		
 		
@@ -305,6 +312,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 			ArrayList<SSSNode> allSecuredPCs = SSSNodesWithCommonProperty.getAllNodesWithPredicate(StaticSSSNodes.SecuredBy);
 
 			Log.info("-------------------------------allSecuredPCs="+allSecuredPCs.size());
+			Log.info("-------------------------------allSecuredPCs="+allSecuredPCs.toString());
 			
 			
 			if (allSecuredPCs.contains(linksToThisPC)){
@@ -422,7 +430,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		// TODO Auto-generated method stub
 		TOTAL_LOAD_UNITS = i;
 		
-		updatePercentageScanned();
+		updateRealPercentageScanned();
 		
 	}
 
@@ -430,16 +438,44 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	public void addToTotalProgressUnits(int i) {
 		
 		TOTAL_LOAD_UNITS = TOTAL_LOAD_UNITS + i;
-		updatePercentageScanned();
+		updateRealPercentageScanned();
 	}
 
-	private void updatePercentageScanned() {
+	private void updateRealPercentageScanned() {
 		
 		//Note: We use "floor" here to ensure we are as pessimistic as possible when determining loading
 		//Thus 99.9% isn't assumed to be 100% and thus triggering loaded complete!
 		//PercentageScanned = (int) Math.floor(100.0*(LOAD_PROGRESS/TOTAL_LOAD_UNITS));
-		RealScanAmount = (int) Math.floor(100.0*(LOAD_PROGRESS/TOTAL_LOAD_UNITS));
-		Log.info("updatePercentageScanned = "+PercentageScanned);
+		double percd=100.0*(LOAD_PROGRESS/TOTAL_LOAD_UNITS);
+		RealScanAmount = (int) Math.floor(percd);
+		
+		Log.info("updatePercentageScanned = "+RealScanAmount+" ("+LOAD_PROGRESS+"/"+TOTAL_LOAD_UNITS+")");
+		
+		
+		if (RealScanAmount>=100) {
+			Log.info(" new database loaded ");
+			
+			RealScanAmount = 100;	
+			Gdx.app.postRunnable(new Runnable() {
+				
+				@Override
+				public void run() {
+					Log.info(" final link updates ");
+					setScanningAmount(RealScanAmount);
+					scanComplete();
+
+				}
+			});
+			
+		} else {
+			Gdx.app.postRunnable(new Runnable() {
+				
+				@Override
+				public void run() {
+					setScanningAmount(RealScanAmount);
+				}
+			});
+		}
 		
 		/*
 		if (PercentageScanned>=100) {
@@ -470,14 +506,14 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		LOAD_PROGRESS = LOAD_PROGRESS + 1;
 			
 
-		updatePercentageScanned();
+		updateRealPercentageScanned();
 	}
 
 	@Override
 	public void setCurrentProgress(int i) {
 		LOAD_PROGRESS = i;
 
-		updatePercentageScanned();
+		updateRealPercentageScanned();
 	}
 	
 	

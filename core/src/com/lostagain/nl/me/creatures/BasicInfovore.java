@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -18,19 +19,40 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.semantic.SSSNode;
+import com.lostagain.nl.me.creatures.Population.destructOn;
+import com.lostagain.nl.me.models.Animating;
+import com.lostagain.nl.me.models.InfovoreAnimation;
 import com.lostagain.nl.me.models.ModelManagment;
 
 /** defines what a basic infovore looks like and how it behaves**/
-public class BasicInfovore extends Creature {
+public class BasicInfovore extends Creature implements Animating {
+	
 
+	private static String logstag="ME.BasicInfovore";
+	
+    //infovore stats:
+	destructOn destructionType = destructOn.clicks; //defaults to a query dropped on it, but a click is used to test atm
+	int numOfHitsLeft = 10;
+	//-----		
 	
 	//movement? (static)
 	
 	//how it looks? (static)
 	
+	//Note; If too intensive we can make this static
+	//then change the animation update so its updated once per population TYPE not for each 
+	//creature individually.
+	//this will, however, make all the creatures animate in sycn which isnt so nice
+	InfovoreAnimation idealAnimation = new InfovoreAnimation();
 	
 	public BasicInfovore(float x,float y, Population parentPopulation){
+		
 		super(x,y,parentPopulation);
+		
+		//ensure infovote animation is setup
+		if (!idealAnimation.isSetup()){
+			idealAnimation.create();
+		}
 		
 		createmodel(x,y,-10);
 				
@@ -50,10 +72,11 @@ public class BasicInfovore extends Creature {
 			//	Usage.Position | Usage.Normal);
 		
 		//
-		FileHandle imageFileHandle = Gdx.files.internal("data/infovorebasic.png"); 
-		Texture blobtexture = new Texture(imageFileHandle);
+		//FileHandle imageFileHandle = Gdx.files.internal("data/infovorebasic.png"); 
+		//Texture blobtexture = new Texture(imageFileHandle);
 		
-        mat.set(TextureAttribute.createDiffuse(blobtexture));
+        mat.set(TextureAttribute.createDiffuse(idealAnimation.getKeyFrame(0)));
+        
 		
 		
 		Model model = createRectangle( -25, -25, 50, 50, 0, Color.MAROON, mat );
@@ -65,12 +88,28 @@ public class BasicInfovore extends Creature {
 		
 		super.setmodel(creaturemodel);
 		
+		//as this model is animated we should add it to the model manager as animated
+		ModelManagment.addAnimating(this);
+		
 		
 		
 		
 		
 	}
-	
+
+	//if too slow this method could be exchanged with one in population
+	//that grabs a common frame for all the population then sets all its creatures too it
+	public void updateAnimationFrame(float deltatime){
+		
+		TextureRegion currentimage = idealAnimation.getKeyFrame(deltatime);
+		TextureAttribute attribute = creaturemodel.materials.get(0).get(TextureAttribute.class, TextureAttribute.Diffuse);
+			
+			if (attribute!=null){			
+				attribute.set(currentimage);		
+			} 
+					
+		
+	}
 
 	static private Model createRectangle(float x1,float y1,float x2,float y2,float z,Color MColor,Material mat ) {
 
@@ -117,5 +156,36 @@ public class BasicInfovore extends Creature {
 		return model;
 	}
 	
+	@Override
+	public void fireTouchDown() {
+		super.fireTouchDown();
+		
+		
+		
+	}
+
+
+
+
+	@Override
+	public void fireTouchUp() {
+		super.fireTouchUp();
+		
+		if (destructionType == destructOn.clicks){
+
+			Gdx.app.log(logstag,"_removed clickpoint");
+			
+			numOfHitsLeft--;
+			if (numOfHitsLeft<1){
+				super.destroy();
+				ModelManagment.removeAnimating(this);
+			}
+		}
+		
+		
+		
+	}
+
+
 	
 }

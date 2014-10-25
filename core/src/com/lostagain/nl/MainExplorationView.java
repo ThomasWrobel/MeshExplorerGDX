@@ -50,6 +50,8 @@ import com.lostagain.nl.me.models.BackgroundManager;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.uti.SpiffyGenericTween;
 import com.lostagain.nl.uti.SpiffyTweenConstructor;
+import com.lostagain.nl.uti.SpiffyVector2Tween;
+import com.lostagain.nl.uti.SpiffyVector3Tween;
 
 /** The main exploration view, which lets them see LocationURIs 
  * **/
@@ -69,11 +71,11 @@ public class MainExplorationView implements Screen {
 	
 	static Stage guiStage;
 
-	static Float CurrentX = 100f;
-
-
-	static Float CurrentY = 100f;	
-	static Float CurrentZ = 400f;
+	//static Float CurrentX = 100f;
+	//static Float CurrentY = 100f;	
+	//static Float CurrentZ = 400f;
+	static Vector3 currentPos = new Vector3(100f,100f,400f);
+	
 	static Float CurrentZoom = 1f;
 
 	static Float LookAtX = 0f;
@@ -103,8 +105,10 @@ public class MainExplorationView implements Screen {
 
 	public static GUIBar usersGUI = new GUIBar();
 
-	static SpiffyGenericTween<Double> currentCameraTweenX;
-	static SpiffyGenericTween<Double> currentCameraTweenY;
+	//static SpiffyGenericTween<Double> currentCameraTweenX;
+	//static SpiffyGenericTween<Double> currentCameraTweenY;
+	static SpiffyVector3Tween currentCameraTween;
+	
 	static  Timer cameraTimer = new Timer();
 	static  Task cameraTweenTask;
 
@@ -175,19 +179,23 @@ public class MainExplorationView implements Screen {
 				//Additionally; The difference in x/y should change to slow down the camera near
 				//the end of its movement.
 				//Maybe difference * sin for a smooth speed up/slow down curve?
-				double newX=currentCameraTweenX.next();   				   				
-				double newY=currentCameraTweenY.next();
+				//double newX=currentCameraTweenX.next();   				   				
+				//double newY=currentCameraTweenY.next();
+				
+				Vector3 newpos = currentCameraTween.next();
 
-				LookAtX = CurrentX; //one step lag?
-				LookAtY = CurrentY;
-
-				//	Log.info ("camera setting to:"+newX);
-
-				CurrentX=(float) newX;
-				CurrentY=(float) newY;
-
-				if (currentCameraTweenX.hasNext()){
-
+				LookAtX = currentPos.x; //one step lag?
+				LookAtY = currentPos.y;
+ 
+				
+				//currentPos.x=(float) newX;
+				//currentPos.y=(float) newY;
+				currentPos = newpos;
+				
+						
+				//if (currentCameraTweenX.hasNext()){
+				
+				if (currentCameraTween.hasNext()){
 					//reschedule
 					if (!cameraTweenTask.isScheduled()){
 						cameraTimer.scheduleTask(this, 0.1f);
@@ -195,15 +203,18 @@ public class MainExplorationView implements Screen {
 
 				} else {
 
-					newX=currentCameraTweenX.endPoint();  				   				
-					newY=currentCameraTweenY.endPoint();  	   				
-					Gdx.app.log(logstag,"camera at end setting to:"+newX);   	 
+					//newX=currentCameraTweenX.endPoint();  				   				
+					//newY=currentCameraTweenY.endPoint();  
+					newpos = currentCameraTween.endPoint();
+					
+					Gdx.app.log(logstag,"camera at end setting to:"+newpos);   	 
 
-					CurrentX=(float) newX;
-					CurrentY=(float) newY;
-
-					LookAtX = CurrentX; 
-					LookAtY = CurrentY;
+					//currentPos.x=(float) newX;
+					//currentPos.y=(float) newY;
+					currentPos = newpos;
+					
+					LookAtX = currentPos.x; 
+					LookAtY = currentPos.y;
 					
 					//targetLocation
 					 if (currentTargetLocation!=MainExplorationView.LastLocation.getLast()){
@@ -343,11 +354,19 @@ public class MainExplorationView implements Screen {
 
 		float newX = locationcontainer.getHubsX(Align.center);
 		float newY = locationcontainer.getHubsY(Align.center);
+		Vector3 dest = new Vector3(newX,newY,currentPos.z);
+		
 
 		//asign new tweens
-		currentCameraTweenX = SpiffyTweenConstructor.Create(CurrentX.doubleValue(),newX, 25);
-		currentCameraTweenY = SpiffyTweenConstructor.Create(CurrentY.doubleValue(),newY, 25);
-
+		//currentCameraTweenX = SpiffyTweenConstructor.Create(CurrentX.doubleValue(),newX, 25);
+		//currentCameraTweenY = SpiffyTweenConstructor.Create(CurrentY.doubleValue(),newY, 25);
+		
+		currentCameraTween = new SpiffyVector3Tween(currentPos,dest, 25);
+		//Vector3 test1 = new Vector3(0,0,0);
+		//Vector3 est2  = new Vector3(10,10,10);
+		//SpiffyVector3Tween testtwe = new SpiffyVector3Tween(test1,est2, 25);
+		//Gdx.app.log(logstag,"end = "+testtwe.endPoint().x);
+		
 		currentTargetLocation = locationcontainer;
 		//ensure camera animator is running
 		if (!cameraTweenTask.isScheduled()){
@@ -419,8 +438,9 @@ public class MainExplorationView implements Screen {
 		//stage.getCamera().translate(50, 0, 0);
 
 		//camera.rotate(45, 0, 0, 1);
-		camera.position.set(CurrentX, CurrentY, CurrentZ);
-
+		//camera.position.set(CurrentX, CurrentY, CurrentZ);
+		camera.position.set(currentPos);
+		
 		// create the camera and the SpriteBatch
 		if ( currentmode == cammode.ortha){        	 
 			((OrthographicCamera)camera).zoom = CurrentZoom;
@@ -435,6 +455,7 @@ public class MainExplorationView implements Screen {
 		//Each render is sort of like a "layer" and appears in the order they are rendered
 		//regardless of 3d positions within that layer
 		background.updateAnimatedBacks(delta);
+		ModelManagment.updateAnimatedBacks(delta);
 		background.modelBatch.begin( camera);
 		background.modelBatch.render(ModelManagment.allModelInstances);
 		background.modelBatch.end();	
@@ -463,8 +484,8 @@ public class MainExplorationView implements Screen {
 		}
 
 		//    game.font.draw(game.batch, "Drops Collected:: " + dropsGathered, 0, 480);
-		ME.font.draw( ME.batch, "X:: " + CurrentX+" Y:: " + CurrentY+"...."+dragging+"(x="+drag_dis_x+",y="+drag_dis_y+")", 10,45);
-		ME.font.draw( ME.batch, "Z:: " + CurrentZ, 10, 25);
+		ME.font.draw( ME.batch, "X:: " + currentPos.x+" Y:: " + currentPos.y+"...."+dragging+"(x="+drag_dis_x+",y="+drag_dis_y+")", 10,45);
+		ME.font.draw( ME.batch, "Z:: " + currentPos.z, 10, 25);
 
 		//    game.batch.draw(bucketImage, bucket.x, bucket.y);
 
@@ -487,11 +508,9 @@ public class MainExplorationView implements Screen {
 			if (newtouch){
 				Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 				touchedsomething = ModelManagment.testForHit(ray);
+				Gdx.app.log(logstag,"_-touch down on a model-_");
 			}
 			
-			if (touchedsomething){
-				Gdx.app.log(logstag,"_-touched a model-_");
-			}
 			
 			
 			if (!dragging && !cancelnextdragclick && !touchedsomething){
@@ -504,16 +523,16 @@ public class MainExplorationView implements Screen {
 								
 				Gdx.app.log(logstag,"x="+startdragxscreen+",y="+startdragyscreen);
 				
-				startdragx_exview = CurrentX;
-				startdragy_exview = CurrentY;
+				startdragx_exview = currentPos.x;
+				startdragy_exview = currentPos.y;
 				
 			} else if (!cancelnextdragclick && !touchedsomething) {
 				
 				 drag_dis_x = Gdx.input.getX()-startdragxscreen;
 				 drag_dis_y = Gdx.input.getY()-startdragyscreen;
 				
-				 CurrentX = startdragx_exview-drag_dis_x;
-				 CurrentY = startdragy_exview+drag_dis_y;
+				 currentPos.x = startdragx_exview-drag_dis_x;
+				 currentPos.y = startdragy_exview+drag_dis_y;
 				 
 			}
 			
@@ -606,39 +625,39 @@ public class MainExplorationView implements Screen {
 				coasting = false;
 
 			} else {
-				CurrentX = (float) (CurrentX-(MotionDisX*delta));
-				CurrentY = (float) (CurrentY+(MotionDisY*delta));
+				currentPos.x = (float) (currentPos.x-(MotionDisX*delta));
+				currentPos.y = (float) (currentPos.y+(MotionDisY*delta));
 			}
 		}
 		
 		if (Gdx.input.isKeyPressed(Keys.LEFT))
 		{
-			CurrentX = CurrentX-(200* Gdx.graphics.getDeltaTime());        	
+			currentPos.x = currentPos.x-(200* Gdx.graphics.getDeltaTime());        	
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.RIGHT))
 		{        	
-			CurrentX = CurrentX+(200* Gdx.graphics.getDeltaTime());
+			currentPos.x = currentPos.x+(200* Gdx.graphics.getDeltaTime());
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.UP))
 		{
-			CurrentY = CurrentY+(200* Gdx.graphics.getDeltaTime());        	
+			currentPos.y = currentPos.y+(200* Gdx.graphics.getDeltaTime());        	
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.DOWN))
 		{        	
-			CurrentY = CurrentY-(200* Gdx.graphics.getDeltaTime());
+			currentPos.y = currentPos.y-(200* Gdx.graphics.getDeltaTime());
 		}
 		if (Gdx.input.isKeyPressed(Keys.Z))
 		{
-			CurrentZ = CurrentZ+(150* Gdx.graphics.getDeltaTime()); 
+			currentPos.z = currentPos.z+(150* Gdx.graphics.getDeltaTime()); 
 			CurrentZoom = CurrentZoom +(2* Gdx.graphics.getDeltaTime()); 
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.A) && CurrentZ>0.5)
+		if (Gdx.input.isKeyPressed(Keys.A) && currentPos.z>0.5)
 		{        	
-			CurrentZ = CurrentZ-(150* Gdx.graphics.getDeltaTime());
+			currentPos.z = currentPos.z-(150* Gdx.graphics.getDeltaTime());
 			CurrentZoom = CurrentZoom -(2* Gdx.graphics.getDeltaTime()); 
 		}
 

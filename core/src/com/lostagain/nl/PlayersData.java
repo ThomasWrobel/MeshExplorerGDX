@@ -17,7 +17,7 @@ public class PlayersData {
 
 	static Logger Log = Logger.getLogger("ME.PlayersData")
 			;
-	public static SSSNode computersuri = SSSNode.createSSSNode("HomeMachine","HomeMachine",ME.INTERNALNS,new SSSNode[]{StaticSSSNodes.Computer});
+	public static SSSNode computersuri = SSSNode.createSSSNode("HomeLocation","HomeLocation",ME.INTERNALNS,new SSSNode[]{StaticSSSNodes.Computer});
 			
 	 //default software contents
 	static SSSNode coin = SSSNode.createSSSNode("coin",ME.INTERNALNS+"coin", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.software});
@@ -26,7 +26,7 @@ public class PlayersData {
 	static SSSNode homemessage = SSSNode.createSSSNode("\"homepc/WelcomeMessage.txt\"","semantics\\TomsNetwork.ntlist#", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
 	
 	 //stores the computers description
-	static SSSNode homeDisLabel = SSSNode.createSSSNode("Something bob gave me a copy of. Hope he wont get in trouble for it.","HomeMachineDiscription",ME.INTERNALNS);
+	static SSSNode homeDisLabel = SSSNode.createSSSNode("Something bob gave me a copy of. Hope he wont get in trouble for it.","HomeLocationDiscription",ME.INTERNALNS);
 	
 	static SSSNodesWithCommonProperty homediscription = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.DescriptionOf, computersuri, new SSSNode[]{homeDisLabel});
 	
@@ -66,7 +66,7 @@ public class PlayersData {
 
 	public static void setup() {
 		
-		Log.info("home message uri="+homemessage.PURI);
+		Log.info("home location uri="+homemessage.PURI);
 		
 		
 		//This perhaps should be turned into a NTList to keep the players starting information external

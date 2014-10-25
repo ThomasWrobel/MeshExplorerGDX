@@ -35,7 +35,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
-import com.lostagain.nl.uti.TestAnimation;
 
 public class BackgroundManager {
 
@@ -58,7 +57,7 @@ public class BackgroundManager {
 	static Pixmap pixmap;
 	static ByteBuffer temp;
 	
-	static TestAnimation testbounc = new TestAnimation();
+	static NoiseAnimation testNoise = new NoiseAnimation();
 	
 	private static ArrayList<ModelInstance> animatedbacks = new ArrayList<ModelInstance>();
 	
@@ -68,7 +67,7 @@ public class BackgroundManager {
 		modelBatch = new ModelBatch();
 		
 		Gdx.app.log(logstag,"creating testbounc");
-		testbounc.create();
+		testNoise.create();
 		
 		Model  model1 = modelBuilder.createBox(150f, 15f, 15f, 
 				new Material(ColorAttribute.createDiffuse(Color.GREEN)),
@@ -122,7 +121,7 @@ public class BackgroundManager {
 
 	public void updateAnimatedBacks(float deltatime){
 		
-		TextureRegion currentimage = testbounc.getKeyFrame(deltatime);
+		TextureRegion currentimage = testNoise.getKeyFrame(deltatime);
 		
 		for (ModelInstance instance : animatedbacks) {
 			

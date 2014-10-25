@@ -1,6 +1,10 @@
 package com.lostagain.nl.me.creatures;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.semantic.SSSNode;
@@ -10,6 +14,8 @@ import com.lostagain.nl.me.models.hitable;
 public class Creature implements hitable {
 
 
+	private static String logstag="ME.Creature";
+	
 	ModelInstance creaturemodel;
 	
 	//current location
@@ -86,8 +92,50 @@ public class Creature implements hitable {
 		
 		
 	}
+
+
+
+
+	@Override
+	public void fireTouchDown() {
+		
+		ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
+		
+		attribute.color.set(Color.GREEN);
+		
+		
+	}
+
+
+
+
+	@Override
+	public void fireTouchUp() {
+		
+		//really this check shouldnt be needed but it seems this fires sometimes while its being destroyed, not sure why?
+		if (creaturemodel!=null){
+			ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
+		
+			attribute.color.set(Color.RED);
+		}
+	}
 	
-	
+	protected void destroy() {
+		
+
+		Gdx.app.log(logstag,"_destroying model ");
+		
+		//remove from visuals
+		ModelManagment.removeModel(creaturemodel);
+		ModelManagment.removeHitable(this);
+				
+		//ensure its gone
+		creaturemodel=null;
+		
+		//remove from population
+		parentpolution.removeFromPopulation(this);
+		
+	}
 	
 	
 	

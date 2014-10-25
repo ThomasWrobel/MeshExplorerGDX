@@ -12,6 +12,9 @@ import java.util.logging.Logger;
 
 
 
+
+import javax.swing.GroupLayout.Alignment;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -108,14 +111,12 @@ public class RepairScreen extends Group  implements LocationScreen {
 		
 		RequirementsText.setPosition(10, super.getHeight()-70);	
 		
-	//	UnlockedLabel.setCenterPosition((getWidth()/2),(getHeight()/2)+30);
-		UnlockedLabel.setOrigin(Align.center);
+		UnlockedLabel.setAlignment(Align.center);		
+	    UnlockedLabel.setPosition((getWidth()/2)-(UnlockedLabel.getWidth()/2),(getHeight()/2)+30);
+	    
+		DetailsLabel.setAlignment(Align.center);
+		DetailsLabel.setPosition((getWidth()/2)-(DetailsLabel.getWidth()/2),(getHeight()/2)-30);
 		
-		
-		//DetailsLabel.setCenterPosition((getWidth()/2),(getHeight()/2));
-		DetailsLabel.setOrigin(Align.center);
-		
-		//UnlockedLabel.setPosition((getWidth()/2),(getHeight()/2)-30);
 
 		int i=0;
 		 for (ObjectRequester req : allObjectsRequested) {

@@ -1,5 +1,7 @@
 package com.lostagain.nl.me.creatures;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.me.LocationGUI.Location;
@@ -9,6 +11,12 @@ public class Population {
 	
 	//population name
 	String name = "";
+	
+	//if its currently active
+	//in future populations not near the camera wont be active, and thus we wont bother testing
+	//them for clicks or animation updates
+	//efficiancy!
+	Boolean active = true; 
 	
 	//type of population
 	enum creaturetype {
@@ -23,11 +31,11 @@ public class Population {
 	
 	
 	//location spread
-	int fromRadius = 350;
-	int toRadius = 400;
+	int fromRadius = 400;
+	int toRadius = 550;
 	
 	//distribution type? 
-	//random, signwave, fixed
+	//random, sinwave, fixed
 	
 	//drops, if any
 	SSSNode drops[];
@@ -44,7 +52,7 @@ public class Population {
 	
 	//-------------------------
 	
-	Creature populationsCreatures[];
+	ArrayList<Creature> populationsCreatures = new ArrayList<Creature>();
 	
 	
 	public Population(Location location) {
@@ -64,10 +72,8 @@ public class Population {
 		
 		//run this after getting the details
 		//temp details below
-		num = 1;
+		num = 10;
 
-		populationsCreatures = new Creature[num];
-		
 		float cX = centeredOnThisLocation.getHubsX(Align.center);
 		float cY = centeredOnThisLocation.getHubsY(Align.center);
 						
@@ -80,16 +86,28 @@ public class Population {
 			
 			//get next location
 			angle = angle + sinstep;
-			float x = (float) (cX + Math.sin(angle)*fromRadius);
-			float y = (float) (cY + Math.cos(angle)*fromRadius);
+			
+			//pickradius
+			double pr = 0;
+			pr = fromRadius+Math.random()*(toRadius-fromRadius);
+						
+			float x = (float) (cX + Math.sin(angle)*pr);
+			float y = (float) (cY + Math.cos(angle)*pr);
 			
 			//create based on type
 						
 			BasicInfovore newcreature = new BasicInfovore(x, y, this);
-			populationsCreatures[j]=newcreature;
+			populationsCreatures.add(newcreature);
 			
 		}
 		
+		
+	}
+
+	
+	public void removeFromPopulation(Creature creature) {
+		
+		populationsCreatures.remove(creature);
 		
 	}
 	
