@@ -105,9 +105,7 @@ public class ModelManagment {
 	public static void removeHitable(hitable model) {
 		
 		hitables.removeValue(model,true);
-		Boolean removedtest = mousedownOn.removeValue(model,true);
-		        
-		Gdx.app.log(logstag,"_-removedtest:"+removedtest);
+
 		
 		
 	}
@@ -129,9 +127,14 @@ public class ModelManagment {
 		Gdx.app.log(logstag,"_-mousedownOn size to untouch:"+mousedownOn.size);
 		
 		for (hitable model : mousedownOn) {
-			model.fireTouchUp();
+			model.fireTouchUp();		
+			
 		}
-		
+		mousedownOn.clear();
+		//Gdx.app.log(logstag,"_----------removing md:"+mousedownOn.size);
+		//Boolean removedtest = mousedownOn.removeValue(model,true);
+		        
+		//Gdx.app.log(logstag,"_-mousedownOn:"+mousedownOn.size);
 	}
 	
 	

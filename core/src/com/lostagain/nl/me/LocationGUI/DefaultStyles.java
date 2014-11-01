@@ -38,8 +38,9 @@ public class DefaultStyles {
 	
 	
 	
+	
 
-	static Skin linkstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
+	public static Skin linkstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
 	static Skin buttonstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
 	
 	static Skin colors = new Skin();

@@ -111,8 +111,12 @@ public class Location {
 		
 		createNewHubAt(X,Y);
 		
-		//create population
-		locationsPopulation = new Population(this);
+		//get nodes poluations (if any)
+		
+		
+		//create populations		
+		
+	//	locationsPopulation = new Population(this);
 	}
 	
 	

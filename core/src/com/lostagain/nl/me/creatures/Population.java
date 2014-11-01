@@ -8,6 +8,8 @@ import com.lostagain.nl.me.LocationGUI.Location;
 
 /** represents a population of a particular type in a particular area**/
 public class Population {
+	//population node
+	SSSNode population;
 	
 	//population name
 	String name = "";
@@ -55,11 +57,15 @@ public class Population {
 	ArrayList<Creature> populationsCreatures = new ArrayList<Creature>();
 	
 	
-	public Population(Location location) {
+	public Population(Location location, SSSNode populationnode) {
 		
-		centeredOnThisLocation=location;
+		centeredOnThisLocation = location;
+		population             = populationnode;
 		
 		//trigger detail getting from source locations node
+		
+		
+		
 		
 		//create from details
 		createPopulation();
