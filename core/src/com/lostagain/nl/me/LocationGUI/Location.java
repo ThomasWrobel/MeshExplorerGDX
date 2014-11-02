@@ -1,12 +1,16 @@
 package com.lostagain.nl.me.LocationGUI;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.darkflame.client.semantic.SSSNode;
+import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.creatures.Population;
 import com.lostagain.nl.uti.MeshWorld;
 
@@ -18,12 +22,14 @@ public class Location {
 	final static String logstag = "ME.Location";
 	
 	public LocationsHub locationsHub;
-	Population locationsPopulation;
+	ArrayList<Population> locationsPopulations = new ArrayList<Population>();
 	
 	int locX = 0;
 	int locy = 0;
 	
 	public SSSNode locationsnode;
+	HashSet<SSSNodesWithCommonProperty> locationsPropertys; //will store all the SSSNodesWithCommonPropertys with the location in it. NOTE this will need refreshing if net sets are loaded 
+	
 	
 	
 	
@@ -43,6 +49,9 @@ public class Location {
 
 	public Location(SSSNode locationsnode) {
 		super();
+
+		
+		
 		/*		
 		this.locationsnode = locationsnode;
 		
@@ -91,6 +100,17 @@ public class Location {
 		seupLocation(locationsnode, X, Y);
 	}
 	
+	private void getLocationsPropertys() {
+		
+		//in order to minimise the need for data querys
+		//we get all the locations propertys on loading here
+		
+		locationsPropertys = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(locationsnode.getPURI());
+		Gdx.app.log(logstag, "got locations propertys num="+locationsPropertys.size());
+		
+		
+	}
+
 	public Location(SSSNode locationsnode,int X,int Y) {
 		
 		super();		
@@ -105,16 +125,39 @@ public class Location {
 			
 		AllLocations.put(locationsnode,this);
 		
+
+		getLocationsPropertys();
+		
 		//creating new location
 		String domain = locationsnode.getPURI();
 		Gdx.app.log(logstag, "domain is="+domain);
 		
 		createNewHubAt(X,Y);
 		
-		//get nodes poluations (if any)
+		//Note; Might be an idea to get all the populations first, then populate all the locations?
+		//Certainly more efficient semantic wise. In some ways aspects of this game shows the weakness of the folded database system
+		//while its easy to cross reference over multiple domains, its far more work to get all the details of a single node
+				
+		//BobsOutpost me:populatedBy smallInfovorPopulation.
+	
+		//get nodes populations (if any)
+		//Note; Because we are looping over all the locations propertys, it would be efficiancy to refractor other things on the scene to this location.
+		
+		for (SSSNodesWithCommonProperty propertys : locationsPropertys) {
+			
+			if (propertys.getCommonPrec()==StaticSSSNodes.populatedBy){
+
+				//create population and remember it		
+				Gdx.app.log(logstag, "detected population of "+propertys.getCommonValue()+" on this scene");
+				Population newpop=new Population(this,propertys.getCommonValue());				
+				locationsPopulations.add(newpop);
+				
+			}
+			
+		}
 		
 		
-		//create populations		
+		
 		
 	//	locationsPopulation = new Population(this);
 	}

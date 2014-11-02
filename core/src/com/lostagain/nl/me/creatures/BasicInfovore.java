@@ -31,8 +31,7 @@ public class BasicInfovore extends Creature implements Animating {
 	private static String logstag="ME.BasicInfovore";
 	
     //infovore stats:
-	destructOn destructionType = destructOn.clicks; //defaults to a query dropped on it, but a click is used to test atm
-	int numOfHitsLeft = 10;
+
 	//-----		
 	
 	//movement? (static)
@@ -45,9 +44,12 @@ public class BasicInfovore extends Creature implements Animating {
 	//this will, however, make all the creatures animate in sycn which isnt so nice
 	InfovoreAnimation idealAnimation = new InfovoreAnimation();
 	
-	public BasicInfovore(float x,float y, Population parentPopulation){
+	public BasicInfovore(Population parentPopulation, float x, float y,
+			int hitPoints, String queryToDestroy, destructOn destructionType){
 		
-		super(x,y,parentPopulation);
+		super(x,y,parentPopulation,hitPoints, queryToDestroy, destructionType);
+		
+		
 		
 		//ensure infovote animation is setup
 		if (!idealAnimation.isSetup()){
@@ -170,22 +172,21 @@ public class BasicInfovore extends Creature implements Animating {
 	@Override
 	public void fireTouchUp() {
 		super.fireTouchUp();
-		
-		if (destructionType == destructOn.clicks){
+	
 
-			Gdx.app.log(logstag,"_removed clickpoint");
-			
-			numOfHitsLeft--;
-			if (numOfHitsLeft<1){
-				super.destroy();
-				ModelManagment.removeAnimating(this);
-			}
-		}
-		
-		
 		
 	}
 
+	@Override
+	protected void destroy() {
+		
+		super.destroy();
 
+		Gdx.app.log(logstag,"removeAnimating");
+		ModelManagment.removeAnimating(this);
+		
+	}
+	
+	
 	
 }

@@ -58,7 +58,7 @@ public class Inventory extends Table {
 	 * This is to help stop missclicks dropping items straight away*/
 	private static long lastTime=0l;
 
-	static SSSNode currentlyHeld;
+	public static SSSNode currentlyHeld;
 
 	private float prefwidth;
 

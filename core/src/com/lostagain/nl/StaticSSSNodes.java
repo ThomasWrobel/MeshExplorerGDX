@@ -52,6 +52,38 @@ public class StaticSSSNodes {
 	public static final SSSNode scram1decoder= SSSNode.createSSSNode("Scram1decoder", ME.INTERNALNS+"scram1decoder", ME.INTERNALNS,new SSSNode[]{decoder});
 	public static final SSSNodesWithCommonProperty knowsScram1 = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(knows, scram1, new SSSNode[]{scram1decoder});
 	
+	//populations
+	//Populations define a group of creatures
+	public static final SSSNode populatedBy =  SSSNode.createSSSNode(ME.INTERNALNS+"populatedBy", ME.INTERNALNS);
+	
+	/*** example of population definition from ntlist;
+	 * smallInfovorPopulation rdfs:subClassOf me:population.
+	smallInfovorPopulation me:quantity 10.
+	smallInfovorPopulation me:anydrop dropdata1.
+	smallInfovorPopulation me:exactdrop dropdata2.
+	smallInfovorPopulation me:anydrop dropdata3.
+	smallInfovorPopulation me:killedon "fruit"
+	 * 
+	 * **/
+	public static final SSSNode quantity =  SSSNode.createSSSNode(ME.INTERNALNS+"quantity", ME.INTERNALNS);
+	
+	/**picks a random subclass of this to drop. Drops will be randomly distributed over the population instance.
+	 * all drops are thus guaranteed to be getable **/
+	public static final SSSNode anydrop =  SSSNode.createSSSNode(ME.INTERNALNS+"anydrop", ME.INTERNALNS);
+	
+	/** represents an exact drop. Will not randomly pick a subclass**/
+	public static final SSSNode exactdrop =  SSSNode.createSSSNode(ME.INTERNALNS+"exactdrop", ME.INTERNALNS);
+	
+	/**query that needs to be forfilled to kill this.If not specified empty clicks work**/
+	public static final SSSNode killedon =  SSSNode.createSSSNode(ME.INTERNALNS+"killedon", ME.INTERNALNS);
+	
+	/** number of times a query (or click) needs to be past in order to be destroyed**/
+	public static final SSSNode hitPoints =  SSSNode.createSSSNode(ME.INTERNALNS+"hitPoints", ME.INTERNALNS);
+
+	/** from and too radius for layout of creatures **/
+	public static final SSSNode fromRadius =  SSSNode.createSSSNode(ME.INTERNALNS+"fromRadius", ME.INTERNALNS);
+	public static final SSSNode toRadius =  SSSNode.createSSSNode(ME.INTERNALNS+"toRadius", ME.INTERNALNS);
+
 	
 	
 	

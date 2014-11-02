@@ -13,10 +13,14 @@ http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subCl
 BobsOutpost me:populatedBy smallInfovorPopulation.
 
 smallInfovorPopulation rdfs:subClassOf me:population.
-smallInfovorPopulation me:quanity 10.
-smallInfovorPopulation me:drop dropdata1.
-smallInfovorPopulation me:drop dropdata2.
-smallInfovorPopulation me:drop dropdata3.
+smallInfovorPopulation me:quantity 4.
+smallInfovorPopulation me:anydrop dropdata1.
+smallInfovorPopulation me:exactdrop dropdata2.
+smallInfovorPopulation me:anydrop dropdata3.
+smallInfovorPopulation me:killedon "fruit".
+smallInfovorPopulation me:hitPoints 2.
+
+alicespc me:populatedBy smallInfovorPopulation.
 
 profpp me:connectedTo BobsOutpost.
 profpp me:connectedTo alicespc. 

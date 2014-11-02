@@ -142,10 +142,10 @@ public class MainExplorationView implements Screen {
 	}    
 	cammode currentmode = cammode.ortha;
 
-	private Texture testdataobject = new DataObject(StaticSSSNodes.knows,"12");
-	private Texture testdataobject2 = new DataObject(StaticSSSNodes.knows,"123456");
-	private Texture testdataobject3 = new DataObject(StaticSSSNodes.knows,"1234567890");
-	private Texture testdataobject4 = new DataObject(StaticSSSNodes.knows,"1234567890ABCDEFGH");
+	private Image testdataobject = new DataObject(StaticSSSNodes.knows,"12");
+	private Image testdataobject2 = new DataObject(StaticSSSNodes.asciidecoder,"123456");
+	private Image testdataobject3 = new DataObject(StaticSSSNodes.language,"1234567890");
+	private Image testdataobject4 = new DataObject(StaticSSSNodes.SecuredBy,"1234567890ABCDEFGH");
 
 
 	//controlls the 3d background
@@ -490,10 +490,10 @@ public class MainExplorationView implements Screen {
 
 		}
 
-		ME.batch.draw(testdataobject, 111,111);
-		ME.batch.draw(testdataobject2, 111,211);
-		ME.batch.draw(testdataobject3, 111,311);
-		ME.batch.draw(testdataobject4, 111,411);
+		//ME.batch.draw(testdataobject, 111,111);
+		//ME.batch.draw(testdataobject2, 111,211);
+		//ME.batch.draw(testdataobject3, 111,311);
+		//ME.batch.draw(testdataobject4, 111,411);
 		//    game.font.draw(game.batch, "Drops Collected:: " + dropsGathered, 0, 480);
 		ME.font.draw( ME.batch, "X:: " + currentPos.x+" Y:: " + currentPos.y+"...."+dragging+"(x="+drag_dis_x+",y="+drag_dis_y+")", 10,45);
 		ME.font.draw( ME.batch, "Z:: " + currentPos.z, 10, 25);
@@ -830,6 +830,19 @@ public class MainExplorationView implements Screen {
 			Gdx.app.log(logstag,"no last location");
 			
 		}
+	}
+
+	public static void addnewdrop(DataObject newdrop, double x, double y) {
+		
+		//Image dropimage = new Image(newdrop);
+	
+		newdrop.setPosition((int)x,(int)y);
+		
+		double deg = Math.random()*360; 		
+		newdrop.setRotation((float) deg);
+		
+		gameStage.addActor(newdrop);
+		
 	}
 
 
