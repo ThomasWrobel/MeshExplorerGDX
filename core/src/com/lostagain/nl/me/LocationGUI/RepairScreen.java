@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 
 
+
 import javax.swing.GroupLayout.Alignment;
 
 import com.badlogic.gdx.Gdx;
@@ -31,6 +32,7 @@ import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
+import com.lostagain.nl.Old_Inventory;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
@@ -462,10 +464,10 @@ public class RepairScreen extends Group  implements LocationScreen {
 				@Override
 				public void clicked(InputEvent ev, float x , float y){
 					
-					SSSNode ItemNode = Inventory.currentlyHeld;
+					SSSNode ItemNode = Old_Inventory.currentlyHeld.itemsnode;
 					
 					//if not carrying item ignore
-					if (Inventory.currentlyHeld==null){
+					if (Old_Inventory.currentlyHeld==null){
 						return;
 					}
 

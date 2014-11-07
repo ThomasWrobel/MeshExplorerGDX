@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.LocationGUI;
+package com.lostagain.nl;
 
 import java.util.HashSet;
 
@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -41,30 +42,29 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
-import com.lostagain.nl.ME;
-import com.lostagain.nl.MainExplorationView;
-import com.lostagain.nl.PlayersData;
-import com.lostagain.nl.StaticSSSNodes;
-import com.lostagain.nl.me.LocationGUI.Inventory.Item;
+//import com.lostagain.nl.Old_Inventory.Item;
+import com.lostagain.nl.me.LocationGUI.DefaultStyles;
+import com.lostagain.nl.me.objects.DataObject;
 
 /** handles the various semantic objects you can aquire and use **/
-public class Inventory extends Table {
+public class Old_Inventory extends Table {
 
-	static Logger Log = Logger.getLogger("Inventory");
+	static Logger Log = Logger.getLogger("ME.Old_Inventory");
 	
-	static HashSet<Item> allItems = new HashSet<Item>();
+	static HashSet<DataObject> allItems = new HashSet<DataObject>();
 	
 	/** keeps track of the last time something is picked up.
 	 * This is to help stop missclicks dropping items straight away*/
 	private static long lastTime=0l;
 
-	public static SSSNode currentlyHeld;
+	public static DataObject currentlyHeld;
+	
 
 	private float prefwidth;
 
 	
 	
-	public Inventory() {
+	public Old_Inventory() {
 		super();
 		//super.pad(0);
     	Log.info("_________Inventory_____");
@@ -94,11 +94,11 @@ public class Inventory extends Table {
 		    PlayersData.homeLoc.locationsHub.refreshContents();
 		}
 		
-		Iterator<Item> allItemsit = allItems.iterator();
+		Iterator<DataObject> allItemsit = allItems.iterator();
 		
 	 while (allItemsit.hasNext()) {
 		 
-		Item citem = allItemsit.next();
+		 DataObject citem = allItemsit.next();
 		 
 		if (citem.itemsnode==itemsnode){
 			allItemsit.remove();
@@ -119,11 +119,11 @@ public class Inventory extends Table {
 		}
 		
 	}
-	public  void addItem(SSSNode itemsnode){
+	public  void addItem(DataObject obj){
 		
 		
 		//add it to the users machine
-		PlayersData.playerslocationcontents.addNodeToThisSet(itemsnode, "local");
+		PlayersData.playerslocationcontents.addNodeToThisSet(obj.itemsnode, "local");
 		
 		//update the home machines location
 		if (PlayersData.homeLoc!=null){
@@ -135,8 +135,8 @@ public class Inventory extends Table {
 		//SSSNodesWithCommonProperty usersInventory  = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, PlayersStartingLocation.computersuri);
 		//usersInventory.add(itemsnode);
 		
-		Item newitem = new Item(itemsnode);		
-		allItems.add(newitem);
+		//Item newitem = new Item(itemsnode);		
+		allItems.add(obj);
 		
 
 		//Log.info("______________size="+allItems.size());
@@ -150,7 +150,7 @@ public class Inventory extends Table {
 
 		//Label test = new Label("test",DefaultStyles.linkstyle);
 	//	super.add(newitem).size(60, 30).top().left().fill().expandY();
-		super.add(newitem).size(60, 30).top().left().fillY().expandY();
+		super.add(obj).size(60, 30).top().left().fillY().expandY();
 
 		//pack();
 		//super.invalidate();
@@ -164,10 +164,11 @@ public class Inventory extends Table {
 	}
 	
 	
-	protected static void setCurrentlyHeld(SSSNode itemsnode2) {
+	protected static void setCurrentlyHeld(DataObject object) {
 		
-		currentlyHeld=itemsnode2;
+		currentlyHeld=object;
 		
+		/*
 		// 
 		
 
@@ -223,8 +224,9 @@ public class Inventory extends Table {
 			}
 			
 			// save this as a new texture
-		    Texture texture = new Texture(textPixmap);
-		    MainExplorationView.setCursor(texture);
+		    Texture texture = new Texture(currentlyHeld.getDrawable());
+		    */
+		    MainExplorationView.setCursor(currentlyHeld.imagesTextureWithMipMaps);
 		    
 		    
 
@@ -242,12 +244,36 @@ public class Inventory extends Table {
 		//have a delay to ensure they dont drop it straight away by mistake
 		if (LastHeld>500 || overrideDelay)
 		{
+			//set cursor to none
 			MainExplorationView.setCursor(null);
+			
+			if (currentlyHeld!=null){
+			//dump on ground where cursor is
+			dropItemToGround(currentlyHeld);
+			
+			
+			//remove currently held
+			currentlyHeld=null;
+			}
+			
 		}
 		
 	}
 	
-	 protected static class Item extends Label 
+	 private void dropItemToGround(DataObject item) {
+		 
+		 //get cursor location
+		 Vector2 cursor = MainExplorationView.getCurrentCursorPosition();
+		 
+		 //drop the item on the ground
+		 MainExplorationView.addnewdrop(item, cursor.x, cursor.y);
+		 
+		 
+		 
+		
+	}
+/*
+	protected static class Item extends Label 
 	 {
 		 
 		 SSSNode itemsnode;
@@ -275,7 +301,7 @@ public class Inventory extends Table {
 
 		
 		 
-	 }
+	 }*/
 
 	public void setPrefWidth(float width) {
 		prefwidth=width;
@@ -292,6 +318,16 @@ public class Inventory extends Table {
 	public float getPrefHeight() {
 		return 200;
 		
+		
+	}
+	
+	public void holdItem(DataObject objectsnode) {
+		if (currentlyHeld==null){
+			setCurrentlyHeld(objectsnode);
+		} else {
+			dropHeldItem(true);
+		}
+		// TODO Auto-generated method stub
 		
 	}
 

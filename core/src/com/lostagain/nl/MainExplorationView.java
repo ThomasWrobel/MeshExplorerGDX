@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
+import lostagain.nl.GWTish.Label;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -25,10 +27,16 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -40,8 +48,6 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkflame.client.semantic.SSSNode;
-import com.lostagain.nl.me.LocationGUI.GUIBar;
-import com.lostagain.nl.me.LocationGUI.Inventory;
 import com.lostagain.nl.me.LocationGUI.Link;
 import com.lostagain.nl.me.LocationGUI.Location;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
@@ -58,7 +64,6 @@ import com.lostagain.nl.uti.SpiffyVector3Tween;
  * **/
 public class MainExplorationView implements Screen {
 
-	//static Logger Log = Logger.getLogger("ME.MainExplorationView");
 
 	final static String logstag = "ME.MainExplorationView";
 
@@ -142,12 +147,47 @@ public class MainExplorationView implements Screen {
 	}    
 	cammode currentmode = cammode.ortha;
 
+	/*
 	private Image testdataobject = new DataObject(StaticSSSNodes.knows,"12");
 	private Image testdataobject2 = new DataObject(StaticSSSNodes.asciidecoder,"123456");
 	private Image testdataobject3 = new DataObject(StaticSSSNodes.language,"1234567890");
 	private Image testdataobject4 = new DataObject(StaticSSSNodes.SecuredBy,"1234567890ABCDEFGH");
 
+*
+*/
+	
+	private static class DistanceFieldShader extends ShaderProgram {
+		public DistanceFieldShader () {
+			super(Gdx.files.internal("shaders/distancefield.vert"), Gdx.files.internal("shaders/distancefield.frag"));
+			if (!isCompiled()) {
+				throw new RuntimeException("Shader compilation failed:\n" + getLog());
+			}
+		}
 
+		/** @param smoothing a value between 0 and 1 */
+		public void setSmoothing (float smoothing) {
+			float delta = 0.5f * MathUtils.clamp(smoothing, 0, 1);
+			setUniformf("u_lower", 0.5f - delta);
+			setUniformf("u_upper", 0.5f + delta);
+		}
+	}
+	/*
+	public static class MyShaderProvider extends DefaultShaderProvider {
+	    @Override
+	    protected Shader createShader (Renderable renderable) {
+	        if (renderable.material.has(ColorAttribute.Diffuse))
+	        	
+	            return new MyShader(renderable);
+	        else
+	            return super.createShader(renderable);
+	    }
+	}
+	*/
+	
+	DistanceFieldShader testshader = new DistanceFieldShader();
+	
+	Label test = new Label("test test test");
+	
 	//controlls the 3d background
 	public static  BackgroundManager background = new BackgroundManager();
 
@@ -166,6 +206,7 @@ public class MainExplorationView implements Screen {
 
 		this.game = gam;
 
+    	
 		Gdx.app.log(logstag,"setting up stage and stuff");
 
 		//create the game gui interface
@@ -306,8 +347,17 @@ public class MainExplorationView implements Screen {
 
 		centerViewOn( PlayersData.homeLoc);
 
+		//test shader
+		// String vert = Gdx.files.internal("data/test.vertex.glsl").readString();
+		 //   String frag = Gdx.files.internal("data/test.fragment.glsl").readString();
+		 //   shader = new DefaultShader(renderable, new DefaultShader.Config(vert, frag));
+		 //   shader.init();
+		
+		
+		//add a test label
+		gameStage.addActor(test.getModel());
 
-
+		
 		//gameStage.setDebugAll(true);
 
 
@@ -464,9 +514,15 @@ public class MainExplorationView implements Screen {
 		ModelManagment.updateAnimatedBacks(delta);
 		
 		background.modelBatch.begin( camera);
-		background.modelBatch.render(ModelManagment.allModelInstances);
+		background.modelBatch.render(ModelManagment.allModelInstances 	);
 		background.modelBatch.end();	
-
+	
+		testshader.begin();
+	//	testshader.setUniformMatrix("u_projTrans", camera.getProjectionMatrix());
+		testshader.setUniformi("u_texture", 0);
+		ModelManagment.allModelInstances.get(0).model.meshes.get(0).render(testshader,  GL20.GL_TRIANGLES);
+		testshader.end();
+		
 		gameStage.getViewport().setCamera(camera);
 
 		gameStage.act(delta); //Gdx.graphics.getDeltaTime()
@@ -701,7 +757,7 @@ public class MainExplorationView implements Screen {
 		camera.near=0.5f;
 		camera.far=900.0f;
 		camera.update();
-
+		
 		gameStage.getViewport().setCamera(camera);
 		gameStage.getViewport().update(width, height, true);       	
 		guiStage.getViewport().update(width, height, true);
@@ -834,15 +890,26 @@ public class MainExplorationView implements Screen {
 
 	public static void addnewdrop(DataObject newdrop, double x, double y) {
 		
-		//Image dropimage = new Image(newdrop);
-	
-		newdrop.setPosition((int)x,(int)y);
+		//Image dropimage = new Image(newdrop);		
+		newdrop.setPosition((int)x - (newdrop.getWidth()/2),(int)y- (newdrop.getHeight()/2));
 		
-		double deg = Math.random()*360; 		
+		double deg = (Math.random()*30)-15; 		
 		newdrop.setRotation((float) deg);
 		
-		gameStage.addActor(newdrop);
+		gameStage.addActor(newdrop);	
+	}
+
+	
+	public static Vector2 getCurrentCursorPosition() {
+
+		float xc = Gdx.input.getX();
+		float yc = Gdx.input.getY();//-gameStage.getHeight();
 		
+		Vector2 vec = new Vector2(xc,yc);
+		
+		
+		
+		return gameStage.screenToStageCoordinates(vec);
 	}
 
 

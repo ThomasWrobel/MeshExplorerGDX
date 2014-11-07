@@ -173,7 +173,8 @@ public class BasicInfovore extends Creature implements Animating {
 	public void fireTouchUp() {
 		super.fireTouchUp();
 	
-
+		//move a bit at random ?
+		
 		
 	}
 

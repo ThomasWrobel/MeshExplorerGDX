@@ -452,7 +452,9 @@ public class LocationsHub extends Table {
 
 		Log.info("populateContents for "+LocationsNode);
 		
+		
 		//clear existing lists in case they have changed
+		Log.info("removing contents ");
 		contentsPage.removeAllContents();
 
 		Log.info("removing emails ");
@@ -465,8 +467,11 @@ public class LocationsHub extends Table {
 
 		for (SSSNode sssNode : testresult) {
 
+			Log.info("Adding :"+sssNode.getPLabel());
+			
 			if (sssNode.isOrHasParentClass(StaticSSSNodes.software.getPURI())){
 
+				
 				//place on right page depending on type
 				if (sssNode.isOrHasParentClass(StaticSSSNodes.ability.getPURI())){
 					abilityPage.addObjectFile(sssNode);
@@ -481,7 +486,7 @@ public class LocationsHub extends Table {
 
 			if (sssNode.isOrHasParentClass(StaticSSSNodes.messages.getPURI())){
 
-				Log.info(" adding email");
+				Log.info(" Adding email");
 				
 				//First we check if its got a language specified 
 				

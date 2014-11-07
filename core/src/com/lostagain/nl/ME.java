@@ -25,7 +25,6 @@ import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.me.LocationGUI.DefaultStyles;
-import com.lostagain.nl.me.LocationGUI.Inventory;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.LocationGUI.LocationScreen;
 import com.lostagain.nl.uti.FileManager;
@@ -55,7 +54,7 @@ public class ME extends Game {
 
     //global game stuff
 	static ME game;
-    static public Inventory playersInventory;   
+    static public Old_Inventory playersInventory;   
 
 	static public SpriteBatch batch;
     public static BitmapFont font;  
@@ -66,9 +65,6 @@ public class ME extends Game {
     	
     	game=this;
     	
-    	Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), true);
-    	//texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-    	texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear); // linear filtering in nearest mipmap image
     	
     	//when we  figure out how to use bitmap fonts in ui elements, we use the following
     	
@@ -85,7 +81,7 @@ public class ME extends Game {
 
     	Gdx.app.log(logstag,"____");
     	//create inventory
-    	playersInventory = new Inventory();
+    	playersInventory = new Old_Inventory();
 
     	Gdx.app.log(logstag,"________");
     	//we clear the semantics before adding the player data (because that contains semantics

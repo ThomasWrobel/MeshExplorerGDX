@@ -23,7 +23,7 @@ public class PlayersData {
 	static SSSNode coin = SSSNode.createSSSNode("coin",ME.INTERNALNS+"coin", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.software});
 
 	 //default message contents semantics\TomsNetwork.ntlist
-	static SSSNode homemessage = SSSNode.createSSSNode("\"homepc/WelcomeMessage.txt\"","semantics\\TomsNetwork.ntlist#", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
+	static SSSNode homemessage = SSSNode.createSSSNode("\"homepc/WelcomeMessage.txt\"","semantics\\TomsNetwork.ntlist#welcomemessage", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
 	
 	 //stores the computers description
 	static SSSNode homeDisLabel = SSSNode.createSSSNode("Something bob gave me a copy of. Hope he wont get in trouble for it.","HomeLocationDiscription",ME.INTERNALNS);
@@ -34,9 +34,9 @@ public class PlayersData {
 	//make a new common property set to store what this pc has unlocked	
 	static SSSNodesWithCommonProperty playersunlocks = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.UnlockedBy, computersuri);
 	
-	//and what is currently on this pc
-	public static SSSNodesWithCommonProperty playerslocationcontents = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, computersuri, new SSSNode[]{homemessage,StaticSSSNodes.asciidecoder});
-
+	//and what is currently on the players location
+	public static SSSNodesWithCommonProperty playerslocationcontents = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, computersuri, new SSSNode[]{homemessage,StaticSSSNodes.asciidecoder,StaticSSSNodes.prototype_scanner});
+	
 	/** the home location container **/
 	public static Location homeLoc;
 	
@@ -99,7 +99,11 @@ public class PlayersData {
 		
 		for (SSSNode set : PlayersData.playerslocationcontents) {
     		
-			Log.info("____homemessagep____result="+set.PURI );
+			Log.info("____content____result="+set.PURI );
+
+			Log.info("____content____parents="+set.getDirectParentsAsString() );
+
+			Log.info("____content____parents="+set.getAllClassesThisBelongsToo() );
 			
 		}
 		

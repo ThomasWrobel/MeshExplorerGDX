@@ -43,13 +43,15 @@ public class DefaultStyles {
 	public static Skin linkstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
 	static Skin buttonstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
 	
-	static Skin colors = new Skin();
+	public static Skin colors = new Skin();
+	
 	
 	//static ProgressBarStyle barStyle = new ProgressBarStyle(Skin.newDrawable("white", Color.DARK_GRAY), textureBar);
-	static Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), true);
-	static BitmapFont scramabledFont = new BitmapFont(Gdx.files.internal("data/dfieldscrambled.fnt"), new TextureRegion(texture), false);
-	static BitmapFont standdardFont = new BitmapFont(Gdx.files.internal("data/dfield.fnt"), new TextureRegion(texture), false);
-
+	public static Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), true);
+	public static BitmapFont scramabledFont = new BitmapFont(Gdx.files.internal("data/dfieldscrambled.fnt"), new TextureRegion(texture), true);
+	public static BitmapFont standdardFont = new BitmapFont(Gdx.files.internal("data/dfield.fnt"), new TextureRegion(texture), true);
+	public static BitmapFont standdardFont_interface = new BitmapFont(Gdx.files.internal("data/dfield.fnt"), new TextureRegion(texture), false);
+	
 	
 	public static void setupStyles(){
 		

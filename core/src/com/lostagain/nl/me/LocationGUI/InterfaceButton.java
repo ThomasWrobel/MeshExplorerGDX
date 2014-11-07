@@ -6,10 +6,12 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 /** a link that represents a page on the computer  **/
-class InterfaceButton extends Label {
+public class InterfaceButton extends Label {
 	
-	Boolean isVisible = true;
-	Boolean isDisabled = false;
+	
+	public Boolean isVisible = true;
+	
+	public Boolean isDisabled = false;
 	
 	public InterfaceButton(String name,Boolean isVisible){				
 		super(name,DefaultStyles.buttonstyle);

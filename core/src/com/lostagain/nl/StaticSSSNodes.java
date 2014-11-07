@@ -40,17 +40,28 @@ public class StaticSSSNodes {
 	public static final SSSNode scram1 =  SSSNode.createSSSNode(ME.INTERNALNS+"scram1",ME.INTERNALNS+"scram1", ME.INTERNALNS,new SSSNode[]{language});
 
 	//Ability's
-	public static final SSSNode ability= SSSNode.createSSSNode(ME.INTERNALNS+"ability", ME.INTERNALNS);
-	
+	public static final SSSNode ability= SSSNode.createSSSNode(ME.INTERNALNS+"ability", ME.INTERNALNS+"ability", ME.INTERNALNS,new SSSNode[]{software});	
 	public static final SSSNode decoder= SSSNode.createSSSNode(ME.INTERNALNS+"decoder", ME.INTERNALNS+"decoder", ME.INTERNALNS,new SSSNode[]{ability});
 	
 	//define decoders
 	public static final SSSNode asciidecoder= SSSNode.createSSSNode ("Asciidecoder" , ME.INTERNALNS+"asciidecoder",  ME.INTERNALNS,new SSSNode[]{decoder});
 	public static final SSSNodesWithCommonProperty knowsAscii = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(knows, stdascii, new SSSNode[]{asciidecoder});
-			
-	
+
 	public static final SSSNode scram1decoder= SSSNode.createSSSNode("Scram1decoder", ME.INTERNALNS+"scram1decoder", ME.INTERNALNS,new SSSNode[]{decoder});
 	public static final SSSNodesWithCommonProperty knowsScram1 = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(knows, scram1, new SSSNode[]{scram1decoder});
+	
+	//scanner (scans links and retrieves downloads)
+	public static final SSSNode scanner = SSSNode.createSSSNode(ME.INTERNALNS+"scanner", ME.INTERNALNS+"scanner", ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode prototype_scanner = SSSNode.createSSSNode("PrototypeScanner", ME.INTERNALNS+"PrototypeScanner", ME.INTERNALNS,new SSSNode[]{scanner});
+	
+	//give it base abilities
+	public static final SSSNode multitasking= SSSNode.createSSSNode(ME.INTERNALNS+"multitasking", ME.INTERNALNS);
+	public static final SSSNode speed = SSSNode.createSSSNode(ME.INTERNALNS+"speed", ME.INTERNALNS);	
+	public static final SSSNode level1 = SSSNode.createSSSNode(ME.INTERNALNS+"level1", ME.INTERNALNS);	
+	public static final SSSNodesWithCommonProperty level1multitasking = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(speed, level1, new SSSNode[]{prototype_scanner});
+	public static final SSSNodesWithCommonProperty level1downloadspeed = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(multitasking, level1, new SSSNode[]{prototype_scanner});
+
+	
 	
 	//populations
 	//Populations define a group of creatures
@@ -89,8 +100,7 @@ public class StaticSSSNodes {
 	
 	public void setup(){
 		
-		//at the moment SSSNodes can only be created as having a class or a bunch.
-		//we cant yet put them in lists statically
+		//not needed? or do we need a refresh?
 		
 		
 	}

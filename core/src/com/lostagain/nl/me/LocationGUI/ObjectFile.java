@@ -18,6 +18,7 @@ import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.objects.DataObject;
 
 
 /** An object filelink represents a single object node that can be downloaded **/
@@ -223,7 +224,7 @@ public class ObjectFile extends WidgetGroup {
 		 setStateAlreadyHave();
 		 
 		//add it to the users machine
-		ME.playersInventory.addItem(objectsnode);
+		ME.playersInventory.addItem(new DataObject(objectsnode));
 		
 		
 	}

@@ -14,9 +14,9 @@ BobsOutpost me:populatedBy smallInfovorPopulation.
 
 smallInfovorPopulation rdfs:subClassOf me:population.
 smallInfovorPopulation me:quantity 4.
-smallInfovorPopulation me:anydrop dropdata1.
-smallInfovorPopulation me:exactdrop dropdata2.
-smallInfovorPopulation me:anydrop dropdata3.
+smallInfovorPopulation me:anydrop Human.
+smallInfovorPopulation me:exactdrop Apple.
+smallInfovorPopulation me:anydrop Fish.
 smallInfovorPopulation me:killedon "fruit".
 smallInfovorPopulation me:hitPoints 2.
 

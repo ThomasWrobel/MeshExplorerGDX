@@ -10,9 +10,9 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.semantic.SSSNode;
+import com.lostagain.nl.Old_Inventory;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
-import com.lostagain.nl.me.LocationGUI.Inventory;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.creatures.Population.destructOn;
 import com.lostagain.nl.me.models.ModelManagment;
@@ -159,9 +159,9 @@ public class Creature implements hitable {
 			}
 		}
 
-		if (destructionType == destructOn.query && Inventory.currentlyHeld!=null){
+		if (destructionType == destructOn.query && Old_Inventory.currentlyHeld!=null){
 			
-			Gdx.app.log(logstag,"_testing vulnerability against:"+Inventory.currentlyHeld.getPLabel());	
+			Gdx.app.log(logstag,"_testing vulnerability against:"+Old_Inventory.currentlyHeld.itemsnode.getPLabel());	
 			Gdx.app.log(logstag,"_vulnerability is:"+queryToDestroy);	
 			
 			//Uti.testIfInQueryResults(queryToDestroy,lookForThisNode);
@@ -207,7 +207,7 @@ public class Creature implements hitable {
 		for (SSSNode dropsnode : drops2) {
 			
 			//create new object for it
-			DataObject newdrop = new DataObject(dropsnode,""); //string for debuging, will be removed
+			DataObject newdrop = new DataObject(dropsnode); //string for debuging, will be removed
 			
 			//add to world
 			Gdx.app.log(logstag, "creating drop on screen");
