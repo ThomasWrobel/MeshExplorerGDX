@@ -1,10 +1,12 @@
-package com.lostagain.nl;
+package com.lostagain.nl.me.gui;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -13,7 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.lostagain.nl.ME;
+import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.me.LocationGUI.DefaultStyles;
 import com.lostagain.nl.me.LocationGUI.InterfaceButton;
 
@@ -22,7 +28,8 @@ import com.lostagain.nl.me.LocationGUI.InterfaceButton;
 public class GUIBar extends WidgetGroup {
 
 	static Logger Log = Logger.getLogger("ME.GUIBar");
-
+	final static String logstag = "ME.GUIBar";
+	
 	InterfaceButton goback =     new InterfaceButton("<< Back",true);
 	InterfaceButton myHome =     new InterfaceButton("My  Home",true);
 	InterfaceButton myContents = new InterfaceButton("My  Data",false); //not visible unless we have data (will be removed in favor of temp memory)
@@ -36,7 +43,7 @@ public class GUIBar extends WidgetGroup {
 	//memory popup
 	TempMemory STMemoryPop = new TempMemory();
 	
-	
+	public ConceptGun ConceptGun = new ConceptGun();
 	
 	boolean closed = true;	
 	
@@ -47,9 +54,13 @@ public class GUIBar extends WidgetGroup {
 	private boolean setup=false;
 	private boolean setup2=false;
 	
+	//Experimental
+	public DragAndDrop dragAndDrop = new DragAndDrop();
+	
 	public GUIBar() {
 		
-		super.setFillParent(true);
+		
+		//super.setFillParent(true);
 		//super.setDebug(true);
 		
 		//super(DefaultStyles.linkstyle);		
@@ -62,14 +73,43 @@ public class GUIBar extends WidgetGroup {
 		ColorM.a=0.5f;
 		back.background = DefaultStyles.colors.newDrawable("white", ColorM);
 		
-		
+		STMemoryPop.addListener(new ClickListener () {			
+			@Override
+			public void clicked(InputEvent ev, float x , float y){
+				Log.info("_________TempMemory clicked _____");
+				//if (Old_Inventory.currentlyHeld!=null){
+				//	clickedWhileHolding();					
+				//}
+			}
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) 		 		
+		 		{
+				Log.info("_________TempMemory clicked _____");
+				Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
 				
+				return false;
+				
+		 		}
+
+
+		});
+		
+	
 		backgroundobject = new Label("",back);
 		
 		//backgroundobject.setSize(85, 250);
 		backgroundobject.setPosition(0,340);	
 		
-		
+		backgroundobject.addListener(new ClickListener () {			
+			@Override
+			public void clicked(InputEvent ev, float x , float y){
+
+				Gdx.app.log(logstag,"clicked");
+				if (Old_Inventory.currentlyHeld!=null){
+					clickedWhileHolding();					
+				}
+				
+		}});
 		
 		myHome.addListener(new ClickListener () {			
 			@Override
@@ -129,9 +169,13 @@ public class GUIBar extends WidgetGroup {
 			@Override
 			public void clicked(InputEvent ev, float x , float y){
 
+				
+				if (Old_Inventory.currentlyHeld!=null){
+					clickedWhileHolding();					
+				}
+				
 				triggerInventoryView();
 
-				//ME.playersInventory.validate();
 				
 
 			}
@@ -154,14 +198,18 @@ public class GUIBar extends WidgetGroup {
 		allLinks.add(myContents);
 		allLinks.add(mySTMemory);
 		
-		Log.info("setting up");
+		
+		
+		
+		Gdx.app.log(logstag,"setting up");
 		ME.playersInventory.setVisible(false);
 
 		STMemoryPop.setVisible(false);
 		
-		refreshlinks();
+		populateGUI();
+		//refreshlinks();
 
-		super.validate();
+		//super.validate();
 	}
 	
 	protected void setOnlyButtonDown(InterfaceButton thisone) {
@@ -189,21 +237,31 @@ public class GUIBar extends WidgetGroup {
 		if (myContents.isVisible!=true){
 			myContents.isVisible=visible;
 		
-		 refreshlinks();
+			invalidate();
+		 //refreshlinks();
 		 setupInventory(); 
 		}
 	}
 	
-	private void refreshlinks() {
+	//@Override
+	//public void validate(){
+		//super.validate();
+		//refreshlinks(); 
+	//}
+	
+	/** places all the children on this widget **/
+	public void populateGUI(){
+		this.setSize(95, 220);
+		
 		super.clearChildren();
-		super.addActor(backgroundobject);
-		super.addActor(ME.playersInventory);
-		super.addActor(STMemoryPop);
+		addActor(backgroundobject);		
+		addActor(STMemoryPop);
+		addActor(ConceptGun); 
+		ConceptGun.invalidate();
+		//ConceptGun.validate();
 		
 		int y = 440; //start at 440 and work our way down the page with each new shortcut
 
-		ME.playersInventory.validate();
-		STMemoryPop.validate();
 		
 		for (InterfaceButton link : allLinks) {		
 			
@@ -216,16 +274,19 @@ public class GUIBar extends WidgetGroup {
 			
 		}
 
-		backgroundobject.setSize(85, 250);
-		backgroundobject.setPosition(0,y+20);			
-			
-
+		backgroundobject.setPosition(0,y+20);	
+		backgroundobject.setSize(95, 220);
 		
+		setupSTMemoryPop();
+	
+		this.invalidate();
 	}
+	
+
 
 	private void triggerInventoryView() {
 		
-		Log.info("triggerInventoryView");
+		Gdx.app.log(logstag,"triggerInventoryView");
 		
 		if (closed){
 			openSTMemory();
@@ -261,7 +322,7 @@ public class GUIBar extends WidgetGroup {
 		
 	}*/
 	private void openSTMemory() {
-		Log.info("open stm");
+		Gdx.app.log(logstag,"open stm");
 		if (!setup2){
 			setupSTMemoryPop();
 		
@@ -270,10 +331,10 @@ public class GUIBar extends WidgetGroup {
 		STMemoryPop.setVisible(true);
 
 
-		Log.info("st width is "+STMemoryPop.getWidth());
-		Log.info("st height is "+STMemoryPop.getHeight());
+		Gdx.app.log(logstag,"st width is "+STMemoryPop.getWidth());
+		Gdx.app.log(logstag,"st height is "+STMemoryPop.getHeight());
 
-		Log.info(" position of st mem is:"+STMemoryPop.getX()+","+STMemoryPop.getY());
+		Gdx.app.log(logstag,"position of st mem is:"+STMemoryPop.getX()+","+STMemoryPop.getY());
 
 		closed=false;
 		justopened=true;
@@ -284,7 +345,7 @@ public class GUIBar extends WidgetGroup {
 	}
 	
 	private void closeSTMemory() {
-		Log.info("close stm");
+		Gdx.app.log(logstag,"close stm");
 		
 		STMemoryPop.setVisible(false);
 		closed=true;
@@ -295,7 +356,7 @@ public class GUIBar extends WidgetGroup {
 	
 	
 	private void openInventory() {
-		Log.info("openInventory");
+		Gdx.app.log(logstag,"openInventory");
 		
 		if (!setup){
 			setupInventory();
@@ -314,50 +375,49 @@ public class GUIBar extends WidgetGroup {
 	public void setupSTMemoryPop(){
 		
 		//STMemoryPop
-		Log.info("setup STMemoryPop");
-		super.addActor(STMemoryPop);
+		Gdx.app.log(logstag,"setup STMemoryPop");
+	//	super.addActor(STMemoryPop);
 		
 		//ME.playersInventory.setPrefWidth(super.getWidth());
 
-		Log.info("width is "+super.getWidth());
+		Gdx.app.log(logstag,"width is "+super.getWidth());
 		
 		STMemoryPop.setHeight(300);
 		STMemoryPop.setPrefWidth(92);
 
-		Log.info("setup st width is "+STMemoryPop.getWidth());
+		Gdx.app.log(logstag,"setup st width is "+STMemoryPop.getWidth());
 		
 
 		float X = mySTMemory.getX();
 		float Y = mySTMemory.getY()-STMemoryPop.getHeight();
 
-		Log.info("setup setting position of st mem to:"+X+","+Y);
+		Gdx.app.log(logstag,"setup setting position of st mem to:"+X+","+Y);
 		
 		STMemoryPop.setPosition(X, Y);
-		STMemoryPop.validate();
+		STMemoryPop.invalidate();// .validate();
 		setup2=true;
-		super.validate();
+		
+		//super.validate();
 	}
 	public void setupInventory() {
 
 		if (setup){			
 			return;		
 		} 
-		Log.info("setupInventory");
+		Gdx.app.log(logstag,"setupInventory");
 		super.addActor(ME.playersInventory);
 		
 		ME.playersInventory.setPrefWidth(super.getWidth());
 
-		Log.info("width is "+super.getWidth());
+		Gdx.app.log(logstag,"width is "+super.getWidth());
 		
 		ME.playersInventory.setHeight(200);
-		
-		
 		ME.playersInventory.pack();
 
 		float X = myContents.getX();
 		float Y = myContents.getY()-ME.playersInventory.getHeight();
 
-		Log.info("popping up inventory at:"+X+","+Y);
+		Gdx.app.log(logstag,"popping up inventory at:"+X+","+Y);
 		ME.playersInventory.setPosition(X, Y);
 		
 		
@@ -368,7 +428,7 @@ public class GUIBar extends WidgetGroup {
 
 	public void closeInventory() {
 
-		Log.info("closeInventory");
+		Gdx.app.log(logstag,"closeInventory");
 		
 	//	if (!closed ){
 			ME.playersInventory.setVisible(false);
@@ -396,6 +456,22 @@ public class GUIBar extends WidgetGroup {
 	}
 	*/
 	
-	
+	//is clicked while holding something, we attempt to add it to the temp memory
+	public void clickedWhileHolding(){
+
+		Gdx.app.log(logstag,"clickedWhileHolding");
+		
+		Boolean success = STMemoryPop.addItem(Old_Inventory.currentlyHeld);
+
+		//if was successfully added we set currently held to nothing
+		if (success){
+				Old_Inventory.currentlyHeld = null;
+		} else {
+			
+			//should have some feedback here for STMemory full up
+			
+		}
+		
+	}
 
 }

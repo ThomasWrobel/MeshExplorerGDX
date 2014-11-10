@@ -2,6 +2,7 @@ package com.lostagain.nl.me.LocationGUI;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,13 +26,15 @@ import com.lostagain.nl.me.objects.DataObject;
 public class ObjectFile extends WidgetGroup {
 
 	ProgressBar downloadPercentage;
+
+	final static String logstag = "ME.ObjectFile";
 	
 	Label ObjectsLabel = new Label ("--->",DefaultStyles.linkstyle);
 
 	final static String DOWNLOAD = " DOWNLOAD ";
 	final static String DOWNLOADING = " DOWNLOADING ";
 	
-	final static String ALREADYHAVE = " (already have ";
+	final static String ALREADYHAVE = "Already In Storage. Take Copy: ";
 	
 	int PercentageScanned = 0;	
 	
@@ -83,7 +86,7 @@ public class ObjectFile extends WidgetGroup {
 		downloadPercentage.setX(0);;
 	
 		ObjectsLabel.setFillParent(true);
-		ObjectsLabel.setWidth(44);		
+		//ObjectsLabel.setWidth(44);		
 		downloadPercentage.setFillParent(true);
 
 		super.addActor(downloadPercentage);
@@ -120,9 +123,17 @@ public class ObjectFile extends WidgetGroup {
 
 	@Override
 	public void validate() {
+		if (this.getParent()!=null){
+		super.setWidth(this.getParent().getWidth());
 		
-		downloadPercentage.validate();
-		ObjectsLabel.pack();
+		}
+		super.setHeight(50);
+
+		//Gdx.app.log(logstag,"super lab width="+super.getWidth());
+		//Gdx.app.log(logstag,"super lab height="+super.getHeight());
+		
+		downloadPercentage.validate();		
+		ObjectsLabel.validate();
 	}
 	
 	private void download(){
@@ -214,8 +225,36 @@ public class ObjectFile extends WidgetGroup {
 		
 		currentMode = ObjectFileState.AlreadyHave;
 		
-		ObjectsLabel.setText(ALREADYHAVE + objectsnode.getPLabel()+")");
+		ObjectsLabel.setText(ALREADYHAVE + "");
 		ObjectsLabel.setColor(0, 50, 0, 50);
+		//ObjectsLabel.validate();
+
+		Gdx.app.log(logstag,"=========================triggering layout=");
+		
+		//ensure width is correct (kludge)
+		//for some reason getParent doesnt work at this point so we use the stored parent...no clue why
+		if (currentParent!=null){
+				super.setWidth(currentParent.getWidth());
+			Gdx.app.log(logstag,"super lab width="+currentParent.getWidth());
+			Gdx.app.log(logstag,"super lab width="+super.getWidth());
+			} else {
+				Gdx.app.log(logstag,"=========================no parent=");
+			}
+			super.setHeight(50);
+		
+		//add object
+		DataObject newobject = new DataObject(this.objectsnode);
+		newobject.setScale(0.5f);		
+
+		Gdx.app.log(logstag,"ObjectsLabel.getWidth()="+ObjectsLabel.getWidth());
+		Gdx.app.log(logstag,"super.getWidth()"+super.getWidth());
+		Gdx.app.log(logstag,"super.getPrefWidth()"+super.getPrefWidth());		
+		Gdx.app.log(logstag,"newobject.getWidth()="+newobject.getWidth());
+
+		newobject.setPosition(currentParent.getWidth()-(newobject.getWidth()/2), 0); //right align to end of label (label should not be so big as to overlap
+		
+		super.addActor(newobject);
+		
 		
 	}
 

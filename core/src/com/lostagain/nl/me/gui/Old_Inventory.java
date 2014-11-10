@@ -1,4 +1,4 @@
-package com.lostagain.nl;
+package com.lostagain.nl.me.gui;
 
 import java.util.HashSet;
 
@@ -42,6 +42,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
+import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.PlayersData;
 //import com.lostagain.nl.Old_Inventory.Item;
 import com.lostagain.nl.me.LocationGUI.DefaultStyles;
 import com.lostagain.nl.me.objects.DataObject;
@@ -233,10 +235,13 @@ public class Old_Inventory extends Table {
 		lastTime = TimeUtils.millis();
 		
 	}
-	public void dropHeldItem(){
+	public static void dropHeldItem(){
+		
+		
 		dropHeldItem(false);
+		
 	}
-	public void dropHeldItem(boolean overrideDelay){
+	public static void dropHeldItem(boolean overrideDelay){
 		
 
 		long LastHeld =  TimeUtils.timeSinceMillis(lastTime);
@@ -260,7 +265,8 @@ public class Old_Inventory extends Table {
 		
 	}
 	
-	 private void dropItemToGround(DataObject item) {
+	 private static void dropItemToGround(DataObject item) {
+		 
 		 
 		 //get cursor location
 		 Vector2 cursor = MainExplorationView.getCurrentCursorPosition();
@@ -327,7 +333,6 @@ public class Old_Inventory extends Table {
 		} else {
 			dropHeldItem(true);
 		}
-		// TODO Auto-generated method stub
 		
 	}
 

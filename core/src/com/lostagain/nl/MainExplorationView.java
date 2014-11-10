@@ -39,7 +39,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -52,6 +54,9 @@ import com.lostagain.nl.me.LocationGUI.Link;
 import com.lostagain.nl.me.LocationGUI.Location;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.creatures.BasicInfovore;
+import com.lostagain.nl.me.gui.ConceptGun;
+import com.lostagain.nl.me.gui.GUIBar;
+import com.lostagain.nl.me.gui.Old_Inventory;
 import com.lostagain.nl.me.models.BackgroundManager;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.objects.DataObject;
@@ -67,15 +72,15 @@ public class MainExplorationView implements Screen {
 
 	final static String logstag = "ME.MainExplorationView";
 
+	private static boolean LeftButtonDown = false;
+
 	final ME game;
 
 	static Location currentlyOpenLocation;
 	
 
-	public static Stage gameStage;
-
-	
-	static Stage guiStage;
+	public static Stage gameStage;		
+	public static Stage guiStage;
 
 	//static Float CurrentX = 100f;
 	//static Float CurrentY = 100f;	
@@ -138,7 +143,7 @@ public class MainExplorationView implements Screen {
     
     boolean newtouch=true; //if a touch event has just started
     
-	boolean touchedsomething = false;
+	boolean touchedAModel = false;
     
  
 	//final thing should use perspective
@@ -214,6 +219,10 @@ public class MainExplorationView implements Screen {
 
 		Gdx.app.log(logstag,"setting up stage and stuff..");
 		guiStage.addActor(usersGUI);
+		usersGUI.validate();
+	//	guiStage.addActor(usersGUI.STMemoryPop); //temp should be part of gui
+		//guiStage.addActor(usersGUI.ConceptGun); //temp should be part of gui
+	//	usersGUI.ConceptGun.validate();
 
 		cameraTweenTask = new Task() {
 			@Override
@@ -324,7 +333,6 @@ public class MainExplorationView implements Screen {
 		InputMultiplexer multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(guiStage);
 		multiplexer.addProcessor(gameStage);
-		
 		Gdx.input.setInputProcessor(multiplexer);
 		
 		gameStage.getViewport().setCamera(camera);
@@ -496,6 +504,7 @@ public class MainExplorationView implements Screen {
 		//camera.rotate(45, 0, 0, 1);
 		//camera.position.set(CurrentX, CurrentY, CurrentZ);
 		camera.position.set(currentPos);
+
 		
 		// create the camera and the SpriteBatch
 		if ( currentmode == cammode.ortha){        	 
@@ -527,37 +536,9 @@ public class MainExplorationView implements Screen {
 
 		gameStage.act(delta); //Gdx.graphics.getDeltaTime()
 		gameStage.draw();
-
-		// tell the SpriteBatch to render in the
-		// coordinate system specified by the camera.
+		
+		
 		//  game.batch.setProjectionMatrix(camera.combined);
-
-		// begin a new batch and draw the bucket and
-		// all drops
-		ME.batch.begin();
-
-		if (customCursor!=null){
-
-			float xc = Gdx.input.getX();
-			float yc = -Gdx.input.getY()+gameStage.getHeight();
-
-			ME.batch.draw(customCursor, (xc-(customCursor.getWidth()/2)), (yc-customCursor.getHeight()/2));
-
-
-		}
-
-		//ME.batch.draw(testdataobject, 111,111);
-		//ME.batch.draw(testdataobject2, 111,211);
-		//ME.batch.draw(testdataobject3, 111,311);
-		//ME.batch.draw(testdataobject4, 111,411);
-		//    game.font.draw(game.batch, "Drops Collected:: " + dropsGathered, 0, 480);
-		ME.font.draw( ME.batch, "X:: " + currentPos.x+" Y:: " + currentPos.y+"...."+dragging+"(x="+drag_dis_x+",y="+drag_dis_y+")", 10,45);
-		ME.font.draw( ME.batch, "Z:: " + currentPos.z, 10, 25);
-
-		//    game.batch.draw(bucketImage, bucket.x, bucket.y);
-
-
-		ME.batch.end();
 
 		// process user input
 		//  if (Gdx.input.isTouched()) {
@@ -573,14 +554,19 @@ public class MainExplorationView implements Screen {
 			
 			//test if we clicked a 3d model
 			if (newtouch){
+				
+				//trigger concept gun
+				usersGUI.ConceptGun.createBeamEffect(Gdx.input.getX(), Gdx.input.getY());
+				
+				
 				Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
-				touchedsomething = ModelManagment.testForHit(ray);
+				touchedAModel = ModelManagment.testForHit(ray);
 				Gdx.app.log(logstag,"_-touch down on a model-_");
 			}
 			
 			
 			
-			if (!dragging && !cancelnextdragclick && !touchedsomething){
+			if (!dragging && !cancelnextdragclick && !touchedAModel && Old_Inventory.currentlyHeld == null){
 				dragging = true;
 				dragstart = TimeUtils.millis();
 				
@@ -593,7 +579,7 @@ public class MainExplorationView implements Screen {
 				startdragx_exview = currentPos.x;
 				startdragy_exview = currentPos.y;
 				
-			} else if (!cancelnextdragclick && !touchedsomething) {
+			} else if (!cancelnextdragclick && !touchedAModel) {
 				
 				 drag_dis_x = Gdx.input.getX()-startdragxscreen;
 				 drag_dis_y = Gdx.input.getY()-startdragyscreen;
@@ -656,14 +642,26 @@ public class MainExplorationView implements Screen {
 			cancelnextdragclick = false;
 		}
 		
-		if (touchedsomething && !Gdx.input.isTouched()){
-			Gdx.app.log(logstag,"_-touched a model-_");
-			touchedsomething=false;
+		if (touchedAModel && !Gdx.input.isTouched()){
+			Gdx.app.log(logstag,"_-released touch on a model-_");
+			touchedAModel=false;
 			ModelManagment.untouchAll();
 		}
 		
+		if (!Gdx.input.isTouched() && !newtouch){
+			
+			Gdx.app.log(logstag,"_-released touch-_");
+			float tx = Gdx.input.getX();
+			float ty = -Gdx.input.getY()+gameStage.getHeight();
+			
+			Actor test = usersGUI.hit(tx,ty, false);
+			if (test!=null){
+				Gdx.app.log(logstag,"__"+test.getClass().getName());
+			}
+		}
+		
 		if (!Gdx.input.isTouched()){
-		newtouch = true;
+			newtouch = true;
 		}
 		
 		if (coasting){
@@ -728,15 +726,42 @@ public class MainExplorationView implements Screen {
 			CurrentZoom = CurrentZoom -(2* Gdx.graphics.getDeltaTime()); 
 		}
 
-		if (Gdx.input.isButtonPressed(Buttons.LEFT)){
-			ME.playersInventory.dropHeldItem();
+		if (!Gdx.input.isButtonPressed(Buttons.LEFT) && LeftButtonDown){
+			
+			//Old_Inventory.dropHeldItem();
+			LeftButtonDown=false;
+		}
+		
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)){	
+			
+			LeftButtonDown=true;
 		}
 
-
-
-
 		//now update the gui
+
+		guiStage.act(Gdx.graphics.getDeltaTime());
 		guiStage.draw();
+
+
+		// begin a new batch (for interface text and the cursor)
+		ME.batch.begin();
+
+		if (customCursor!=null){
+
+			float xc = Gdx.input.getX();
+			float yc = -Gdx.input.getY()+gameStage.getHeight();
+
+			ME.batch.draw(customCursor, (xc-(customCursor.getWidth()/2)), (yc-customCursor.getHeight()/2));
+
+
+		}
+
+		//    game.font.draw(game.batch, "Drops Collected:: " + dropsGathered, 0, 480);
+		ME.font.draw( ME.batch, "X:: " + currentPos.x+" Y:: " + currentPos.y+"...."+dragging+"(x="+drag_dis_x+",y="+drag_dis_y+")", 10,45);
+		ME.font.draw( ME.batch, "Z:: " + currentPos.z, 10, 25);
+
+		//    game.batch.draw(bucketImage, bucket.x, bucket.y);
+		ME.batch.end();
 
 	}
 
@@ -761,7 +786,7 @@ public class MainExplorationView implements Screen {
 		gameStage.getViewport().setCamera(camera);
 		gameStage.getViewport().update(width, height, true);       	
 		guiStage.getViewport().update(width, height, true);
-
+	
 
 		Gdx.app.log(logstag,"height="+gameStage.getHeight());
 		Gdx.app.log(logstag,"w="+gameStage.getWidth());
@@ -889,12 +914,19 @@ public class MainExplorationView implements Screen {
 	}
 
 	public static void addnewdrop(DataObject newdrop, double x, double y) {
-		
+
+		 Gdx.app.log(logstag,"_____________:dropping ");
+		 
 		//Image dropimage = new Image(newdrop);		
 		newdrop.setPosition((int)x - (newdrop.getWidth()/2),(int)y- (newdrop.getHeight()/2));
 		
 		double deg = (Math.random()*30)-15; 		
 		newdrop.setRotation((float) deg);
+		
+		//ensure its clickable (else how will you pick it up?)
+		
+		newdrop.setTouchable(Touchable.enabled);
+			
 		
 		gameStage.addActor(newdrop);	
 	}

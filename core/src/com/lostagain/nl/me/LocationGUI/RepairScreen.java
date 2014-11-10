@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 
 
+
 import javax.swing.GroupLayout.Alignment;
 
 import com.badlogic.gdx.Gdx;
@@ -32,11 +33,11 @@ import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
-import com.lostagain.nl.Old_Inventory;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
+import com.lostagain.nl.me.gui.Old_Inventory;
 
 /**
  * A repair screen displays the required nodes to unlock the location

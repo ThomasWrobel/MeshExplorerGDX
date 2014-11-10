@@ -27,6 +27,7 @@ import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.me.LocationGUI.DefaultStyles;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.LocationGUI.LocationScreen;
+import com.lostagain.nl.me.gui.Old_Inventory;
 import com.lostagain.nl.uti.FileManager;
 import com.lostagain.nl.uti.SpiffyGenericTween;
 import com.lostagain.nl.uti.SpiffyTweenConstructor;
