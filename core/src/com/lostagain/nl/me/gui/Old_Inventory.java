@@ -269,7 +269,7 @@ public class Old_Inventory extends Table {
 		 
 		 
 		 //get cursor location
-		 Vector2 cursor = MainExplorationView.getCurrentCursorPosition();
+		 Vector2 cursor = MainExplorationView.getCurrentStageCursorPosition();
 		 
 		 //drop the item on the ground
 		 MainExplorationView.addnewdrop(item, cursor.x, cursor.y);

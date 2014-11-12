@@ -267,21 +267,27 @@ public class LocationsHub extends Table {
 	//	AllLocationContainers.put(LocationsNode,this);
 	
 		
-		//any page that might have a scroll should disable the drag
-		
+		//any page that might have a scroll should disable the drag		
 		emailPage.addListener(new InputListener() {
 		 	@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		 		Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
-
-				 Log.info("clicked "+thisLocation.LocationsNode.getPLabel());
-			
+		 		//Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
+				// Log.info("clicked "+thisLocation.LocationsNode.getPLabel());			
 				 MainExplorationView.disableDrag();
 				 
 		 		return false;
 		 	}
 		 });
-
+		
+		
+		contentsPage.addListener(new InputListener() {
+		 	@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+		 		MainExplorationView.disableDrag();				 
+		 		return false;
+		 	}
+		 });
+		 
 
 /*
 		super.addListener(new ClickListener () {			
@@ -504,7 +510,7 @@ public class LocationsHub extends Table {
 				
 				
 				
-				emailPage.addEmailLocation(sssNode,writtenIn);
+				emailPage.addEmailLocation(sssNode,writtenIn); //note; order cant be gaurentied yet
 				
 				
 				emails++;

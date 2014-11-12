@@ -32,11 +32,14 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 	final static String logstag = "ME.GUIBar";
 	
 	InterfaceButton goback =     new InterfaceButton("<< Back",true);
-	InterfaceButton myCGun =     new InterfaceButton("My cGun",true); //will be false by default later when the gun is in the game currectly
+	
+	final static String CGunOpen =  "My CGun<<";
+	final static String CGunClosed =  "My CGun>>";
+	InterfaceButton myCGun =     new InterfaceButton(CGunClosed,true); //will be false by default later when the gun is in the game currectly
 	
 	InterfaceButton myHome =     new InterfaceButton("My  Home",true);
 	InterfaceButton myContents = new InterfaceButton("My  Data",false); //not visible unless we have data (will be removed in favor of temp memory)
-	InterfaceButton mySTMemory = new InterfaceButton("ST Memory",true); //not visible unless we have data (new temp memory)
+	InterfaceButton mySTMemory = new InterfaceButton("My STMem",true); //not visible unless we have data (new temp memory)
 	
 	InterfaceButton myLinks =    new InterfaceButton("My Links",true);
 	InterfaceButton myEmails =   new InterfaceButton("My Emails",true);
@@ -83,10 +86,19 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) 		 		
 		 		{
 				Log.info("myCGun clicked _____");
+				
 				Gdx.app.log(logstag, "myCGun clicked");
 				ConceptGun.setVisible(!ConceptGun.isVisible());
+				
 				ConceptGun.setEnabled(ConceptGun.isVisible());
 				
+				if (ConceptGun.isVisible()){
+					myCGun.setText(CGunOpen);
+					myCGun.setDownStyle();
+				} else {
+					myCGun.setText(CGunClosed);
+					myCGun.setUpStyle();
+				}
 				
 				return false;
 				
@@ -164,8 +176,20 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			}
 
 		});*/
-		mySTMemory.setName(this.DROPSPOTTYPENAME); //sets this label as a drop target
-		mySTMemory.setUserObject(this); //tells this label to use the GUIBar to handle drop functions
+		
+		
+		
+		mySTMemory.setName(DataObjectDropTarget.DROPSPOTTYPENAME); //sets this label as a drop target
+		mySTMemory.setUserObject(this); //tells this label to use the GUIBar to handle drop functions	
+		
+		//actually we set them all labels as drop targets, so that dragging anywhere will add an item
+		myHome.setName(DataObjectDropTarget.DROPSPOTTYPENAME); //sets this label as a drop target
+		myHome.setUserObject(this); //tells this label to use the GUIBar to handle drop functions	
+		myCGun.setName(DataObjectDropTarget.DROPSPOTTYPENAME); //sets this label as a drop target
+		myCGun.setUserObject(this); //tells this label to use the GUIBar to handle drop functions	
+		goback.setName(DataObjectDropTarget.DROPSPOTTYPENAME); //sets this label as a drop target
+		goback.setUserObject(this); //tells this label to use the GUIBar to handle drop functions	
+		
 		
 		mySTMemory.addListener(new ClickListener () {			
 			@Override

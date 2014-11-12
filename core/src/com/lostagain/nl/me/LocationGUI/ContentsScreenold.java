@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
 
-public class ContentsScreen extends Table implements LocationScreen {
+public class ContentsScreenold extends Table implements LocationScreen {
 	static Logger Log = Logger.getLogger("ContentsScreen");
 
 	Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -39,7 +39,7 @@ public class ContentsScreen extends Table implements LocationScreen {
 	String contentsTitle = "Contents:";
 	Label title  = new Label(contentsTitle,skin);
 	
-	public ContentsScreen(LocationsHub parentLocationContainer, SSSNode securedBy, String contentsTitle) {
+	public ContentsScreenold(LocationsHub parentLocationContainer, SSSNode securedBy, String contentsTitle) {
 		super();
 		super.setFillParent(true);
 		

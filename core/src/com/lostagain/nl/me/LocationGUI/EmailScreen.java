@@ -2,6 +2,8 @@ package com.lostagain.nl.me.LocationGUI;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
@@ -56,7 +58,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 	       // scroller.setStyle(scrollerstyle);
 	        
 	        
-	        scrollTable.setBackground(DefaultStyles.colors.newDrawable("white", Color.DARK_GRAY));
+	        scrollTable.setBackground(DefaultStyles.colors.newDrawable("white", new Color(0.2f,0.2f,0.2f,0.5f)));
 	        scroller.setX(0);
 	        scroller.setY(0);
 	        
@@ -76,18 +78,22 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 
 	}
 	
-	public void validate(){	
+
+	
+	@Override
+	public void layout(){
 		
-		
-		super.validate();
+		//Log.info("validate email__");
+		super.layout();
 		
 		scroller.validate();
 		scroller.setHeight(super.getParent().getHeight());
 		
 		scrollTable.validate();
 		
-
 	}
+	
+	
 	public void addEmailLocation(SSSNode sssNode,final SSSNode language) {
 		
 		
@@ -95,9 +101,13 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 
 		Log.info("Adding email location________________");
 		
+		//add a placeholder email straight away to ensure they show up in the correct order 
+		final Message NewEmailMessage = addEmail(" Loading..."+sssNode,language);
+		NewEmailMessage.setSourcefilename(sssNode.getPLabel());
 		
 		
-		//load the data
+		
+		//load the data and fill in the message with it
 		//we can borrow the SuperSimpleSemantics file load for this and 
 		
 		//set up the runnable for when the data is retrieved
@@ -106,7 +116,8 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 			public void run(String responseData, int responseCode) {
 				loadingEmails--;
 				
-				addEmail(responseData,language);
+				NewEmailMessage.setText(responseData);
+				
 				invalidate();
 				checkForEmailsFinnishedLoading();
 				
@@ -124,9 +135,9 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 				loadingEmails--;
 				
 				Log.info(errorData);
-				
-				addEmail(errorData,null);
 
+				NewEmailMessage.setText(errorData);
+				invalidate();
 				checkForEmailsFinnishedLoading();
 			}
 			
@@ -183,6 +194,30 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		
 	}
 
+	public void sortEmails(){
+				
+		Collections.sort(AllMessages, new Comparator<Message>() {			
+			@Override
+			public int compare(Message o1, Message o2) {		
+				return o1.sourcefilename.compareTo(o2.sourcefilename);				
+			}
+		});		
+		
+		//re add them
+		scrollTable.clear();
+		
+		
+		for (Message cur : AllMessages) {
+			scrollTable.row();
+			scrollTable.top();
+			scrollTable.add(cur).expandX().fillX(); //.fillX();//.width(200);
+			
+		}
+		
+		invalidate();
+		
+	
+	}
 	
 	private void checkForEmailsFinnishedLoading() {
 		// TODO Auto-generated method stub
@@ -190,7 +225,9 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 			
 			Log.info("emails finnished loading");
 			
+			sortEmails();
 			
+			/*
 			//trigger layout
 			validate();
 			
@@ -201,12 +238,14 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 			
 			//sometimes needs to be done twice due to wordwrap in use
 			validate();
+			*/
 		}
 		
 	}
 	
 	
-	protected void addEmail(String data,SSSNode lan) {
+	protected Message addEmail(String data,SSSNode lan) {
+		
 		Message newmessage; 
 		if (lan==null){
 			 newmessage = new Message(data,StaticSSSNodes.stdascii);
@@ -225,17 +264,31 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		
 		numOfEmails=numOfEmails+1;
 		
+		return newmessage;
+		
 	}
 
 
 
 	public void removeAllMessages() {
 		scrollTable.clear();
+		AllMessages.clear();
 		validate();
 	}
 
 	 protected static class Message extends Label 
 	 {
+		 
+		 public String getSourcefilename() {
+			return sourcefilename;
+		}
+
+		public void setSourcefilename(String sourcefilename) {
+			this.sourcefilename = sourcefilename;
+		}
+
+		String sourcefilename = ""; //optional source filename 
+		 
 		 public Message(String contents,SSSNode language){
 			 
 			 super(contents,DefaultStyles.linkstyle);				 

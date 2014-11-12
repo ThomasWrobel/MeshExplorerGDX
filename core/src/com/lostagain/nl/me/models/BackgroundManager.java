@@ -176,7 +176,7 @@ public class BackgroundManager {
 		float x2 = To.getX(Align.center);
 		float y2 = To.getY(Align.center);;
 
-		ModelInstance newline = createLine(x, y, width, x2, y2,-20,Color.RED);
+		ModelInstance newline = createLine(x, y, width, x2, y2,-20,Color.RED,true,true,1);
 
 
 		lines.add(newline);
@@ -191,20 +191,37 @@ public class BackgroundManager {
 		return newline;
 	}
 
-	static public ModelInstance createLine(float fromX, float fromY, float width,
-			float tooX, float tooY,float atZ, Color col) {
+	/**
+	 * 
+	 * @param tooX
+	 * @param tooY
+	 * @param width
+	 * @param fromX
+	 * @param fromY
+	 * @param atZ - z height (for now line is flat 2d at a fixed z height)
+	 * @param col - colour
+	 * @param withStartBlob
+	 * @param withEndBlob - a white blob at the end
+	 * @param lengthMultiplayer - usefull if you want a line to "overshot its end point. (say, to simulate infinity)"
+	 * @return
+	 */
+	static public ModelInstance createLine(float tooX, float tooY, float width,
+			float fromX, float fromY,float atZ, Color col, boolean withStartBlob, boolean withEndBlob, int lengthMultiplayer) {
 		
-		Vector2 corner2 = new Vector2(fromX,fromY);
-		Vector2 corner3 = new Vector2(tooX,tooY);
+		Vector2 fromPoint = new Vector2(fromX,fromY);
+		Vector2 tooPoint  = new Vector2(tooX,tooY);
 
-		corner2.sub(corner3);      
+		fromPoint.sub(tooPoint);      
 
 		//Log.info("angle="+corner2.angle());
-		// Log.info("length="+corner2.len());
+		//Log.info("length="+corner2.len());
 
-		float ang = corner2.angle()+90;
+		float ang = fromPoint.angle()+90;
 
-		ModelInstance newline = createRectangleAt(fromX,fromY,width,corner2.len(),atZ,col);
+		//Gdx.app.log(logstag, " creating from point:"+fromPoint.x+","+fromPoint.y+" ---- "+tooPoint.x+","+tooPoint.y+"  ang="+ang);
+		//ang=ang+45;
+		
+		ModelInstance newline = createRectangleAt(fromX,fromY,width,fromPoint.len()*lengthMultiplayer,atZ,col,withStartBlob,withEndBlob);
 		
 		//newline.materials.get(0).set(new BlendingAttribute(0.25f));
 
@@ -221,10 +238,10 @@ public class BackgroundManager {
 
 
 
-	private static ModelInstance createRectangleAt(float x,float y,float width,float height,float z, Color MColor) {
+	private static ModelInstance createRectangleAt(float x,float y,float width,float height,float z, Color MColor, boolean withStartBlob, boolean withEndBlob) {
 
 		//Color MColor = Color.RED;
-		Model newractangle =  createGlowingRectangle(0,height,width,0,0,MColor);
+		Model newractangle =  createGlowingRectangle(0,height,width,0,0,MColor,withStartBlob,withEndBlob);
 
 		ModelInstance newinstance = new ModelInstance(newractangle); 
 
@@ -236,7 +253,7 @@ public class BackgroundManager {
 	}
 
 
-	public static Model createGlowingRectangle(float x1,float y1,float x2,float y2,float z,Color MColor) {
+	public static Model createGlowingRectangle(float x1,float y1,float x2,float y2,float z,Color MColor, boolean withStartBlob, boolean withEndBlob) {
 		//x1 =0
 		//y1 =height
 		//x2 =width
@@ -255,7 +272,7 @@ public class BackgroundManager {
 		Vector3 corner4 = new Vector3(x2-vertdisp,y1,z);	
 
 
-		Model  model3 =  glowingRectangle(corner1, corner2, corner3, corner4,MColor);
+		Model  model3 =  glowingRectangle(corner1, corner2, corner3, corner4,MColor,withStartBlob,withEndBlob);
 
 
 		return model3;
@@ -263,7 +280,7 @@ public class BackgroundManager {
 
 	
 	private static Model glowingRectangle(Vector3 corner1,
-			Vector3 corner2, Vector3 corner3, Vector3 corner4, Color MColor ) {
+			Vector3 corner2, Vector3 corner3, Vector3 corner4, Color MColor, boolean withStartBlob, boolean withEndBlob ) {
 
 		//MColor = Color.WHITE;
 		
@@ -363,14 +380,24 @@ public class BackgroundManager {
 			
 		meshBuilder.rect(newtest1, newtest2, newtest3, newtest4);
 		
-		Node node3 = modelBuilder.node();
-		node3.translation.set(0,0,6);
+		float hwidth =0;
+		float hheight =0;
+		
+		if (withStartBlob || withEndBlob){
+			 hwidth = (corner3.x-corner3.y)+10;	//width of ends is 10 more then the rest	
+			 hheight = (float) (hwidth *1.3); //height slightly longer
+		}
 		
 		//now the glow start blob
+		if (withStartBlob){
+
+			Node node3 = modelBuilder.node();
+			node3.translation.set(0,0,6);
+			
 		meshBuilder = modelBuilder.part("startblob", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates,blob );
 		
-		float hwidth = (corner3.x-corner3.y)+10;	//width of ends is 10 more then the rest	
-		float hheight = (float) (hwidth *1.3); //height slightly longer
+	//	float hwidth = (corner3.x-corner3.y)+10;	//width of ends is 10 more then the rest	
+		//float hheight = (float) (hwidth *1.3); //height slightly longer
 		
 		Gdx.app.log(logstag,"hwidth="+hwidth);
 		//Gdx.app.log(logstag,"width=="+(corner4.y-corner4.x));
@@ -396,12 +423,16 @@ public class BackgroundManager {
 				0,
 				1,	
 				0);
+		}
 		
+		if (withEndBlob){
 		Node node4 = modelBuilder.node();
 		node4.translation.set(0,corner1.y,7);
 		
+		
+		
 		meshBuilder = modelBuilder.part("endblob", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates,blob );
-
+		
 		//now the glow end blob (bit smaller)
 		meshBuilder.rect(
 				-hwidth,
@@ -468,7 +499,8 @@ public class BackgroundManager {
 				0);
 		*/
 		//meshBuilder.rect(newtest1, newtest2, newtest3, newtest4);
-
+		}
+		
 		Model model = modelBuilder.end();
 		
 		

@@ -552,17 +552,16 @@ public class MainExplorationView implements Screen {
 		
 		if (Gdx.input.isTouched()) {
 			
-			
 			//test if we clicked a 3d model
-			if (newtouch){
+			if (newtouch ){
 				
 				//trigger concept gun
-				usersGUI.ConceptGun.createBeamEffect(Gdx.input.getX(), Gdx.input.getY());
-				
+				usersGUI.ConceptGun.createBeamEffect(Gdx.input.getX(), Gdx.input.getY());				
 				
 				Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 				touchedAModel = ModelManagment.testForHit(ray);
 				Gdx.app.log(logstag,"_-touch down on a model-_");
+					
 			}
 			
 			
@@ -768,11 +767,15 @@ public class MainExplorationView implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		
 
+		Gdx.app.log(logstag,"resizeing to.."+width+","+height);
+		
+		
 		if ( currentmode == cammode.ortha){
-			camera = new OrthographicCamera(width, height);
+			camera = new OrthographicCamera(width, width);
 
-			((OrthographicCamera)camera).setToOrtho(false, 1600, 960);
+			((OrthographicCamera)camera).setToOrtho(false, width, width);
 
 		} else {
 			camera = new PerspectiveCamera(60,width,height); // new OrthographicCamera();
@@ -785,12 +788,25 @@ public class MainExplorationView implements Screen {
 		camera.update();
 		
 		gameStage.getViewport().setCamera(camera);
-		gameStage.getViewport().update(width, height, true);       	
-		guiStage.getViewport().update(width, height, true);
-	
+		gameStage.getViewport().setScreenSize(width, height);
+		gameStage.getViewport().setWorldSize(width, height);
+		gameStage.getViewport().update(width, height, true);  
 
-		Gdx.app.log(logstag,"height="+gameStage.getHeight());
-		Gdx.app.log(logstag,"w="+gameStage.getWidth());
+		guiStage.getViewport().setScreenSize(width, height);
+		guiStage.getViewport().setWorldSize(width, height);
+		guiStage.getViewport().update(width, height, true);
+		
+
+		InputMultiplexer multiplexer = new InputMultiplexer();
+		multiplexer.addProcessor(guiStage);
+		multiplexer.addProcessor(gameStage);
+		Gdx.input.setInputProcessor(multiplexer);
+
+		usersGUI.ConceptGun.invalidateHierarchy();
+		usersGUI.ConceptGun.validate();
+		
+		Gdx.app.log(logstag,"height="+guiStage.getHeight());
+		Gdx.app.log(logstag,"w="+guiStage.getWidth());
 
 
 	}
@@ -897,6 +913,10 @@ public class MainExplorationView implements Screen {
 		}
 		LastLocation.removeLast();			
 		
+		if (LastLocation.size()==0){
+			return;
+		}
+
 		//goto the last one if theres one
 		Location requested = LastLocation.getLast(); //gwt cant use peeklast
 		
@@ -933,17 +953,28 @@ public class MainExplorationView implements Screen {
 	}
 
 	
-	public static Vector2 getCurrentCursorPosition() {
+	public static Vector2 getCurrentStageCursorPosition() {
+
+		float xc = Gdx.input.getX();
+		float yc = Gdx.input.getY();//-gameStage.getHeight();
+		
+		Vector2 vec = new Vector2(xc,yc);
+		 gameStage.screenToStageCoordinates(vec);
+		
+	//	 Gdx.app.log(logstag,"_____________:yc "+yc+"="+vec.y);
+		
+		return vec;
+	}
+
+	public static Vector2 getCurrentCursorScreenPosition() {
 
 		float xc = Gdx.input.getX();
 		float yc = Gdx.input.getY();//-gameStage.getHeight();
 		
 		Vector2 vec = new Vector2(xc,yc);
 		
+	//	 Gdx.app.log(logstag,"_____________:yc "+yc+"="+vec.y);
 		
-		
-		return gameStage.screenToStageCoordinates(vec);
+		return vec;
 	}
-
-
 }

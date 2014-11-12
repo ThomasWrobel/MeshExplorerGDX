@@ -116,6 +116,17 @@ public class ObjectFile extends WidgetGroup {
 		objectstore.lock();
 		objectstore.setSlotEnabled(false);
 		
+		//if a drag happens we need to temporaily disable scrolling on our parent ContentsScreen
+		//(the poor thing gets confused and thinks the mouse down for the object is intended to start a scroll)
+		objectstore.onDragRun(new Runnable(){
+			@Override
+			public void run() {
+				Gdx.app.log(logstag,"currentParent.scroller.cancel();");
+				currentParent.scroller.cancel();
+			}
+			
+		});
+		
 		//check if user already has object		
 		Boolean playerHas = PlayersData.playerHas(objectsnode);
 		
