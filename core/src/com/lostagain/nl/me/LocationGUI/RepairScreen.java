@@ -15,6 +15,10 @@ import java.util.logging.Logger;
 
 
 
+
+
+
+
 import javax.swing.GroupLayout.Alignment;
 
 import com.badlogic.gdx.Gdx;
@@ -37,7 +41,9 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
+import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.gui.Old_Inventory;
+import com.lostagain.nl.me.objects.DataObject;
 
 /**
  * A repair screen displays the required nodes to unlock the location
@@ -204,7 +210,8 @@ public class RepairScreen extends Group  implements LocationScreen {
 		while(i<NumberOfObjectNeeded){
 			
 		
-		ObjectRequester newObjRequester = new ObjectRequester(acceptableAnswers,this);
+			ObjectRequester newObjRequester = new ObjectRequester(acceptableAnswers,this);
+			
 		
 		allObjectsRequested.add(newObjRequester);
 		
@@ -439,16 +446,110 @@ public class RepairScreen extends Group  implements LocationScreen {
 		
 	}
 	
+	
+	
 	/** a box that asks for an object in order to unlock.
 	 * Once all these are unlocked, so is the location
 	 * By default, there is only one lock per location. But
 	 * there can be upto 6 **/
-	static class ObjectRequester extends Label {
+	static class ObjectRequester extends DataObjectSlot {
+
+		Boolean isAnwsered = false;
+		 RepairScreen sourcescreen;
+		 
+		public ObjectRequester(final ArrayList<SSSNode> acceptableAnswers,final RepairScreen source){
+			
+			setColor(0.8f, 0.1f, 0.1f, 1.0f);			
+		//	super.setSize(100, 75);			
+			super.setOrigin(Align.center);
+			super.debug();
+			sourcescreen = source;
+			
+			super.onDropRun(new OnDropRunnable() {
+				
+				@Override
+				public void run(DataObject drop) {
+					
+					SSSNode ItemNode = drop.itemsnode;
+					
+
+					Log.info("~~~~~~~~~~~~~~~~~~~item dropped uri="+ItemNode.getPURI());
+					
+
+//					
+					
+					
+				}
+				
+			});
+			
+				
+			
+		}
+		
+			public void setModeFaded() {
+
+				setColor(0.1f, 0.8f, 0.1f, 0.2f);
+			}
+
+
+			protected void setModeAccepted(SSSNode itemNode) {
+				
+				//this.setText(itemNode.getPLabel());
+							
+				setColor(0.1f, 0.8f, 0.1f, 1.0f);
+										
+				isAnwsered = true;
+
+			}
+
+			public boolean isAnwsered(){
+				return isAnwsered;
+			}
+			
+			@Override
+			public boolean willAccept(DataObject object){
+				
+				Log.info("~testing uri="+object.itemsnode.getPLabel());
+				SSSNode ItemNode = object.itemsnode;
+				
+				//test					
+				if (sourcescreen.acceptableAnswers.contains(ItemNode)){
+										
+					Log.info( "contains:"+sourcescreen.acceptableAnswers.contains(ItemNode));
+		
+					//ME.playersInventory.dropHeldItem(true);					
+					setModeAccepted(ItemNode);
+					
+					//remove from acceptable answers
+					sourcescreen.acceptableAnswers.remove(ItemNode);
+					sourcescreen.testAllRequestedObjectS();
+					
+					return true;
+					
+				} else {
+					
+					sourcescreen.rejectedAnsAnimation();		
+					return false;
+					//ME.playersInventory.dropHeldItem(true);
+				}
+			}
+		
+		
+	}
+	
+	
+	
+	/** a box that asks for an object in order to unlock.
+	 * Once all these are unlocked, so is the location
+	 * By default, there is only one lock per location. But
+	 * there can be upto 6 **/
+	static class ObjectRequesterOLD extends Label {
 		
 		
 		Boolean isAnwsered = false;
 		
-		public ObjectRequester(final ArrayList<SSSNode> acceptableAnswers,final RepairScreen source){
+		public ObjectRequesterOLD(final ArrayList<SSSNode> acceptableAnswers,final RepairScreen source){
 			super("(-----)",DefaultStyles.linkstyle);
 
 			setColor(0.8f, 0.1f, 0.1f, 1.0f);

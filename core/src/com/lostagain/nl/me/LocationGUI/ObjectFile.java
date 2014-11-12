@@ -13,12 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.objects.DataObject;
 
 
@@ -51,6 +53,12 @@ public class ObjectFile extends WidgetGroup {
 	ObjectFileState currentMode =  ObjectFileState.Normal;
 	
 	SSSNode objectsnode;
+	DataObjectSlot objectstore = new DataObjectSlot();
+
+	private float prefWidth=0;
+	private float prefHeight=0;
+	
+	
 	
 	public ObjectFile(SSSNode object,ContentsScreen newContentsPage) {
 		objectsnode=object;		
@@ -62,8 +70,17 @@ public class ObjectFile extends WidgetGroup {
 
 	private void setup(SSSNode object,ContentsScreen newContentsPage) {
 
-		super.setFillParent(true);
+		//super.setFillParent(true);
+		super.setDebug(true,true);
+		
 		currentParent = newContentsPage;
+		
+		super.setWidth(currentParent.getWidth());
+		super.setHeight(DataObject.getStandardHeight()+3);
+		setPrefHeight(DataObject.getStandardHeight()+3);
+		//setPrefWidth(DataObject.getStandardHeight()+3);
+		
+		
 
 		
 		super.addListener(new ClickListener () {
@@ -82,15 +99,22 @@ public class ObjectFile extends WidgetGroup {
 						
 		});
 
-		ObjectsLabel.setX(0);
+		ObjectsLabel.setX(10);
 		downloadPercentage.setX(0);;
 	
 		ObjectsLabel.setFillParent(true);
 		//ObjectsLabel.setWidth(44);		
 		downloadPercentage.setFillParent(true);
-
+		
 		super.addActor(downloadPercentage);
 		super.addActor(ObjectsLabel);
+		
+		objectstore.setX(super.getWidth()-100);//temp
+		super.addActor(objectstore);
+		DataObject newobject = new DataObject(this.objectsnode);
+		objectstore.onDrop(newobject);
+		objectstore.lock();
+		objectstore.setSlotEnabled(false);
 		
 		//check if user already has object		
 		Boolean playerHas = PlayersData.playerHas(objectsnode);
@@ -121,19 +145,61 @@ public class ObjectFile extends WidgetGroup {
 	}
 
 
+	private void setPrefHeight(int i) {
+		prefHeight = i;
+		
+	}
+	
+	@Override
+	public float getPrefHeight(){
+		return prefHeight;		
+	}
+	
+	private void setPrefWidth(int i) {
+		prefWidth = i;
+		
+	}
+	
+	@Override
+	public float getPrefWidth(){
+		return prefWidth;		
+	}
+
 	@Override
 	public void validate() {
+		super.validate();
+		/*
 		if (this.getParent()!=null){
 		super.setWidth(this.getParent().getWidth());
 		
 		}
-		super.setHeight(50);
+		super.setHeight(DataObject.getStandardHeight());
 
 		//Gdx.app.log(logstag,"super lab width="+super.getWidth());
 		//Gdx.app.log(logstag,"super lab height="+super.getHeight());
 		
 		downloadPercentage.validate();		
-		ObjectsLabel.validate();
+		ObjectsLabel.validate();*/
+	}
+	
+	@Override
+	public void layout(){
+		
+		if (currentParent!=null){
+			
+	//	super.setWidth(this.getParent().getWidth());
+	//	super.setHeight(DataObject.getStandardHeight());
+
+		objectstore.setX(currentParent.getWidth()-objectstore.getWidth()-20);
+		
+		
+		downloadPercentage.setWidth(currentParent.getWidth()-objectstore.getWidth()-20);
+		
+		Gdx.app.log(logstag,"currentParent.getWidth()="+currentParent.getWidth());
+		
+		}
+
+		
 	}
 	
 	private void download(){
@@ -237,23 +303,27 @@ public class ObjectFile extends WidgetGroup {
 				super.setWidth(currentParent.getWidth());
 			Gdx.app.log(logstag,"super lab width="+currentParent.getWidth());
 			Gdx.app.log(logstag,"super lab width="+super.getWidth());
-			} else {
+		} else {
 				Gdx.app.log(logstag,"=========================no parent=");
-			}
-			super.setHeight(50);
-		
+		}
+			//super.setHeight(50);
+
+			//objectstore.setX(currentParent.getWidth()-100);
 		//add object
-		DataObject newobject = new DataObject(this.objectsnode);
-		newobject.setScale(0.5f);		
-
-		Gdx.app.log(logstag,"ObjectsLabel.getWidth()="+ObjectsLabel.getWidth());
-		Gdx.app.log(logstag,"super.getWidth()"+super.getWidth());
-		Gdx.app.log(logstag,"super.getPrefWidth()"+super.getPrefWidth());		
-		Gdx.app.log(logstag,"newobject.getWidth()="+newobject.getWidth());
-
-		newobject.setPosition(currentParent.getWidth()-(newobject.getWidth()/2), 0); //right align to end of label (label should not be so big as to overlap
+	
+		objectstore.unlock();
+		super.invalidate();
 		
-		super.addActor(newobject);
+		//newobject.setScale(0.5f);		
+
+	//	Gdx.app.log(logstag,"ObjectsLabel.getWidth()="+ObjectsLabel.getWidth());
+		//Gdx.app.log(logstag,"super.getWidth()"+super.getWidth());
+		//Gdx.app.log(logstag,"super.getPrefWidth()"+super.getPrefWidth());		
+	//	Gdx.app.log(logstag,"newobject.getWidth()="+newobject.getWidth());
+
+		//newobject.setPosition(currentParent.getWidth()-(newobject.getWidth()/2), 0); //right align to end of label (label should not be so big as to overlap
+		
+		//super.addActor(newobject);
 		
 		
 	}

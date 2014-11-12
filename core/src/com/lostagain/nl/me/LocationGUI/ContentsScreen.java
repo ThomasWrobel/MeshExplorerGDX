@@ -127,7 +127,7 @@ public class ContentsScreen extends Table implements LocationScreen {
 		super.top();
 		
 		
-		super.add(ObjectFile).fillX().height(30).expandX();
+		super.add(ObjectFile).fillX().expandX(); //height(30)
 		ObjectFile.validate();
 		
 		super.row();

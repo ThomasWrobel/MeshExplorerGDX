@@ -520,8 +520,9 @@ public class MainExplorationView implements Screen {
 		//Each render is sort of like a "layer" and appears in the order they are rendered
 		//regardless of 3d positions within that layer
 		background.updateAnimatedBacks(delta);
-		ModelManagment.updateAnimatedBacks(delta);
+		ModelManagment.updateAnimatedBacks(delta);//--
 		
+		usersGUI.ConceptGun.update(delta);
 		background.modelBatch.begin( camera);
 		background.modelBatch.render(ModelManagment.allModelInstances 	);
 		background.modelBatch.end();	

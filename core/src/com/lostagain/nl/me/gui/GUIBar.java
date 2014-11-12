@@ -22,18 +22,21 @@ import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.me.LocationGUI.DefaultStyles;
 import com.lostagain.nl.me.LocationGUI.InterfaceButton;
+import com.lostagain.nl.me.objects.DataObject;
 
 
 
-public class GUIBar extends WidgetGroup {
+public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 
 	static Logger Log = Logger.getLogger("ME.GUIBar");
 	final static String logstag = "ME.GUIBar";
 	
 	InterfaceButton goback =     new InterfaceButton("<< Back",true);
+	InterfaceButton myCGun =     new InterfaceButton("My cGun",true); //will be false by default later when the gun is in the game currectly
+	
 	InterfaceButton myHome =     new InterfaceButton("My  Home",true);
 	InterfaceButton myContents = new InterfaceButton("My  Data",false); //not visible unless we have data (will be removed in favor of temp memory)
-	InterfaceButton mySTMemory = new InterfaceButton("ST Memory",true); //not visible unless we have data (will be removed in favor of temp memory)
+	InterfaceButton mySTMemory = new InterfaceButton("ST Memory",true); //not visible unless we have data (new temp memory)
 	
 	InterfaceButton myLinks =    new InterfaceButton("My Links",true);
 	InterfaceButton myEmails =   new InterfaceButton("My Emails",true);
@@ -41,7 +44,7 @@ public class GUIBar extends WidgetGroup {
 	ArrayList<InterfaceButton> allLinks = new ArrayList<InterfaceButton>();
 	
 	//memory popup
-	TempMemory STMemoryPop = new TempMemory();
+	STMemory STMemoryPop = new STMemory();
 	
 	public ConceptGun ConceptGun = new ConceptGun();
 	
@@ -73,19 +76,17 @@ public class GUIBar extends WidgetGroup {
 		ColorM.a=0.5f;
 		back.background = DefaultStyles.colors.newDrawable("white", ColorM);
 		
-		STMemoryPop.addListener(new ClickListener () {			
-			@Override
-			public void clicked(InputEvent ev, float x , float y){
-				Log.info("_________TempMemory clicked _____");
-				//if (Old_Inventory.currentlyHeld!=null){
-				//	clickedWhileHolding();					
-				//}
-			}
+	
+		
+		myCGun.addListener(new ClickListener () {	
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) 		 		
 		 		{
-				Log.info("_________TempMemory clicked _____");
-				Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
+				Log.info("myCGun clicked _____");
+				Gdx.app.log(logstag, "myCGun clicked");
+				ConceptGun.setVisible(!ConceptGun.isVisible());
+				ConceptGun.setEnabled(ConceptGun.isVisible());
+				
 				
 				return false;
 				
@@ -93,7 +94,6 @@ public class GUIBar extends WidgetGroup {
 
 
 		});
-		
 	
 		backgroundobject = new Label("",back);
 		
@@ -164,6 +164,8 @@ public class GUIBar extends WidgetGroup {
 			}
 
 		});*/
+		mySTMemory.setName(this.DROPSPOTTYPENAME); //sets this label as a drop target
+		mySTMemory.setUserObject(this); //tells this label to use the GUIBar to handle drop functions
 		
 		mySTMemory.addListener(new ClickListener () {			
 			@Override
@@ -190,7 +192,7 @@ public class GUIBar extends WidgetGroup {
 			}
 
 		});
-		
+		allLinks.add(myCGun);
 		allLinks.add(goback);
 		allLinks.add(myHome);
 		//allLinks.add(myEmails);
@@ -254,6 +256,7 @@ public class GUIBar extends WidgetGroup {
 		this.setSize(95, 220);
 		
 		super.clearChildren();
+		
 		addActor(backgroundobject);		
 		addActor(STMemoryPop);
 		addActor(ConceptGun); 
@@ -473,5 +476,17 @@ public class GUIBar extends WidgetGroup {
 		}
 		
 	}
+
+@Override
+public boolean onDrop(DataObject drop) {
+	//just add to the inventory
+	return STMemoryPop.onDrop(drop);
+}
+
+@Override
+public void onDrag(DataObject dataObject) {
+	
+	
+}
 
 }

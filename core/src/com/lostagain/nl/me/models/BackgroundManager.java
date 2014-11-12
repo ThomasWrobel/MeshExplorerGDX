@@ -170,33 +170,15 @@ public class BackgroundManager {
 		float x = From.getX(Align.center);
 		float y = From.getY(Align.center);
 		float width = 30;
-		float height = 500;
+		//float height = 500;
 
-		
 		//get angle
 		float x2 = To.getX(Align.center);
 		float y2 = To.getY(Align.center);;
 
-		Vector2 corner2 = new Vector2(x,y);
-		Vector2 corner3 = new Vector2(x2,y2);
+		ModelInstance newline = createLine(x, y, width, x2, y2,-20,Color.RED);
 
-		corner2.sub(corner3);      
 
-		//Log.info("angle="+corner2.angle());
-		// Log.info("length="+corner2.len());
-
-		float ang = corner2.angle()+90;
-
-		ModelInstance newline = createRectangleAt(x,y,width,corner2.len(),-20);
-		
-		//newline.materials.get(0).set(new BlendingAttribute(0.25f));
-
-		Matrix4 newmatrix = new Matrix4();
-		newmatrix.setToRotation(0, 0, 1, ang);
-
-		newline.transform.mul(newmatrix);
-		//newlinetop.transform.mul(newmatrix);
-				
 		lines.add(newline);
 		//instances.add(newline);
 		ModelManagment.addmodel(newline);
@@ -205,31 +187,56 @@ public class BackgroundManager {
 		//instances.add(newlinetop);
 		
 
-		Gdx.app.log(logstag,"x="+x+"y="+y);
 
+		return newline;
+	}
 
+	static public ModelInstance createLine(float fromX, float fromY, float width,
+			float tooX, float tooY,float atZ, Color col) {
+		
+		Vector2 corner2 = new Vector2(fromX,fromY);
+		Vector2 corner3 = new Vector2(tooX,tooY);
 
+		corner2.sub(corner3);      
+
+		//Log.info("angle="+corner2.angle());
+		// Log.info("length="+corner2.len());
+
+		float ang = corner2.angle()+90;
+
+		ModelInstance newline = createRectangleAt(fromX,fromY,width,corner2.len(),atZ,col);
+		
+		//newline.materials.get(0).set(new BlendingAttribute(0.25f));
+
+		Matrix4 newmatrix = new Matrix4();
+		newmatrix.setToRotation(0, 0, 1, ang);
+
+		newline.transform.mul(newmatrix);
+		//newlinetop.transform.mul(newmatrix);
+
+		Gdx.app.log(logstag,"x="+fromX+"y="+fromY);
 
 		return newline;
 	}
 
 
 
-	private ModelInstance createRectangleAt(float x,float y,float width,float height,float z) {
+	private static ModelInstance createRectangleAt(float x,float y,float width,float height,float z, Color MColor) {
 
-		Color MColor = Color.RED;
+		//Color MColor = Color.RED;
 		Model newractangle =  createGlowingRectangle(0,height,width,0,0,MColor);
 
 		ModelInstance newinstance = new ModelInstance(newractangle); 
 
 		newinstance.transform.setToTranslation(x,y,z);
 
+		
 
 		return newinstance;
 	}
 
 
-	private Model createGlowingRectangle(float x1,float y1,float x2,float y2,float z,Color MColor) {
+	public static Model createGlowingRectangle(float x1,float y1,float x2,float y2,float z,Color MColor) {
 		//x1 =0
 		//y1 =height
 		//x2 =width
@@ -254,8 +261,9 @@ public class BackgroundManager {
 		return model3;
 	}
 
-	private Model glowingRectangle(Vector3 corner1,
-			Vector3 corner2, Vector3 corner3, Vector3 corner4,Color MColor ) {
+	
+	private static Model glowingRectangle(Vector3 corner1,
+			Vector3 corner2, Vector3 corner3, Vector3 corner4, Color MColor ) {
 
 		//MColor = Color.WHITE;
 		
@@ -360,22 +368,29 @@ public class BackgroundManager {
 		
 		//now the glow start blob
 		meshBuilder = modelBuilder.part("startblob", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates,blob );
-
+		
+		float hwidth = (corner3.x-corner3.y)+10;	//width of ends is 10 more then the rest	
+		float hheight = (float) (hwidth *1.3); //height slightly longer
+		
+		Gdx.app.log(logstag,"hwidth="+hwidth);
+		//Gdx.app.log(logstag,"width=="+(corner4.y-corner4.x));
+		
+		//hwidth used to be 30
 		meshBuilder.rect(
-				-30,
-				-30, 
+				-hwidth,
+				-hwidth, 
 				0,
 
-				30,
-				-30, 
+				hwidth,
+				-hwidth, 
 				0,
 
-				30,
-				50, 
+				hwidth,
+				hheight, 
 				0,
 
-				-30,
-				50, 
+				-hwidth,
+				hheight, 
 				0,   		   			
 
 				0,
@@ -387,28 +402,28 @@ public class BackgroundManager {
 		
 		meshBuilder = modelBuilder.part("endblob", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates,blob );
 
+		//now the glow end blob (bit smaller)
 		meshBuilder.rect(
-				-20,
-				-20, 
+				-hwidth,
+				-hheight, 
 				0,
 
-				20,
-				-20, 
+				hwidth,
+				-hheight, 
 				0,
 
-				20,
-				40, 
+				hwidth,
+				hheight, 
 				0,
 
-				-20,
-				40, 
+				-hwidth,
+				hheight, 
 				0,   		   			
 
 				0,
 				1,
 				0);
 		
-		//now the glow end blob (bit smaller)
 		
 		
 		//corner3.y

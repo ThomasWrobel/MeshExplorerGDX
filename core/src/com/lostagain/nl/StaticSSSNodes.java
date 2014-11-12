@@ -96,6 +96,8 @@ public class StaticSSSNodes {
 	public static final SSSNode toRadius =  SSSNode.createSSSNode(ME.INTERNALNS+"toRadius", ME.INTERNALNS);
 
 	
+	//DBPedia stuff
+		public static final SSSNode DBPediaColour =  SSSNode.createSSSNode("http://dbpedia.org/ontology/colour","http://dbpedia.org/ontology");
 	
 	
 	public void setup(){

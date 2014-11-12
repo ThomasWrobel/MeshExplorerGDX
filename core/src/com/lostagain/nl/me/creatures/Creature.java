@@ -14,6 +14,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.creatures.Population.destructOn;
+import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.Old_Inventory;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
@@ -160,8 +161,10 @@ public class Creature implements hitable {
 		}
 
 		if (destructionType == destructOn.query && Old_Inventory.currentlyHeld!=null){
-			
-			Gdx.app.log(logstag,"_testing vulnerability against:"+Old_Inventory.currentlyHeld.itemsnode.getPLabel());	
+									
+			if (!MainExplorationView.usersGUI.ConceptGun.disabledFire){
+			Gdx.app.log(logstag,"_testing vulnerability against:"+ConceptGun.equipedConcept);	
+			//Gdx.app.log(logstag,"_testing vulnerability against:"+Old_Inventory.currentlyHeld.itemsnode.getPLabel());	
 			Gdx.app.log(logstag,"_vulnerability is:"+queryToDestroy);	
 			
 			//Uti.testIfInQueryResults(queryToDestroy,lookForThisNode);
@@ -171,6 +174,7 @@ public class Creature implements hitable {
 			if (numOfHitsLeft<1){
 				this.destroy();
 			
+			}
 			}
 		}
 	}
