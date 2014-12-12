@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
-import lostagain.nl.GWTish.Label;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -50,6 +48,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.darkflame.client.semantic.SSSNode;
+import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.LocationGUI.Link;
 import com.lostagain.nl.me.LocationGUI.Location;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;

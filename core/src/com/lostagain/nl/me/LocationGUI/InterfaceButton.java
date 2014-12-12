@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.lostagain.nl.DefaultStyles;
 
 /** a link that represents a page on the computer  **/
 public class InterfaceButton extends Label {

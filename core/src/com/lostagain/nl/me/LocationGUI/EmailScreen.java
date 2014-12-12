@@ -24,6 +24,7 @@ import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackError;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackRunnable;
 import com.darkflame.client.semantic.SSSNode;
+import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 

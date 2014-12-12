@@ -17,10 +17,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
-import com.lostagain.nl.me.LocationGUI.DefaultStyles;
 import com.lostagain.nl.me.LocationGUI.InterfaceButton;
 import com.lostagain.nl.me.objects.DataObject;
 

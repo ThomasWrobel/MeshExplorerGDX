@@ -651,14 +651,30 @@ public class BackgroundManager {
 	}
 
 	
+	
+	//Doesnt work in gwt
 	public static Pixmap createNoiseImage(int w, int h){
 		
 		
 		pixmap = new Pixmap(w, h, Format.RGBA8888);
-		pixmap.setColor(22f, 22f, 22f, 0f);
+		//pixmap.setColor(22f, 22f, 22f, 0f);
 		
-		pixmap.fill();
-		
+		//pixmap.fill();
+				
+			for (int x = 0;x < pixmap.getWidth() ; x++) {
+				
+				for (int y = 0; y < pixmap.getHeight(); y++) {
+					
+					
+					int color = (int) (Math.random()*16777215);
+					pixmap.drawPixel(x, y, color);
+					
+					
+				}				
+				
+			}
+			
+		/*
 		 temp = pixmap.getPixels();
 				
 	for (int i = 0; i < temp.limit() ; i++) {
@@ -668,7 +684,7 @@ public class BackgroundManager {
 		temp.put(val);
 		
 	}
-	temp.flip();
+	temp.flip();*/
 	//40000
 	
 		return pixmap;

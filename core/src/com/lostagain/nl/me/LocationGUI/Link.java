@@ -21,6 +21,7 @@ import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
+import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;

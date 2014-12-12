@@ -42,10 +42,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
+import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 //import com.lostagain.nl.Old_Inventory.Item;
-import com.lostagain.nl.me.LocationGUI.DefaultStyles;
 import com.lostagain.nl.me.objects.DataObject;
 
 /** handles the various semantic objects you can aquire and use **/

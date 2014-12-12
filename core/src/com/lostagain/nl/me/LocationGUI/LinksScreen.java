@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
+import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.LocationGUI.Link.LinkMode;
