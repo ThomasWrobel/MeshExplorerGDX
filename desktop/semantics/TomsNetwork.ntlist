@@ -13,12 +13,17 @@ http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subCl
 BobsOutpost me:populatedBy smallInfovorPopulation.
 
 smallInfovorPopulation rdfs:subClassOf me:population.
-smallInfovorPopulation me:quantity 4.
+smallInfovorPopulation me:quantity 10.
 smallInfovorPopulation me:anydrop Human.
 smallInfovorPopulation me:exactdrop Apple.
 smallInfovorPopulation me:anydrop Fish.
 smallInfovorPopulation me:killedon "fruit".
 smallInfovorPopulation me:hitPoints 2.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour #003300.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour #005522.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour #11BB00.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour #00DD11.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour #33BB55.
 
 alicespc me:populatedBy smallInfovorPopulation.
 
@@ -89,7 +94,9 @@ isVertebrate.txt rdfs:subClassOf Vertebrate.
 
 isSameAsMyGreen.txt owl:equivalentClass Green.
 isSameAsMyFruit.txt owl:equivalentClass Fruit.
-    			         
+
+isColor_Yellow.txt http://dbpedia.org/ontology/Colour Yellow.
+			         
 isColor_Green.txt http://dbpedia.org/ontology/Colour Green.
 
 isMore_Green.txt http://dbpedia.org/ontology/Colour Green;

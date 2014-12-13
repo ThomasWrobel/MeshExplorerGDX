@@ -55,6 +55,9 @@ public class Creature implements hitable {
 	//query that defines what removes it
 	String queryToDestroy; 
 	
+	//base color
+	Color crearturesColor = Color.GREEN;
+	
 
 	public Creature(float x, float y, Population parentPopulation, int hitPoints, String queryToDestroy, destructOn destructionType) {
 		
@@ -101,16 +104,21 @@ public class Creature implements hitable {
 	public void setmodel(ModelInstance model) {
 		
 		creaturemodel = model;
-
 		
 		//set to model lists
 		ModelManagment.addmodel(creaturemodel);
 		ModelManagment.addHitable(this);
-		
-		
+				
 	}
 
+	public void setColor(Color newcol){
 
+		ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
+
+		attribute.color.set(newcol);
+		crearturesColor = newcol;
+		
+	}
 
 
 	@Override
@@ -118,7 +126,7 @@ public class Creature implements hitable {
 		
 		ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
 		
-		attribute.color.set(Color.GREEN);
+		attribute.color.set(crearturesColor);
 		
 		
 	}

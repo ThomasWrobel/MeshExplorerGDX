@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -750,9 +751,11 @@ public class MainExplorationView implements Screen {
 			float xc = Gdx.input.getX();
 			float yc = -Gdx.input.getY()+gameStage.getHeight();
 
-			ME.batch.draw(customCursor, (xc-(customCursor.getWidth()/2)), (yc-customCursor.getHeight()/2));
+			ME.batch.draw(customCursor, (xc-(customCursor.getWidth()/2)), (yc-(customCursor.getHeight()/2)));
 
-
+			Gdx.app.log(logstag,"customCursor.."+xc+","+yc+" height="+ (customCursor.getHeight()/2));
+			
+			
 		}
 
 		//    game.font.draw(game.batch, "Drops Collected:: " + dropsGathered, 0, 480);
@@ -779,6 +782,13 @@ public class MainExplorationView implements Screen {
 		} else {
 			camera = new PerspectiveCamera(60,width,height); // new OrthographicCamera();
 		}
+		
+		
+		//update sprite batch? 
+		Matrix4 viewMatrix = new Matrix4();
+	    viewMatrix.setToOrtho2D(0, 0,width, height);
+	    ME.batch.setProjectionMatrix(viewMatrix);
+		
 
 		//camera = new PerspectiveCamera(60,width,height); //new OrthographicCamera(width, height);
 		camera.translate(height/2,width/2, 0);
@@ -806,6 +816,10 @@ public class MainExplorationView implements Screen {
 		
 		Gdx.app.log(logstag,"height="+guiStage.getHeight());
 		Gdx.app.log(logstag,"w="+guiStage.getWidth());
+
+		Gdx.app.log(logstag,"gameStage height="+gameStage.getHeight());
+		Gdx.app.log(logstag,"gameStage w="+gameStage.getWidth());
+
 
 
 	}

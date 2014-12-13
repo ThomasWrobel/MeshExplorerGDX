@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
+import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.LocationGUI.Location;
 
@@ -45,6 +48,9 @@ public class Population {
 	int fromRadius = 400;
 	int toRadius = 550;
 	
+	//all the color tints of the population
+	ArrayList<Color> populationsColors = new ArrayList<Color>();
+	
 	//distribution type? 
 	//random, sinwave, fixed
 	
@@ -68,6 +74,8 @@ public class Population {
 	
 	
 	 static HashMap<SSSNode ,Population > allPopulations = new HashMap<SSSNode ,Population >();
+	 
+	 
 	 
 	
 	public Population(Location location, SSSNode populationnode) {
@@ -144,6 +152,19 @@ public class Population {
 				hitPoints = Integer.parseInt(currentValue.getPLabel());				
 			}
 			
+			
+			if (currentPred== StaticSSSNodes.DBPediaColour){
+				
+				Color newColor = DefaultStyles.getColorFromString(currentValue.getPLabel());
+				
+				if (newColor!=null){
+					populationsColors.add(newColor);	
+				}
+				
+				
+			}
+			
+			
 		}
 		
 		
@@ -196,6 +217,10 @@ public class Population {
 			
 			//create based on type						
 			BasicInfovore newcreature = new BasicInfovore(this,x, y, hitPoints,queryToDestroy,destructionType);
+					
+			newcreature.setColor(randomColorFromPop());
+			
+			
 			populationsCreatures.add(newcreature);
 					
 			
@@ -230,6 +255,24 @@ public class Population {
 	}
 
 	
+	/**
+	 * defaults to green
+	 * @return
+	 */
+	private Color randomColorFromPop() {
+		if (populationsColors.size()==0){
+			return Color.GREEN;	
+		}
+		
+		
+		int p = (int) (Math.random()*populationsColors.size());
+		
+		
+		return populationsColors.get(p);
+		
+	}
+
+
 	public void removeFromPopulation(Creature creature) {
 		
 		populationsCreatures.remove(creature);

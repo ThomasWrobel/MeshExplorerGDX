@@ -313,7 +313,7 @@ public class BackgroundManager {
         FileHandle imageFileHandle3 = Gdx.files.internal("data/beam_blob.png"); 
         Texture blobtexture = new Texture(imageFileHandle3);
         
-        Material blob = new Material(ColorAttribute.createDiffuse(Color.PINK), 
+        Material blob = new Material(ColorAttribute.createDiffuse(Color.WHITE), 
 				ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(0.7f), 
 				FloatAttribute.createShininess(16f));
 
