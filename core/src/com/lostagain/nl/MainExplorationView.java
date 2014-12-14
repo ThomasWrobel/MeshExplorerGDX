@@ -114,7 +114,7 @@ public class MainExplorationView implements Screen {
 	long lastDropTime;
 	int dropsGathered;
 
-	public static GUIBar usersGUI = new GUIBar();
+	public static GUIBar usersGUI;
 
 	//static SpiffyGenericTween<Double> currentCameraTweenX;
 	//static SpiffyGenericTween<Double> currentCameraTweenY;
@@ -218,7 +218,9 @@ public class MainExplorationView implements Screen {
 		guiStage = new Stage();
 
 		Gdx.app.log(logstag,"setting up stage and stuff..");
+		usersGUI = new GUIBar();
 		guiStage.addActor(usersGUI);
+	
 		usersGUI.validate();
 	//	guiStage.addActor(usersGUI.STMemoryPop); //temp should be part of gui
 		//guiStage.addActor(usersGUI.ConceptGun); //temp should be part of gui
@@ -784,7 +786,7 @@ public class MainExplorationView implements Screen {
 		}
 		
 		
-		//update sprite batch? 
+		//update sprite batch for new resolution 
 		Matrix4 viewMatrix = new Matrix4();
 	    viewMatrix.setToOrtho2D(0, 0,width, height);
 	    ME.batch.setProjectionMatrix(viewMatrix);
@@ -813,6 +815,10 @@ public class MainExplorationView implements Screen {
 
 		usersGUI.ConceptGun.invalidateHierarchy();
 		usersGUI.ConceptGun.validate();
+		usersGUI.setNeedsRepopulating(true); //temp fix for layout resizing, this should be handled correctly by splitting widget positioning from widget adding and letting the invalidate/validate handle the repositioning
+		
+		usersGUI.invalidateHierarchy();
+		usersGUI.validate();
 		
 		Gdx.app.log(logstag,"height="+guiStage.getHeight());
 		Gdx.app.log(logstag,"w="+guiStage.getWidth());
@@ -920,18 +926,21 @@ public class MainExplorationView implements Screen {
 			
 		}
 		
-		//remove current location (which should be the last added)
-		if (LastLocation.getLast()==null){
-			return;
-		}
-		LastLocation.removeLast();			
-		
 		if (LastLocation.size()==0){
 			return;
 		}
+		
 
+		//remove current location (which should be the last added)
+		LastLocation.removeLast();			
+		
+		if (LastLocation.size()==0){
+				return;
+		}
+		
+		
 		//goto the last one if theres one
-		Location requested = LastLocation.getLast(); //gwt cant use peeklast
+		Location requested = LastLocation.getLast(); //gwt can't use peeklast
 		
 
 		if (requested!=null){

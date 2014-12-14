@@ -523,6 +523,9 @@ public class RepairScreen extends Group  implements LocationScreen {
 					//ME.playersInventory.dropHeldItem(true);					
 					setModeAccepted(ItemNode);
 					
+					//lock this (so they cant get it out again)
+					super.lock();
+					
 					//remove from acceptable answers
 					sourcescreen.acceptableAnswers.remove(ItemNode);
 					sourcescreen.testAllRequestedObjectS();

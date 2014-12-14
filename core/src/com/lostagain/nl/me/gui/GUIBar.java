@@ -58,8 +58,18 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 	Long lastTime =0l;
 
 	private boolean setup=false;
-	private boolean setup2=false;
+	private boolean stMemorySetup=false;
+	/** should be set to true if the list of useable functions needs refreshing **/
+	private boolean needsRepopulating = true;
 	
+	public boolean isNeedsRepopulating() {
+		return needsRepopulating;
+	}
+
+	public void setNeedsRepopulating(boolean needsRepopulating) {
+		this.needsRepopulating = needsRepopulating;
+	}
+
 	//Experimental
 	public DragAndDrop dragAndDrop = new DragAndDrop();
 	
@@ -216,23 +226,26 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			}
 
 		});
-		allLinks.add(myCGun);
-		allLinks.add(goback);
-		allLinks.add(myHome);
+		
+		
+		
 		//allLinks.add(myEmails);
 		//allLinks.add(myLinks);
-		allLinks.add(myContents);
+		
 		allLinks.add(mySTMemory);
-		
-		
-		
+		//allLinks.add(myContents);
+		allLinks.add(myHome);
+		allLinks.add(goback);
+		allLinks.add(myCGun);
 		
 		Gdx.app.log(logstag,"setting up");
 		ME.playersInventory.setVisible(false);
 
 		STMemoryPop.setVisible(false);
 		
-		populateGUI();
+		
+		this.invalidate();
+		//populateGUI();
 		//refreshlinks();
 
 		//super.validate();
@@ -277,17 +290,28 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 	
 	/** places all the children on this widget **/
 	public void populateGUI(){
-		this.setSize(95, 220);
 		
+		if (needsRepopulating){
+			
+			
+			
 		super.clearChildren();
+		
+		int totalheight = allLinks.size() *30;
+		
+		this.setPosition(0, 0);//(MainExplorationView.guiStage.getHeight() - totalheight));
+
+		this.setSize(95, MainExplorationView.guiStage.getHeight());
 		
 		addActor(backgroundobject);		
 		addActor(STMemoryPop);
 		addActor(ConceptGun); 
+		
 		ConceptGun.invalidate();
 		//ConceptGun.validate();
 		
-		int y = 440; //start at 440 and work our way down the page with each new shortcut
+		int starty = (int) MainExplorationView.guiStage.getHeight() - totalheight;
+		int y = starty; //(int) MainExplorationView.guiStage.getHeight(); //start at 440 and work our way down the page with each new shortcut
 
 		
 		for (InterfaceButton link : allLinks) {		
@@ -295,21 +319,34 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			if (link.isVisible==true){
 				
 				link.setPosition(5,y);	
+				
+
+				Gdx.app.log(logstag,"adding link at:"+y);
 				super.addActor(link);
-				y=y-30;
+				y=y+30;
 			}
 			
 		}
 
-		backgroundobject.setPosition(0,y+20);	
-		backgroundobject.setSize(95, 220);
+		backgroundobject.setPosition(0,starty); //(0,y+20);	
+		backgroundobject.setSize(95, totalheight);
 		
 		setupSTMemoryPop();
-	
-		this.invalidate();
+		needsRepopulating=false;
+		}
+	//	this.invalidate();
 	}
 	
 
+	@Override
+	public void layout(){
+		//super.layout();
+
+		Gdx.app.log(logstag,"laying out guibar");
+		
+		
+		populateGUI();
+	}
 
 	private void triggerInventoryView() {
 		
@@ -350,7 +387,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 	}*/
 	private void openSTMemory() {
 		Gdx.app.log(logstag,"open stm");
-		if (!setup2){
+		if (!stMemorySetup){
 			setupSTMemoryPop();
 		
 			
@@ -422,7 +459,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 		
 		STMemoryPop.setPosition(X, Y);
 		STMemoryPop.invalidate();// .validate();
-		setup2=true;
+		stMemorySetup=true;
 		
 		//super.validate();
 	}
@@ -503,7 +540,9 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 
 @Override
 public boolean onDrop(DataObject drop) {
-	//just add to the inventory
+
+	Gdx.app.log(logstag,"on drop triggered");
+	
 	return STMemoryPop.onDrop(drop);
 }
 
