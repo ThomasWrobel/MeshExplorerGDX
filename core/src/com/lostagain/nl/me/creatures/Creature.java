@@ -19,6 +19,7 @@ import com.lostagain.nl.me.gui.Old_Inventory;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.objects.DataObject;
+import com.lostagain.nl.uti.Uti;
 
 public class Creature implements hitable {
 
@@ -49,7 +50,7 @@ public class Creature implements hitable {
     //dimensions.set(bounds.getDimensions());
     //radius = dimensions.len() / 2f;
     
-	destructOn destructionType = destructOn.clicks; //defaults to a query dropped on it, but a click is used to test atm
+	destructOn destructionType = destructOn.clicks; //defaults to a clicks if no query specified
 	int numOfHitsLeft = 10;
 
 	//query that defines what removes it
@@ -70,6 +71,7 @@ public class Creature implements hitable {
 		this.destructionType = destructionType;
 		this.numOfHitsLeft = hitPoints;
 		this.queryToDestroy = queryToDestroy;
+		
 		
 	}
 
@@ -153,10 +155,14 @@ public class Creature implements hitable {
 
 
 	private void hit() {
+		
+		ConceptGun.animateImpactEffect();
+		
 		if (destructionType == destructOn.cant){
 			return; //invincible
 			
 		}
+		
 		if (destructionType == destructOn.clicks){
 
 			Gdx.app.log(logstag,"_removed clickpoint");			
@@ -168,27 +174,62 @@ public class Creature implements hitable {
 			}
 		}
 
-		if (destructionType == destructOn.query && Old_Inventory.currentlyHeld!=null){
-									
-			if (!MainExplorationView.usersGUI.ConceptGun.disabledFire){
-			Gdx.app.log(logstag,"_testing vulnerability against:"+ConceptGun.equipedConcept);	
-			//Gdx.app.log(logstag,"_testing vulnerability against:"+Old_Inventory.currentlyHeld.itemsnode.getPLabel());	
-			Gdx.app.log(logstag,"_vulnerability is:"+queryToDestroy);	
+		if (destructionType == destructOn.query){
 			
-			//Uti.testIfInQueryResults(queryToDestroy,lookForThisNode);
-			
-			numOfHitsLeft--;
-			
-			if (numOfHitsLeft<1){
-				this.destroy();
-			
+			//two ways of using a query on a creature; direct and with the gun
+			//we thus check the gun first 
+			SSSNode appliedConcept;
+			if (!ConceptGun.disabledFire){
+				appliedConcept = ConceptGun.equipedConcept;
+			} else if (Old_Inventory.currentlyHeld!=null) {
+				appliedConcept = Old_Inventory.currentlyHeld.itemsnode;					
+			} else {
+				Gdx.app.log(logstag,"_nothing currently equiped to fight creature");	
+				return;
 			}
-			}
+			
+			
+				Gdx.app.log(logstag,"_testing vulnerability against:"+ConceptGun.equipedConcept);	
+				//Gdx.app.log(logstag,"_testing vulnerability against:"+Old_Inventory.currentlyHeld.itemsnode.getPLabel());	
+				Gdx.app.log(logstag,"_vulnerability is:"+queryToDestroy);	
+			
+				Uti.testIfInQueryResults(queryToDestroy,appliedConcept, new Runnable() {
+					
+					@Override
+					public void run() {
+						// this is what happens if the concept was in the acceptable results
+						//for what can destroy (or at least damage) this creature
+						numOfHitsLeft--;
+						
+						if (numOfHitsLeft<1){
+							//fire the destroy command on this creature
+							Creature.this.destroy();
+					
+						}
+					}
+				}, new Runnable() {
+
+					@Override
+					public void run() {
+						// this is what happens if the concept was not in the acceptable results
+						
+						//(dont do anything atm, but in future we should have an effect for no damage?)
+						
+					}
+					
+				});
+			
+			
+				
+			
+			
+			
 		}
 	}
 	
 	protected void destroy() {
-		
+
+		ConceptGun.animateImpactEffect();
 
 		Gdx.app.log(logstag,"_destroying model ");
 		

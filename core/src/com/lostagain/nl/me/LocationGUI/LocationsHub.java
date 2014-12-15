@@ -18,10 +18,21 @@ import java.util.logging.Logger;
 
 
 
+
+
+
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -49,6 +60,7 @@ import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
+import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
@@ -92,8 +104,9 @@ public class LocationsHub extends Table {
 
 	public Boolean closed = true; //while its locked you can only access the security page
 
-
-	private ModelInstance background;
+	Color backcolour; 
+	
+	private ModelInstance backgroundObject;
 
 
 	public LocationsHub(SSSNode LocationsNode) {
@@ -355,11 +368,11 @@ public class LocationsHub extends Table {
 		//
 		//Log.info("main page height="+mainPages.getHeight());
 
-
 		for (LocationScreen page : AllPages) {
 			page.validate();
 		}
 
+		
 
 	}
 
@@ -376,6 +389,15 @@ public class LocationsHub extends Table {
 		System.out.print("loading node:"+mycomputerdata);
 
 		// get the data for this node
+		
+		//get style data
+		ArrayList<Color> backcolours = DefaultStyles.getColorsFromNode(mycomputerdata);				
+		if (backcolours!=null){
+			Log.info("setting backcolor to first in :"+backcolours.toString());
+			setBackgroundColour(backcolours.get(0));		
+		}
+		
+		
 
 		//first load the links visible to this one
 		getVisibleMachines(mycomputerdata);
@@ -641,16 +663,87 @@ public class LocationsHub extends Table {
 			PlayersData.addUnlockedLink(LocationsNode);
 		}
 		
-		BackgroundManager.removeModelInstance(background);
+		BackgroundManager.removeModelInstance(backgroundObject);
 
 	}
 
+	@Override
+	public void layout(){
+		super.layout();
+				
+		//ensure background is positioned
+		if (backgroundObject!=null){
+
+			backgroundObject.transform.setToTranslation((int)this.getX(),(int)this.getY(),-110);
+		}
+		
+	}
 
 
+	public void addBackground() {
 
-	public void addClosedBackground() {
-		background = BackgroundManager.addNoiseRectangle((int)this.getX(),(int)this.getY(),(int)this.getWidth(),(int)this.getHeight());
+		backgroundObject = BackgroundManager.addRectangle((int)this.getX(),(int)this.getY(),-110,(int)this.getWidth(),(int)this.getHeight(),new Material());
+		
+		
+	}
 	
+	
+	public void setBackgroundColour( Color col) {
+		backcolour = col;
+		if (backgroundObject==null){
+			addBackground(); 
+		}
+		
+		
+		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f);
+		
+		backgroundObject.materials.get(0).clear();
+		backgroundObject.materials.get(0).set(ColorAttribute.createDiffuse(col));
+		backgroundObject.materials.get(0).set(blendingAttribute2);
+        
+	}
+	
+	
+	public void setClosedBackground() {
+		
+		if (backgroundObject==null){
+			addBackground(); 
+		}
+		
+		//
+		//Material mat = BackgroundManager.createNoiseMaterial();	
+
+		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f);
+
+	    Texture texture = new Texture(BackgroundManager.createNoiseImage(300,300));
+	    
+		backgroundObject.materials.get(0).clear();
+		backgroundObject.materials.get(0).set(ColorAttribute.createDiffuse(Color.WHITE));
+		backgroundObject.materials.get(0).set(ColorAttribute.createSpecular(Color.WHITE));
+		backgroundObject.materials.get(0).set(FloatAttribute.createShininess(16f));
+		backgroundObject.materials.get(0).set(TextureAttribute.createDiffuse(texture));
+		backgroundObject.materials.get(0).set(blendingAttribute2);
+		
+		
+		
+		//BackgroundManager.addNoiseRectangle((int)this.getX(),(int)this.getY(),(int)this.getWidth(),(int)this.getHeight());	
+		
+		//backgroundObject = BackgroundManager.addRectangle((int)this.getX(),(int)this.getY(),-110,(int)this.getWidth(),(int)this.getHeight(),mat);
+
+		
+	      //  mat.remove(TextureAttribute.Diffuse);
+		
+	 //   int allMats = backgroundObject.materials.size;
+	   // for (int i = 0; i < allMats-1; i++) {
+	   // 	backgroundObject.materials.set(i, mat2);
+		//}
+		
+		
+		
+		
+		BackgroundManager.giveAnimatedNoiseTextureToRectangle(backgroundObject);
+		
+		
 	}
 
 }

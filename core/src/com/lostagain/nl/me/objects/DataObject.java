@@ -491,6 +491,7 @@ public class DataObject extends Image
 			//cancel if locked
 			
 			storedin.onDrag(this);
+			storedin=null;
 		}
 		
 		pickup();

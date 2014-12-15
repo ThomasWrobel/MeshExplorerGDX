@@ -140,13 +140,35 @@ public class BackgroundManager {
 	
 	public static ModelInstance addNoiseRectangle(int x, int y, int w, int h) {
 		
-		
-		ModelInstance newmodel  = new ModelInstance(createNoiseRectangle(x, y, x+w,y+h, -110, Color.BLACK));
+
+		Material mat = createNoiseMaterial();
+		ModelInstance newmodel  = new ModelInstance(createRectangle(x, y, x+w,y+h, -110, Color.BLACK,mat));
 		ModelManagment.addmodel(newmodel);		
 		
-		animatedbacks.add(newmodel);
-				
+		return giveAnimatedNoiseTextureToRectangle(newmodel);
+	}
+	
+	public static ModelInstance addRectangle(int x, int y,int z, int w, int h, Material mat) {
+		
+		
+		ModelInstance newmodel  = new ModelInstance(createRectangleAt(x, y,z, w,h,  Color.BLACK, mat));
+		ModelManagment.addmodel(newmodel);		
+		
 		return newmodel;
+	}
+	
+	/** applies an animated noise texture to the specified modelinstance 
+	 * adds it to the animated backs list for autoupdating each frame**/
+	public static ModelInstance giveAnimatedNoiseTextureToRectangle(ModelInstance rect){
+
+		
+		Material mat = createNoiseMaterial();
+		//rect.materials.set(0, mat);
+		
+		
+		animatedbacks.add(rect);
+				
+		return rect;
 	}
 	
 	public static void removeModelInstance(ModelInstance model){
@@ -221,7 +243,7 @@ public class BackgroundManager {
 		//Gdx.app.log(logstag, " creating from point:"+fromPoint.x+","+fromPoint.y+" ---- "+tooPoint.x+","+tooPoint.y+"  ang="+ang);
 		//ang=ang+45;
 		
-		ModelInstance newline = createRectangleAt(fromX,fromY,width,fromPoint.len()*lengthMultiplayer,atZ,col,withStartBlob,withEndBlob);
+		ModelInstance newline = createGlowingRectangleAt(fromX,fromY,width,fromPoint.len()*lengthMultiplayer,atZ,col,withStartBlob,withEndBlob);
 		
 		//newline.materials.get(0).set(new BlendingAttribute(0.25f));
 
@@ -238,7 +260,7 @@ public class BackgroundManager {
 
 
 
-	private static ModelInstance createRectangleAt(float x,float y,float width,float height,float z, Color MColor, boolean withStartBlob, boolean withEndBlob) {
+	private static ModelInstance createGlowingRectangleAt(float x,float y,float width,float height,float z, Color MColor, boolean withStartBlob, boolean withEndBlob) {
 
 		//Color MColor = Color.RED;
 		Model newractangle =  createGlowingRectangle(0,height,width,0,0,MColor,withStartBlob,withEndBlob);
@@ -246,7 +268,6 @@ public class BackgroundManager {
 		ModelInstance newinstance = new ModelInstance(newractangle); 
 
 		newinstance.transform.setToTranslation(x,y,z);
-
 		
 
 		return newinstance;
@@ -559,12 +580,22 @@ public class BackgroundManager {
 		*/
 		
 	}
+	
+	/*
 	private static Model createNoiseRectangle(float x1,float y1,float x2,float y2,float z,Color MColor) {
 		
 
        // BlendingAttribute blendingAttribute = new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.1f);
 
 		
+     
+     
+        
+        return createRectangle( x1, y1, x2, y2, z, MColor, mat );
+        
+	}*/
+
+	public static Material createNoiseMaterial() {
 		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f);
 		
     Texture texture = new Texture(createNoiseImage(300,300));
@@ -575,17 +606,22 @@ public class BackgroundManager {
         
         mat.set(TextureAttribute.createDiffuse(texture));
         mat.set(blendingAttribute2);
-     
-     
-        
-        return createRectangle( x1, y1, x2, y2, z, MColor, mat );
-        
+		return mat;
 	}
 	
 	
+
+	static public ModelInstance createRectangleAt(int x, int y,int z, int w, int h,Color MColor,Material mat) {
+
+		ModelInstance newmodel  = new ModelInstance(createRectangle(0, 0, w,h, 0, Color.BLACK,mat ));
+
+
+		newmodel.transform.setToTranslation(x,y,z);
+		
+		return newmodel;
+	}
 	
-	
-	static private Model createRectangle(float x1,float y1,float x2,float y2,float z,Color MColor,Material mat ) {
+	static public Model createRectangle(float x1,float y1,float x2,float y2,float z,Color MColor,Material mat ) {
 		//x1 =0
 		//y1 =height
 		//x2 =width

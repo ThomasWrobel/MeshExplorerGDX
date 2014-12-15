@@ -85,9 +85,10 @@ public class MainExplorationView implements Screen {
 	//static Float CurrentX = 100f;
 	//static Float CurrentY = 100f;	
 	//static Float CurrentZ = 400f;
-	static Vector3 currentPos = new Vector3(100f,100f,400f);
+	public static Vector3 currentPos = new Vector3(100f,100f,400f);
 	
-	static Float CurrentZoom = 1f;
+	public static Float CurrentZoom = 1f;
+	
 
 	static Float LookAtX = 0f;
 	static Float LookAtY = 0f;
@@ -393,7 +394,8 @@ public class MainExplorationView implements Screen {
 		
 		//add noise back if closed and added to stage
 		if (newloc.closed){
-			newloc.addClosedBackground();
+			
+			newloc.setClosedBackground();
 			
 		}
 		
@@ -558,7 +560,7 @@ public class MainExplorationView implements Screen {
 			if (newtouch ){
 				
 				//trigger concept gun
-				usersGUI.ConceptGun.createBeamEffect(Gdx.input.getX(), Gdx.input.getY());				
+				usersGUI.ConceptGun.fireAt(Gdx.input.getX(), Gdx.input.getY());				
 				
 				Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 				touchedAModel = ModelManagment.testForHit(ray);
@@ -755,7 +757,7 @@ public class MainExplorationView implements Screen {
 
 			ME.batch.draw(customCursor, (xc-(customCursor.getWidth()/2)), (yc-(customCursor.getHeight()/2)));
 
-			Gdx.app.log(logstag,"customCursor.."+xc+","+yc+" height="+ (customCursor.getHeight()/2));
+	//		Gdx.app.log(logstag,"customCursor.."+xc+","+yc+" height="+ (customCursor.getHeight()/2));
 			
 			
 		}

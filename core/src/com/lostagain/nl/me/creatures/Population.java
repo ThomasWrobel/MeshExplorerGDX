@@ -62,7 +62,7 @@ public class Population {
 	enum destructOn {
 		query,clicks,cant
 	}
-	destructOn destructionType = destructOn.clicks; //defaults to a quert dropped on it, but a click is used to test atm
+	destructOn destructionType = null; //defaults to a clicks unless a query is specified
 	int hitPoints = 1; //can have more in future, possibly scaled to an attack variable
 	
 	//require node matching this query to destroy
@@ -162,6 +162,17 @@ public class Population {
 				}
 				
 				
+			}
+			
+			
+		}
+		
+		//ensure destruction type is set
+		if (destructionType==null){
+			destructionType = destructOn.clicks;
+			
+			if (queryToDestroy.length()>1){
+				destructionType = destructOn.query;
 			}
 			
 			

@@ -74,7 +74,7 @@ public class DefaultStyles {
 	/** if a node has colors, this will return them 
 	 * currently supports just one color, the first found
 	 * 
-	 * defaults to red**/
+	 * returns null if none found **/
 	static public ArrayList<Color> getColorsFromNode(SSSNode node){
 		
 		Gdx.app.log(logstag, " getting nodes colours ");
@@ -93,7 +93,9 @@ public class DefaultStyles {
 			//only color supported atm later we might search for other style related attributes?
 			if (currentPred == StaticSSSNodes.DBPediaColour){
 				newcolorstring =currentValue.getPLabel();
-			}	
+			}	else {
+				continue;
+			}
 
 			Color newcolor = getColorFromString(newcolorstring);
 			
@@ -112,9 +114,9 @@ public class DefaultStyles {
 
 
 
-		//ensure at least 1 color
+		//return null if none found
 		if (colours.size()==0){
-			colours.add(Color.RED);
+			return null;
 		}
 		
 

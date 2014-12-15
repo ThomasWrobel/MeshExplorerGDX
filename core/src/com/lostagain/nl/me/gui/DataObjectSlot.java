@@ -261,8 +261,13 @@ public class DataObjectSlot  extends WidgetGroup implements DataObjectDropTarget
 
 	/** fired when a DataObject is dragged from it onto it **/
 	public void onDrag(DataObject dragged){
-		stored = null;
-		if (onDragRunnable!=null){
+		
+		if (stored!=null){
+			Gdx.app.log(logstag, " stored concept emptying.  was ="+stored.itemsnode.getPLabel());
+			stored = null;
+		}
+	
+		if (onDragRunnable!=null){	
 			onDragRunnable.run();
 		}
 	}
@@ -280,23 +285,29 @@ public class DataObjectSlot  extends WidgetGroup implements DataObjectDropTarget
 		}
 		
 		//put into slot
-		Gdx.app.log(logstag, "adding to slot:");
+		Gdx.app.log(logstag, "adding to slot...");
 		droppedOn.setPosition(0, 0);	
 		droppedOn.setRotation(0);	
 		droppedOn.setScale(1);
 		
 		this.addActorAt(0, droppedOn); //add at bottom so doesnt mess up clicks on image, as well as allowing the image to act as an overlay
-		droppedOn.setStoredIn(this);
+		if (stored==null){
+			Gdx.app.log(logstag, "(no previous stored node)");
+		}
 		DataObject old_stored=stored; 
-
 		
+	
 		
+		droppedOn.setStoredIn(this);
 		stored=droppedOn;
+		
+		Gdx.app.log(logstag, "thing stored now is:  "+stored.itemsnode.toString()+" ");
+		
 		stored.setTouchable(Touchable.disabled);
 		
 		if (droppedOn==Old_Inventory.currentlyHeld){
 			
-			Gdx.app.log(logstag, "removing from held");
+			Gdx.app.log(logstag, "removing "+Old_Inventory.currentlyHeld.itemsnode.toString()+" from held");
 			
 			
 			
@@ -307,6 +318,8 @@ public class DataObjectSlot  extends WidgetGroup implements DataObjectDropTarget
 		
 		}
 		if (old_stored!=null){
+
+			Gdx.app.log(logstag, "old_stored = "+old_stored.itemsnode.getPLabel());
 			
 			old_stored.setStoredIn(null);
 			Gdx.app.log(logstag, "************************dropping old_stored "+old_stored.itemsnode.getPLabel());
@@ -321,6 +334,8 @@ public class DataObjectSlot  extends WidgetGroup implements DataObjectDropTarget
 			 
 			//Old_Inventory.setCurrentlyHeld(old_stored);
 			
+		} else {
+			Gdx.app.log(logstag, "(no previous stored node 2)");
 		}
 		
 		if (accepted && runAfterSomethingDroppedOn!=null){
@@ -373,7 +388,7 @@ public class DataObjectSlot  extends WidgetGroup implements DataObjectDropTarget
 		 }
 		
 	}
-	/** Allows the dataobject to be removed **/
+	/** stops the dataobject being removed **/
 	public void lock() {		
 		lockEnabled = true;
 		 if (lockEnabled){
