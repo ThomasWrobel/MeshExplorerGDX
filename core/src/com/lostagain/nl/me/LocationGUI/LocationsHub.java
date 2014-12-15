@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -71,8 +72,9 @@ import com.lostagain.nl.uti.MeshWorld;
 public class LocationsHub extends Table {
 
 
-	static Logger Log = Logger.getLogger("LocationsHub");
+	//static Logger Log = Logger.getLogger("LocationsHub");
 
+	final static String logstag = "ME.LocationsHub";
 
 
 	ArrayList<LocationScreen> AllPages = new ArrayList<LocationScreen>(); 
@@ -393,7 +395,8 @@ public class LocationsHub extends Table {
 		//get style data
 		ArrayList<Color> backcolours = DefaultStyles.getColorsFromNode(mycomputerdata);				
 		if (backcolours!=null){
-			Log.info("setting backcolor to first in :"+backcolours.toString());
+
+			Gdx.app.log(logstag,"setting backcolor to first in :"+backcolours.toString());
 			setBackgroundColour(backcolours.get(0));		
 		}
 		
@@ -416,7 +419,8 @@ public class LocationsHub extends Table {
 		//(for example, if new links have been unlocked since the last check)
 		if (MainExplorationView.gameStage.getActors().contains(this, true))			
 		{
-			Log.info("rechecking link lines");
+
+			Gdx.app.log(logstag,"rechecking link lines");
 			linksPage.recheckLinkLines();
 		}
 	}
@@ -427,13 +431,15 @@ public class LocationsHub extends Table {
 		closed = false;
 		SSSNode securedBy = null;
 
-		Log.info("getting security for:"+mycomputerdata.PURI);
+
+		Gdx.app.log(logstag,"getting security for:"+mycomputerdata.PURI);
 
 
 		HashSet<SSSNodesWithCommonProperty> sets = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(mycomputerdata.getPURI());
 
 
-		Log.info("sets:"+sets.size());
+
+		Gdx.app.log(logstag,"sets:"+sets.size());
 
 
 		for (SSSNodesWithCommonProperty sssNodesWithCommonProperty : sets) {
@@ -441,7 +447,8 @@ public class LocationsHub extends Table {
 			if (sssNodesWithCommonProperty.getCommonPrec()==StaticSSSNodes.SecuredBy){
 
 				securedBy = sssNodesWithCommonProperty.getCommonValue();
-				Log.info("security found:"+securedBy.getPURI());
+
+				Gdx.app.log(logstag,"security found:"+securedBy.getPURI());
 
 				closed = true;
 				break;
@@ -459,7 +466,8 @@ public class LocationsHub extends Table {
 
 
 	protected void populateVisibleComputers(ArrayList<SSSNode> testresult) {
-		Log.info("computers visible to this = "+testresult.size());
+
+		Gdx.app.log(logstag,"computers visible to this = "+testresult.size());
 		linksPage.clearLinks();
 
 		for (SSSNode sssNode : testresult) {
@@ -478,24 +486,29 @@ public class LocationsHub extends Table {
 	protected void populateContents(ArrayList<SSSNode> testresult) {
 
 
-		Log.info("populateContents for "+LocationsNode);
+
+		Gdx.app.log(logstag,"populateContents for "+LocationsNode);
 		
 		
 		//clear existing lists in case they have changed
-		Log.info("removing contents ");
+
+		Gdx.app.log(logstag,"removing contents ");
 		contentsPage.removeAllContents();
 
-		Log.info("removing emails ");
+
+		Gdx.app.log(logstag,"removing emails ");
 		emailPage.removeAllMessages();
 
 		int emails=0;
 		int data=0;
 		int abil=0;
-		Log.info("_____________contents:  "+testresult.size());
+
+		Gdx.app.log(logstag,"_____________contents:  "+testresult.size());
 
 		for (SSSNode sssNode : testresult) {
 
-			Log.info("Adding :"+sssNode.getPLabel());
+
+			Gdx.app.log(logstag,"Adding :"+sssNode.getPLabel());
 			
 			if (sssNode.isOrHasParentClass(StaticSSSNodes.software.getPURI())){
 
@@ -514,7 +527,8 @@ public class LocationsHub extends Table {
 
 			if (sssNode.isOrHasParentClass(StaticSSSNodes.messages.getPURI())){
 
-				Log.info(" Adding email");
+
+				Gdx.app.log(logstag,"Adding email");
 				
 				//First we check if its got a language specified 
 				
@@ -524,9 +538,11 @@ public class LocationsHub extends Table {
 				HashSet<SSSNodesWithCommonProperty> propertysOfEmail = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(sssNode.getPURI());
 				for (SSSNodesWithCommonProperty ep : propertysOfEmail) {
 					if (ep.getCommonPrec() == StaticSSSNodes.writtenin){
-						Log.info("detected language spec");
+
+						Gdx.app.log(logstag,"detected language spec");
 						 writtenIn = ep.getCommonValue();
-						Log.info("detected language written in:"+writtenIn.getPLabel());
+
+							Gdx.app.log(logstag,"detected language written in:"+writtenIn.getPLabel());
 					}					
 				}
 				
@@ -558,9 +574,11 @@ public class LocationsHub extends Table {
 	/** gets the content of the supplied location **/
 	public void getContentOfMachine(SSSNode tothisnode){
 
-		Log.warning("populate contents of:"+tothisnode);
 
-		Log.warning("SSSNodesWithCommonProperty with: "+StaticSSSNodes.isOn.PURI+","+tothisnode.PURI);
+		Gdx.app.log(logstag,"populate contents of:"+tothisnode);
+
+
+		Gdx.app.log(logstag,"SSSNodesWithCommonProperty with: "+StaticSSSNodes.isOn.PURI+","+tothisnode.PURI);
 
 		SSSNodesWithCommonProperty contentOfMACHINE =  SSSNodesWithCommonProperty.getSetFor(StaticSSSNodes.isOn, tothisnode); //.getAllNodesInSet(callback);
 
@@ -580,7 +598,7 @@ public class LocationsHub extends Table {
 					testresult.clear();
 					testresult.addAll(hs);
 
-					Log.warning("populate contents");
+					Gdx.app.log(logstag,"populate contents");
 					populateContents(testresult);
 
 
@@ -594,10 +612,10 @@ public class LocationsHub extends Table {
 
 		if (contentOfMACHINE!=null){
 
-			Log.warning("getting contents:"+contentOfMACHINE.isLoaded);
-			Log.warning("getting contents:"+contentOfMACHINE.getCommonPrec()+":"+contentOfMACHINE.getCommonValue());
-			Log.warning("getting contents:"+contentOfMACHINE.getSourceFiles().toString());
-			Log.warning("getting contents:"+contentOfMACHINE.getLefttoLoad() );
+			Gdx.app.log(logstag,"getting contents:"+contentOfMACHINE.isLoaded);
+			Gdx.app.log(logstag,"getting contents:"+contentOfMACHINE.getCommonPrec()+":"+contentOfMACHINE.getCommonValue());
+			Gdx.app.log(logstag,"getting contents:"+contentOfMACHINE.getSourceFiles().toString());
+			Gdx.app.log(logstag,"getting contents:"+contentOfMACHINE.getLefttoLoad() );
 
 			contentOfMACHINE.getAllNodesInSet(callback2);
 		}
@@ -613,7 +631,7 @@ public class LocationsHub extends Table {
 		//Log.info("all nodes"+allNodes.toString());
 
 
-		Log.info("---------------------------------------------------------------===================----------------");
+		Gdx.app.log(logstag,"---------------------------------------------------------------===================----------------");
 		//SSSNodesWithCommonProperty VisibleMachines =  SSSNodesWithCommonProperty.getSetFor(visibletest, everyonetest); //.getAllNodesInSet(callback);
 
 		String thisPURI = tothisnode.getPURI(); ///"C:\\TomsProjects\\MeshExplorer\\bin/semantics/DefaultOntology.n3#bobspc";
@@ -629,7 +647,7 @@ public class LocationsHub extends Table {
 
 
 
-				Log.warning("populate connectedto Computers");
+				Gdx.app.log(logstag,"populate connectedto Computers");
 				populateVisibleComputers(testresult);
 
 
@@ -650,7 +668,7 @@ public class LocationsHub extends Table {
 
 	public void unlockComputer() {
 
-		Log.info("unlocking location");
+		Gdx.app.log(logstag,"unlocking location");
 
 		closed = false;
 
@@ -663,8 +681,12 @@ public class LocationsHub extends Table {
 			PlayersData.addUnlockedLink(LocationsNode);
 		}
 		
-		BackgroundManager.removeModelInstance(backgroundObject);
-
+		//remove background and replace with color if its set
+		BackgroundManager.removeAnimatedNoiseTextureToRectangle(backgroundObject);
+		if (backcolour!=null){
+			setBackgroundColour(backcolour);
+		}
+		
 	}
 
 	@Override
@@ -689,7 +711,11 @@ public class LocationsHub extends Table {
 	
 	
 	public void setBackgroundColour( Color col) {
+
+		
+		Gdx.app.log(logstag,"setting back color to:"+col.toString());
 		backcolour = col;
+		
 		if (backgroundObject==null){
 			addBackground(); 
 		}
@@ -705,7 +731,7 @@ public class LocationsHub extends Table {
 	
 	
 	public void setClosedBackground() {
-		
+		Gdx.app.log(logstag,"setClosedBackground:");
 		if (backgroundObject==null){
 			addBackground(); 
 		}

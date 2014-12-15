@@ -1,0 +1,117 @@
+exploration stages;
+
+1. intro, learn its a second layer to the internet
+basic node collection.
+see some creatures, but dont know they are creatures yet.
+
+2. learn how to "unlock" locations. encouter cats location, but cant read it (first unreadable stuff). Cat1 requires fish to open. Links too Cat2 that requires many types of fish.
+
+3. Go to first remote location. Learn about languages. Gain first ability (decode language1)
+(more creatures here, a different sort)
+
+4. Using new nodes gained, can unlock profs research node.
+Mentions creatures for the first time. Speculates they might react
+to data.
+
+
+- learn creatures eat data, use it up
+- learn creatures adapt and each population will only be vulnerable to each type of data once
+- learn computers arnt locked, they are corrupted. Prof didnt lock his machine
+
+
+- Concept gun (can be equiped with different objects that determain beams propertys)
+  * objects get used up slower then directly giving them (due to guns rating ratio)
+	
+	concepts to load into gun (should have visual effects)
+	 color = effects color, naturally
+	 big/small = beams width
+	 
+	 posion = damage over time effect
+	 fire = damage over time effect
+	 freeze = stops movement, puts out fire
+	 chain = leaps from one to another
+	 wind = spreads them out 
+	 
+	 in addition to these effects the concept can apply its own unique property (ie, milk would effect lactor intolrent nodes)
+	 
+	 
+	 Gun level determains cocept complexity (ie, how many classes it can have)
+	 
+	 
+ 
+  
+
+- gain mutator device? (but only after dealing with a few populations in other ways)
+
+
+
+
+Creature types;
+
+* Vulnerable just to clicks
+* Vulnerable to milk,cheese,yogaurt,etc 
+* Vulnerable to fruit
+
+Population types;
+
+* light investation (surrounds location, but doesnt interfere)
+  - gives drops
+
+* heavy. (blocks locations use by swaming over it/greying it out. ALL have to be removed
+to open location)
+
+Characters;
+
+ProP - studys and explorers the locations. uses outdated lingo.
+Bob - shared client with you. irrasponsible
+Alice - exodecypter. likes icecream. low attention span.
+Cat - a cat? speaks Moew.
+
+Darkflame - first remote terminal...exadurated me
+
+Unused;
+
+Gondalwind - 
+
+Lock ideas;
+
+Name 6 doctors (doctor who actors count, as does any fictional doctor)
+
+
+
+Letters
+
+Darkflame
+
+
+This is cool. Its like some sort of semantic based network. Each domain adds its knowledge
+to the network.
+Semantics are really cool. Awesome in fact. Transitional inherirance of knowledge alone plus
+crossreferancing equals massive deductive power.
+Everyone should love semantic systems.Knowledge linked together in a structure, like a mesh of propertys and subpropertys,
+allowing different concepts to be related, allowing reality to be interpreted by humans and machines alike. Semantics in many ways is knowledge
+Subject Object Verb. Subject Predicate Value.  Semantics! Semantics!
+Semantics!
+--
+AR is cool too. Augmented Reality. One day we will live in a half virtual world. I am sure of it.
+Anyone seen Dennou Coil? You should!
+--
+I know Semantic AR!! No...wait...that makes no sense. Also Why do I keep emailing myself. ? 
+--
+oh, I also spotted some weird...things...around some locations.  Anyone else spotted them? I thought they were just random data 
+at first, but they seem to respond to interaction. 
+
+
+
+
+Widgets to make
+
+1. Mock GWT label - scalable in 3d using distance map fonts (or whatever its calleD). Has all the basic propertys of a label.
+
+2. Vertical/Horizontal panel - can accept the above label for now, but support it via a GWTish widget interface
+
+
+
+
+
+

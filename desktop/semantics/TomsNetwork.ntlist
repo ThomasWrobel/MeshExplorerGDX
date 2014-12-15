@@ -37,6 +37,7 @@ BobsOutpost me:connectedTo me:everyone.
 BobsOutpost http://dbpedia.org/ontology/Colour Green.
 thecatspc http://dbpedia.org/ontology/Colour Orange.
 alicespc http://dbpedia.org/ontology/Colour Cyan.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost http://dbpedia.org/ontology/Colour Red.
 
 http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#test rdfs:subClassOf me:Computer.
 http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#test me:connectedTo http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost.

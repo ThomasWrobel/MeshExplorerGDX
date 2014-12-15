@@ -82,10 +82,9 @@ public class MainExplorationView implements Screen {
 	public static Stage gameStage;		
 	public static Stage guiStage;
 
-	//static Float CurrentX = 100f;
-	//static Float CurrentY = 100f;	
-	//static Float CurrentZ = 400f;
-	public static Vector3 currentPos = new Vector3(100f,100f,400f);
+	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX,PlayersData.homelocationY+2,500f); //note we start high up and zoom in at the start as a little intro
+	
+	
 	
 	public static Float CurrentZoom = 1f;
 	
@@ -276,7 +275,7 @@ public class MainExplorationView implements Screen {
 					LookAtY = currentPos.y;
 					
 					//targetLocation
-					 if (currentTargetLocation!=MainExplorationView.LastLocation.getLast()){
+					 if (MainExplorationView.LastLocation.size()==0 || currentTargetLocation!=MainExplorationView.LastLocation.getLast()){
 						 MainExplorationView.LastLocation.add(currentTargetLocation);
 					 }
 
@@ -349,14 +348,14 @@ public class MainExplorationView implements Screen {
 		background.setup();
 		
 
-		PlayersData.homeLoc = new Location(PlayersData.computersuri,200,500);
+		PlayersData.homeLoc = new Location(PlayersData.computersuri, PlayersData.homelocationX,PlayersData.homelocationY);
 
 	//	addnewlocation( PlayersData.homeLoc.locationsHub,200,500);
 
 
 		Gdx.app.log(logstag,"centering cameraf");
 
-		centerViewOn( PlayersData.homeLoc);
+		centerViewOn( PlayersData.homeLoc,444);
 
 		//test shader
 		// String vert = Gdx.files.internal("data/test.vertex.glsl").readString();
@@ -403,26 +402,35 @@ public class MainExplorationView implements Screen {
 	}
 
 
-	public static void centerViewOn(Location currentlyOpenLocation2){
-		
+	public static void centerViewOn(Location currentlyOpenLocation2){		
 		
 		coasting = false;
-		dragging = false;
+		dragging = false;		
+		centerViewOn(currentlyOpenLocation2, currentPos.z,true); //set position in all dimensions but z which we keep the same
+				
+	}
+	public static void centerViewOn(Location currentlyOpenLocation2, float newZ){		
 		
-		centerViewOn(currentlyOpenLocation2, true);
-		
-		
+		coasting = false;
+		dragging = false;		
+		centerViewOn(currentlyOpenLocation2, newZ,true); //set position in all dimensions but z which we keep the same
+				
+	}
+	public static void centerViewOn(Location locationcontainer, boolean addLocationToUndo){
+
+		coasting = false;
+		dragging = false;		
+		centerViewOn(locationcontainer, currentPos.z,addLocationToUndo); //set position in all dimensions but z which we keep the same
 	}
 
-
-	public static void centerViewOn(Location locationcontainer, boolean addLocationToUndo){
+	public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo){
 
 		//CurrentX=locationcontainer.getCenterX();  //getX()+(locationcontainer.getWidth()/2);
 		//CurrentY=locationcontainer.getCenterY(); //getY()+(locationcontainer.getHeight()/2);
 
 		float newX = locationcontainer.getHubsX(Align.center);
 		float newY = locationcontainer.getHubsY(Align.center);
-		Vector3 dest = new Vector3(newX,newY,currentPos.z);
+		Vector3 dest = new Vector3(newX,newY,newZ);
 		
 
 		//asign new tweens
@@ -512,7 +520,15 @@ public class MainExplorationView implements Screen {
 		
 		// create the camera and the SpriteBatch
 		if ( currentmode == cammode.ortha){        	 
+					
+			
+			
+			float newzoom = (0.0133333315344f*currentPos.z)-4.9199985961765f;
+			CurrentZoom = newzoom;
 			((OrthographicCamera)camera).zoom = CurrentZoom;
+			
+
+			//Gdx.app.log(logstag,"CurrentZoom="+CurrentZoom);
 		} 
 
 
@@ -721,13 +737,36 @@ public class MainExplorationView implements Screen {
 		if (Gdx.input.isKeyPressed(Keys.Z))
 		{
 			currentPos.z = currentPos.z+(150* Gdx.graphics.getDeltaTime()); 
-			CurrentZoom = CurrentZoom +(2* Gdx.graphics.getDeltaTime()); 
+
+			if ( currentmode == cammode.ortha){
+			//	CurrentZoom = CurrentZoom +(2* Gdx.graphics.getDeltaTime()); 
+
+				float newzoom = (0.0133333315344f*currentPos.z)-4.9199985961765f;	//the formular works out a ratio between zoom and z position			
+				CurrentZoom = newzoom;
+				
+				//Gdx.app.log(logstag,currentPos.z+","+CurrentZoom);
+			}
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.A) && currentPos.z>0.5)
 		{        	
 			currentPos.z = currentPos.z-(150* Gdx.graphics.getDeltaTime());
-			CurrentZoom = CurrentZoom -(2* Gdx.graphics.getDeltaTime()); 
+
+			if ( currentmode == cammode.ortha){
+				
+				float newzoom = (0.0133333315344f*currentPos.z)-4.9199985961765f;	//the formula works out a ratio between zoom and z position			
+				CurrentZoom = newzoom;
+				//CurrentZoom = CurrentZoom -(2* Gdx.graphics.getDeltaTime()); 
+
+				//Gdx.app.log(logstag,"CurrentZoom="+CurrentZoom+" = "+currentPos.z);
+
+				//Gdx.app.log(logstag,currentPos.z+","+CurrentZoom);
+				//0.002780689 = 369.2085
+				
+				//currentPos.z-369.2085
+				//900.4018 -369.2085=  531.2
+				
+			}
 		}
 
 		if (!Gdx.input.isButtonPressed(Buttons.LEFT) && LeftButtonDown){

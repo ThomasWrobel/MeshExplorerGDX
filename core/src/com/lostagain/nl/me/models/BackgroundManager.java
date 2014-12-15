@@ -162,7 +162,7 @@ public class BackgroundManager {
 	public static ModelInstance giveAnimatedNoiseTextureToRectangle(ModelInstance rect){
 
 		
-		Material mat = createNoiseMaterial();
+		//Material mat = createNoiseMaterial();
 		//rect.materials.set(0, mat);
 		
 		
@@ -170,6 +170,18 @@ public class BackgroundManager {
 				
 		return rect;
 	}
+	
+	public static ModelInstance removeAnimatedNoiseTextureToRectangle(ModelInstance rect){
+
+		
+		//rect.materials.set(0, mat);
+				
+		animatedbacks.remove(rect);
+				
+		return rect;
+	}
+	
+	
 	
 	public static void removeModelInstance(ModelInstance model){
 		

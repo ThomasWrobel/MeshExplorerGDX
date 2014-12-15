@@ -154,8 +154,8 @@ public class ConceptGun  extends WidgetGroup {
 			@Override
 			public void run() {
 				
-				MainExplorationView.currentPos.z = MainExplorationView.currentPos.z+0.04f; 
-				MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom +0.04f; 
+				MainExplorationView.currentPos.z = MainExplorationView.currentPos.z+40f; 
+				//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom +0.04f; 
 
 				
 			}
@@ -210,8 +210,8 @@ public class ConceptGun  extends WidgetGroup {
 		if (disabledFire){
 			return;
 		}
-		MainExplorationView.currentPos.z = MainExplorationView.currentPos.z+0.02f; 
-		MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom +0.02f; 
+		MainExplorationView.currentPos.z = MainExplorationView.currentPos.z+5f; 
+		//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom +0.02f; 
 		
 		Gdx.app.log(logstag, " createBeamEffect targeting:"+x+","+y);
 
@@ -301,8 +301,8 @@ public class ConceptGun  extends WidgetGroup {
 				BackgroundManager.removeModelInstance(lazer);
 				lazer=null;
 				
-				MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-0.02f; 
-				MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom -0.02f; 
+				MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-5f; 
+				//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom -0.02f; 
 			}
 
 		}
@@ -328,8 +328,8 @@ public class ConceptGun  extends WidgetGroup {
 		}
 
 		//currently we just jog the camera zoom for a moment to fake a shake
-		MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-0.04f; 
-		MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom -0.04f; 
+		MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-40f; 
+		//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom -0.04f; 
 
 		
 		if (!impactEffectTask.isScheduled()){

@@ -110,12 +110,12 @@ public class ME extends Game {
     //Log.setLevel(Level.OFF);
     	  Logger.getLogger("sss");
     	   Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
-    	  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.WARNING);
+     Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
     	  Logger.getLogger("sss.SSSNode").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.QueryEngine").setLevel(Level.OFF);
-    	 // Logger.getLogger("sss.JavaFileManager").setLevel(Level.OFF);    		  
-    	  Logger.getLogger("sss.SSSIndex").setLevel(Level.INFO);
+    	  Logger.getLogger("sss.JavaFileManager").setLevel(Level.OFF);    		  
+    	  Logger.getLogger("sss.SSSIndex").setLevel(Level.OFF);
     	  
     		  
     	  SuperSimpleSemantics.setFileManager(new FileManager());	  
