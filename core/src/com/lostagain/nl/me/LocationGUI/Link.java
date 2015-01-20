@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
+import com.darkflame.client.semantic.SSSIndex;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
@@ -33,7 +34,8 @@ import java.util.logging.Logger;
 public class Link extends WidgetGroup implements GenericProgressMonitor{
 
 	static Logger Log = Logger.getLogger("ME.Link");
-	
+	final static String logstag = "ME.Link";
+			
 	Label gotoLinkButton =  new Label("",DefaultStyles.linkstyle);
 	
 	String LocationsName = "";
@@ -65,7 +67,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	private double TOTAL_LOAD_UNITS=1;
 	private double LOAD_PROGRESS=0;
 
-	private boolean realscan=false;
+	private boolean realLink=false;
 	int RealScanAmount =0;
 	private static long scanStartTime=0l;
 
@@ -120,9 +122,25 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 			public void clicked(InputEvent ev, float x , float y){
 				
 
-					Log.info("trying to go to:"+linksToThisPC.toString());
+					Gdx.app.log(logstag,"trying to go to:"+linksToThisPC.getPURI());
 							
+					//double check if it was a realscan that the database is loaded (should not be needed if loading progress was handled correctly, which it currently is not)
+					if (realLink){
 
+						Gdx.app.log(logstag,"checking if url loaded:");
+						
+						
+						boolean loaded = ME.checkDatabaseIsLoaded(linksToThisPC);
+						
+						if (loaded==false){
+
+							Gdx.app.log(logstag,"canceling click as database not loaded");
+							return;
+						}
+						
+					}
+					
+					
 					switch (currentMode)
 					{
 					case Unknown:
@@ -154,7 +172,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		
 		super.addActor(gotoLinkButton);
 
-		Log.info(":"+linksToThisPC.toString());
+		Gdx.app.log(logstag,":"+linksToThisPC.toString());
 		
 		if (ComputerOpen){
 			refreshBasedOnMode();
@@ -178,7 +196,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 
 	private void scan(){
 		
-		Log.info("___________________________________sc");
+		Gdx.app.log(logstag,"___________________________________sc");
 		
 		
 		currentMode = LinkMode.Scanning;
@@ -192,18 +210,18 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 
 		
 		//check if needs a new database loaded
-		Boolean newDatabaseLoading=ME.checkForUnloadedDatabase(linksToThisPC);
+		Boolean newDatabaseLoading=ME.checkForUnloadedDatabaseAndLoad(linksToThisPC);
 		
 		if (!newDatabaseLoading){
 			
-			Log.info("triggering scan");
+			Gdx.app.log(logstag,"triggering scan");
 			currentParent.startScanningLink(this);
-			realscan=false;
+			realLink=false;
 		} else {
 
-			Log.info("triggering remote scan");
+			Gdx.app.log(logstag,"triggering remote scan");
 			
-			realscan=true;
+			realLink=true;
 
 			this.setScanningAmount(0);
 			
@@ -252,7 +270,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		
 		//float pixels = (super.size().width()/100)*Percentage;
 	//	ProgressBar.setText("-"+Percentage);
-		if (!realscan){
+		if (!realLink){
 			//int combined = (RealScanAmount+Percentage/2);
 			scanPercentage.setValue(Percentage);
 				
@@ -308,19 +326,19 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		//detect if its secured by anything 
 		if (linksToThisPC!=null){
 			
-			Log.info("-------------------------------detecting security");
+			Gdx.app.log(logstag,"-------------------------------detecting security");
 			
-			ArrayList<SSSNode> allSecuredPCs = SSSNodesWithCommonProperty.getAllNodesWithPredicate(StaticSSSNodes.SecuredBy);
+			ArrayList<SSSNode> allSecuredPCs = SSSNodesWithCommonProperty.getAllCurrentNodesWithPredicate(StaticSSSNodes.SecuredBy);
 
-			Log.info("-------------------------------allSecuredPCs="+allSecuredPCs.size());
-			Log.info("-------------------------------allSecuredPCs="+allSecuredPCs.toString());
+			Gdx.app.log(logstag,"-------------------------------allSecuredPCs="+allSecuredPCs.size());
+			Gdx.app.log(logstag,"-------------------------------allSecuredPCs="+allSecuredPCs.toString());
 			
 			
 			if (allSecuredPCs.contains(linksToThisPC)){
 				
 				ComputerOpen = false;
 
-				Log.info("-------------------------------ComputerOpen="+ComputerOpen);
+				Gdx.app.log(logstag,"-------------------------------ComputerOpen="+ComputerOpen);
 				
 			} else {
 
@@ -345,8 +363,18 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	}
 
 	void reCheckLinkLine() {
-		if (Linksline==null){
+		boolean loaded = true;
+		
+		if (realLink){
+			
+			Gdx.app.log(logstag,"testing reallink if any databases are still needed to be loaded before enableing link and new location");
+			loaded = ME.checkDatabaseIsLoaded(linksToThisPC); //ensures any databases at this points too are loaded
+			Gdx.app.log(logstag,"Loaded:"+loaded);
+		}
+		
+		if (Linksline==null && loaded ){
 							
+			
 			Location newlocation =  Location.getLocationHub(linksToThisPC);
 			
 		
@@ -365,7 +393,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	public void stepForwardDownloadingAmount(int SPEEDSTEP) {
 		
 		PercentageScanned = PercentageScanned + SPEEDSTEP;
-		Log.info("current percentage="+PercentageScanned);
+		Gdx.app.log(logstag,"current percentage="+PercentageScanned);
 		
 		
 		if (PercentageScanned>=100) {
@@ -417,7 +445,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		
 		if (currentMode == LinkMode.Closed || currentMode == LinkMode.Open){
 
-			Log.info("rechecking link lines");
+			Gdx.app.log(logstag,"rechecking link lines");
 			reCheckLinkLine();
 		}
 		
@@ -450,18 +478,18 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		double percd=100.0*(LOAD_PROGRESS/TOTAL_LOAD_UNITS);
 		RealScanAmount = (int) Math.floor(percd);
 		
-		Log.info("updatePercentageScanned = "+RealScanAmount+" ("+LOAD_PROGRESS+"/"+TOTAL_LOAD_UNITS+")");
+		Gdx.app.log(logstag,"updatePercentageScanned = "+RealScanAmount+" ("+LOAD_PROGRESS+"/"+TOTAL_LOAD_UNITS+")");
 		
 		
 		if (RealScanAmount>=100) {
-			Log.info(" new database loaded ");
+			Gdx.app.log(logstag," new database loaded ");
 			
 			RealScanAmount = 100;	
 			Gdx.app.postRunnable(new Runnable() {
 				
 				@Override
 				public void run() {
-					Log.info(" final link updates ");
+					Gdx.app.log(logstag," final link updates ");
 					setScanningAmount(RealScanAmount);
 					scanComplete();
 

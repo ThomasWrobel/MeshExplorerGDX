@@ -102,6 +102,24 @@ oh, I also spotted some weird...things...around some locations.  Anyone else spo
 at first, but they seem to respond to interaction. 
 
 
+How to handle creature movements?
+
+- Movement is defined by basic actions nodes
+- [Turn X left],[Turn X right],[Turn Towards <Point>],[Move Forward X],[Move Back X]
+
+- Node file can determain a set of sub-actions to proform under an action
+"[Run From <Point>]" contains "[Turn Towards <Point>],[Turn 180 right],[Move Forward X]"
+
+- Node file can determain action to do under conditions
+
+
+- Creatures have a updatePosition() function which calls getPosition(delta) from their animationController
+
+- getPosition(delta) in animation controller returns the position based on the current action. If it reachs the end 
+of the current action, it skips to the next action in its current list and returns the position in that
+
+
+
 
 
 Widgets to make

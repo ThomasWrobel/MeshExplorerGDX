@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
+import com.badlogic.gdx.Gdx;
 import com.darkflame.client.query.Query;
 import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
@@ -15,12 +16,14 @@ import com.lostagain.nl.me.LocationGUI.LocationsHub;
 
 public class PlayersData {
 
-	static Logger Log = Logger.getLogger("ME.PlayersData")
-			;
+
+	final static String logstag = "ME.PlayersData";
+	//static Logger Log = Logger.getLogger("ME.PlayersData")
+	//		;
 	public static SSSNode computersuri = SSSNode.createSSSNode("HomeLocation","HomeLocation",ME.INTERNALNS,new SSSNode[]{StaticSSSNodes.Computer});
 			
 	 //default software contents
-	static SSSNode coin = SSSNode.createSSSNode("coin",ME.INTERNALNS+"coin", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.software});
+//	static SSSNode coin = SSSNode.createSSSNode("coin",ME.INTERNALNS+"coin", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.software});
 
 	 //default message contents semantics\TomsNetwork.ntlist
 	static SSSNode homemessage = SSSNode.createSSSNode("\"homepc/WelcomeMessage.txt\"","semantics\\TomsNetwork.ntlist#welcomemessage", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
@@ -72,7 +75,7 @@ public class PlayersData {
 
 	public static void setup() {
 		
-		Log.info("home location uri="+homemessage.PURI);
+		Gdx.app.log(logstag,"home location uri="+homemessage.PURI);
 		
 		
 		//This perhaps should be turned into a NTList to keep the players starting information external
@@ -80,7 +83,7 @@ public class PlayersData {
 		
 		// add starting objects
 	//	playerslocationcontents.addNodeToThisSet(coin, "local");
-		//Log.info("adding coin");
+		//Gdx.app.log(logstag,"adding coin");
 		
 		//ME.playersInventory.addItem(coin);
 		
@@ -89,27 +92,27 @@ public class PlayersData {
 
 		//homediscription.add(homeDisLabel);
 		
-		Log.info("adding message");
+		Gdx.app.log(logstag,"adding message");
 		
 		//playerslocationcontents.addNodeToThisSet(homemessage, "local");
 		
 		
 		HashSet<SSSNodesWithCommonProperty> sets = 	SSSNodesWithCommonProperty.getCommonPropertySetsContaining(PlayersData.homemessage.PURI);
 
-		Log.info("________message="+PlayersData.homemessage.PURI);
+		Gdx.app.log(logstag,"________message="+PlayersData.homemessage.PURI);
 		
-		Log.info("sets with homemessage:"+sets.size());
+		Gdx.app.log(logstag,"sets with homemessage:"+sets.size());
 		//
 		
-		Log.info("players contents:"+PlayersData.playerslocationcontents.getCommonPrec().PURI+":"+PlayersData.playerslocationcontents.getCommonValue().PURI);
+		Gdx.app.log(logstag,"players contents:"+PlayersData.playerslocationcontents.getCommonPrec().PURI+":"+PlayersData.playerslocationcontents.getCommonValue().PURI);
 		
 		for (SSSNode set : PlayersData.playerslocationcontents) {
     		
-			Log.info("____content____result="+set.PURI );
+			Gdx.app.log(logstag,"____content____result="+set.PURI );
 
-			Log.info("____content____parents="+set.getDirectParentsAsString() );
+			Gdx.app.log(logstag,"____content____parents="+set.getDirectParentsAsString() );
 
-			Log.info("____content____parents="+set.getAllClassesThisBelongsToo() );
+			Gdx.app.log(logstag,"____content____parents="+set.getAllClassesThisBelongsToo() );
 			
 		}
 		
@@ -158,21 +161,48 @@ public class PlayersData {
 		//Decoder KnowsLanguage=language isOn=PlayersMachine
 		
 		
-		Log.info("______________testing if player has decoder for language");
+		Gdx.app.log(logstag,"______________testing if player has decoder for language "+language.getPURI());
+		Gdx.app.log(logstag,"______________player should know language "+StaticSSSNodes.stdascii.getPURI());
+		//ME.INTERNALNS+"knows="+language.getPURI() works
+		// works
+		//
+		Query suitableDecodersOnPlayersSystemQuery = new Query(ME.INTERNALNS+"knows="+language.getPURI() +" "+ME.INTERNALNS+"decoder "+"me:isOn="+computersuri.getPURI());
 		
-		Query realQuery = new Query(ME.INTERNALNS+"knows="+language.getPURI() +" "+ME.INTERNALNS+"decoder me:isOn="+computersuri);
-		
-		if (realQuery.hasNoErrors()){
-			Log.info("______no errors in query");
+		if (suitableDecodersOnPlayersSystemQuery.hasNoErrors()){
+			Gdx.app.log(logstag,"______no errors in query");
 			
 		}
 		
-		Log.info("______no errors in query");
+		//some tests (no longer needed, had error in above query)
+/*
+		Gdx.app.log(logstag,"______________asciidecoder uri: "+StaticSSSNodes.asciidecoder.PURI);
+		Gdx.app.log(logstag,"______________asciidecoder parents: "+StaticSSSNodes.asciidecoder.getAllClassesThisBelongsToo());
 		
+		HashSet<SSSNodesWithCommonProperty> sets = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(StaticSSSNodes.asciidecoder.getPURI());
+		for (SSSNodesWithCommonProperty set : sets) 
+		{
+
+			Gdx.app.log(logstag,"______________asciidecoder has property: "+set.getCommonPrec()+"="+set.getCommonValue());	
+				
+		}
 		
-		Log.info(":::"+realQuery.allUsedNodes().toString());
+						
+		Gdx.app.log(logstag,"_____________knows=ascii list is "+StaticSSSNodes.knowsAscii.getCommonPrec()+"="+StaticSSSNodes.knowsAscii.getCommonValue());	
+		Gdx.app.log(logstag,"_____________should match val ="+language.getPURI()+" (and be in list following ::: below)");	
 		
+		Gdx.app.log(logstag,"_____________things with knows=ascii: "+StaticSSSNodes.knowsAscii.toString());	
 		
+		Gdx.app.log(logstag,"_____________ison=computer list is "+PlayersData.playerslocationcontents.getCommonPrec()+"="+PlayersData.playerslocationcontents.getCommonValue());	
+		Gdx.app.log(logstag,"_____________should match val ="+computersuri.getPURI()+" (and be in list following ::: below)");	
+		Gdx.app.log(logstag,"_____________things with  ison=computer: "+PlayersData.playerslocationcontents.toString());	
+		
+		//(Ascii decoder is in both lists....so, again, why doesn't the query pick it up? it should just be a intersection of these lists/
+		//most likely problem; Its not interpreting the pred/val of these lists as the same ones requested
+		//check that next
+		
+		Gdx.app.log(logstag,":::"+suitableDecodersOnPlayersSystemQuery.allUsedNodes().toString());
+		
+		*/
 		
 
 		DoSomethingWithNodesRunnable RunWhenDone = new DoSomethingWithNodesRunnable() {
@@ -180,7 +210,7 @@ public class PlayersData {
 			@Override
 			public void run(ArrayList<SSSNode> newnodes, boolean invert) {
 				
-				Log.info("got results from language test:"+newnodes.toString());
+				Gdx.app.log(logstag,"got results from language test:"+newnodes.toString());
 				if (newnodes!=null && newnodes.get(0)!=SSSNode.NOTFOUND){
 					
 					//language
@@ -196,7 +226,7 @@ public class PlayersData {
 			}
 		};
 		
-		QueryEngine.processQuery(realQuery, false, null, RunWhenDone);
+		QueryEngine.processQuery(suitableDecodersOnPlayersSystemQuery, false, null, RunWhenDone);
 		
 		
 		

@@ -82,7 +82,7 @@ public class MainExplorationView implements Screen {
 	public static Stage gameStage;		
 	public static Stage guiStage;
 
-	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX,PlayersData.homelocationY+2,500f); //note we start high up and zoom in at the start as a little intro
+	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX,PlayersData.homelocationY,500f); //note we start high up and zoom in at the start as a little intro
 	
 	
 	
@@ -150,7 +150,7 @@ public class MainExplorationView implements Screen {
 	enum cammode{
 		ortha,perspective
 	}    
-	cammode currentmode = cammode.ortha;
+	cammode currentmode = cammode.perspective;
 
 	/*
 	private Image testdataobject = new DataObject(StaticSSSNodes.knows,"12");
@@ -319,7 +319,7 @@ public class MainExplorationView implements Screen {
 		}
 		// camera.setToOrtho(false, 1600, 960);
 		camera.near=0.5f;
-		camera.far=900.0f;
+		camera.far=1900.0f;
 		//camera.translate(10, 25);
 		// camera.direction.set(-1, 0, 0);
 
@@ -330,7 +330,7 @@ public class MainExplorationView implements Screen {
 
 		Gdx.app.log(logstag,"creating game stage");
 
-		gameStage = new Stage();
+		gameStage = new PerspectiveStage();
 
 		InputMultiplexer multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(guiStage);
@@ -714,7 +714,14 @@ public class MainExplorationView implements Screen {
 				currentPos.y = (float) (currentPos.y+(MotionDisY*delta));
 			}
 		}
-		
+		if (Gdx.input.isKeyPressed(Keys.P))
+		{
+			camera.rotate(new Vector3(0, 1,0),3);       	
+		}
+		if (Gdx.input.isKeyPressed(Keys.L))
+		{
+			camera.rotate(new Vector3(0, 1,0),-3);       	
+		}
 		if (Gdx.input.isKeyPressed(Keys.LEFT))
 		{
 			currentPos.x = currentPos.x-(200* Gdx.graphics.getDeltaTime());        	
@@ -836,7 +843,7 @@ public class MainExplorationView implements Screen {
 		//camera = new PerspectiveCamera(60,width,height); //new OrthographicCamera(width, height);
 		camera.translate(height/2,width/2, 0);
 		camera.near=0.5f;
-		camera.far=900.0f;
+		camera.far=1900.0f;
 		camera.update();
 		
 		gameStage.getViewport().setCamera(camera);

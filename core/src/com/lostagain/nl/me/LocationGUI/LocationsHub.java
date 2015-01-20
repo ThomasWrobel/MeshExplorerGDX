@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -58,6 +59,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.darkflame.client.query.Query;
 import com.darkflame.client.semantic.QueryEngine;
+import com.darkflame.client.semantic.RawQueryUtilities;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
@@ -210,7 +212,7 @@ public class LocationsHub extends Table {
 		//refresh.setFillParent(true);
 		//nameLabel.setFillParent(true);
 		
-		super.add(titlebar).fillX().expandX().expandY();
+		super.add(titlebar).fillX().expandX();//.expandY();
 		
 		
 		super.row();
@@ -361,10 +363,21 @@ public class LocationsHub extends Table {
 
 	public void validateAllPages(){
 
+		Gdx.app.log(logstag,"validateAllPages");
+		
 		super.validate();
+		
+
+		Gdx.app.log(logstag,"size of loc="+super.getHeight());
+		
 		lowersplit.validate();
 		mainPages.validate();
+		
+		
 
+		Gdx.app.log(logstag,"size of mainPages="+mainPages.getHeight());
+		Gdx.app.log(logstag,"size of lowersplit="+lowersplit.getHeight());
+		
 		//Log.info(" lowersplit "+lowersplit.getHeight());
 		//Log.info(" super "+super.getHeight());
 		//
@@ -434,9 +447,12 @@ public class LocationsHub extends Table {
 
 		Gdx.app.log(logstag,"getting security for:"+mycomputerdata.PURI);
 
+		if (ME.checkDatabaseIsLoaded(mycomputerdata)==false){
+			Gdx.app.log(logstag,"WARNING COMPUTERS DATABASE NOT LOADED. THIS SHOULD NOT HAVE BEEN LINKED TOO YET");
+			
+		}
 
 		HashSet<SSSNodesWithCommonProperty> sets = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(mycomputerdata.getPURI());
-
 
 
 		Gdx.app.log(logstag,"sets:"+sets.size());
@@ -465,12 +481,12 @@ public class LocationsHub extends Table {
 	}
 
 
-	protected void populateVisibleComputers(ArrayList<SSSNode> testresult) {
+	protected void populateVisibleComputers(ArrayList<SSSNode> computerNodes) {
 
-		Gdx.app.log(logstag,"computers visible to this = "+testresult.size());
+		Gdx.app.log(logstag,"computers visible to this = "+computerNodes.size());
 		linksPage.clearLinks();
 
-		for (SSSNode sssNode : testresult) {
+		for (SSSNode sssNode : computerNodes) {
 
 			//add to link list if its not the current pc
 			if (sssNode!=this.LocationsNode){			
@@ -528,14 +544,17 @@ public class LocationsHub extends Table {
 			if (sssNode.isOrHasParentClass(StaticSSSNodes.messages.getPURI())){
 
 
-				Gdx.app.log(logstag,"Adding email");
+				Gdx.app.log(logstag,"Adding email:"+sssNode.getPURI());
 				
 				//First we check if its got a language specified 
 				
 				//note still using this messy method
 				//SSS really needs a neater way to get a nodes property rather then just its classes
 				SSSNode writtenIn =null;
+				
 				HashSet<SSSNodesWithCommonProperty> propertysOfEmail = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(sssNode.getPURI());
+
+				Gdx.app.log(logstag,"number of email props:"+propertysOfEmail.size());
 				for (SSSNodesWithCommonProperty ep : propertysOfEmail) {
 					if (ep.getCommonPrec() == StaticSSSNodes.writtenin){
 
@@ -548,7 +567,7 @@ public class LocationsHub extends Table {
 				
 				
 				
-				emailPage.addEmailLocation(sssNode,writtenIn); //note; order cant be gaurentied yet
+				emailPage.addEmailLocation(sssNode,writtenIn); //note; order cant be guaranteed yet
 				
 				
 				emails++;
@@ -631,24 +650,36 @@ public class LocationsHub extends Table {
 		//Log.info("all nodes"+allNodes.toString());
 
 
-		Gdx.app.log(logstag,"---------------------------------------------------------------===================----------------");
+		Gdx.app.log(logstag,"-------------------------------X--------------------------------===================----------------");
 		//SSSNodesWithCommonProperty VisibleMachines =  SSSNodesWithCommonProperty.getSetFor(visibletest, everyonetest); //.getAllNodesInSet(callback);
 
 		String thisPURI = tothisnode.getPURI(); ///"C:\\TomsProjects\\MeshExplorer\\bin/semantics/DefaultOntology.n3#bobspc";
 
-
 		Query realQuery = new Query("(me:connectedto=me:everyone)||(me:connectedto="+thisPURI+")");
+		
 
+	//	Gdx.app.log(logstag,"----prefix tests:"+RawQueryUtilities.getPrefixs());
+
+	//	Gdx.app.log(logstag,"----all nodes:"+SSSNode.getAllKnownNodes());
+
+		SSSNode.setExtendedDebug(true);
+	//	Gdx.app.log(logstag,"----me:connectedto test:"+SSSNode.getNodeByUri("me:connectedto").toString());
+	//	Gdx.app.log(logstag,"----me:everyone test:"   +SSSNode.getNodeByUri("me:everyone").toString());
+	//	Gdx.app.log(logstag,"----thisPURI  test:"+thisPURI);	
+		
+	//	Gdx.app.log(logstag,"-------"+realQuery.allUsedNodes());
+		
+		
 		//populate when its retrieved
 		DoSomethingWithNodesRunnable callback = new DoSomethingWithNodesRunnable(){
 
 			@Override
-			public void run(ArrayList<SSSNode> testresult, boolean invert) {
+			public void run(ArrayList<SSSNode> computerNodesFound, boolean invert) {
 
 
 
 				Gdx.app.log(logstag,"populate connectedto Computers");
-				populateVisibleComputers(testresult);
+				populateVisibleComputers(computerNodesFound);
 
 
 			}
@@ -696,7 +727,7 @@ public class LocationsHub extends Table {
 		//ensure background is positioned
 		if (backgroundObject!=null){
 
-			backgroundObject.transform.setToTranslation((int)this.getX(),(int)this.getY(),-110);
+			backgroundObject.transform.setToTranslation((int)this.getX(),(int)this.getY(),-10);
 		}
 		
 	}
@@ -704,8 +735,8 @@ public class LocationsHub extends Table {
 
 	public void addBackground() {
 
-		backgroundObject = BackgroundManager.addRectangle((int)this.getX(),(int)this.getY(),-110,(int)this.getWidth(),(int)this.getHeight(),new Material());
-		
+		backgroundObject = BackgroundManager.addRectangle((int)this.getX(),(int)this.getY(),-10,(int)this.getWidth(),(int)this.getHeight(),new Material());
+			
 		
 	}
 	
@@ -721,7 +752,7 @@ public class LocationsHub extends Table {
 		}
 		
 		
-		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f);
+		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.1f);
 		
 		backgroundObject.materials.get(0).clear();
 		backgroundObject.materials.get(0).set(ColorAttribute.createDiffuse(col));
@@ -770,6 +801,15 @@ public class LocationsHub extends Table {
 		BackgroundManager.giveAnimatedNoiseTextureToRectangle(backgroundObject);
 		
 		
+	}
+
+
+
+
+	public float getZ() {
+		
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

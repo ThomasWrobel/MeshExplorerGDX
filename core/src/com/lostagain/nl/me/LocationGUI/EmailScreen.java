@@ -30,7 +30,10 @@ import com.lostagain.nl.StaticSSSNodes;
 
 public class EmailScreen extends Container<ScrollPane>  implements LocationScreen {
 
-	static Logger Log = Logger.getLogger("EmailScreen");
+	//static Logger Log = Logger.getLogger("EmailScreen");
+
+	final static String logstag = "ME.EmailScreen";
+	
 	private int loadingEmails=0;
 	//private Table container = new Table();
 	private ArrayList<Message> AllMessages = new ArrayList<Message>();
@@ -84,7 +87,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 	@Override
 	public void layout(){
 		
-		//Log.info("validate email__");
+		//Gdx.app.log(logstag,"validate email__");
 		super.layout();
 		
 		scroller.validate();
@@ -100,7 +103,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		
 		loadingEmails++;
 
-		Log.info("Adding email location________________");
+		Gdx.app.log(logstag,"Adding email location________________"+sssNode.getPURI()+" written in "+language);
 		
 		//add a placeholder email straight away to ensure they show up in the correct order 
 		final Message NewEmailMessage = addEmail(" Loading..."+sssNode,language);
@@ -135,7 +138,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 			public void run(String errorData, Throwable exception) {
 				loadingEmails--;
 				
-				Log.info(errorData);
+				Gdx.app.log(logstag,""+errorData);
 
 				NewEmailMessage.setText(errorData);
 				invalidate();
@@ -148,8 +151,8 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		
 		String uri = sssNode.getPURI();
 		
-		Log.info("getting email from uri:"+uri);
-		Log.info("getting email from label:"+sssNode.getPLabel());
+		Gdx.app.log(logstag,"getting email from uri:"+uri);
+		Gdx.app.log(logstag,"getting email from label:"+sssNode.getPLabel());
 		
 		//strip the uri to its path and add the label too it
 		//this turns the URI location into a file location
@@ -164,7 +167,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 			uri = uri.substring(0,uri.indexOf("#"));
 		}
 		
-		Log.info("getting email from uri:"+uri);
+		Gdx.app.log(logstag,"getting email from uri:"+uri);
 		//as we know at least one is present we can just look or the largest index
 		int endslash = 0;
 		int endslash2 =0;
@@ -183,10 +186,10 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		
 		directory = uri.substring(0, endslash);
 
-		Log.info("directory:"+directory);
+		Gdx.app.log(logstag,"directory:"+directory);
 		String url = directory+"/"+sssNode.getPLabel();
 		
-		Log.info("url::"+url);
+		Gdx.app.log(logstag,"url::"+url);
 				
 		//trigger the file retrieval
 		SuperSimpleSemantics.fileManager.getText(url, runoncomplete, runonerror, false);
@@ -224,7 +227,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		// TODO Auto-generated method stub
 		if (loadingEmails==0){
 			
-			Log.info("emails finnished loading");
+			Gdx.app.log(logstag,"emails finnished loading");
 			
 			sortEmails();
 			
@@ -251,7 +254,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 		if (lan==null){
 			 newmessage = new Message(data,StaticSSSNodes.stdascii);
 		} else {
-			Log.info("message written in:"+lan.getPURI());
+			Gdx.app.log(logstag,"message written in:"+lan.getPURI());
 			
 			 newmessage = new Message(data,lan);
 		}
@@ -302,6 +305,8 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 			 
 			 if (language!=null){
 
+					Gdx.app.log(logstag,"testing if we have ________________"+language);
+					
 				 LabelStyle labstyle = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));
 			 	labstyle.font = DefaultStyles.scramabledFont;
 			 	labstyle.font.setScale(0.3f);
@@ -316,7 +321,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 					@Override
 					public void run() {
 						
-						Log.info("has lan decoder!!!!!!!!!!!!");						
+						Gdx.app.log(logstag,"has lan decoder!!!!!!!!!!!!");						
 						setStyle(defaultStyle);
 						
 					}
@@ -326,7 +331,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 						@Override
 						public void run() {
 							
-							Log.info("done not have lan decoder!!!!!!!!!!!!");	
+							Gdx.app.log(logstag,"does not have lan decoder!!!!!!!!!!!!");	
 							
 						}
 						 

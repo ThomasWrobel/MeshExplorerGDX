@@ -22,6 +22,7 @@ import com.darkflame.client.interfaces.SSSGenericFileManager;
 import com.darkflame.client.query.Query;
 import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
+import com.darkflame.client.semantic.SSSIndex;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
@@ -109,13 +110,13 @@ public class ME extends Game {
   	  //turn some logs off
     //Log.setLevel(Level.OFF);
     	  Logger.getLogger("sss");
-    	   Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
-     Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.WARNING);
+    	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
+    	//  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
     	  Logger.getLogger("sss.SSSNode").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.QueryEngine").setLevel(Level.OFF);
     	  Logger.getLogger("sss.JavaFileManager").setLevel(Level.OFF);    		  
-    	  Logger.getLogger("sss.SSSIndex").setLevel(Level.OFF);
+    //	  Logger.getLogger("sss.SSSIndex").setLevel(Level.OFF);
     	  
     		  
     	  SuperSimpleSemantics.setFileManager(new FileManager());	  
@@ -290,8 +291,14 @@ public class ME extends Game {
      //   font.dispose();
     }
 
-
-public static Boolean checkForUnloadedDatabase(SSSNode linksToThisPC) {
+/**
+ * checks for unloaded databasess this uri could be part of and starts loading if needed
+ * 
+ * @param linksToThisPC
+ * @return
+ */
+public static Boolean checkForUnloadedDatabaseAndLoad(SSSNode linksToThisPC) {
+	
 	
 	String label = linksToThisPC.getPURI();
 
@@ -310,8 +317,12 @@ public static Boolean checkForUnloadedDatabase(SSSNode linksToThisPC) {
 		if (!knownDatabases.contains(databaseurl)){
 
 			Gdx.app.log(logstag,"_____________________database not loaded:");
+			
 			SuperSimpleSemantics.loadIndexAt(databaseurl);
 			
+			//we add it straight away before its loaded as we dont want to start loading it again
+			//Note; we should have a seperate list for "currently loading" in case another link to the same database is come accross
+			//while this one is still loading. Then that new runWhenDone should also wait for the same database to load rather then being enabled straight away
 			knownDatabases.add(databaseurl);
 			
 			return true;
@@ -324,6 +335,53 @@ public static Boolean checkForUnloadedDatabase(SSSNode linksToThisPC) {
 	
 	return false;
 }
+
+
+/**
+ * Will return false if its a database and the database is not loaded
+ * 
+ * Note; Currently does not just for a specific database thats ask. It tests if ALL *.ntlists are loaded.
+ * This is because SSS does not (yet?) support individual database checking
+ * 
+ * @param linksToThisPC
+ * @return
+ */
+public static boolean checkDatabaseIsLoaded(SSSNode linksToThisPC) {
+
+	String label = linksToThisPC.getPURI();
+	Gdx.app.log(logstag,"testing uri is loaded:"+label);	
+
+	if (label.contains(".ntlist#")){
+		
+		String databaseurl = label.substring(0, label.indexOf("#"));
+		Gdx.app.log(logstag,"database url:"+databaseurl);
+		SSSIndex testThisIndex = SSSIndex.getIndex(databaseurl);
+
+		if (testThisIndex!=null){
+		
+			if (SSSIndex.getGlobalIndexsLeftToLoad()==0){
+				Gdx.app.log(logstag,"indexs should be all loaded true");
+				return true;
+			}else {
+				Gdx.app.log(logstag,"indexs are not all loaded ");
+				return false;
+			}
+			
+		
+
+		} else {
+			Gdx.app.log(logstag,"no database with that url found");
+			return false;
+		}
+		
+		
+	}
+	Gdx.app.log(logstag,"not a database");
+	return true;
+}
+
+
+//SSSIndex.getIndex(linksToThisPC.getPURI());
 
 	
 }

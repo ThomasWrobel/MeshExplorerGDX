@@ -154,7 +154,7 @@ public class ConceptGun  extends WidgetGroup {
 			@Override
 			public void run() {
 				
-				MainExplorationView.currentPos.z = MainExplorationView.currentPos.z+40f; 
+				MainExplorationView.currentPos.z = MainExplorationView.currentPos.z+4f; 
 				//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom +0.04f; 
 
 				
@@ -327,8 +327,9 @@ public class ConceptGun  extends WidgetGroup {
 			return;
 		}
 
-		//currently we just jog the camera zoom for a moment to fake a shake
-		MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-40f; 
+		//currently we just jog the camera zoom for a moment to fake a shake (removed, its too annoying)
+		/*
+		MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-4f; 
 		//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom -0.04f; 
 
 		
@@ -337,7 +338,7 @@ public class ConceptGun  extends WidgetGroup {
 			Gdx.app.log(logstag, " scheduleTask");		
 			impactEffectTimer.scheduleTask(impactEffectTask, 0.1f);
 		}
-		
+		*/
 	}
 
 	/**

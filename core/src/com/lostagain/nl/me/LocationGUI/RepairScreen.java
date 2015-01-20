@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 
 
+
 import javax.swing.GroupLayout.Alignment;
 
 import com.badlogic.gdx.Gdx;
@@ -49,14 +50,16 @@ import com.lostagain.nl.me.objects.DataObject;
 
 /**
  * A repair screen displays the required nodes to unlock the location
- * initialy the player will think these are security screens, only later
+ * Initially the player will think these are security screens, only later
  * realising they are simply broken and need repair to work
  * 
  * **/
 public class RepairScreen extends Group  implements LocationScreen {
 
-	static Logger Log = Logger.getLogger("ME.RepairScreen");
-	  
+	//static Logger Log = Logger.getLogger("ME.RepairScreen");
+
+	final static String logstag = "ME.RepairScreen";
+
 	LocationsHub locationProtectedByThis;
 	
 	private SSSNode neededData;
@@ -86,6 +89,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 	
 	ArrayList<ObjectRequester> allObjectsRequested = new ArrayList<ObjectRequester>();
 	
+	boolean needslayout = true;
 	
 	public RepairScreen(LocationsHub parentLocationContainer, SSSNode securedBy) {
 		super();
@@ -112,10 +116,22 @@ public class RepairScreen extends Group  implements LocationScreen {
 	@Override
 	public void validate() {
 		
+		Gdx.app.log(logstag,"validate on repair screen:");
+		
+		if (needslayout){
+			layout();
+			needslayout=false;
+		}
+		 
+	}
+	
+	public void layout(){
+		
 		float HEIGHT = super.getParent().getHeight();
 		float WIDTH = super.getParent().getWidth();
 		
 		super.setSize(WIDTH, HEIGHT);
+		Gdx.app.log(logstag,"HEIGHT of repair screen:"+HEIGHT);
 		
 		LocationClosedText.setPosition(10, super.getHeight()-30);
 		SupplyData.setPosition(10, super.getHeight()-50); 
@@ -128,7 +144,8 @@ public class RepairScreen extends Group  implements LocationScreen {
 		DetailsLabel.setAlignment(Align.center);
 		DetailsLabel.setPosition((getWidth()/2)-(DetailsLabel.getWidth()/2),(getHeight()/2)-30);
 		
-
+		Gdx.app.log(logstag,"getY(Align.center):"+getY(Align.center));
+		
 		int i=0;
 		 for (ObjectRequester req : allObjectsRequested) {
 			
@@ -137,12 +154,12 @@ public class RepairScreen extends Group  implements LocationScreen {
 				req.setPosition(25+(i*(req.getWidth()+10)),getY(Align.center));
 				 i++;
 		}
-		 
+		
+		
 	}
-	
-
 	private void setAsUnlocked() {
 
+		Gdx.app.log(logstag," repair screen setAsUnlocked:");
 		locationProtectedByThis.unlockComputer();
 		
 		//add to players data as unlocked
@@ -161,7 +178,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 		//get details		
 		SSSNodesWithCommonProperty DiscriptionSet = SSSNodesWithCommonProperty.getSetFor(StaticSSSNodes.DescriptionOf, locationProtectedByThis.LocationsNode);
 		
-		Log.info("Getting discription for location:"+locationProtectedByThis.LocationsNode.getPLabel());
+		Gdx.app.log(logstag,"Getting discription for location:"+locationProtectedByThis.LocationsNode.getPLabel());
 		
 		
 		String Discription = "(No Details)";
@@ -179,7 +196,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 		DetailsLabel.setWidth(300);
 		
 		
-		
+		needslayout=true;
 		
 	}
 
@@ -195,6 +212,8 @@ public class RepairScreen extends Group  implements LocationScreen {
 		
 		super.addActor(textlabel);
 		
+
+		needslayout=true;
 		
 		return textlabel;
 		
@@ -224,7 +243,8 @@ public class RepairScreen extends Group  implements LocationScreen {
 		i++;
 		}
 		
-		
+
+		needslayout=true;
 	}
 	
 
@@ -232,7 +252,8 @@ public class RepairScreen extends Group  implements LocationScreen {
 
 	
 	private void setAsLocked() {
-		
+
+		Gdx.app.log(logstag,"on repair screen setAsLocked:");
 		//me:queryPass
 		//add interface elements (non-dragable)
 		
@@ -251,15 +272,17 @@ public class RepairScreen extends Group  implements LocationScreen {
 		 RequirementsText.setText("Requirements Not Yet Met:");
 		 
 		 
-		// Log.info("__________________getting protection string_________________________");
+		 Gdx.app.log(logstag,"__________________getting protection string_________________________");
 		 
 		//get protection string
 		HashSet<SSSNodesWithCommonProperty> securitysPropertys = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(neededData.PURI);
 		
 		
-		 //Log.info("__________________tings secured by: "+securedBy.PURI+" = "+securitysPropertys.size()+" _________________________");
+		 Gdx.app.log(logstag,"__________________details of security: "+neededData.PURI+" = "+securitysPropertys.size()+" _________________________");
 		 
 		for (SSSNodesWithCommonProperty propertset : securitysPropertys) {
+			
+			 Gdx.app.log(logstag,"_____prop:"+propertset.getCommonPrec()+" = "+propertset.getCommonValue());
 			
 			if (propertset.getCommonPrec()==StaticSSSNodes.queryPass){
 				QueryPass = propertset.getCommonValue().getPLabel();
@@ -295,6 +318,9 @@ public class RepairScreen extends Group  implements LocationScreen {
 				protectionString = protectionString.substring(0, protectionString.length()-1);
 						
 			}
+		} else {
+
+			Gdx.app.log(logstag,"warning protectionString is null!");
 		}
 		
 		if (SecurityDiscription==""){
@@ -308,14 +334,15 @@ public class RepairScreen extends Group  implements LocationScreen {
 		
 		
 		addAnswerDropTargets(); 
-		
+
+		needslayout=true;
 	}
 
 	
 
 	private void retrieveAnswersAsycn(String protectionString) {
 		
-		Log.info("protectionString="+protectionString);
+		Gdx.app.log(logstag,"protectionString="+protectionString);
 		
 		//some debug tests
 		
@@ -324,15 +351,15 @@ public class RepairScreen extends Group  implements LocationScreen {
 		//C:\TomsProjects\MeshExplorerV2\desktop\semantics\TomsNetwork.ntlist#green
 
 	//	SSSNode greennode2  = SSSNode.getNodeByUri("C:\\TomsProjects\\MeshExplorerV2\\desktop\\semantics\\TomsNetwork.ntlist#green");
-		Log.info("_______total_______"+SSSNode.getAllKnownNodes().toString());
+		Gdx.app.log(logstag,"_______total_______"+SSSNode.getAllKnownNodes().toString());
     	
 		SSSNode greennode  = SSSNode.getNodeByLabel("green");
-    	Log.info("_______g_______"+greennode.getEquivilentsAsString());
-    	Log.info("_______g_______"+greennode.getPURI());
+    	Gdx.app.log(logstag,"_______g_______"+greennode.getEquivilentsAsString());
+    	Gdx.app.log(logstag,"_______g_______"+greennode.getPURI());
     	
     	SSSNode ColorNode = SSSNode.getNodeByLabel("color");    
-    	Log.info("______f_______|_"+ColorNode.getEquivilentsAsString());
-    	Log.info("______f_______|_"+ColorNode.getPURI());
+    	Gdx.app.log(logstag,"______f_______|_"+ColorNode.getEquivilentsAsString());
+    	Gdx.app.log(logstag,"______f_______|_"+ColorNode.getPURI());
 		
 		Query answers = new Query(protectionString);
 		
@@ -344,7 +371,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 				acceptableAnswers.clear();
 				acceptableAnswers.addAll(newnodes);
 				
-				Log.info("answers="+acceptableAnswers.toString());
+				Gdx.app.log(logstag,"answers="+acceptableAnswers.toString());
 				
 				//flag as ready for answer
 				readyForAnswer = true;
@@ -437,10 +464,10 @@ public class RepairScreen extends Group  implements LocationScreen {
 		
 		if (!locked){
 			
-			Log.info("unlocking");			
+			Gdx.app.log(logstag,"unlocking");			
 			setAsUnlocked();
 
-			Log.info("setAllRequestObjectsFaded");	
+			Gdx.app.log(logstag,"setAllRequestObjectsFaded");	
 			setAllRequestObjectsFaded();
 
 			validate(); 
@@ -475,7 +502,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 					SSSNode ItemNode = drop.itemsnode;
 					
 
-					Log.info("~~~~~~~~~~~~~~~~~~~item dropped uri="+ItemNode.getPURI());
+					Gdx.app.log(logstag,"~~~~~~~~~~~~~~~~~~~item dropped uri="+ItemNode.getPURI());
 					
 
 //					
@@ -512,13 +539,13 @@ public class RepairScreen extends Group  implements LocationScreen {
 			@Override
 			public boolean willAccept(DataObject object){
 				
-				Log.info("~testing uri="+object.itemsnode.getPLabel());
+				Gdx.app.log(logstag,"~testing uri="+object.itemsnode.getPLabel());
 				SSSNode ItemNode = object.itemsnode;
 				
 				//test					
 				if (sourcescreen.acceptableAnswers.contains(ItemNode)){
 										
-					Log.info( "contains:"+sourcescreen.acceptableAnswers.contains(ItemNode));
+					Gdx.app.log(logstag,"contains:"+sourcescreen.acceptableAnswers.contains(ItemNode));
 		
 					//ME.playersInventory.dropHeldItem(true);					
 					setModeAccepted(ItemNode);
@@ -579,13 +606,13 @@ public class RepairScreen extends Group  implements LocationScreen {
 					}
 
 
-					Log.info("~item uri="+ItemNode.getPURI());
+					Gdx.app.log(logstag,"~item uri="+ItemNode.getPURI());
 					//test
 					
 					if (acceptableAnswers.contains(ItemNode)){
 						
 						
-						Log.info( "contains:"+acceptableAnswers.contains(ItemNode));
+						Gdx.app.log(logstag,"contains:"+acceptableAnswers.contains(ItemNode));
 			
 						ME.playersInventory.dropHeldItem(true);
 						

@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
@@ -58,6 +60,8 @@ public class Creature implements hitable {
 	
 	//base color
 	Color crearturesColor = Color.GREEN;
+	//lighter color for when clicked on
+	Color hitColor = Color.GREEN.cpy().add(.5f, .5f, .5f, .5f);
 	
 
 	public Creature(float x, float y, Population parentPopulation, int hitPoints, String queryToDestroy, destructOn destructionType) {
@@ -128,7 +132,7 @@ public class Creature implements hitable {
 		
 		ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
 		
-		attribute.color.set(crearturesColor);
+		attribute.color.set(hitColor);
 		
 		
 	}
@@ -139,11 +143,11 @@ public class Creature implements hitable {
 	@Override
 	public void fireTouchUp() {
 		
-		//really this check shouldnt be needed but it seems this fires sometimes while its being destroyed, not sure why?
+		//really this check shouldn't be needed but it seems this fires sometimes while its being destroyed, not sure why?
 		if (creaturemodel!=null){
 			ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
 		
-			attribute.color.set(Color.RED);
+			attribute.color.set( crearturesColor);
 		}
 		
 		
@@ -205,6 +209,10 @@ public class Creature implements hitable {
 							//fire the destroy command on this creature
 							Creature.this.destroy();
 					
+						} else {
+							Creature.this.damaged();
+							
+							
 						}
 					}
 				}, new Runnable() {
@@ -227,10 +235,32 @@ public class Creature implements hitable {
 		}
 	}
 	
+	/** runs the animation of this creature getting damaged **/
+	protected void damaged() {
+		
+		final ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);		
+		attribute.color.set( Color.RED );
+		
+		
+		Timer.schedule(new Task(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				attribute.color.set( crearturesColor );
+			}
+			
+			
+		}, 0.2f);
+	}
+
+
+
+
 	protected void destroy() {
 
 		ConceptGun.animateImpactEffect();
-
+		
 		Gdx.app.log(logstag,"_destroying model ");
 		
 		//remove from visuals

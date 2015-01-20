@@ -209,8 +209,12 @@ public class BackgroundManager {
 		//get angle
 		float x2 = To.getX(Align.center);
 		float y2 = To.getY(Align.center);;
+		
+		//get z pos (all locations should be on the same plane)
+		float zloc = -200;
 
-		ModelInstance newline = createLine(x, y, width, x2, y2,-20,Color.RED,true,true,1);
+		
+		ModelInstance newline = createLine(x, y, width, x2, y2,zloc,Color.RED,true,true,1);
 
 
 		lines.add(newline);
