@@ -1,5 +1,6 @@
-sun
-pluto
-fish
-tree
-grass
+Sun
+Pluto
+Fish
+Tree
+Grass
+

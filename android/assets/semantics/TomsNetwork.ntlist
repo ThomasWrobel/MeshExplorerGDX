@@ -2,31 +2,62 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
 @prefix owl: <http://www.w3.org/2002/07/owl#>
-@prefix me: <INTERNAL/meshexplorer#> 
+@prefix me: <http://darkflame.co.uk/meshexplorer#> 
  
-profp rdfs:subClassOf  me:Computer.
+profpp rdfs:subClassOf  me:Computer.
 alicespc rdfs:subClassOf  me:Computer.
 thecatspc rdfs:subClassOf  me:Computer.
 BobsOutpost  rdfs:subClassOf  me:Computer.
-http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpostt  rdfs:subClassOf  me:Computer.
-http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#DarkflamesT2   rdfs:subClassOf  me:Computer.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subClassOf me:Computer.
 
-profp me:visibleTo me:everyone.
-alicespc me:visibleTo BobsOutpost.
-thecatspc me:visibleTo alicespc.
-BobsOutpost me:visibleTo me:everyone.
-http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpostt  me:visibleTo me:everyone.
-http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#DarkflamesT2  me:visibleTo me:everyone.
+BobsOutpost me:populatedBy smallInfovorPopulation.
 
-profp me:SecuredBy MaxsFirewall.
+smallInfovorPopulation rdfs:subClassOf me:population.
+smallInfovorPopulation me:quantity 10.
+smallInfovorPopulation me:anydrop Human.
+smallInfovorPopulation me:exactdrop Apple.
+smallInfovorPopulation me:anydrop Fish.
+smallInfovorPopulation me:killedon "fruit".
+smallInfovorPopulation me:hitPoints 2.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour #003300.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour #005522.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour #11BB00.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour #00DD11.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour #33BB55.
+
+alicespc me:populatedBy smallInfovorPopulation.
+
+profpp me:connectedTo BobsOutpost.
+profpp me:connectedTo alicespc. 
+alicespc me:connectedTo BobsOutpost.
+alicespc me:connectedTo thecatspc.
+thecatspc me:connectedTo alicespc.
+BobsOutpost me:connectedTo me:everyone.
+
+BobsOutpost http://dbpedia.org/ontology/Colour Green.
+thecatspc http://dbpedia.org/ontology/Colour Orange.
+alicespc http://dbpedia.org/ontology/Colour Cyan.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost http://dbpedia.org/ontology/Colour Red.
+
+http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#test rdfs:subClassOf me:Computer.
+http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#test me:connectedTo http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost.
+
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:connectedTo profpp.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:connectedTo me:everyone.
+
+profpp me:SecuredBy MaxsFirewall.
 MaxsFirewall rdfs:subClassOf  me:Security.
 MaxsFirewall me:queryPass "Fruit Color=Green".
-MaxsFirewall me:clueText "Something Fruity and Green".
+MaxsFirewall me:clueText "Two Different Fruity Green Things".
 MaxsFirewall me:ReqNum 2.
 
 thecatspc me:SecuredBy VertFirewall.
 VertFirewall rdfs:subClassOf  me:Security.
-VertFirewall me:queryPass "Alive Chordate".
+VertFirewall me:queryPass "Alive Chordate".	
+
+
+
+"Home of the worlds first cyptro-encryptologiest. Me." me:DescriptionOf alicespc.
 
 alicespccontents.txt rdfs:subClassOf me:software.
 alicespccontents.txt me:ison alicespc.
@@ -34,11 +65,21 @@ alicespccontents.txt me:ison alicespc.
 alicesemailindex.txt rdfs:subClassOf me:messages.
 alicesemailindex.txt me:ison alicespc.
  
+"I'm Bob.This is me outpost. -ProfP gave it to me to help his research. " me:DescriptionOf BobsOutpost.
+                                                                      
 bobspcmessages.txt rdfs:subClassOf me:messages.
 bobspcmessages.txt me:ison BobsOutpost.
 
 bobspccontents.txt rdfs:subClassOf me:software.
 bobspccontents.txt me:ison BobsOutpost.
+
+"My hub of new frontier research" me:DescriptionOf profpp.
+
+profpcmessages.txt rdfs:subClassOf me:messages.
+profpcmessages.txt me:ison profpp.
+profpcmessages.txt me:writtenin me:stdascii.
+
+"Moewww!" me:DescriptionOf thecatspc.
 
 thecatspc.txt rdfs:subClassOf me:software.
 thecatspc.txt me:ison thecatspc.
@@ -56,8 +97,13 @@ isCraniata.txt rdfs:subClassOf Craniata.
 Vertebrate rdfs:subClassOf Craniata.
 isVertebrate.txt rdfs:subClassOf Vertebrate.
 
-    			         
+isSameAsMyGreen.txt owl:equivalentClass Green.
+isSameAsMyFruit.txt owl:equivalentClass Fruit.
+
+isColor_Yellow.txt http://dbpedia.org/ontology/Colour Yellow.
+			         
 isColor_Green.txt http://dbpedia.org/ontology/Colour Green.
 
 isMore_Green.txt http://dbpedia.org/ontology/Colour Green;
 	      			         "color" "green".
+
