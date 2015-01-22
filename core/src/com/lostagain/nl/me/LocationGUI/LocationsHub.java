@@ -655,19 +655,19 @@ public class LocationsHub extends Table {
 
 		String thisPURI = tothisnode.getPURI(); ///"C:\\TomsProjects\\MeshExplorer\\bin/semantics/DefaultOntology.n3#bobspc";
 
-		Query realQuery = new Query("(me:connectedto=me:everyone)||(me:connectedto="+thisPURI+")");
-		
+		Query realQuery = new Query("(me:connectedto=me:everyone)||(me:connectedto=\""+thisPURI+"\")");
+																				   //E:\Game projects\MeshExplorerGDX\desktop\semantics\TomsNetwork.ntlist#BobsOutpost
 
 	//	Gdx.app.log(logstag,"----prefix tests:"+RawQueryUtilities.getPrefixs());
-
 	//	Gdx.app.log(logstag,"----all nodes:"+SSSNode.getAllKnownNodes());
 
 		SSSNode.setExtendedDebug(true);
-	//	Gdx.app.log(logstag,"----me:connectedto test:"+SSSNode.getNodeByUri("me:connectedto").toString());
-	//	Gdx.app.log(logstag,"----me:everyone test:"   +SSSNode.getNodeByUri("me:everyone").toString());
-	//	Gdx.app.log(logstag,"----thisPURI  test:"+thisPURI);	
 		
-	//	Gdx.app.log(logstag,"-------"+realQuery.allUsedNodes());
+		Gdx.app.log(logstag,"----me:connectedto test:"+SSSNode.getNodeByUri("me:connectedto").toString());
+		Gdx.app.log(logstag,"----me:everyone test:"   +SSSNode.getNodeByUri("me:everyone").toString());
+		Gdx.app.log(logstag,"----thisPURI  test:"+thisPURI);	
+		
+		Gdx.app.log(logstag,"-------"+realQuery.allUsedNodes());
 		
 		
 		//populate when its retrieved
