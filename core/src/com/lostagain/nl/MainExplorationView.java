@@ -28,9 +28,11 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -65,6 +67,12 @@ import com.lostagain.nl.uti.SpiffyTweenConstructor;
 import com.lostagain.nl.uti.SpiffyVector2Tween;
 import com.lostagain.nl.uti.SpiffyVector3Tween;
 
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
+
 /** The main exploration view, which lets them see LocationURIs 
  * **/
 public class MainExplorationView implements Screen {
@@ -82,9 +90,9 @@ public class MainExplorationView implements Screen {
 	public static Stage gameStage;		
 	public static Stage guiStage;
 
-	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX,PlayersData.homelocationY,500f); //note we start high up and zoom in at the start as a little intro
+	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),1000f); //note we start high up and zoom in at the start as a little intro
 	
-	
+
 	
 	public static Float CurrentZoom = 1f;
 	
@@ -107,7 +115,8 @@ public class MainExplorationView implements Screen {
 	Sound dropSound;
 	Music rainMusic;
 	public static Camera camera;
-
+	/** I dont know really how to use this correctly :-/ **/
+	public static RenderContext rcontext;
 	
 	Rectangle bucket;
 	Array<Rectangle> raindrops;
@@ -190,6 +199,9 @@ public class MainExplorationView implements Screen {
 	*/
 	
 	DistanceFieldShader testshader = new DistanceFieldShader();
+	
+	
+	Shader testdefaultShader;
 	
 	Label test = new Label("test test test");
 	
@@ -289,6 +301,29 @@ public class MainExplorationView implements Screen {
 
 
 		Gdx.app.log(logstag,"creating textures");
+		
+		
+		
+		//Trying to make head nor tail of shaders p1
+		  ModelBuilder modelBuilder = new ModelBuilder();
+	       Model model = modelBuilder.createSphere(2f, 2f, 2f, 20, 20, 
+	          new Material(),
+	          Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+	     
+	        NodePart blockPart = model.nodes.get(0).parts.get(0);
+	          
+	        Renderable renderable = new Renderable();
+	        blockPart.setRenderable(renderable);
+	        renderable.environment = null;
+	        renderable.worldTransform.idt();
+	          
+	        rcontext = new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.WEIGHTED, 1));
+	        String vert = Gdx.files.internal("shaders/test.vertex.glsl").readString();//"shaders/distancefield.vert"
+	        String frag = Gdx.files.internal("shaders/test.fragment.glsl").readString();
+	        testdefaultShader = new DefaultShader(renderable, new DefaultShader.Config(vert, frag));
+	        testdefaultShader.init();
+	        
+		
 
 		//to flip the y co-ordinate 
 		//my brain cant take bottom left 0, I need top left zero!
@@ -430,6 +465,8 @@ public class MainExplorationView implements Screen {
 
 		float newX = locationcontainer.getHubsX(Align.center);
 		float newY = locationcontainer.getHubsY(Align.center);
+		
+		
 		Vector3 dest = new Vector3(newX,newY,newZ);
 		
 
@@ -543,15 +580,24 @@ public class MainExplorationView implements Screen {
 		ModelManagment.updateAnimatedBacks(delta);//--
 		
 		usersGUI.ConceptGun.update(delta);
+		
+		
 		background.modelBatch.begin( camera);
+
+		//rcontext.begin();
+		//testdefaultShader.begin(camera, rcontext);
+		
 		background.modelBatch.render(ModelManagment.allModelInstances 	);
+		
+		//testdefaultShader.end();
 		background.modelBatch.end();	
-	
-		testshader.begin();
-	//	testshader.setUniformMatrix("u_projTrans", camera.getProjectionMatrix());
-		testshader.setUniformi("u_texture", 0);
-		ModelManagment.allModelInstances.get(0).model.meshes.get(0).render(testshader,  GL20.GL_TRIANGLES);
-		testshader.end();
+		//rcontext.end();
+		
+		//testshader.begin();
+		//testshader.setUniformMatrix("u_projTrans", camera.projection);
+		//testshader.setUniformi("u_texture", 0);
+		//ModelManagment.allModelInstances.get(0).model.meshes.get(0).render(testshader,  GL20.GL_TRIANGLES);
+		//testshader.end();
 		
 		gameStage.getViewport().setCamera(camera);
 
@@ -823,7 +869,6 @@ public class MainExplorationView implements Screen {
 
 		Gdx.app.log(logstag,"resizeing to.."+width+","+height);
 		
-		
 		if ( currentmode == cammode.ortha){
 			camera = new OrthographicCamera(width, width);
 
@@ -832,7 +877,6 @@ public class MainExplorationView implements Screen {
 		} else {
 			camera = new PerspectiveCamera(60,width,height); // new OrthographicCamera();
 		}
-		
 		
 		//update sprite batch for new resolution 
 		Matrix4 viewMatrix = new Matrix4();

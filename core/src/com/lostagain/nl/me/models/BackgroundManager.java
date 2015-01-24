@@ -25,6 +25,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -35,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
+import com.lostagain.nl.shaders.MyShaderProvider;
 
 public class BackgroundManager {
 
@@ -63,29 +66,58 @@ public class BackgroundManager {
 	
 	
 	public void setup(){
+		
+        String vert = Gdx.files.internal("shaders/test.vertex.glsl").readString();//"shaders/distancefield.vert"
+        String frag = Gdx.files.internal("shaders/test.fragment.glsl").readString();
+        
+		//modelBatch = new ModelBatch(vert,frag);
+        modelBatch = new ModelBatch(new MyShaderProvider(vert,frag));
+        
 
-		modelBatch = new ModelBatch();
+		
 		
 		Gdx.app.log(logstag,"creating testbounc");
 		testNoise.create();
 		
-		Model  model1 = modelBuilder.createBox(150f, 15f, 15f, 
-				new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-				Usage.Position | Usage.Normal);
+		FileHandle imageFileHandle3 = Gdx.files.internal("data/badlogic.jpg"); 
+        
+        //Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE0);
+        Texture blobtexture = new Texture(imageFileHandle3);
+        blobtexture.bind(0);
+                
+        
+        Material blob = new Material(ColorAttribute.createDiffuse(Color.WHITE), 
+				ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(1f), 
+				FloatAttribute.createShininess(16f));
+
+        blob.set(TextureAttribute.createDiffuse(blobtexture));
+		
+		
+		
+		Model  model1 = modelBuilder.createSphere(150, 150, 150, 20, 20,
+				blob,Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		
+		//String alias = model1.meshes.get(0).getVertexAttribute(Usage.TextureCoordinates).alias;
+		
+
+		//Gdx.app.log(logstag,"aliasaliasaliasalias = "+alias);
+		
+		Model  model2 = modelBuilder.createBox(15f, 220f, 15f, 
+				new Material(ColorAttribute.createDiffuse(Color.RED)),
+				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
 
-		Model  model2 = modelBuilder.createBox(15f, 150f, 15f, 
-				new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-				Usage.Position | Usage.Normal);
-
-
+		//model2.meshes.get(0).getVertexAttribute(Usage.TextureCoordinates).alias = "a_texCoord";
+		
 		//  Model model3 = createRectangle(-10f,500f,10f,-500f,0f);
 
 
 		//  ModelInstance model4 = createRectangleAt(50f,50f,10f,200f,0f);
 
 
-		instance = new ModelInstance(model1);        
+		instance = new ModelInstance(model1); 
+		instance.userData = MyShaderProvider.shadertypes.noise;
+		
 		ModelManagment.addmodel(instance);
 
 		ModelInstance instance2 = new ModelInstance(model2);        
@@ -339,8 +371,11 @@ public class BackgroundManager {
 		BlendingAttribute blendingAttribute = new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
         FileHandle imageFileHandle2 = Gdx.files.internal("data/beam_top.png"); 
+        
+        Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE0);
         Texture texture = new Texture(imageFileHandle2);
-        		
+        texture.bind();
+        
         lowmaterial.set(blendingAttribute);	
         uppermaterial.set(blendingAttribute);		
         uppermaterial.set(TextureAttribute.createDiffuse(texture));
@@ -348,7 +383,10 @@ public class BackgroundManager {
         
 
         FileHandle imageFileHandle3 = Gdx.files.internal("data/beam_blob.png"); 
+        
+        Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE1);
         Texture blobtexture = new Texture(imageFileHandle3);
+        blobtexture.bind();
         
         Material blob = new Material(ColorAttribute.createDiffuse(Color.WHITE), 
 				ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(0.7f), 
@@ -356,6 +394,7 @@ public class BackgroundManager {
 
         blob.set(TextureAttribute.createDiffuse(blobtexture));
         blob.set(blendingAttribute);		
+      
         
 		/*
 		modelBuilder.end();
@@ -392,7 +431,7 @@ public class BackgroundManager {
 		MeshPartBuilder meshBuilder;
 		
 		meshBuilder = modelBuilder.part("bottom", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates, lowmaterial);
-		
+		//meshBuilder.getAttributes().findByUsage(Usage.TextureCoordinates).alias = "a_texCoord";
 		//meshBuilder.cone(5, 5, 5, 10);
 		
 		VertexInfo newtest1 = new VertexInfo();
@@ -414,7 +453,7 @@ public class BackgroundManager {
 		node.translation.set(0,0,5);		
 		
 		meshBuilder = modelBuilder.part("part2", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates,uppermaterial );
-			
+		//meshBuilder.getAttributes().findByUsage(Usage.TextureCoordinates).alias = "a_texCoord";
 		meshBuilder.rect(newtest1, newtest2, newtest3, newtest4);
 		
 		float hwidth =0;
@@ -432,7 +471,7 @@ public class BackgroundManager {
 			node3.translation.set(0,0,6);
 			
 		meshBuilder = modelBuilder.part("startblob", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates,blob );
-		
+		//meshBuilder.getAttributes().findByUsage(Usage.TextureCoordinates).alias = "a_texCoord";
 	//	float hwidth = (corner3.x-corner3.y)+10;	//width of ends is 10 more then the rest	
 		//float hheight = (float) (hwidth *1.3); //height slightly longer
 		
@@ -469,6 +508,7 @@ public class BackgroundManager {
 		
 		
 		meshBuilder = modelBuilder.part("endblob", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates,blob );
+		//meshBuilder.getAttributes().findByUsage(Usage.TextureCoordinates).alias = "a_texCoord";
 		
 		//now the glow end blob (bit smaller)
 		meshBuilder.rect(

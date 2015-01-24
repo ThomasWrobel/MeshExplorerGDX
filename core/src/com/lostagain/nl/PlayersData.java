@@ -166,7 +166,7 @@ public class PlayersData {
 		//ME.INTERNALNS+"knows="+language.getPURI() works
 		// works
 		//
-		Query suitableDecodersOnPlayersSystemQuery = new Query(ME.INTERNALNS+"knows="+language.getPURI() +" "+ME.INTERNALNS+"decoder "+"me:isOn="+computersuri.getPURI());
+		Query suitableDecodersOnPlayersSystemQuery = new Query(ME.INTERNALNS+"knows=\""+language.getPURI()+"\" "+ME.INTERNALNS+"decoder "+"me:isOn=\""+computersuri.getPURI()+"\"");
 		
 		if (suitableDecodersOnPlayersSystemQuery.hasNoErrors()){
 			Gdx.app.log(logstag,"______no errors in query");

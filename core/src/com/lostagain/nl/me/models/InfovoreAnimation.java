@@ -61,9 +61,12 @@ public class InfovoreAnimation implements ApplicationListener {
     
     public TextureRegion getKeyFrame(float delta){
     	
-    	   stateTime += delta; //Gdx.graphics.getDeltaTime();           // #15
+    	   stateTime += delta; //Gdx.graphics.getDeltaTime();           
            currentFrame = infovoreAnimation.getKeyFrame(stateTime, true); 
+           
+           
            return currentFrame;
+           
     }
     
     @Override

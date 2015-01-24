@@ -158,8 +158,10 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 			if (!objectDownloadTask.isScheduled()){
 
 				Log.info("scheduleTask");		
-			  objectDownloader.scheduleTask(objectDownloadTask, 0.1f, 0.1f);
+				objectDownloader.scheduleTask(objectDownloadTask, 0.1f, 0.1f);
 			}
+
+			Log.info("objectDownloadTask.isScheduled for "+objectDownloadTask.getExecuteTimeMillis());	
 			objectDownloader.start();
 			
 		}

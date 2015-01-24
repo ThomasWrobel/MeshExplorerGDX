@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -69,6 +70,7 @@ import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.models.BackgroundManager;
+import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.uti.MeshWorld;
 
 public class LocationsHub extends Table {
@@ -77,7 +79,8 @@ public class LocationsHub extends Table {
 	//static Logger Log = Logger.getLogger("LocationsHub");
 
 	final static String logstag = "ME.LocationsHub";
-
+	public final static int  sizeX = 450;
+	public final static int sizeY = 400;
 
 	ArrayList<LocationScreen> AllPages = new ArrayList<LocationScreen>(); 
 
@@ -772,16 +775,16 @@ public class LocationsHub extends Table {
 
 		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f);
 
-	    Texture texture = new Texture(BackgroundManager.createNoiseImage(300,300));
+	  //  Texture texture = new Texture(BackgroundManager.createNoiseImage(300,300));
 	    
 		backgroundObject.materials.get(0).clear();
 		backgroundObject.materials.get(0).set(ColorAttribute.createDiffuse(Color.WHITE));
 		backgroundObject.materials.get(0).set(ColorAttribute.createSpecular(Color.WHITE));
 		backgroundObject.materials.get(0).set(FloatAttribute.createShininess(16f));
-		backgroundObject.materials.get(0).set(TextureAttribute.createDiffuse(texture));
+		//backgroundObject.materials.get(0).set(TextureAttribute.createDiffuse(texture));
 		backgroundObject.materials.get(0).set(blendingAttribute2);
 		
-		
+		backgroundObject.userData=MyShaderProvider.shadertypes.noise;
 		
 		//BackgroundManager.addNoiseRectangle((int)this.getX(),(int)this.getY(),(int)this.getWidth(),(int)this.getHeight());	
 		
