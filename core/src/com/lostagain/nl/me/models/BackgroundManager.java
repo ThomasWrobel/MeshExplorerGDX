@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -46,7 +47,7 @@ public class BackgroundManager {
 	final static String logstag = "ME.BackgroundManager";
 	//3d bits
 	public Model model;
-	public ModelInstance instance;
+	
 	public ModelBatch modelBatch;
 
 	//public static Array<ModelInstance> instances = new Array<ModelInstance>();
@@ -83,11 +84,13 @@ public class BackgroundManager {
         
         //Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE0);
         Texture blobtexture = new Texture(imageFileHandle3);
-        blobtexture.bind(0);
+      //  blobtexture.bind(0);
                 
         
-        Material blob = new Material(ColorAttribute.createDiffuse(Color.WHITE), 
-				ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(1f), 
+        Material blob = new Material(
+        		ColorAttribute.createDiffuse(Color.BLUE), 
+				ColorAttribute.createSpecular(Color.WHITE),
+				new BlendingAttribute(1f), 
 				FloatAttribute.createShininess(16f));
 
         blob.set(TextureAttribute.createDiffuse(blobtexture));
@@ -95,18 +98,22 @@ public class BackgroundManager {
 		
 		
 		Model  model1 = modelBuilder.createSphere(150, 150, 150, 20, 20,
-				blob,Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+				blob,Usage.Position | Usage.Normal | Usage.TextureCoordinates );
 		
 		//String alias = model1.meshes.get(0).getVertexAttribute(Usage.TextureCoordinates).alias;
 		
 
 		//Gdx.app.log(logstag,"aliasaliasaliasalias = "+alias);
+
+    	//Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), true);
+		//texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 		
-		Model  model2 = modelBuilder.createBox(15f, 220f, 15f, 
-				new Material(ColorAttribute.createDiffuse(Color.RED)),
-				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		//Model  model2 = modelBuilder.createBox(220f, 220f, 15f, 
+		//		new Material(TextureAttribute.createDiffuse(texture),new BlendingAttribute(0.6f)),
+		//		Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+//
 
-
+		
 		//model2.meshes.get(0).getVertexAttribute(Usage.TextureCoordinates).alias = "a_texCoord";
 		
 		//  Model model3 = createRectangle(-10f,500f,10f,-500f,0f);
@@ -114,15 +121,14 @@ public class BackgroundManager {
 
 		//  ModelInstance model4 = createRectangleAt(50f,50f,10f,200f,0f);
 
-
-		instance = new ModelInstance(model1); 
-		instance.userData = MyShaderProvider.shadertypes.noise;
+		ModelInstance instance = new ModelInstance(model1); 
+		instance.userData = MyShaderProvider.shadertypes.distancefield;
 		
 		ModelManagment.addmodel(instance);
 
-		ModelInstance instance2 = new ModelInstance(model2);        
-		ModelManagment.addmodel(instance2);
-		
+		//ModelInstance instance2 = new ModelInstance(model2);   
+		//instance2.userData = MyShaderProvider.shadertypes.distancefield;
+		//ModelManagment.addmodel(instance2);
 		
 		
 		Gdx.app.log(logstag,"texture test=");
@@ -153,6 +159,9 @@ public class BackgroundManager {
 
 	public void updateAnimatedBacks(float deltatime){
 		
+		
+		//replaced with noise shader !
+		/*
 		TextureRegion currentimage = testNoise.getKeyFrame(deltatime);
 		
 		for (ModelInstance instance : animatedbacks) {
@@ -165,7 +174,7 @@ public class BackgroundManager {
 				Gdx.app.log(logstag,"________************________________attribute is null:");
 			}
 					
-		}
+		}*/
 		
 		
 	}
@@ -780,6 +789,13 @@ public class BackgroundManager {
 	//40000
 	
 		return pixmap;
+		
+	}
+
+	public static void addToBackground(ModelInstance modelinstance) {
+
+		
+		ModelManagment.addmodel(modelinstance);
 		
 	}
 	

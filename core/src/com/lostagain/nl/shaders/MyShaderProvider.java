@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class MyShaderProvider extends DefaultShaderProvider {
 	public final DefaultShader.Config config;
@@ -15,7 +16,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 	static public enum shadertypes {
 		test,
 		invert,
-		standardlibgdx, noise
+		standardlibgdx, noise, distancefield
 	}
 
 	public MyShaderProvider (final DefaultShader.Config config) {
@@ -47,9 +48,18 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		
 		switch (shaderenum) {
 		case invert:
-			return new InvertShader();
+			
+
+	    	  String vert = Gdx.files.internal("shaders/defaulttest.vertex.glsl").readString();
+	          String frag = Gdx.files.internal("shaders/defaulttest.fragment.glsl").readString();
+	          
+	          
+			return new DefaultShader(renderable, new DefaultShader.Config(vert, frag)); // new InvertShader(renderable);
+			
 		case noise:
 			return new NoiseShader();
+		case distancefield:
+			return new DistanceFieldShader();
 		default:
 			return super.createShader(renderable);
 		}

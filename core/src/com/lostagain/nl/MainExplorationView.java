@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
@@ -66,7 +68,6 @@ import com.lostagain.nl.uti.SpiffyGenericTween;
 import com.lostagain.nl.uti.SpiffyTweenConstructor;
 import com.lostagain.nl.uti.SpiffyVector2Tween;
 import com.lostagain.nl.uti.SpiffyVector3Tween;
-
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
@@ -169,7 +170,7 @@ public class MainExplorationView implements Screen {
 
 *
 */
-	
+	/*
 	private static class DistanceFieldShader extends ShaderProgram {
 		public DistanceFieldShader () {
 			super(Gdx.files.internal("shaders/distancefield.vert"), Gdx.files.internal("shaders/distancefield.frag"));
@@ -178,13 +179,14 @@ public class MainExplorationView implements Screen {
 			}
 		}
 
-		/** @param smoothing a value between 0 and 1 */
+		 @param smoothing a value between 0 and 1 
 		public void setSmoothing (float smoothing) {
 			float delta = 0.5f * MathUtils.clamp(smoothing, 0, 1);
 			setUniformf("u_lower", 0.5f - delta);
 			setUniformf("u_upper", 0.5f + delta);
 		}
-	}
+	}*/
+	
 	/*
 	public static class MyShaderProvider extends DefaultShaderProvider {
 	    @Override
@@ -198,12 +200,22 @@ public class MainExplorationView implements Screen {
 	}
 	*/
 	
-	DistanceFieldShader testshader = new DistanceFieldShader();
+	//DistanceFieldShader testshader = new DistanceFieldShader();
 	
 	
 	Shader testdefaultShader;
 	
-	Label test = new Label("test test test");
+	Label testlabel = new Label("ME.ModelManagment: _-testing ray in :425.04813 models\r\n" + 
+			"ME.ModelManagment: _-testing ray in :699.75104 models\r\n" + 
+			"ME.MainExplorationView: _-touch down on a model-_\r\n" + 
+			"ME.MainExplorationView: x=360,y=446\r\n" + 
+			"ME.MainExplorationView: setting drag to false click\r\n" + 
+			"ME.MainExplorationView: \r\n" + 
+			" drag displacement time:339\r\n" + 
+			"ME.MainExplorationView: MotionDisX:15.04424778761062\r\n" + 
+			"ME.MainExplorationView: MotionDisY:-61.6519174041298\r\n" + 
+			"ME.MainExplorationView: _-released touch-_\r\n" + 
+			"ME.MainExplorationView: __com.badlogic.gdx.scenes.scene2d.ui.Label");
 	
 	//controlls the 3d background
 	public static  BackgroundManager background = new BackgroundManager();
@@ -215,7 +227,7 @@ public class MainExplorationView implements Screen {
 	public static  LinkedList<Location> LastLocation = new LinkedList<Location>();
 	static Location currentTargetLocation;
 	
-	
+	// public Environment environment;
 
 
 
@@ -398,9 +410,18 @@ public class MainExplorationView implements Screen {
 		 //   shader = new DefaultShader(renderable, new DefaultShader.Config(vert, frag));
 		 //   shader.init();
 		
+		ModelInstance testlabinstance = testlabel.getModel();
+
+		Matrix4 newmatrix = new Matrix4();
+		testlabinstance.transform.setToTranslation(690,900,0);
+		newmatrix.setToRotation(0, 0, 1, -90);
+		testlabinstance.transform.mul(newmatrix);
 		
-		//add a test label
-		gameStage.addActor(test.getModel());
+		// environment = new Environment();
+	   //     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+	     //   environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+		
+		BackgroundManager.addToBackground(testlabinstance);
 
 		
 		//gameStage.setDebugAll(true);
@@ -587,7 +608,7 @@ public class MainExplorationView implements Screen {
 		//rcontext.begin();
 		//testdefaultShader.begin(camera, rcontext);
 		
-		background.modelBatch.render(ModelManagment.allModelInstances 	);
+		background.modelBatch.render(ModelManagment.allModelInstances	);
 		
 		//testdefaultShader.end();
 		background.modelBatch.end();	

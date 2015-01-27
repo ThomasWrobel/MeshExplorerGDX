@@ -52,10 +52,10 @@ public class DefaultStyles {
 
 
 	//static ProgressBarStyle barStyle = new ProgressBarStyle(Skin.newDrawable("white", Color.DARK_GRAY), textureBar);
-	public static Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), true);
+	public static Texture texture = new Texture(Gdx.files.internal("data/standardfont.png"), true);
 	public static BitmapFont scramabledFont = new BitmapFont(Gdx.files.internal("data/dfieldscrambled.fnt"), new TextureRegion(texture), true);
-	public static BitmapFont standdardFont = new BitmapFont(Gdx.files.internal("data/dfield.fnt"), new TextureRegion(texture), true);
-	public static BitmapFont standdardFont_interface = new BitmapFont(Gdx.files.internal("data/dfield.fnt"), new TextureRegion(texture), false);
+	public static BitmapFont standdardFont = new BitmapFont(Gdx.files.internal("data/standardfont.fnt"), new TextureRegion(texture), true);
+	public static BitmapFont standdardFont_interface = new BitmapFont(Gdx.files.internal("data/standardfont.fnt"), new TextureRegion(texture), false);
 
 
 	public static void setupStyles(){		

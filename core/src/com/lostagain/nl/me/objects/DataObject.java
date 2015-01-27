@@ -263,7 +263,7 @@ public class DataObject extends Image
 						
 					}
 					
-					current_testedwidth=current_testedwidth+ glyph.width+3;
+					current_testedwidth=current_testedwidth+ glyph.xadvance+3;
 					
 				}
 
@@ -353,7 +353,7 @@ public class DataObject extends Image
 							glyph.srcX,
 							glyph.srcY, glyph.width, glyph.height);
 					*/
-					double newprecisepos =  ((glyph.width+3)  * scaledown)+lastremainder;
+					double newprecisepos =  ((glyph.xadvance+3)  * scaledown)+lastremainder;
 					lastremainder = newprecisepos - Math.floor(newprecisepos);
 					int newpos = (int) (Math.floor(newprecisepos));
 				//	Gdx.app.log(logstag,"newpos="+newpos);

@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class ModelMaker {
 
-	static public Model createRectangle(float x1,float y1,float x2,float y2,float z,Color MColor,Material mat ) {
+	static public Model createRectangle(float x1,float y1,float x2,float y2,float z,Material mat ) {
 
 		
 		Vector3 corner1 = new Vector3(x1,y1,z);
