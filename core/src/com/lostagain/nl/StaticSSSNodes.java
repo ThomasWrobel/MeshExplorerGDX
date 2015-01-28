@@ -54,6 +54,11 @@ public class StaticSSSNodes {
 	public static final SSSNode scanner = SSSNode.createSSSNode(ME.INTERNALNS+"scanner", ME.INTERNALNS+"scanner", ME.INTERNALNS,new SSSNode[]{ability});
 	public static final SSSNode prototype_scanner = SSSNode.createSSSNode("PrototypeScanner", ME.INTERNALNS+"PrototypeScanner", ME.INTERNALNS,new SSSNode[]{scanner});
 	
+	//memory ability	
+	public static final SSSNode STMemoryAbility = SSSNode.createSSSNode(ME.INTERNALNS+"STMemoryAbility", ME.INTERNALNS+"STMemoryAbility", ME.INTERNALNS,new SSSNode[]{ability});
+	
+
+	
 	//give it base abilities
 	public static final SSSNode multitasking= SSSNode.createSSSNode(ME.INTERNALNS+"multitasking", ME.INTERNALNS);
 	public static final SSSNode speed = SSSNode.createSSSNode(ME.INTERNALNS+"speed", ME.INTERNALNS);	

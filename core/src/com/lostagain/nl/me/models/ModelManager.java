@@ -40,13 +40,19 @@ import com.badlogic.gdx.utils.Array;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.shaders.MyShaderProvider;
 
-public class BackgroundManager {
+public class ModelManager {
 
 //;	static Logger Log = Logger.getLogger("ME.BackgroundManager");
 
 	final static String logstag = "ME.BackgroundManager";
+
+	
+	public static ModelInstance CameraOverlay = null;
+	
+	
+	
 	//3d bits
-	public Model model;
+	//public Model model;
 	
 	public ModelBatch modelBatch;
 
@@ -68,11 +74,11 @@ public class BackgroundManager {
 	
 	public void setup(){
 		
-        String vert = Gdx.files.internal("shaders/test.vertex.glsl").readString();//"shaders/distancefield.vert"
-        String frag = Gdx.files.internal("shaders/test.fragment.glsl").readString();
+       // String vert = Gdx.files.internal("shaders/test.vertex.glsl").readString();//"shaders/distancefield.vert"
+       // String frag = Gdx.files.internal("shaders/test.fragment.glsl").readString();
         
 		//modelBatch = new ModelBatch(vert,frag);
-        modelBatch = new ModelBatch(new MyShaderProvider(vert,frag));
+        modelBatch = new ModelBatch(new MyShaderProvider());
         
 
 		
@@ -104,16 +110,8 @@ public class BackgroundManager {
 		
 
 		//Gdx.app.log(logstag,"aliasaliasaliasalias = "+alias);
-
-    	//Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), true);
-		//texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-		
-		//Model  model2 = modelBuilder.createBox(220f, 220f, 15f, 
-		//		new Material(TextureAttribute.createDiffuse(texture),new BlendingAttribute(0.6f)),
-		//		Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 //
 
-		
 		//model2.meshes.get(0).getVertexAttribute(Usage.TextureCoordinates).alias = "a_texCoord";
 		
 		//  Model model3 = createRectangle(-10f,500f,10f,-500f,0f);
@@ -122,33 +120,33 @@ public class BackgroundManager {
 		//  ModelInstance model4 = createRectangleAt(50f,50f,10f,200f,0f);
 
 		ModelInstance instance = new ModelInstance(model1); 
-		instance.userData = MyShaderProvider.shadertypes.distancefield;
+		instance.userData = MyShaderProvider.shadertypes.test;
 		
 		ModelManagment.addmodel(instance);
 
-		//ModelInstance instance2 = new ModelInstance(model2);   
+		CameraOverlay = ModelManager.addNoiseRectangle(0,0,300,300,true);
+		CameraOverlay.materials.get(0).set( new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f));
+		
+		CameraOverlay.userData =MyShaderProvider.shadertypes.noise; 
 		//instance2.userData = MyShaderProvider.shadertypes.distancefield;
-		//ModelManagment.addmodel(instance2);
-		
-		
-		Gdx.app.log(logstag,"texture test=");
-		
-	//	Node tshirtNode = instance3.nodes.get(0);
-//	Material material = tshirtNode.parts.get(0).material;
-		
-		Gdx.app.log(logstag,"texture test=2");
+		//ModelManagment.addmodel(CameraOverlay);
 		
 		
 		
 		
-		/*
-        ModelInstance instance3 = new ModelInstance(model3);        
-        instances.add(instance3);
+		
+		//for some reason transparency's dont work till we add something with a transparent texture for the first time
 
-        model4.transform.setToRotation(0, 0, -1, 50);
+    	Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), false);
+		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
+		
+		Model model2 = modelBuilder.createBox(220f, 220f, 15f, 
+				new Material(TextureAttribute.createDiffuse(texture),new BlendingAttribute(0.6f)),
+				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+        ModelInstance instance3 = new ModelInstance(model2);      
 
-        instances.add(model4);
-		 */
+		ModelManagment.addmodel(instance3);
+		
 		//instance.transform.setToTranslation(200,500,10);
 
 		//  environment = new Environment();
@@ -178,14 +176,33 @@ public class BackgroundManager {
 		
 		
 	}
-	
 	public static ModelInstance addNoiseRectangle(int x, int y, int w, int h) {
+		return addNoiseRectangle(x,  y,  w,  h, false);
+	}
+	/**
+	 *  creates a new rectangle with a noise texture at the specified location
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h
+	 * @param centerAlignOrigin - is the origin at the center(true) or corner (default /false)
+	 * @return
+	 */
+	public static ModelInstance addNoiseRectangle(int x, int y, int w, int h,boolean centerAlignOrigin) {
 		
 
 		Material mat = createNoiseMaterial();
-		ModelInstance newmodel  = new ModelInstance(createRectangle(x, y, x+w,y+h, -110, Color.BLACK,mat));
-		ModelManagment.addmodel(newmodel);		
+		ModelInstance newmodel;
+		if (centerAlignOrigin){
+			
+		 newmodel  = new ModelInstance(createRectangle(x-(w/2), y-(w/2), x+(w/2),y+(h/2), -110, Color.BLACK,mat));
 		
+		} else {
+			newmodel  = new ModelInstance(createRectangle(x, y, x+w,y+h, -110, Color.BLACK,mat));
+			
+		}
+		
+		ModelManagment.addmodel(newmodel);	
 		return giveAnimatedNoiseTextureToRectangle(newmodel);
 	}
 	
@@ -381,9 +398,9 @@ public class BackgroundManager {
 
         FileHandle imageFileHandle2 = Gdx.files.internal("data/beam_top.png"); 
         
-        Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE0);
+        //Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE0);
         Texture texture = new Texture(imageFileHandle2);
-        texture.bind();
+      //  texture.bind();
         
         lowmaterial.set(blendingAttribute);	
         uppermaterial.set(blendingAttribute);		
@@ -393,9 +410,9 @@ public class BackgroundManager {
 
         FileHandle imageFileHandle3 = Gdx.files.internal("data/beam_blob.png"); 
         
-        Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE1);
+       // Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE1);
         Texture blobtexture = new Texture(imageFileHandle3);
-        blobtexture.bind();
+      //  blobtexture.bind();
         
         Material blob = new Material(ColorAttribute.createDiffuse(Color.WHITE), 
 				ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(0.7f), 
@@ -598,7 +615,6 @@ public class BackgroundManager {
 
 
 		modelBatch.dispose();
-		model.dispose();
 
 	}
 

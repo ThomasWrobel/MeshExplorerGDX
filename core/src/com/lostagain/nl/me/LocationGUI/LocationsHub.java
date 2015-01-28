@@ -69,7 +69,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
-import com.lostagain.nl.me.models.BackgroundManager;
+import com.lostagain.nl.me.models.ModelManager;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.uti.MeshWorld;
 
@@ -241,9 +241,10 @@ public class LocationsHub extends Table {
 		//	securityPage = getSecurity(LocationsNode); 
 		//securityPage = new SecurityScreen(this,LocationsNode);
 		contentsPage = new ContentsScreen(this,LocationsNode, "Data:");
-		abilityPage = new ContentsScreen(this,LocationsNode, "Abilitys:");
-		emailPage = new EmailScreen(this,LocationsNode);
-		linksPage =  new LinksScreen(this,LocationsNode);
+		abilityPage =  new ContentsScreen(this,LocationsNode, "Abilitys:");
+		abilityPage.setLocked(true);
+		emailPage =    new EmailScreen(this,LocationsNode);
+		linksPage =    new LinksScreen(this,LocationsNode);
 
 
 		AllPages.add(repairPage);		
@@ -716,7 +717,7 @@ public class LocationsHub extends Table {
 		}
 		
 		//remove background and replace with color if its set
-		BackgroundManager.removeAnimatedNoiseTextureToRectangle(backgroundObject);
+		ModelManager.removeAnimatedNoiseTextureToRectangle(backgroundObject);
 		if (backcolour!=null){
 			setBackgroundColour(backcolour);
 		}
@@ -730,7 +731,7 @@ public class LocationsHub extends Table {
 		//ensure background is positioned
 		if (backgroundObject!=null){
 
-			backgroundObject.transform.setToTranslation((int)this.getX(),(int)this.getY(),-10);
+			backgroundObject.transform.setToTranslation((int)this.getX(),(int)this.getY(),-5);
 		}
 		
 	}
@@ -738,7 +739,7 @@ public class LocationsHub extends Table {
 
 	public void addBackground() {
 
-		backgroundObject = BackgroundManager.addRectangle((int)this.getX(),(int)this.getY(),-10,(int)this.getWidth(),(int)this.getHeight(),new Material());
+		backgroundObject = ModelManager.addRectangle((int)this.getX(),(int)this.getY(),-10,(int)this.getWidth(),(int)this.getHeight(),new Material());
 			
 		
 	}
@@ -801,7 +802,7 @@ public class LocationsHub extends Table {
 		
 		
 		
-		BackgroundManager.giveAnimatedNoiseTextureToRectangle(backgroundObject);
+		ModelManager.giveAnimatedNoiseTextureToRectangle(backgroundObject);
 		
 		
 	}

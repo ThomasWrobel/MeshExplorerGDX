@@ -163,11 +163,11 @@ public class STMemory extends Table implements DataObjectDropTarget {
 
 			Gdx.app.log(logstag,"clickedWhileHolding");
 			
-			Boolean success = addItem(Old_Inventory.currentlyHeld);
+			Boolean success = addItem(Inventory.currentlyHeld);
 
 			//if was successfully added we set currently held to nothing
 			if (success){
-					Old_Inventory.currentlyHeld = null;
+					Inventory.currentlyHeld = null;
 			} else {
 				
 				//should have some feedback here for STMemory full up
@@ -184,7 +184,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			boolean accepted = addItem(droppedOn);
 			
 			
-			if (droppedOn==Old_Inventory.currentlyHeld && accepted){
+			if (droppedOn==Inventory.currentlyHeld && accepted){
 				
 				droppedOn.setRotation(0); //ensure its straight when going on
 				droppedOn.setScale(1); //natural scale (might change in future)
@@ -194,7 +194,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 				
 				
 				
-				Old_Inventory.currentlyHeld = null;			
+				Inventory.currentlyHeld = null;			
 				MainExplorationView.setCursor(null);
 				
 				

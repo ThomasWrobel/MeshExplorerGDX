@@ -26,7 +26,7 @@ import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
-import com.lostagain.nl.me.models.BackgroundManager;
+import com.lostagain.nl.me.models.ModelManager;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.objects.DataObject;
 
@@ -68,7 +68,7 @@ public class ConceptGun  extends WidgetGroup {
 
 	//impact effect
 
-	static Timer	 impactEffectTimer = new Timer();
+	static Timer impactEffectTimer = new Timer();
 	static Task impactEffectTask;
 	
 	
@@ -235,10 +235,10 @@ public class ConceptGun  extends WidgetGroup {
 		//col.a  = 1 - (500 / 1000) ^ 2;
 
 		//generate mesh and texture
-		ModelInstance newlazer = BackgroundManager.createLine(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,true,false,10); //10 makes sure the end point is wayyyyyyyy of the screen at the top to ensure the beam end never becomes visible during movement
+		ModelInstance newlazer = ModelManager.createLine(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,true,false,10); //10 makes sure the end point is wayyyyyyyy of the screen at the top to ensure the beam end never becomes visible during movement
 
 		if (lazer!=null){
-			BackgroundManager.removeModelInstance(lazer); //one beam at a time for now!
+			ModelManager.removeModelInstance(lazer); //one beam at a time for now!
 		}
 		lazer=newlazer;
 
@@ -298,7 +298,7 @@ public class ConceptGun  extends WidgetGroup {
 
 			if (currenttime>totaltime){
 				currenttime=0;			
-				BackgroundManager.removeModelInstance(lazer);
+				ModelManager.removeModelInstance(lazer);
 				lazer=null;
 				
 				MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-5f; 

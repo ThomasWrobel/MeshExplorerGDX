@@ -17,7 +17,7 @@ import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.creatures.Population.destructOn;
 import com.lostagain.nl.me.gui.ConceptGun;
-import com.lostagain.nl.me.gui.Old_Inventory;
+import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.objects.DataObject;
@@ -185,8 +185,8 @@ public class Creature implements hitable {
 			SSSNode appliedConcept;
 			if (!ConceptGun.disabledFire){
 				appliedConcept = ConceptGun.equipedConcept;
-			} else if (Old_Inventory.currentlyHeld!=null) {
-				appliedConcept = Old_Inventory.currentlyHeld.itemsnode;					
+			} else if (Inventory.currentlyHeld!=null) {
+				appliedConcept = Inventory.currentlyHeld.itemsnode;					
 			} else {
 				Gdx.app.log(logstag,"_nothing currently equiped to fight creature");	
 				return;

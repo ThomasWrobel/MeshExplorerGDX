@@ -45,7 +45,7 @@ import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
 import com.lostagain.nl.me.gui.DataObjectSlot;
-import com.lostagain.nl.me.gui.Old_Inventory;
+import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.objects.DataObject;
 
 /**
@@ -598,10 +598,10 @@ public class RepairScreen extends Group  implements LocationScreen {
 				@Override
 				public void clicked(InputEvent ev, float x , float y){
 					
-					SSSNode ItemNode = Old_Inventory.currentlyHeld.itemsnode;
+					SSSNode ItemNode = Inventory.currentlyHeld.itemsnode;
 					
 					//if not carrying item ignore
-					if (Old_Inventory.currentlyHeld==null){
+					if (Inventory.currentlyHeld==null){
 						return;
 					}
 

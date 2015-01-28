@@ -23,7 +23,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.gui.DataObjectDropTarget;
-import com.lostagain.nl.me.gui.Old_Inventory;
+import com.lostagain.nl.me.gui.Inventory;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
@@ -477,7 +477,7 @@ public class DataObject extends Image
 		if (addedToObject){
 			
 		} else {
-			Old_Inventory.dropHeldItem(true);
+			Inventory.dropHeldItem(true);
 		}
 		
 		return;

@@ -47,11 +47,15 @@ public class MyShaderProvider extends DefaultShaderProvider {
 			}
 		
 		switch (shaderenum) {
+		case test:
+		{
+			
+			return new TestShader();
+		}
 		case invert:
 			
-
-	    	  String vert = Gdx.files.internal("shaders/defaulttest.vertex.glsl").readString();
-	          String frag = Gdx.files.internal("shaders/defaulttest.fragment.glsl").readString();
+	    	  String vert = Gdx.files.internal("shaders/invert.vertex.glsl").readString();
+	          String frag = Gdx.files.internal("shaders/invert.fragment.glsl").readString();
 	          
 	          
 			return new DefaultShader(renderable, new DefaultShader.Config(vert, frag)); // new InvertShader(renderable);

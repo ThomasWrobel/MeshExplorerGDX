@@ -45,11 +45,12 @@ import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
+import com.lostagain.nl.StaticSSSNodes;
 //import com.lostagain.nl.Old_Inventory.Item;
 import com.lostagain.nl.me.objects.DataObject;
 
 /** handles the various semantic objects you can aquire and use **/
-public class Old_Inventory extends Table {
+public class Inventory  {
 
 	static Logger Log = Logger.getLogger("ME.Old_Inventory");
 	
@@ -66,22 +67,22 @@ public class Old_Inventory extends Table {
 
 	
 	
-	public Old_Inventory() {
+	public Inventory() {
 		super();
 		//super.pad(0);
     	Log.info("_________Inventory_____");
     	
-		super.setBackground(DefaultStyles.colors.newDrawable("white", Color.DARK_GRAY));
+		//super.setBackground(DefaultStyles.colors.newDrawable("white", Color.DARK_GRAY));
 	//	Label Title = new Label("Objects:",DefaultStyles.linkstyle);
 	//	Title.setAlignment(Align.center);
 	//	super.add(Title).top().left();
 
     	Log.info("_________Inventory_____");
-		super.debugAll();
+	//	super.debugAll();
 		
 		Label test = new Label("test",DefaultStyles.linkstyle);
-		super.add(test).fill();
-		super.setWidth(400);
+		//super.add(test).fill();
+		//super.setWidth(400);
 		
 		
 	}
@@ -105,19 +106,19 @@ public class Old_Inventory extends Table {
 		if (citem.itemsnode==itemsnode){
 			allItemsit.remove();
 
-			 super.removeActor(citem);
+			// super.removeActor(citem);
 		}
 				
 	}
 	
 
-		pack();
-		super.validate();
+		//pack();
+		//super.validate();
 		
 		
 		//if theres no items left the users GUI should have its data tab disabled
 		if (allItems.size()==0){
-		   MainExplorationView.usersGUI.setDataVisible(true);
+		   MainExplorationView.usersGUI.setSTMemVisible(true);
 		}
 		
 	}
@@ -152,7 +153,7 @@ public class Old_Inventory extends Table {
 
 		//Label test = new Label("test",DefaultStyles.linkstyle);
 	//	super.add(newitem).size(60, 30).top().left().fill().expandY();
-		super.add(obj).size(60, 30).top().left().fillY().expandY();
+		//super.add(obj).size(60, 30).top().left().fillY().expandY();
 
 		//pack();
 		//super.invalidate();
@@ -160,8 +161,9 @@ public class Old_Inventory extends Table {
 	//	super.validate();
 
 		//update the GUI bar in case the inventory tab isnt there yet
-		MainExplorationView.usersGUI.setDataVisible(true);
-		
+		if (obj.itemsnode== StaticSSSNodes.STMemoryAbility){
+		MainExplorationView.usersGUI.setSTMemVisible(true);
+		}
 		
 	}
 	
@@ -314,18 +316,6 @@ public class Old_Inventory extends Table {
 		
 	}
 
-	@Override
-	public float getPrefWidth() {
-		return prefwidth;
-		
-		
-	}
-	@Override
-	public float getPrefHeight() {
-		return 200;
-		
-		
-	}
 	
 	public void holdItem(DataObject objectsnode) {
 		if (currentlyHeld==null){

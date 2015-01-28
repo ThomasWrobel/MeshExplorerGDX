@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 
 /**
  * Basic normal-colourish shader.
@@ -22,21 +23,25 @@ public class TestShader implements Shader {
 	 RenderContext context;
 	 
 	   int u_projViewTrans;
-	    int u_worldTrans;
+	   int u_worldTrans;
+	    int u_time;
 	    
+	   private float time;
+	   
     @Override
     public void init () {
     	
-    	  String vert = Gdx.files.internal("shaders/test.vertex.glsl").readString();
-          String frag = Gdx.files.internal("shaders/test.fragment.glsl").readString();
+    	  String vert = Gdx.files.internal("shaders/prettynoise.vertex.glsl").readString();
+          String frag = Gdx.files.internal("shaders/prettynoise.fragment.glsl").readString();
           
           program = new ShaderProgram(vert, frag);
           if (!program.isCompiled()){
               throw new GdxRuntimeException(program.getLog());
           }
+          
           u_projViewTrans = program.getUniformLocation("u_projViewTrans");
           u_worldTrans = program.getUniformLocation("u_worldTrans");
-    	
+          u_time = program.getUniformLocation("u_time"); 
     }
     
     @Override
@@ -51,10 +56,15 @@ public class TestShader implements Shader {
     	
     	   this.camera = camera;
            this.context = context;
-           
+           //update time
+     	  time = time+ Gdx.graphics.getDeltaTime();
+     	  
     	  program.begin();
     	  //the the variable for the cameras projectino to be passed to the shader
     	  program.setUniformMatrix(u_projViewTrans, camera.combined);
+    	  program.setUniformf(u_time, time);
+    	  
+    	  
     	  
     	  context.setDepthTest(GL20.GL_LEQUAL);    	  
           context.setCullFace(GL20.GL_BACK);
@@ -66,6 +76,7 @@ public class TestShader implements Shader {
     public void render (Renderable renderable) {  
     	//set the variable for the objects world transform to be passed to the shader
     	 program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
+    	 
     	 
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
@@ -86,7 +97,13 @@ public class TestShader implements Shader {
     
     @Override
     public boolean canRender (Renderable instance) {
-        return true;
+	shadertypes shaderenum = (shadertypes) instance.userData;
+    	
+    	if (shaderenum==shadertypes.test){
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
     
     

@@ -21,7 +21,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.lostagain.nl.DefaultStyles;
-import com.lostagain.nl.me.models.BackgroundManager;
+import com.lostagain.nl.me.models.ModelManager;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.shaders.MyShaderProvider;
 

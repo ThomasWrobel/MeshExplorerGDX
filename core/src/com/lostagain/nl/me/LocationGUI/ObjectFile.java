@@ -58,11 +58,13 @@ public class ObjectFile extends WidgetGroup {
 
 	private float prefWidth=0;
 	private float prefHeight=0;
+	boolean locked = false;
 	
 	
-	
-	public ObjectFile(SSSNode object,ContentsScreen newContentsPage) {
+	public ObjectFile(SSSNode object,ContentsScreen newContentsPage, Boolean locked) {
+		
 		objectsnode=object;		
+		this.locked = locked; 
 		downloadPercentage = new ProgressBar(0, 100, 1, false, DefaultStyles.linkstyle);
 		
 						
@@ -322,8 +324,9 @@ public class ObjectFile extends WidgetGroup {
 
 			//objectstore.setX(currentParent.getWidth()-100);
 		//add object
-	
+		if (!locked){
 		objectstore.unlock();
+		}
 		super.invalidate();
 		
 		//newobject.setScale(0.5f);		

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -36,7 +37,7 @@ public class NoiseShader implements Shader {
 	  int resolution;
 	  int mouse;
 	  int u_time;
-	  
+	  int u_alpha;
     @Override
     public void init () {
     	
@@ -55,6 +56,7 @@ public class NoiseShader implements Shader {
           resolution =   program.getUniformLocation("resolution");
           mouse =  program.getUniformLocation("mouse");
           u_time =   program.getUniformLocation("u_time");
+          u_alpha =   program.getUniformLocation("u_alpha");
     }
     
     @Override
@@ -103,8 +105,12 @@ public class NoiseShader implements Shader {
     		 
     	//	 Texture testtexture = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
     		// program.setUniformi(u_sampler2D, context.textureBinder.bind(testtexture));
-    		 
-    		
+    	 if (renderable.material.has(BlendingAttribute.Type)){
+    		 program.setUniformf(u_alpha, ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type)).opacity);
+    	 }else {
+    		 program.setUniformf(u_alpha, 1.0f);
+    	 }
+    	 
     		 
     		 program.setUniformi(mouse, 70, 70);
     		 

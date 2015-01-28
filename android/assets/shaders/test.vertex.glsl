@@ -10,7 +10,6 @@ uniform mat4 u_projViewTrans;
  
  //out
 varying vec2 v_texCoord0;
-
 varying vec4 vColor;
 varying vec2 vTexCoord;
  

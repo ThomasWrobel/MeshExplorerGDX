@@ -27,7 +27,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.LocationGUI.LocationScreen;
-import com.lostagain.nl.me.gui.Old_Inventory;
+import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.uti.FileManager;
 import com.lostagain.nl.uti.SpiffyGenericTween;
 import com.lostagain.nl.uti.SpiffyTweenConstructor;
@@ -55,7 +55,7 @@ public class ME extends Game {
 
     //global game stuff
 	static ME game;
-    static public Old_Inventory playersInventory;   
+    static public Inventory playersInventory;   
 
 	static public SpriteBatch batch;
     public static BitmapFont font;  
@@ -82,7 +82,7 @@ public class ME extends Game {
 
     	Gdx.app.log(logstag,"____");
     	//create inventory
-    	playersInventory = new Old_Inventory();
+    	playersInventory = new Inventory();
 
     	Gdx.app.log(logstag,"________");
     	//we clear the semantics before adding the player data (because that contains semantics

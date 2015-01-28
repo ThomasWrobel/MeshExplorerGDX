@@ -57,12 +57,15 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 	        
 	        scroller = new ScrollPane(scrollTable);
 	        
-	       // ScrollPaneStyle scrollerstyle = new ScrollPaneStyle(DefaultStyles.defaultStyles.get(ScrollPaneStyle.class));
-	       // scrollerstyle.background = DefaultStyles.colors.newDrawable("white", Color.RED);
+	       // ScrollPaneStyle scrollerstyle = new ScrollPaneStyle(DefaultStyles.defaultStyles.get(ScrollPaneStyle.class));	        
+	        //scrollerstyle.background = DefaultStyles.colors.newDrawable("white", Color.RED);	        
 	       // scroller.setStyle(scrollerstyle);
 	        
 	        
+	        //Note; The following does not work correctly in 3d space when the view is rotated. - it causes clipping errors.
 	        scrollTable.setBackground(DefaultStyles.colors.newDrawable("white", new Color(0.2f,0.2f,0.2f,0.5f)));
+	        //-------
+	        
 	        scroller.setX(0);
 	        scroller.setY(0);
 	        

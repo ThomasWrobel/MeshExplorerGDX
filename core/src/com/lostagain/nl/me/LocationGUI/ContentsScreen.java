@@ -42,6 +42,7 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 	String contentsTitle = "Contents:";
 	Label title  = new Label(contentsTitle,skin);
 	
+	boolean locked = false;
 	
 	//scroll contents
 	final Table scrollTable;
@@ -192,7 +193,7 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 		Gdx.app.log("", "adding node:"+sssNode.PURI);
 		
 		//make a ObjectFile from this sssnode rk) 
-		ObjectFile newObjectFile = new ObjectFile(sssNode,this);		
+		ObjectFile newObjectFile = new ObjectFile(sssNode,this,locked);		
 		addObjectFile(newObjectFile);
 		
 		invalidate();
@@ -208,6 +209,13 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 		scrollTable.add(title).fillX().height(30).expandX();
 		scrollTable.row();
 		invalidate();
+	}
+
+
+	public void setLocked(boolean b) {
+		locked=b;
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

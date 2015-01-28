@@ -7,8 +7,10 @@ precision mediump float;
 uniform float u_time;
 uniform vec2 mouse;
 uniform vec2 resolution;
+uniform float u_alpha;
 
 varying vec2 vTexCoord;
+
 
 // http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/
 float rand(vec2 co){
@@ -36,5 +38,8 @@ void main( void ) {
 	vec2 position = ( gl_FragCoord.xy / resolution.xy ) + mouse / 4.0;
 
 	x = rand(vec2(u_time*position.y, u_time/position));
-  	gl_FragColor = vec4(x, x, x, 1.0);
+	
+	
+  	gl_FragColor = vec4(x, x, x, u_alpha);
+  	
 }

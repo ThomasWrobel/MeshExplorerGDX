@@ -39,7 +39,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 	
 	InterfaceButton myHome =     new InterfaceButton("My  Home",true);
 	InterfaceButton myContents = new InterfaceButton("My  Data",false); //not visible unless we have data (will be removed in favor of temp memory)
-	InterfaceButton mySTMemory = new InterfaceButton("My STMem",true); //not visible unless we have data (new temp memory)
+	InterfaceButton mySTMemory = new InterfaceButton("My STMem",false); //not visible unless we have data (new temp memory)
 	
 	InterfaceButton myLinks =    new InterfaceButton("My Links",true);
 	InterfaceButton myEmails =   new InterfaceButton("My Emails",true);
@@ -89,7 +89,10 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 		ColorM.a=0.5f;
 		back.background = DefaultStyles.colors.newDrawable("white", ColorM);
 		
-	
+
+		Gdx.app.log(logstag, "myCGun clicked");
+		ConceptGun.setVisible(false);				
+		ConceptGun.setEnabled(ConceptGun.isVisible());
 		
 		myCGun.addListener(new ClickListener () {	
 			@Override
@@ -98,8 +101,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 				Log.info("myCGun clicked _____");
 				
 				Gdx.app.log(logstag, "myCGun clicked");
-				ConceptGun.setVisible(!ConceptGun.isVisible());
-				
+				ConceptGun.setVisible(!ConceptGun.isVisible());				
 				ConceptGun.setEnabled(ConceptGun.isVisible());
 				
 				if (ConceptGun.isVisible()){
@@ -127,7 +129,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			public void clicked(InputEvent ev, float x , float y){
 
 				Gdx.app.log(logstag,"clicked");
-				if (Old_Inventory.currentlyHeld!=null){
+				if (Inventory.currentlyHeld!=null){
 					clickedWhileHolding();					
 				}
 				
@@ -206,7 +208,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			public void clicked(InputEvent ev, float x , float y){
 
 				
-				if (Old_Inventory.currentlyHeld!=null){
+				if (Inventory.currentlyHeld!=null){
 					clickedWhileHolding();					
 				}
 				
@@ -239,7 +241,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 		allLinks.add(myCGun);
 		
 		Gdx.app.log(logstag,"setting up");
-		ME.playersInventory.setVisible(false);
+		//ME.playersInventory.setVisible(false);
 
 		STMemoryPop.setVisible(false);
 		
@@ -271,14 +273,15 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 	}
 
 
-	public void setDataVisible(boolean visible){
-		
-		if (myContents.isVisible!=true){
-			myContents.isVisible=visible;
-		
+	public void setSTMemVisible(boolean visible){
+
+		Gdx.app.log(logstag,"setSTMemVisible set to:"+visible);
+		if (mySTMemory.isVisible!=true){
+			mySTMemory.isVisible=visible;
+			needsRepopulating = true;
 			invalidate();
-		 //refreshlinks();
-		 setupInventory(); 
+			//refreshlinks();
+			setupInventory(); 
 		}
 	}
 	
@@ -292,12 +295,20 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 	public void populateGUI(){
 		
 		if (needsRepopulating){
-			
-			
-			
+						
 		super.clearChildren();
 		
-		int totalheight = allLinks.size() *30;
+		
+		
+		int totalheight = 0;
+		//we need to work out the total height first
+		//this is 30 pixels per visible link
+		for (InterfaceButton link : allLinks) {
+			if (link.isVisible==true){
+				totalheight=totalheight+30;
+			}
+		}
+		
 		
 		this.setPosition(0, 0);//(MainExplorationView.guiStage.getHeight() - totalheight));
 
@@ -428,7 +439,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			
 		} 
 		
-		ME.playersInventory.setVisible(true);
+	//ME.playersInventory.setVisible(true);
 		
 		closed=false;
 		justopened=true;
@@ -468,6 +479,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 		if (setup){			
 			return;		
 		} 
+		/*
 		Gdx.app.log(logstag,"setupInventory");
 		super.addActor(ME.playersInventory);
 		
@@ -484,7 +496,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 		Gdx.app.log(logstag,"popping up inventory at:"+X+","+Y);
 		ME.playersInventory.setPosition(X, Y);
 		
-		
+		*/
 		super.validate();
 		setup=true;
 		
@@ -495,7 +507,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 		Gdx.app.log(logstag,"closeInventory");
 		
 	//	if (!closed ){
-			ME.playersInventory.setVisible(false);
+			//ME.playersInventory.setVisible(false);
 			closed=true;
 		//}
 		
@@ -525,11 +537,11 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 
 		Gdx.app.log(logstag,"clickedWhileHolding");
 		
-		Boolean success = STMemoryPop.addItem(Old_Inventory.currentlyHeld);
+		Boolean success = STMemoryPop.addItem(Inventory.currentlyHeld);
 
 		//if was successfully added we set currently held to nothing
 		if (success){
-				Old_Inventory.currentlyHeld = null;
+				Inventory.currentlyHeld = null;
 		} else {
 			
 			//should have some feedback here for STMemory full up
