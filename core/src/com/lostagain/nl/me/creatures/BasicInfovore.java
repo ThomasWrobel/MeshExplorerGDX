@@ -49,8 +49,6 @@ public class BasicInfovore extends Creature implements Animating {
 		
 		super(x,y,parentPopulation,hitPoints, queryToDestroy, destructionType);
 		
-		
-		
 		//ensure infovote animation is setup
 		if (!idealAnimation.isSetup()){
 			idealAnimation.create();
@@ -58,6 +56,8 @@ public class BasicInfovore extends Creature implements Animating {
 		
 		createmodel(x,y,-10);
 				
+		ModelManagment.addMoving(this);
+		
 		
 		
 	}
@@ -74,24 +74,27 @@ public class BasicInfovore extends Creature implements Animating {
 			//	Usage.Position | Usage.Normal);
 		
 		//
-		//FileHandle imageFileHandle = Gdx.files.internal("data/infovorebasic.png"); 
-		//Texture blobtexture = new Texture(imageFileHandle);
+		FileHandle imageFileHandle = Gdx.files.internal("data/directiontester.png"); 
+		Texture blobtexture = new Texture(imageFileHandle);
 		
-        mat.set(TextureAttribute.createDiffuse(idealAnimation.getKeyFrame(0)));
+        mat.set(TextureAttribute.createDiffuse(blobtexture)); //idealAnimation.getKeyFrame(0)));
         
 		
 		
-		Model model = createRectangle( -25, -25, 50, 50, 0, Color.MAROON, mat );
+		Model model = createRectangle( -25, -25, 50, 50, 0, Color.WHITE, mat );
         mat.set(blendingAttribute2);
         
 		
 		creaturemodel = new ModelInstance(model);				
 		creaturemodel.transform.setToTranslation(x,y,z);
+		//store this initial transform as its native position
+		this.origin = creaturemodel.transform;
+		
 		
 		super.setmodel(creaturemodel);
 		
 		//as this model is animated we should add it to the model manager as animated
-		ModelManagment.addAnimating(this);
+		//ModelManagment.addAnimating(this); //turned ooff during movement testing
 		
 		
 		

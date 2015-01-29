@@ -266,7 +266,7 @@ public class ModelManager {
 
 		//get angle
 		float x2 = To.getX(Align.center);
-		float y2 = To.getY(Align.center);;
+		float y2 = To.getY(Align.center);
 		
 		//get z pos (all locations should be on the same plane)
 		float zloc = -200;

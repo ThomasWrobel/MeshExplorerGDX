@@ -20,6 +20,7 @@ import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.movements.MovementController;
 import com.lostagain.nl.me.objects.DataObject;
 import com.lostagain.nl.uti.Uti;
 
@@ -34,6 +35,11 @@ public class Creature implements hitable {
 	float x = 0;
 	float y = 0;
 	float z = 0;
+	Matrix4 origin = new Matrix4();
+	
+	
+	//movement
+	MovementController movementControll = new MovementController();
 	
 	//parent population
 	Population parentpolution;
@@ -301,6 +307,19 @@ public class Creature implements hitable {
 			MainExplorationView.addnewdrop(newdrop,x, y);			
 			
 		}
+		
+	}
+	
+	
+	
+	public void updatePosition(float delta){
+		
+		Matrix4 displacementFromOrigin = movementControll.update(delta);
+		
+	
+		
+		
+		creaturemodel.transform = origin.cpy().mul(displacementFromOrigin);
 		
 	}
 

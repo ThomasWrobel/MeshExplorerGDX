@@ -611,7 +611,7 @@ public class MainExplorationView implements Screen {
 		//Each render is sort of like a "layer" and appears in the order they are rendered
 		//regardless of 3d positions within that layer
 		background.updateAnimatedBacks(delta);
-		ModelManagment.updateAnimatedBacks(delta);//--
+		ModelManagment.updateObjectMovementAndFrames(delta);//--
 		
 		usersGUI.ConceptGun.update(delta);
 		

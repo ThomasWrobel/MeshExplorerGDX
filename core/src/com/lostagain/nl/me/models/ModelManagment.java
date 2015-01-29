@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
+import com.lostagain.nl.me.creatures.Creature;
 
 public class ModelManagment {
 
@@ -26,6 +27,9 @@ public class ModelManagment {
 	/**all model with texture animations **/
 	public static Array<Animating> animatingobjects = new Array<Animating>();
 
+	/**all models currently moving **/
+	public static Array<Creature> movingObjects = new Array<Creature>();
+	
 	public static void addmodel(ModelInstance model) {
 		allModelInstances.add(model);
 		
@@ -109,7 +113,17 @@ public class ModelManagment {
 		
 		
 	}
+	public static void addMoving(Creature model) {
+		movingObjects.add(model);
+		
+	}
 
+	public static void removeMoving(Creature model) 
+	{
+		
+		movingObjects.removeValue(model,true);
+		
+	}
 	public static void addAnimating(Animating model) {
 		animatingobjects.add(model);
 		
@@ -139,16 +153,19 @@ public class ModelManagment {
 	
 	
 
-	public static void updateAnimatedBacks(float deltatime){
-		
-		
-		
+	public static void updateObjectMovementAndFrames(float deltatime){
+					
 		for (Animating instance : animatingobjects) {
 			
 			instance.updateAnimationFrame(deltatime);
 			
 		}
 		
+	    for (Creature instance : movingObjects) {
+			
+			instance.updatePosition(deltatime);			
+			
+		}
 		
 	}
 	
