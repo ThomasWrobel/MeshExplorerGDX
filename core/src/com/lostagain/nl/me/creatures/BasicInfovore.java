@@ -70,7 +70,7 @@ public class BasicInfovore extends Creature implements Animating {
 		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.9f);
 		
 				//.createBox(15f, 15f, 15f, 
-		Material mat = new Material(ColorAttribute.createDiffuse(Color.MAROON));
+		Material mat = new Material(ColorAttribute.createDiffuse(Color.WHITE));
 			//	Usage.Position | Usage.Normal);
 		
 		//
@@ -81,7 +81,7 @@ public class BasicInfovore extends Creature implements Animating {
         
 		
 		
-		Model model = createRectangle( -25, -25, 50, 50, 0, Color.WHITE, mat );
+		Model model = createRectangle( -30, -30, 30, 30, 0, Color.WHITE, mat );
         mat.set(blendingAttribute2);
         
 		

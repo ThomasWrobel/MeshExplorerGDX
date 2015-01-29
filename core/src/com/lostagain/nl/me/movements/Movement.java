@@ -13,6 +13,11 @@ public class Movement {
 	Matrix4 destination;
 	Matrix4 start = new Matrix4();
 	
+	enum MovementTypes{
+		Forward,Rotate,REPEAT
+	}
+	MovementTypes currenttype = null;
+	
 	private static String logstag="ME.Movement";
 	
 	float durationMS = 1000;

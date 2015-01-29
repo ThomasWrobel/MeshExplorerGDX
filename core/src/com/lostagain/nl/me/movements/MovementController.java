@@ -1,19 +1,22 @@
 package com.lostagain.nl.me.movements;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Matrix4;
+import com.lostagain.nl.me.movements.Movement.MovementTypes;
 
 public class MovementController {
 
 	private static String logstag="ME.MovementController";
 	
 	
-	Movement currentMovement = new RotateLeft(90,10000); //just a test for now
+	Movement currentMovement = new Forward(300,8500); //just a test for now
+	int currentMovementNumber = 0;
 	ArrayList<Movement> movements = new ArrayList<Movement>();
 	
-	//the matrix corisponding to the start of the last movement
+	//the matrix corresponding to the start of the last movement
 	Matrix4 currentConclumativeMatrix = new Matrix4();
 	
 	//time keeping
@@ -21,8 +24,21 @@ public class MovementController {
 	float currentTimeWithinMovement = 0; //the current elipsed time within the specific movement
 	float totalTime = 10000; //total time of all movements
 	
+	public MovementController(Movement... movements) {
+		super();
+		this.movements = new ArrayList<Movement>(Arrays.asList( movements));
+		
+		currentMovement = this.movements.get(0);
+		
+		//totalTime 
+	}
+
 	public Matrix4 update(float delta){
 
+		if (currentMovement==null){
+			return currentConclumativeMatrix;
+		}
+		
 		//convert to ms
 		delta = delta*1000.0f;
 		
@@ -37,19 +53,42 @@ public class MovementController {
 		if (currentMovement!=null && currentTimeWithinMovement>currentMovement.durationMS){
 			
 			//get new position so far (this can be thought of the start of each vertext on the path being formed)
-			currentConclumativeMatrix.mul(currentMovement.destination);			
-			//reset currentTimeWithinMovement
-			currentTimeWithinMovement =0;
+			currentConclumativeMatrix.mul(currentMovement.destination);	
+			
+			//set time within movement to remainder left over from last movement
+			//
+			//  last movement took 5000ms
+			//  our time is now 5400ms
+			//  the time into the current movement should just be 400ms
+			currentTimeWithinMovement = currentTimeWithinMovement-currentMovement.durationMS;
 						
 			//set the new movement
+			currentMovementNumber=currentMovementNumber+1;
 			
-			//or set to null if at end
-			currentMovement = null;			
+			if (currentMovementNumber>=movements.size()){
+				Gdx.app.log(logstag, "_____________________________________________ENDING movement=");
+				currentMovement=null;
+				currentMovementNumber=0;
+				currentTime = 0;
+				currentTimeWithinMovement = 0;
+				return currentConclumativeMatrix;	
+				
+			}
+			
+			
+			currentMovement = movements.get(currentMovementNumber);
+			
+			if (currentMovement.currenttype==MovementTypes.REPEAT){
+				Gdx.app.log(logstag, "_____________________________________________REPEATING=");
+				currentMovementNumber=0;
+				currentMovement = movements.get(0);
+			}
+			
 			
 		}
 		if (currentTime>totalTime){
 			
-			return currentConclumativeMatrix;
+			//return currentConclumativeMatrix;
 		}
 		
 		

@@ -20,7 +20,10 @@ import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.movements.Forward;
 import com.lostagain.nl.me.movements.MovementController;
+import com.lostagain.nl.me.movements.REPEAT;
+import com.lostagain.nl.me.movements.RotateLeft;
 import com.lostagain.nl.me.objects.DataObject;
 import com.lostagain.nl.uti.Uti;
 
@@ -36,15 +39,13 @@ public class Creature implements hitable {
 	float y = 0;
 	float z = 0;
 	Matrix4 origin = new Matrix4();
-	
-	
+		
 	//movement
-	MovementController movementControll = new MovementController();
+	MovementController movementControll = new MovementController(new Forward(-300,4500),new RotateLeft(90,1000), new REPEAT());//,new Forward(-300,1000)
 	
 	//parent population
 	Population parentpolution;
-	
-	
+		
 	//drops, if any
 	ArrayList<SSSNode> drops=	new ArrayList<SSSNode>();
 	
@@ -90,8 +91,11 @@ public class Creature implements hitable {
 
 	@Override
 	public Vector3 getCenter() {
+		
+		Vector3 tmp = new Vector3();
+		creaturemodel.transform.getTranslation(tmp);
 				
-		return new Vector3(x,y,z);
+		return tmp;  // new Vector3(x,y,z);
 	}
 
 
@@ -267,7 +271,7 @@ public class Creature implements hitable {
 
 		ConceptGun.animateImpactEffect();
 		
-		Gdx.app.log(logstag,"_destroying model ");
+		Gdx.app.log(logstag,"_destroying model");
 		
 		//remove from visuals
 		ModelManagment.removeModel(creaturemodel);
@@ -315,9 +319,6 @@ public class Creature implements hitable {
 	public void updatePosition(float delta){
 		
 		Matrix4 displacementFromOrigin = movementControll.update(delta);
-		
-	
-		
 		
 		creaturemodel.transform = origin.cpy().mul(displacementFromOrigin);
 		
