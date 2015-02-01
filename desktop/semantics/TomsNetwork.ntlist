@@ -24,6 +24,7 @@ smallInfovorPopulation http://dbpedia.org/ontology/Colour #005522.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #11BB00.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #00DD11.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #33BB55.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour Blue.
 
 alicespc me:populatedBy smallInfovorPopulation.
 

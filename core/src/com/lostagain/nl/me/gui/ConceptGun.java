@@ -26,7 +26,7 @@ import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
-import com.lostagain.nl.me.models.ModelManager;
+import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.objects.DataObject;
 
@@ -235,10 +235,10 @@ public class ConceptGun  extends WidgetGroup {
 		//col.a  = 1 - (500 / 1000) ^ 2;
 
 		//generate mesh and texture
-		ModelInstance newlazer = ModelManager.createLine(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,true,false,10); //10 makes sure the end point is wayyyyyyyy of the screen at the top to ensure the beam end never becomes visible during movement
+		ModelInstance newlazer = MessyModelMaker.createLine(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,true,false,10); //10 makes sure the end point is wayyyyyyyy of the screen at the top to ensure the beam end never becomes visible during movement
 
 		if (lazer!=null){
-			ModelManager.removeModelInstance(lazer); //one beam at a time for now!
+			MessyModelMaker.removeModelInstance(lazer); //one beam at a time for now!
 		}
 		lazer=newlazer;
 
@@ -298,7 +298,7 @@ public class ConceptGun  extends WidgetGroup {
 
 			if (currenttime>totaltime){
 				currenttime=0;			
-				ModelManager.removeModelInstance(lazer);
+				MessyModelMaker.removeModelInstance(lazer);
 				lazer=null;
 				
 				MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-5f; 
@@ -327,6 +327,8 @@ public class ConceptGun  extends WidgetGroup {
 			return;
 		}
 
+		
+		
 		//currently we just jog the camera zoom for a moment to fake a shake (removed, its too annoying)
 		/*
 		MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-4f; 

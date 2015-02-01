@@ -62,7 +62,7 @@ import com.lostagain.nl.me.creatures.BasicInfovore;
 import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.GUIBar;
 import com.lostagain.nl.me.gui.Inventory;
-import com.lostagain.nl.me.models.ModelManager;
+import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.objects.DataObject;
 import com.lostagain.nl.uti.SpiffyGenericTween;
@@ -219,7 +219,7 @@ public class MainExplorationView implements Screen {
 			"ME.MainExplorationView: __com.badlogic.gdx.scenes.scene2d.ui.Label");
 	
 	//controlls the 3d background
-	public static  ModelManager background = new ModelManager();
+	public static  ModelManagment background = new ModelManagment();
 
 
 
@@ -423,7 +423,7 @@ public class MainExplorationView implements Screen {
 	   //     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 	     //   environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
-		ModelManager.addToBackground(testlabinstance);
+		MessyModelMaker.addToBackground(testlabinstance);
 
 		
 		//gameStage.setDebugAll(true);
@@ -579,14 +579,14 @@ public class MainExplorationView implements Screen {
 		camera.position.set(currentPos);
 		
 		//also set camera overlay
-		ModelManager.CameraOverlay.transform.setToTranslation(currentPos.x, currentPos.y, currentPos.z);
+		ModelManagment.CameraOverlay.transform.setToTranslation(currentPos.x, currentPos.y, currentPos.z);
 		
 		
 		
 		//change opacity of overlay based on z
 		//in future we probably need to change this to something "effect defendant" so different conditions can trigger different camera effects
 		float heightbasedopacity = (currentPos.z-380.0f)/1000.0f; //(600 - 1000)/1000 
-		((BlendingAttribute)ModelManager.CameraOverlay.materials.get(0).get(BlendingAttribute.Type)).opacity = heightbasedopacity;
+		((BlendingAttribute)ModelManagment.CameraOverlay.materials.get(0).get(BlendingAttribute.Type)).opacity = heightbasedopacity;
 
 		
 		// create the camera and the SpriteBatch

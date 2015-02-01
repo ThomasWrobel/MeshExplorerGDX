@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.darkflame.client.semantic.SSSNode;
@@ -20,10 +22,12 @@ import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.movements.FaceTowards;
 import com.lostagain.nl.me.movements.Forward;
 import com.lostagain.nl.me.movements.MovementController;
 import com.lostagain.nl.me.movements.REPEAT;
 import com.lostagain.nl.me.movements.RotateLeft;
+import com.lostagain.nl.me.movements.RunAwayFrom;
 import com.lostagain.nl.me.objects.DataObject;
 import com.lostagain.nl.uti.Uti;
 
@@ -41,7 +45,7 @@ public class Creature implements hitable {
 	Matrix4 origin = new Matrix4();
 		
 	//movement
-	MovementController movementControll = new MovementController(new Forward(-300,4500),new RotateLeft(90,1000), new REPEAT());//,new Forward(-300,1000)
+	MovementController movementControll = new MovementController(new Forward(-200,3000),new RotateLeft(90,1000), new REPEAT());//,new Forward(-300,1000)
 	
 	//parent population
 	Population parentpolution;
@@ -66,9 +70,11 @@ public class Creature implements hitable {
 	String queryToDestroy; 
 	
 	//base color
-	Color crearturesColor = Color.GREEN;
+	Color crearturesColor = Color.WHITE;
+	
+	
 	//lighter color for when clicked on
-	Color hitColor = Color.GREEN.cpy().add(.5f, .5f, .5f, .5f);
+	Color hitColor = Color.GREEN.cpy().add(.5f, .5f, .5f, 1f);
 	
 
 	public Creature(float x, float y, Population parentPopulation, int hitPoints, String queryToDestroy, destructOn destructionType) {
@@ -171,6 +177,15 @@ public class Creature implements hitable {
 	private void hit() {
 		
 		ConceptGun.animateImpactEffect();
+
+		//when hit move away randomly		
+		//float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
+		//float EY = parentpolution.centeredOnThisLocation.getHubsY(Align.center);
+		
+		float angle = (float) (Math.random()*360);
+		movementControll.setMovement(true,new RotateLeft(angle,100),new Forward(70,200));
+		
+		
 		
 		if (destructionType == destructOn.cant){
 			return; //invincible
@@ -318,9 +333,17 @@ public class Creature implements hitable {
 	
 	public void updatePosition(float delta){
 		
+		if (movementControll.isMoving()){
 		Matrix4 displacementFromOrigin = movementControll.update(delta);
 		
 		creaturemodel.transform = origin.cpy().mul(displacementFromOrigin);
+		
+		
+	
+
+		
+		}
+		
 		
 	}
 

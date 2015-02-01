@@ -27,6 +27,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.models.MessyModelMaker;
 
 import java.util.logging.Logger;
 
@@ -384,7 +385,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 			//only refresh if the To and From are attached
 			if (MainExplorationView.gameStage.getActors().contains(from, true) && MainExplorationView.gameStage.getActors().contains(to, true))			
 			{
-				Linksline = MainExplorationView.background.addConnectingLine(from,to);
+				Linksline = MessyModelMaker.addConnectingLine(from,to);
 			}
 		
 		}

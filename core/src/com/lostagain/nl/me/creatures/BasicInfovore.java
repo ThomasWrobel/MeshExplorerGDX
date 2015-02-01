@@ -22,6 +22,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.me.creatures.Population.destructOn;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.InfovoreAnimation;
+import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 
 /** defines what a basic infovore looks like and how it behaves**/
@@ -78,10 +79,10 @@ public class BasicInfovore extends Creature implements Animating {
 		Texture blobtexture = new Texture(imageFileHandle);
 		
         mat.set(TextureAttribute.createDiffuse(blobtexture)); //idealAnimation.getKeyFrame(0)));
-        
+        //Note; seems we might need a custom shader for creatures to let their colors change correctly? Currently they go very transparent
 		
 		
-		Model model = createRectangle( -30, -30, 30, 30, 0, Color.WHITE, mat );
+		Model model = ModelMaker.createRectangle( -30, -30, 30, 30, 0, mat );
         mat.set(blendingAttribute2);
         
 		

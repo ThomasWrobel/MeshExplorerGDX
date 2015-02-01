@@ -150,7 +150,10 @@ public class DefaultStyles {
 		//if it starts with a hash
 		if (newcolorstring.startsWith("#")){
 									
-			newcolor = Color.valueOf(newcolorstring.substring(1));
+			String colordata = newcolorstring.substring(1);
+			newcolor = Color.valueOf(colordata);
+					
+			
 			
 			return newcolor;
 		}

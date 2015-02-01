@@ -69,7 +69,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
-import com.lostagain.nl.me.models.ModelManager;
+import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.uti.MeshWorld;
 
@@ -717,7 +717,7 @@ public class LocationsHub extends Table {
 		}
 		
 		//remove background and replace with color if its set
-		ModelManager.removeAnimatedNoiseTextureToRectangle(backgroundObject);
+		MessyModelMaker.removeAnimatedNoiseTextureToRectangle(backgroundObject);
 		if (backcolour!=null){
 			setBackgroundColour(backcolour);
 		}
@@ -739,7 +739,7 @@ public class LocationsHub extends Table {
 
 	public void addBackground() {
 
-		backgroundObject = ModelManager.addRectangle((int)this.getX(),(int)this.getY(),-10,(int)this.getWidth(),(int)this.getHeight(),new Material());
+		backgroundObject = MessyModelMaker.addRectangle((int)this.getX(),(int)this.getY(),-10,(int)this.getWidth(),(int)this.getHeight(),new Material());
 			
 		
 	}
@@ -802,7 +802,7 @@ public class LocationsHub extends Table {
 		
 		
 		
-		ModelManager.giveAnimatedNoiseTextureToRectangle(backgroundObject);
+		MessyModelMaker.giveAnimatedNoiseTextureToRectangle(backgroundObject);
 		
 		
 	}

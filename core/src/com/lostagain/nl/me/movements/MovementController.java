@@ -14,7 +14,11 @@ public class MovementController {
 	
 	Movement currentMovement = new Forward(300,8500); //just a test for now
 	int currentMovementNumber = 0;
+	
 	ArrayList<Movement> movements = new ArrayList<Movement>();
+	
+	ArrayList<Movement> old_movements = new ArrayList<Movement>();
+	boolean resumeold = false;
 	
 	//the matrix corresponding to the start of the last movement
 	Matrix4 currentConclumativeMatrix = new Matrix4();
@@ -67,12 +71,27 @@ public class MovementController {
 			
 			if (currentMovementNumber>=movements.size()){
 				Gdx.app.log(logstag, "_____________________________________________ENDING movement=");
-				currentMovement=null;
-				currentMovementNumber=0;
-				currentTime = 0;
-				currentTimeWithinMovement = 0;
-				return currentConclumativeMatrix;	
 				
+				if (!resumeold){
+					currentMovement=null;
+					currentMovementNumber=0;
+					currentTime = 0;
+					currentTimeWithinMovement = 0;
+					return currentConclumativeMatrix;	
+				} else {
+					resumeold=false;
+					movements.clear();
+					movements.addAll(old_movements);
+					
+					currentMovement = movements.get(0);	
+					
+					old_movements.clear();
+					currentMovementNumber=0;
+					currentTime = 0;
+					currentTimeWithinMovement = 0;
+					totalTime = currentMovement.durationMS;
+					return currentConclumativeMatrix;	
+				}
 			}
 			
 			
@@ -86,10 +105,10 @@ public class MovementController {
 			
 			
 		}
-		if (currentTime>totalTime){
+	//	if (currentTime>totalTime){
 			
 			//return currentConclumativeMatrix;
-		}
+		//}
 		
 		
 		
@@ -113,5 +132,73 @@ public class MovementController {
 		return currentConclumativeMatrix.cpy().mul(displacement);//currentMovement.onUpdate(currentTimeWithinMovement));
 		
 	}
+
+	/**clears all movements and
+	 * sets the current movement to the specified one
+	 * @param movement
+	 */
+	public void setMovement(boolean resumeAfter,Movement movement) {
+		
+		setMovement(resumeAfter,movement);
+		
+		/*
+		movements.clear();
+		movements.add(movement);
+		
+		if (currentMovement!=null){
+			Matrix4 displacement = currentMovement.onUpdate(currentTimeWithinMovement); 
+			currentConclumativeMatrix.mul(displacement);	//burn the current movements position in at its current point
+		}
+		
+		currentMovementNumber=0;
+		currentMovement=movement;
+		currentTime = 0; //the current eclipsed time in total;
+		currentTimeWithinMovement = 0; //the current eclipsed time within the specific movement
+		totalTime = movement.durationMS; //total time of all movements*/
+	}
+	
+	/**clears all movements and
+	 * sets the current movements to the specified ones
+	 * @param movement
+	 */
+	public void setMovement(boolean resumeAfter,Movement... create) {
+		if (resumeAfter){
+			Gdx.app.log(logstag, "_____________________________________________setting resume after");
+			old_movements.clear();
+			old_movements.addAll(movements);
+			resumeold=true;
+		}
+		
+		movements.clear();
+		movements.addAll(new ArrayList<Movement>(Arrays.asList(create))); //new ArrayList<Movement>(Arrays.asList( movements));
+		
+		if (currentMovement!=null){
+			Matrix4 displacement = currentMovement.onUpdate(currentTimeWithinMovement); 
+			currentConclumativeMatrix.mul(displacement);	//burn the current movements position in at its current point
+		}
+		
+		currentMovementNumber=0;
+		currentMovement=movements.get(0);
+		
+		currentTime = 0; //the current eclipsed time in total;
+		currentTimeWithinMovement = 0; //the current eclipsed time within the specific movement
+		
+		
+		
+		//totalTime = currentMovement.durationMS; //total time of all movements
+		
+	}
+	
+	
+	public boolean isMoving() {
+		if (currentMovement!=null){
+			return true;
+		}
+		
+		return false;
+	}
+
+	
+
 	
 }

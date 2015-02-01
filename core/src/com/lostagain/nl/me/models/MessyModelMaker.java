@@ -40,142 +40,36 @@ import com.badlogic.gdx.utils.Array;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.shaders.MyShaderProvider;
 
-public class ModelManager {
+//functions in here should slowly be made tidy and moved to "modelmaker"
+public class MessyModelMaker {
 
 //;	static Logger Log = Logger.getLogger("ME.BackgroundManager");
 
-	final static String logstag = "ME.BackgroundManager";
+	final static String logstag = "ME.MessyModelMaker";
 
 	
-	public static ModelInstance CameraOverlay = null;
 	
 	
 	
 	//3d bits
 	//public Model model;
 	
-	public ModelBatch modelBatch;
 
 	//public static Array<ModelInstance> instances = new Array<ModelInstance>();
 	
-	ModelBuilder modelBuilder = new ModelBuilder();
 
-	Array<ModelInstance> lines = new Array<ModelInstance>();
+	static Array<ModelInstance> lines = new Array<ModelInstance>();
 
 	 //Experiments
 	
 	static Pixmap pixmap;
 	static ByteBuffer temp;
 	
-	static NoiseAnimation testNoise = new NoiseAnimation();
 	
 	private static ArrayList<ModelInstance> animatedbacks = new ArrayList<ModelInstance>();
 	
+
 	
-	public void setup(){
-		
-       // String vert = Gdx.files.internal("shaders/test.vertex.glsl").readString();//"shaders/distancefield.vert"
-       // String frag = Gdx.files.internal("shaders/test.fragment.glsl").readString();
-        
-		//modelBatch = new ModelBatch(vert,frag);
-        modelBatch = new ModelBatch(new MyShaderProvider());
-        
-
-		
-		
-		Gdx.app.log(logstag,"creating testbounc");
-		testNoise.create();
-		
-		FileHandle imageFileHandle3 = Gdx.files.internal("data/badlogic.jpg"); 
-        
-        //Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE0);
-        Texture blobtexture = new Texture(imageFileHandle3);
-      //  blobtexture.bind(0);
-                
-        
-        Material blob = new Material(
-        		ColorAttribute.createDiffuse(Color.BLUE), 
-				ColorAttribute.createSpecular(Color.WHITE),
-				new BlendingAttribute(1f), 
-				FloatAttribute.createShininess(16f));
-
-        blob.set(TextureAttribute.createDiffuse(blobtexture));
-		
-		
-		
-		Model  model1 = modelBuilder.createSphere(150, 150, 150, 20, 20,
-				blob,Usage.Position | Usage.Normal | Usage.TextureCoordinates );
-		
-		//String alias = model1.meshes.get(0).getVertexAttribute(Usage.TextureCoordinates).alias;
-		
-
-		//Gdx.app.log(logstag,"aliasaliasaliasalias = "+alias);
-//
-
-		//model2.meshes.get(0).getVertexAttribute(Usage.TextureCoordinates).alias = "a_texCoord";
-		
-		//  Model model3 = createRectangle(-10f,500f,10f,-500f,0f);
-
-
-		//  ModelInstance model4 = createRectangleAt(50f,50f,10f,200f,0f);
-
-		ModelInstance instance = new ModelInstance(model1); 
-		instance.userData = MyShaderProvider.shadertypes.test;
-		
-		ModelManagment.addmodel(instance);
-
-		CameraOverlay = ModelManager.addNoiseRectangle(0,0,300,300,true);
-		CameraOverlay.materials.get(0).set( new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f));
-		
-		CameraOverlay.userData =MyShaderProvider.shadertypes.noise; 
-		//instance2.userData = MyShaderProvider.shadertypes.distancefield;
-		//ModelManagment.addmodel(CameraOverlay);
-		
-		
-		
-		
-		
-		//for some reason transparency's dont work till we add something with a transparent texture for the first time
-
-    	Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), false);
-		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-		
-		Model model2 = modelBuilder.createBox(220f, 220f, 15f, 
-				new Material(TextureAttribute.createDiffuse(texture),new BlendingAttribute(0.6f)),
-				Usage.Position | Usage.Normal | Usage.TextureCoordinates);
-        ModelInstance instance3 = new ModelInstance(model2);      
-
-		ModelManagment.addmodel(instance3);
-		
-		//instance.transform.setToTranslation(200,500,10);
-
-		//  environment = new Environment();
-		//  environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-		// environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-
-	}
-
-	public void updateAnimatedBacks(float deltatime){
-		
-		
-		//replaced with noise shader !
-		/*
-		TextureRegion currentimage = testNoise.getKeyFrame(deltatime);
-		
-		for (ModelInstance instance : animatedbacks) {
-			
-			TextureAttribute attribute = instance.materials.get(0).get(TextureAttribute.class, TextureAttribute.Diffuse);
-			
-			if (attribute!=null){			
-				attribute.set(currentimage );		
-			} else {
-				Gdx.app.log(logstag,"________************________________attribute is null:");
-			}
-					
-		}*/
-		
-		
-	}
 	public static ModelInstance addNoiseRectangle(int x, int y, int w, int h) {
 		return addNoiseRectangle(x,  y,  w,  h, false);
 	}
@@ -251,7 +145,7 @@ public class ModelManager {
 	}
 
 
-	public ModelInstance addConnectingLine(LocationsHub From,LocationsHub To){
+	public static ModelInstance addConnectingLine(LocationsHub From,LocationsHub To){
 
 		Gdx.app.log(logstag,"___________AddConnectingLine:"+From.getWidth());
 		Gdx.app.log(logstag,"___________AddConnectingLine:"+From.isVisible());
@@ -611,12 +505,6 @@ public class ModelManager {
 	}
 
 
-	public void dispose() {
-
-
-		modelBatch.dispose();
-
-	}
 
 	
 	private static void sortTransparentObjects(final Camera camera){
