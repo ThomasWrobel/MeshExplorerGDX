@@ -34,7 +34,7 @@ public class ModelManagment {
 	
 
 	ModelBuilder modelBuilder = new ModelBuilder();
-	public static ModelInstance CameraOverlay = null;
+
 
 	public ModelBatch modelBatch;
 	//Using Array here as its a GDX thing rather then ArrayList...not sure what difference it makes
@@ -131,10 +131,10 @@ public void updateAnimatedBacks(float deltatime){
 			
 			ModelManagment.addmodel(instance);
 
-			CameraOverlay = MessyModelMaker.addNoiseRectangle(0,0,300,300,true);
-			CameraOverlay.materials.get(0).set( new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.0f));
+			//CameraOverlay = MessyModelMaker.addNoiseRectangle(0,0,300,300,true);
+			//CameraOverlay.materials.get(0).set( new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.0f));
 			
-			CameraOverlay.userData =MyShaderProvider.shadertypes.noise; 
+			//CameraOverlay.userData =MyShaderProvider.shadertypes.noise; 
 			//instance2.userData = MyShaderProvider.shadertypes.distancefield;
 			//ModelManagment.addmodel(CameraOverlay);
 			

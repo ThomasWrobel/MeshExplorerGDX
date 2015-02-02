@@ -8,7 +8,7 @@ public class Forward extends Movement {
 	public Forward(float distance, float durationMS) {
 		super(new Matrix4().setToTranslation(distance, 0, 0), durationMS); //note; we have to do this all in one line because super must be the first thing in a constructor
 
-		currenttype = MovementTypes.Forward;
+		currenttype = MovementTypes.Relative;
 	}
 
 }

@@ -8,7 +8,7 @@ public class RotateLeft extends Movement {
 	public RotateLeft(float angleInDeg,float durationMS) {
 		
 		super(new Matrix4().setToRotation(0, 0, 1, angleInDeg), durationMS);
-		currenttype = MovementTypes.Rotate;
+		currenttype = MovementTypes.Relative;
 	}
 
 }

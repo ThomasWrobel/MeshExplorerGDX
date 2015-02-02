@@ -10,7 +10,15 @@ thecatspc rdfs:subClassOf  me:Computer.
 BobsOutpost  rdfs:subClassOf  me:Computer.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subClassOf me:Computer.
 
-BobsOutpost me:populatedBy smallInfovorPopulation.
+
+bigInfovorPopulation rdfs:subClassOf me:population.
+bigInfovorPopulation me:quantity 90.
+bigInfovorPopulation me:anydrop Fruit.
+bigInfovorPopulation me:killedon "color=yellow".
+bigInfovorPopulation me:hitPoints 2.
+bigInfovorPopulation http://dbpedia.org/ontology/Colour #553300.
+bigInfovorPopulation http://dbpedia.org/ontology/Colour #775522.
+bigInfovorPopulation http://dbpedia.org/ontology/Colour #99BB00.
 
 smallInfovorPopulation rdfs:subClassOf me:population.
 smallInfovorPopulation me:quantity 10.
@@ -24,9 +32,10 @@ smallInfovorPopulation http://dbpedia.org/ontology/Colour #005522.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #11BB00.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #00DD11.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #33BB55.
-smallInfovorPopulation http://dbpedia.org/ontology/Colour Blue.
 
 alicespc me:populatedBy smallInfovorPopulation.
+thecatspc me:populatedBy bigInfovorPopulation.
+BobsOutpost me:populatedBy smallInfovorPopulation.
 
 profpp me:connectedTo BobsOutpost.
 profpp me:connectedTo alicespc. 

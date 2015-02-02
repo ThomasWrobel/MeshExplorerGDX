@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
@@ -12,7 +13,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class ModelMaker {
+	
+	static public ModelInstance createRectangleAt(int x, int y,int z, int w, int h,Color MColor,Material mat) {
 
+		ModelInstance newmodel  = new ModelInstance(createRectangle(0, 0, w,h, 0,mat ));
+
+		newmodel.transform.setToTranslation(x,y,z);
+		
+		return newmodel;
+	}
+	
 	static public Model createRectangle(float x1,float y1,float x2,float y2,float z,Material mat ) {
 
 		

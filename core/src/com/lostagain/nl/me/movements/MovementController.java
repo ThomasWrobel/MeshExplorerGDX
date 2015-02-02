@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.lostagain.nl.me.movements.Movement.MovementTypes;
 
@@ -20,8 +22,9 @@ public class MovementController {
 	ArrayList<Movement> old_movements = new ArrayList<Movement>();
 	boolean resumeold = false;
 	
-	//the matrix corresponding to the start of the last movement
-	Matrix4 currentConclumativeMatrix = new Matrix4();
+	/**the matrix corresponding to the end of the last motion before the current one.
+	 * **/
+	Matrix4 lastNodesLocationMatrix = new Matrix4();
 	
 	//time keeping
 	float currentTime = 0; //the current eclipsed time in total;
@@ -31,16 +34,30 @@ public class MovementController {
 	public MovementController(Movement... movements) {
 		super();
 		this.movements = new ArrayList<Movement>(Arrays.asList( movements));
-		
-		currentMovement = this.movements.get(0);
+		if (movements.length>0){
+			currentMovement = this.movements.get(0);
+		} else {
+			currentMovement=null;
+		}
 		
 		//totalTime 
 	}
 
-	public Matrix4 update(float delta){
+	/**
+	 * Used to update a position
+	 * If the movement is absolute, it needs the object passed so it can work out where it is already
+	 * in order to interpolinate between its positions.
+	 * 
+	 * If in relative mode, this isnt needed as the returned Matrix is the displacement from where it is already.
+	 * 
+	 * @param delta
+	 * @param source
+	 * @return
+	 */
+	public Matrix4 update(float delta, Matrix4 objectsNativePosition){
 
 		if (currentMovement==null){
-			return currentConclumativeMatrix;
+			return lastNodesLocationMatrix;
 		}
 		
 		//convert to ms
@@ -56,9 +73,12 @@ public class MovementController {
 		
 		if (currentMovement!=null && currentTimeWithinMovement>currentMovement.durationMS){
 			
-			//get new position so far (this can be thought of the start of each vertext on the path being formed)
-			currentConclumativeMatrix.mul(currentMovement.destination);	
-			
+			//set new position so far (this can be thought of the start of each vertext on the path being formed)
+			if (currentMovement.currenttype== MovementTypes.Absolute){
+				lastNodesLocationMatrix.set(currentMovement.destination);	
+			} else {
+				lastNodesLocationMatrix.mul(currentMovement.destination);	
+			}
 			//set time within movement to remainder left over from last movement
 			//
 			//  last movement took 5000ms
@@ -77,7 +97,7 @@ public class MovementController {
 					currentMovementNumber=0;
 					currentTime = 0;
 					currentTimeWithinMovement = 0;
-					return currentConclumativeMatrix;	
+					return lastNodesLocationMatrix;	
 				} else {
 					resumeold=false;
 					movements.clear();
@@ -90,7 +110,7 @@ public class MovementController {
 					currentTime = 0;
 					currentTimeWithinMovement = 0;
 					totalTime = currentMovement.durationMS;
-					return currentConclumativeMatrix;	
+					return lastNodesLocationMatrix;	
 				}
 			}
 			
@@ -105,15 +125,26 @@ public class MovementController {
 			
 			
 		}
-	//	if (currentTime>totalTime){
+	
+		Matrix4 displacement; //NOTE: Displacement means different things depending on mode.
+		//in absolute mode its the displacement relative to 0,0,0 in stagespace
+		//in relative mode its relative to the last movements end location (which is stored in currentConclumativeMatrix)
+		
+		//The value we return for absolute motion is relative to worldspace
+		//for relative its relative to the objects start position/origin
+		if (currentMovement.currenttype == MovementTypes.Absolute){
+			//relative to last position in absolute terms
+			Matrix4 lastnodesabsoluteposition = objectsNativePosition.cpy().mul(lastNodesLocationMatrix); //in order to work out the new position in abs more it needs the last position as an absolute as well
 			
-			//return currentConclumativeMatrix;
-		//}
+			 displacement = currentMovement.onUpdateAbsolute(currentTimeWithinMovement,lastnodesabsoluteposition); 
+
+			return displacement; //displacement relative to 0,0,0 in stagespace, thus it doesnt need to be multiplied to get it relative to the last position
 		
+		} else {
 		
-		
-		Matrix4 displacement = currentMovement.onUpdate(currentTimeWithinMovement); //currentTimeWithinMovement
-		
+			 displacement = currentMovement.onUpdateRelative(currentTimeWithinMovement); //currentTimeWithinMovement
+			 return lastNodesLocationMatrix.cpy().mul(displacement); //if we are doing a relative motion we multiply current displacement by the last point (that is ConclumativeMatrix)
+		}
 		/*
 		Matrix4 test = new Matrix4().setToTranslation(100, 0, 0);
 		Gdx.app.log(logstag, "______________________________________________dis=");
@@ -129,19 +160,21 @@ public class MovementController {
 		Gdx.app.log(logstag, "MovementController="+test.getValues()[12]+","+test.getValues()[13]+","+test.getValues()[14]+","+test.getValues()[15]);
 		*/
 		
-		return currentConclumativeMatrix.cpy().mul(displacement);//currentMovement.onUpdate(currentTimeWithinMovement));
+		//if its absolute movement we dont use the conclumative matrix and instead just apply it
+
+//currentMovement.onUpdate(currentTimeWithinMovement));
 		
 	}
 
 	/**clears all movements and
 	 * sets the current movement to the specified one
 	 * @param movement
-	 */
+	
 	public void setMovement(boolean resumeAfter,Movement movement) {
 		
 		setMovement(resumeAfter,movement);
 		
-		/*
+		
 		movements.clear();
 		movements.add(movement);
 		
@@ -154,15 +187,17 @@ public class MovementController {
 		currentMovement=movement;
 		currentTime = 0; //the current eclipsed time in total;
 		currentTimeWithinMovement = 0; //the current eclipsed time within the specific movement
-		totalTime = movement.durationMS; //total time of all movements*/
-	}
+		totalTime = movement.durationMS; //total time of all movements
+	} */
 	
 	/**clears all movements and
 	 * sets the current movements to the specified ones
+	 * 
+	 * Setting resume after means it will resume the current motions after - but only if no resumeAfter is already pending
 	 * @param movement
 	 */
-	public void setMovement(boolean resumeAfter,Movement... create) {
-		if (resumeAfter){
+	public void setMovement(ModelInstance object,boolean resumeAfter,Movement... create) {
+		if (resumeAfter && old_movements.isEmpty()){
 			Gdx.app.log(logstag, "_____________________________________________setting resume after");
 			old_movements.clear();
 			old_movements.addAll(movements);
@@ -173,8 +208,21 @@ public class MovementController {
 		movements.addAll(new ArrayList<Movement>(Arrays.asList(create))); //new ArrayList<Movement>(Arrays.asList( movements));
 		
 		if (currentMovement!=null){
-			Matrix4 displacement = currentMovement.onUpdate(currentTimeWithinMovement); 
-			currentConclumativeMatrix.mul(displacement);	//burn the current movements position in at its current point
+			
+			Matrix4 displacement;
+			if (currentMovement.currenttype == MovementTypes.Absolute){
+				
+				 displacement = currentMovement.onUpdateAbsolute(currentTimeWithinMovement,object.transform.cpy().mul(lastNodesLocationMatrix)); 
+				 
+				 lastNodesLocationMatrix.set(displacement);
+			} else {
+			
+				 displacement = currentMovement.onUpdateRelative(currentTimeWithinMovement); //currentTimeWithinMovement
+				 lastNodesLocationMatrix.mul(displacement);	//burn the current movements position in at its current point
+			
+			}
+			//Matrix4 displacement = currentMovement.onUpdate(currentTimeWithinMovement); 
+			
 		}
 		
 		currentMovementNumber=0;
@@ -196,6 +244,42 @@ public class MovementController {
 		}
 		
 		return false;
+	}
+
+	public void clearMovement() {
+		movements.clear();
+		old_movements.clear();
+		currentMovementNumber=0;
+		currentMovement=null;
+		resumeold=false;
+		currentTime = 0; //the current eclipsed time in total;
+		currentTimeWithinMovement = 0; 
+		
+	}
+
+	/**
+	 * gets the new transform for the object 
+	 * @param delta - time since last frame 
+	 * @param creaturemodel - the model being moved
+	 * @param origin - the objects "native" position (relative motions start of relative to this point).
+	 * 
+	 * @return absolute worldspace transform for new location
+	 */
+	public Matrix4 getUpdate(float delta, ModelInstance creaturemodel,Matrix4 origin) {
+		
+		if (currentMovement.currenttype == MovementTypes.Absolute){
+			
+			Matrix4 displacementFromOrigin = update(delta, origin);
+			
+			return displacementFromOrigin; //absolute motions arnt relative to where we started from, so we just return it as-is
+			
+		} else {
+			
+			Matrix4 displacementFromOrigin = update(delta, origin);
+		
+			return origin.cpy().mul(displacementFromOrigin);
+		
+		}
 	}
 
 	

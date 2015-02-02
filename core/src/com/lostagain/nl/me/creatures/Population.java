@@ -45,7 +45,7 @@ public class Population {
 	
 	
 	//location spread
-	int fromRadius = 400;
+	int fromRadius = 200;
 	int toRadius = 550;
 	
 	//all the color tints of the population
@@ -290,4 +290,8 @@ public class Population {
 		
 	}
 	
+	
+	public int getCurrentNumberOfCreatures(){
+		return populationsCreatures.size();
+	}
 }

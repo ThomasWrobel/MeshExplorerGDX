@@ -22,8 +22,10 @@ import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.movements.FaceAndMoveTo;
 import com.lostagain.nl.me.movements.FaceTowards;
 import com.lostagain.nl.me.movements.Forward;
+import com.lostagain.nl.me.movements.MoveTo;
 import com.lostagain.nl.me.movements.MovementController;
 import com.lostagain.nl.me.movements.REPEAT;
 import com.lostagain.nl.me.movements.RotateLeft;
@@ -42,10 +44,14 @@ public class Creature implements hitable {
 	float x = 0;
 	float y = 0;
 	float z = 0;
+	
+	/**
+	 * the starting location of the creature 
+	 */
 	Matrix4 origin = new Matrix4();
 		
 	//movement
-	MovementController movementControll = new MovementController(new Forward(-200,3000),new RotateLeft(90,1000), new REPEAT());//,new Forward(-300,1000)
+	MovementController movementControll = new MovementController(new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//,new Forward(-300,1000)
 	
 	//parent population
 	Population parentpolution;
@@ -179,11 +185,18 @@ public class Creature implements hitable {
 		ConceptGun.animateImpactEffect();
 
 		//when hit move away randomly		
-		//float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
-		//float EY = parentpolution.centeredOnThisLocation.getHubsY(Align.center);
 		
-		float angle = (float) (Math.random()*360);
-		movementControll.setMovement(true,new RotateLeft(angle,100),new Forward(70,200));
+		//float angle = (float) (Math.random()*360);
+		//movementControll.setMovement(true,new RotateLeft(angle,100),new Forward(70,200));
+		
+		//test motion
+		float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
+		float EY = parentpolution.centeredOnThisLocation.getHubsY(Align.center);
+		float EZ = getCenter().z;
+		movementControll.setMovement(creaturemodel,true,MoveTo.create(creaturemodel, EX, EY,EZ,3000));//
+		
+		
+				
 		
 		
 		
@@ -288,6 +301,8 @@ public class Creature implements hitable {
 		
 		Gdx.app.log(logstag,"_destroying model");
 		
+		movementControll.clearMovement();
+				
 		//remove from visuals
 		ModelManagment.removeModel(creaturemodel);
 		ModelManagment.removeHitable(this);
@@ -334,13 +349,9 @@ public class Creature implements hitable {
 	public void updatePosition(float delta){
 		
 		if (movementControll.isMoving()){
-		Matrix4 displacementFromOrigin = movementControll.update(delta);
-		
-		creaturemodel.transform = origin.cpy().mul(displacementFromOrigin);
-		
-		
-	
-
+			
+			Matrix4 displacementFromOrigin = movementControll.getUpdate(delta,creaturemodel,origin).cpy();		
+			creaturemodel.transform = displacementFromOrigin; //origin.cpy().mul(displacementFromOrigin);
 		
 		}
 		

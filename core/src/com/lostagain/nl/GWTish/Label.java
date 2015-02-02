@@ -46,6 +46,7 @@ public class Label {
 	//defaults
 	BitmapFont defaultFont;
 	
+	
 	public Label (String contents){
 		this.contents=contents;
 		
@@ -160,7 +161,7 @@ public class Label {
 		//mat.set(TextureAttribute.createDiffuse(idealAnimation.getKeyFrame(0)));
 
     	Texture texture = generateTexture(contents); //new Texture(Gdx.files.internal("data/dfield.png"), true);
-		texture.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);//MipMapLinearNearest
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest
 		
 		Material mat = 	new Material(TextureAttribute.createDiffuse(texture),
 									new BlendingAttribute(1f),
@@ -181,11 +182,11 @@ public class Label {
 
 	public void firstTimeSetUp(){
 
-    	Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), true);
-		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
+    //	Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), true);
+	//	texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
-		testImage  = new Image(texture);
-		defaultFont = new BitmapFont(Gdx.files.internal("data/dfield.fnt"), new TextureRegion(texture), false);
+		//testImage  = new Image(texture);
+		//defaultFont = new BitmapFont(Gdx.files.internal("data/dfield.fnt"), new TextureRegion(texture), false);
 		
 	}
 

@@ -58,6 +58,7 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.LocationGUI.Link;
 import com.lostagain.nl.me.LocationGUI.Location;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
+import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.creatures.BasicInfovore;
 import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.GUIBar;
@@ -116,7 +117,9 @@ public class MainExplorationView implements Screen {
 
 	Sound dropSound;
 	Music rainMusic;
-	public static Camera camera;
+	
+	public static MECamera camera = new MECamera();
+	
 	/** I dont know really how to use this correctly :-/ **/
 	public static RenderContext rcontext;
 	
@@ -157,11 +160,7 @@ public class MainExplorationView implements Screen {
 	boolean touchedAModel = false;
     
  
-	//final thing should use perspective
-	enum cammode{
-		ortha,perspective
-	}    
-	cammode currentmode = cammode.perspective;
+	
 
 	/*
 	private Image testdataobject = new DataObject(StaticSSSNodes.knows,"12");
@@ -358,6 +357,7 @@ public class MainExplorationView implements Screen {
 		rainMusic.setLooping(true);
 
 		// create the camera and the SpriteBatch
+		/*
 		if ( currentmode == cammode.ortha){
 			camera = new OrthographicCamera();
 
@@ -369,6 +369,8 @@ public class MainExplorationView implements Screen {
 		// camera.setToOrtho(false, 1600, 960);
 		camera.near=0.5f;
 		camera.far=1900.0f;
+		*/
+		
 		//camera.translate(10, 25);
 		// camera.direction.set(-1, 0, 0);
 
@@ -579,17 +581,17 @@ public class MainExplorationView implements Screen {
 		camera.position.set(currentPos);
 		
 		//also set camera overlay
-		ModelManagment.CameraOverlay.transform.setToTranslation(currentPos.x, currentPos.y, currentPos.z);
-		
-		
+		MECamera.mainOverlay.transform.setToTranslation(currentPos.x, currentPos.y, currentPos.z);
+				
 		
 		//change opacity of overlay based on z
 		//in future we probably need to change this to something "effect defendant" so different conditions can trigger different camera effects
 		float heightbasedopacity = (currentPos.z-380.0f)/1000.0f; //(600 - 1000)/1000 
-		((BlendingAttribute)ModelManagment.CameraOverlay.materials.get(0).get(BlendingAttribute.Type)).opacity = heightbasedopacity;
-
+		
+		MECamera.mainOverlay.setEffectOpacity(heightbasedopacity);
 		
 		// create the camera and the SpriteBatch
+		/*
 		if ( currentmode == cammode.ortha){        	 	
 					
 			
@@ -601,7 +603,7 @@ public class MainExplorationView implements Screen {
 
 			//Gdx.app.log(logstag,"CurrentZoom="+CurrentZoom);
 		} 
-
+*/
 
 		// camera.lookAt(LookAtX, LookAtY, -10);
 
@@ -824,7 +826,7 @@ public class MainExplorationView implements Screen {
 		if (Gdx.input.isKeyPressed(Keys.Z))
 		{
 			currentPos.z = currentPos.z+(150* Gdx.graphics.getDeltaTime()); 
-
+/*
 			if ( currentmode == cammode.ortha){
 			//	CurrentZoom = CurrentZoom +(2* Gdx.graphics.getDeltaTime()); 
 
@@ -832,28 +834,19 @@ public class MainExplorationView implements Screen {
 				CurrentZoom = newzoom;
 				
 				//Gdx.app.log(logstag,currentPos.z+","+CurrentZoom);
-			}
+			}*/
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.A) && currentPos.z>0.5)
 		{        	
 			currentPos.z = currentPos.z-(150* Gdx.graphics.getDeltaTime());
-
+/*
 			if ( currentmode == cammode.ortha){
 				
 				float newzoom = (0.0133333315344f*currentPos.z)-4.9199985961765f;	//the formula works out a ratio between zoom and z position			
 				CurrentZoom = newzoom;
-				//CurrentZoom = CurrentZoom -(2* Gdx.graphics.getDeltaTime()); 
-
-				//Gdx.app.log(logstag,"CurrentZoom="+CurrentZoom+" = "+currentPos.z);
-
-				//Gdx.app.log(logstag,currentPos.z+","+CurrentZoom);
-				//0.002780689 = 369.2085
 				
-				//currentPos.z-369.2085
-				//900.4018 -369.2085=  531.2
-				
-			}
+			}*/
 		}
 
 		if (!Gdx.input.isButtonPressed(Buttons.LEFT) && LeftButtonDown){
@@ -902,16 +895,17 @@ public class MainExplorationView implements Screen {
 		
 
 		Gdx.app.log(logstag,"resizeing to.."+width+","+height);
-		
+		camera = new MECamera(60,width,height);
+		/*
 		if ( currentmode == cammode.ortha){
 			camera = new OrthographicCamera(width, width);
 
 			((OrthographicCamera)camera).setToOrtho(false, width, width);
 
 		} else {
-			camera = new PerspectiveCamera(60,width,height); // new OrthographicCamera();
+			camera = new MECamera(60,width,height); // new OrthographicCamera();
 		}
-		
+		*/
 		//update sprite batch for new resolution 
 		Matrix4 viewMatrix = new Matrix4();
 	    viewMatrix.setToOrtho2D(0, 0,width, height);

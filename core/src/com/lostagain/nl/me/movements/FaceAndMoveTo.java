@@ -8,12 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
-public class FaceTowards  {
+public class FaceAndMoveTo  {
 
 
 	final static String logstag = "ME.FaceTowards";
 	//static Matrix4 Left = new Matrix4().setToRotation(0, 0, 1, 90);
-	static public RotateLeft create(ModelInstance originObject, ModelInstance targetObject, int duration) {
+	static public Movement[] create(ModelInstance originObject, ModelInstance targetObject, int duration) {
 		
 		
 		Vector3 posT = new Vector3();
@@ -34,7 +34,7 @@ public class FaceTowards  {
 	 * @param duration
 	 * @return
 	 */
-	public static RotateLeft create(ModelInstance originObject, float ex, float ey, int duration) {
+	public static  Movement[] create(ModelInstance originObject, float ex, float ey, int duration) {
 
 		Vector3 posO = new Vector3();
 		originObject.transform.getTranslation(posO);
@@ -56,17 +56,19 @@ public class FaceTowards  {
 
 		//Log.info("length="+corner2.len());
 
-		float angle = 180+fromPoint.angle(); //absolute angle between the two objects
-		
+		float angle =  180+fromPoint.angle(); //absolute angle between the two objects
 		Gdx.app.log(logstag,"________target angle="+angle); //should point towards ex/ey 
-		
+		float distance = fromPoint.len();
 
 		
 		//difference between this angle and existing one
 		angle = angle - existingangle;
 		
+		RotateLeft rot  = new RotateLeft(angle,500);
+		Forward forward = new Forward(distance,duration-500);
+				
+		return new Movement[]{rot,forward};
 		
-		return new RotateLeft(angle,duration);
 	}
 
 }

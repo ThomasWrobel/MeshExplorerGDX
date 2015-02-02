@@ -24,10 +24,14 @@ import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.InfovoreAnimation;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.movements.Forward;
+import com.lostagain.nl.me.movements.REPEAT;
+import com.lostagain.nl.me.movements.RotateLeft;
 
 /** defines what a basic infovore looks like and how it behaves**/
 public class BasicInfovore extends Creature implements Animating {
 	
+final static int zPlane = 70; //the horizontal plane the creatures exist on. should be used for all z values in positions.
 
 	private static String logstag="ME.BasicInfovore";
 	
@@ -55,7 +59,11 @@ public class BasicInfovore extends Creature implements Animating {
 			idealAnimation.create();
 		}
 		
-		createmodel(x,y,-10);
+		createmodel(x,y,zPlane); //-50 is the default plane they are placed onto
+		
+		//set movement (this creature wonders in a square by default
+		movementControll.setMovement(creaturemodel,false, new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
+		
 				
 		ModelManagment.addMoving(this);
 		

@@ -22,13 +22,18 @@ public class Location {
 	final static String logstag = "ME.Location";
 	
 	public LocationsHub locationsHub;
+	
+	
 	ArrayList<Population> locationsPopulations = new ArrayList<Population>();
+			
+	
 	
 	int locX = 0;
 	int locy = 0;
 	
 	public SSSNode locationsnode;
-	HashSet<SSSNodesWithCommonProperty> locationsPropertys; //will store all the SSSNodesWithCommonPropertys with the location in it. NOTE this will need refreshing if net sets are loaded 
+	HashSet<SSSNodesWithCommonProperty> locationsPropertys; //will store all the SSSNodesWithCommonPropertys with the location in it. NOTE this will need refreshing if new sets are loaded 
+	
 	
 	
 	
@@ -36,7 +41,7 @@ public class Location {
 	//TO DO: Move some stuff from LocationsHub to here.
 	//Specifically its SSSNode, its position, and maybe other things.
 	
-	//This location marks the center of everything here, no need for the hub (which is at the location) to also have this stored seperate
+	//This location marks the center of everything here, no need for the hub (which is at the location) to also have this stored separate
 
 	//Also separate out Hub creation and make generation creation method
 	// Hub
@@ -250,4 +255,21 @@ public class Location {
 	public float getHubsX(int align) {		
 		return locationsHub.getX(align);
 	}
+	
+	/**
+	 * returns current number of creatures/100 (used for visual corruption effects)
+	 * @return
+	 */
+	public float getInfectionAmount(){
+		int num = 0;
+		
+		for (Population population : locationsPopulations) {
+			
+			num=num+population.getCurrentNumberOfCreatures();
+			
+		}
+		
+		return num;
+	}
+	
 }
