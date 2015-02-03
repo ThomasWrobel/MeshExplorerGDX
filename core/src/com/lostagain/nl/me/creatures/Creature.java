@@ -25,6 +25,7 @@ import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.movements.FaceAndMoveTo;
 import com.lostagain.nl.me.movements.FaceTowards;
 import com.lostagain.nl.me.movements.Forward;
+import com.lostagain.nl.me.movements.Jerk;
 import com.lostagain.nl.me.movements.MoveTo;
 import com.lostagain.nl.me.movements.MovementController;
 import com.lostagain.nl.me.movements.REPEAT;
@@ -51,7 +52,7 @@ public class Creature implements hitable {
 	Matrix4 origin = new Matrix4();
 		
 	//movement
-	MovementController movementControll = new MovementController(new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//,new Forward(-300,1000)
+	MovementController movementControll;//,new Forward(-300,1000)
 	
 	//parent population
 	Population parentpolution;
@@ -136,6 +137,9 @@ public class Creature implements hitable {
 		//set to model lists
 		ModelManagment.addmodel(creaturemodel);
 		ModelManagment.addHitable(this);
+		
+		movementControll = new MovementController(creaturemodel.transform,new Jerk(creaturemodel,30f,50f,500f,30000f));//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
+		//movementControll = new MovementController(creaturemodel.transform, new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//
 				
 	}
 

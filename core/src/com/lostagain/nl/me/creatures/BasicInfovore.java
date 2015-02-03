@@ -25,6 +25,7 @@ import com.lostagain.nl.me.models.InfovoreAnimation;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.movements.Forward;
+import com.lostagain.nl.me.movements.Jerk;
 import com.lostagain.nl.me.movements.REPEAT;
 import com.lostagain.nl.me.movements.RotateLeft;
 
@@ -62,7 +63,9 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		createmodel(x,y,zPlane); //-50 is the default plane they are placed onto
 		
 		//set movement (this creature wonders in a square by default
-		movementControll.setMovement(creaturemodel,false, new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
+		movementControll.setMovement(creaturemodel,false,new Jerk(creaturemodel,30f,50f,500f,30000f), new REPEAT());//
+	//	movementControll.setMovement(creaturemodel,false,new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//
+		
 		
 				
 		ModelManagment.addMoving(this);

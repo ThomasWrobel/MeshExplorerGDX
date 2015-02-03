@@ -27,12 +27,13 @@ public class MECamera extends PerspectiveCamera {
 	 * Note; Not all movement types support full 3d yet - specifically rotations are 2d.
 	 * Translations should be ok, and thats all thats needed for the camera right now.
 	 */
-	MovementController movement = new MovementController();
+	MovementController movement;
 
 	public MECamera() {
 		super(defaultFieldOfView, defaultViewportWidth, defaultViewportHeight);
 		near=0.5f;
 		far=1900.0f;
+		movement = new MovementController(this.view);
 	}
 
 
@@ -40,6 +41,7 @@ public class MECamera extends PerspectiveCamera {
 		super(i, width, height);
 		near=0.5f;
 		far=1900.0f;
+		movement = new MovementController(this.view);
 	}
 
 	/**
