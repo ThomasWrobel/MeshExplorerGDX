@@ -36,7 +36,8 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 	
 	final static String CGunOpen =  "My CGun<<";
 	final static String CGunClosed =  "My CGun>>";
-	InterfaceButton myCGun =     new InterfaceButton(CGunClosed,true); //will be false by default later when the gun is in the game currectly
+	
+	InterfaceButton myCGun =     new InterfaceButton(CGunClosed,false); //will be false by default later when the gun is in the game correctly
 	
 	InterfaceButton myHome =     new InterfaceButton("My  Home",true);
 	InterfaceButton myContents = new InterfaceButton("My  Data",false); //not visible unless we have data (will be removed in favor of temp memory)
@@ -285,6 +286,20 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			setupInventory(); 
 		}
 	}
+	
+	public void setmyCGunVisible(boolean visible){
+
+		Gdx.app.log(logstag,"setmyCGunVisible set to:"+visible);
+		if (myCGun.isVisible!=true){
+			myCGun.isVisible=visible;
+			needsRepopulating = true;
+			invalidate();
+			//refreshlinks();
+			setupInventory(); 
+		}
+	}
+	
+	
 	
 	//@Override
 	//public void validate(){

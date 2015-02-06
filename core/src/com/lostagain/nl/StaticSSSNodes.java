@@ -57,7 +57,9 @@ public class StaticSSSNodes {
 	//memory ability	
 	public static final SSSNode STMemoryAbility = SSSNode.createSSSNode(ME.INTERNALNS+"STMemoryAbility", ME.INTERNALNS+"STMemoryAbility", ME.INTERNALNS,new SSSNode[]{ability});
 	
-
+	//concept gun ability	
+	public static final SSSNode ConceptGun1 = SSSNode.createSSSNode(ME.INTERNALNS+"ConceptGun1", ME.INTERNALNS+"ConceptGun1", ME.INTERNALNS,new SSSNode[]{ability});
+		
 	
 	//give it base abilities
 	public static final SSSNode multitasking= SSSNode.createSSSNode(ME.INTERNALNS+"multitasking", ME.INTERNALNS);

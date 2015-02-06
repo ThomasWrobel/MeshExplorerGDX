@@ -162,8 +162,14 @@ public class Inventory  {
 
 		//update the GUI bar in case the inventory tab isnt there yet
 		if (obj.itemsnode== StaticSSSNodes.STMemoryAbility){
-		MainExplorationView.usersGUI.setSTMemVisible(true);
+			MainExplorationView.usersGUI.setSTMemVisible(true);
 		}
+		
+		if (obj.itemsnode== StaticSSSNodes.ConceptGun1){
+			MainExplorationView.usersGUI.setmyCGunVisible(true);
+			
+		}
+		
 		
 	}
 	
