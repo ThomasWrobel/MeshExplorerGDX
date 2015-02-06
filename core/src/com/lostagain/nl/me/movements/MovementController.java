@@ -146,7 +146,7 @@ public class MovementController {
 			
 			
 			if (currentMovement.currenttype==MovementTypes.REPEAT){
-				Gdx.app.log(logstag, "_____________________________________________REPEATING=");
+				//Gdx.app.log(logstag, "_____________________________________________REPEATING=");
 				currentMovementNumber=0;
 				currentMovement = movements.get(0);
 				
@@ -160,19 +160,22 @@ public class MovementController {
 		Matrix4 displacement; //NOTE: Displacement means different things depending on mode.
 		//in absolute mode its the displacement relative to 0,0,0 in stagespace
 		//in relative mode its relative to the last movements end location (which is stored in currentConclumativeMatrix)
+		//because of this we need to deal with the return type differently
 		
+		 displacement = currentMovement.onUpdate(currentTimeWithinMovement);
+				 
 		//The value we return  is relative to worldspace
 		if (currentMovement.currenttype == MovementTypes.Absolute){
 			//relative to last position in absolute terms
-			Matrix4 lastnodesabsoluteposition = lastNodesLocationMatrix;// objectsNativePosition.cpy().mul(lastNodesLocationMatrix); //in order to work out the new position in abs more it needs the last position as an absolute as well
+			//Matrix4 lastnodesabsoluteposition = lastNodesLocationMatrix;// objectsNativePosition.cpy().mul(lastNodesLocationMatrix); //in order to work out the new position in abs more it needs the last position as an absolute as well
 			
-			 displacement = currentMovement.onUpdateAbsolute(currentTimeWithinMovement);//,lastnodesabsoluteposition); 
+			// displacement = currentMovement.onUpdateAbsolute(currentTimeWithinMovement);//,lastnodesabsoluteposition); 
 
 			return displacement; //displacement relative to 0,0,0 in stagespace, thus it doesnt need to be multiplied to get it relative to the last position
 		
 		} else {
 		
-			 displacement = currentMovement.onUpdate(currentTimeWithinMovement); //currentTimeWithinMovement
+			// displacement = currentMovement.onUpdateRelative(currentTimeWithinMovement); //currentTimeWithinMovement
 			 
 			 
 			 return lastNodesLocationMatrix.cpy().mul(displacement); //if we are doing a relative motion we multiply current displacement by the last point (that is ConclumativeMatrix)
@@ -251,7 +254,7 @@ public class MovementController {
 				 lastNodesLocationMatrix.set(lastLocation);
 			} else {
 			
-				 displacement = currentMovement.onUpdate(currentTimeWithinMovement); //currentTimeWithinMovement
+				 displacement = currentMovement.onUpdateRelative(currentTimeWithinMovement); //currentTimeWithinMovement
 				 lastNodesLocationMatrix.mul(displacement);	//burn the current movements position in at its current point
 			
 			}

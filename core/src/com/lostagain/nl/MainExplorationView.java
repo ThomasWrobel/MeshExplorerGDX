@@ -61,6 +61,7 @@ import com.lostagain.nl.me.LocationGUI.Location;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.creatures.BasicInfovore;
+import com.lostagain.nl.me.creatures.Population;
 import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.GUIBar;
 import com.lostagain.nl.me.gui.Inventory;
@@ -1110,7 +1111,7 @@ public class MainExplorationView implements Screen {
 		}
 	}
 
-	public static void addnewdrop(DataObject newdrop, double x, double y) {
+	public static void addnewdrop(DataObject newdrop, float x, float y) {
 
 		 Gdx.app.log(logstag,"_____________:dropping ");
 		 
@@ -1125,7 +1126,12 @@ public class MainExplorationView implements Screen {
 		newdrop.setTouchable(Touchable.enabled);
 			
 		
-		gameStage.addActor(newdrop);	
+		gameStage.addActor(newdrop);
+		
+		//now we test for reactions to the drop
+		Population.testForReactionsToNewDrop(newdrop,x,y);
+		
+		
 	}
 
 	

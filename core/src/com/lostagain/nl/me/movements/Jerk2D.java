@@ -135,13 +135,21 @@ public class Jerk2D extends Movement {
 	public void onRepeat(){
 		super.onRepeat();
 		
+		
+		
 	//	Gdx.app.log(logstag, "_____________________________________________refreshSetup=");
 		
 		//store the last location
 		lastLocation = modelins.transform;
 		
-		this.destination= getDest( mindistance,  maxdistance, startingLocation);
-		
+		//if we are on the last repeat, we head back to the original position
+		//this allows looping without a net displacement
+		if (onLastRepeat){
+			destination=startingLocation;				
+		} else {
+			//else we calculate a new random location
+			destination= getDest( mindistance,  maxdistance, startingLocation);
+		}
 	
 		//break the destination down into rotation and translation (one day we might use scale too)		
 		destination.getTranslation(position);		

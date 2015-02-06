@@ -4,21 +4,14 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#>
 @prefix me: <http://darkflame.co.uk/meshexplorer#> 
  
-profpp rdfs:subClassOf  me:Computer.
-alicespc rdfs:subClassOf  me:Computer.
-thecatspc rdfs:subClassOf  me:Computer.
+ProfPP rdfs:subClassOf  me:Computer.
+ProfPPResearch rdfs:subClassOf  me:Computer.
+AlicesPc rdfs:subClassOf  me:Computer.
+TheCatsPc rdfs:subClassOf  me:Computer.
 BobsOutpost  rdfs:subClassOf  me:Computer.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subClassOf me:Computer.
 
-
-bigInfovorPopulation rdfs:subClassOf me:population.
-bigInfovorPopulation me:quantity 90.
-bigInfovorPopulation me:anydrop Fruit.
-bigInfovorPopulation me:killedon "color=yellow".
-bigInfovorPopulation me:hitPoints 2.
-bigInfovorPopulation http://dbpedia.org/ontology/Colour #553300.
-bigInfovorPopulation http://dbpedia.org/ontology/Colour #775522.
-bigInfovorPopulation http://dbpedia.org/ontology/Colour #99BB00.
+BobsOutpost me:populatedBy smallInfovorPopulation.
 
 smallInfovorPopulation rdfs:subClassOf me:population.
 smallInfovorPopulation me:quantity 10.
@@ -32,13 +25,13 @@ smallInfovorPopulation http://dbpedia.org/ontology/Colour #005522.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #11BB00.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #00DD11.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #33BB55.
+smallInfovorPopulation http://dbpedia.org/ontology/Colour Blue.
 
 alicespc me:populatedBy smallInfovorPopulation.
-thecatspc me:populatedBy bigInfovorPopulation.
-BobsOutpost me:populatedBy smallInfovorPopulation.
 
 profpp me:connectedTo BobsOutpost.
 profpp me:connectedTo alicespc. 
+ProfPPResearch me:connectedTo profpp. 
 alicespc me:connectedTo BobsOutpost.
 alicespc me:connectedTo thecatspc.
 thecatspc me:connectedTo alicespc.
@@ -66,7 +59,6 @@ VertFirewall rdfs:subClassOf  me:Security.
 VertFirewall me:queryPass "Alive Chordate".	
 
 
-
 "Home of the worlds first cyptro-encryptologiest. Me." me:DescriptionOf alicespc.
 
 alicespccontents.txt rdfs:subClassOf me:software.
@@ -75,7 +67,7 @@ alicespccontents.txt me:ison alicespc.
 alicesemailindex.txt rdfs:subClassOf me:messages.
 alicesemailindex.txt me:ison alicespc.
  
-"I'm Bob..This is me outpost. -ProfP gave it to me to help his research. " me:DescriptionOf BobsOutpost.
+"I'm Bob.This is me outpost. -ProfP gave it to me to help his research. " me:DescriptionOf BobsOutpost.
                                                                       
 bobspcmessages.txt rdfs:subClassOf me:messages.
 bobspcmessages.txt me:ison BobsOutpost.
@@ -88,6 +80,13 @@ bobspccontents.txt me:ison BobsOutpost.
 profpcmessages.txt rdfs:subClassOf me:messages.
 profpcmessages.txt me:ison profpp.
 profpcmessages.txt me:writtenin me:stdascii.
+
+"Research into the locations, enviroment and creatures by Prof.P.P.PHD" me:DescriptionOf ProfPPResearch.
+
+profresearchmessages.txt rdfs:subClassOf me:messages.
+profresearchmessages.txt me:ison ProfPPResearch.
+profresearchmessages.txt me:writtenin me:stdascii.
+ME:STMemoryAbility me:ison ProfPPResearch.
 
 "Moewww!" me:DescriptionOf thecatspc.
 

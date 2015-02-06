@@ -21,6 +21,18 @@ public class MoveTo  {
 			
 		return create(originObject.transform, posT.x, posT.y,posT.z, duration);
 	}
+	
+	
+	public static Movement create(Matrix4 originLoc,
+			Vector3 destination_loc, int duration) {
+
+		Matrix4 destinationmatrix =originLoc.cpy().setTranslation(destination_loc);
+		
+		Movement newmovement= new Movement(destinationmatrix,duration);
+		newmovement.currenttype = MovementTypes.Absolute;
+		
+		return newmovement;
+	}
 
 	/**
 	 * moves to a position without effecting rotation
@@ -59,13 +71,13 @@ public class MoveTo  {
 		
 		*/
 		 Vector3 destination_loc = new Vector3(ex,ey,ez);
-		Matrix4 destinationmatrix =originLoc.cpy().setTranslation(destination_loc);
-		
-		Movement newmovement= new Movement(destinationmatrix,duration);
-		newmovement.currenttype = MovementTypes.Absolute;
-		
-		return newmovement;
+		 
+		return create( originLoc, destination_loc,  duration);
 		
 	}
+
+
+	
+
 
 }

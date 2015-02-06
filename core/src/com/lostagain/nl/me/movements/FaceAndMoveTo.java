@@ -21,6 +21,15 @@ public class FaceAndMoveTo  {
 			
 		return create(originObject, posT.x, posT.y, duration);
 	}
+	
+	
+	public static Movement[] create(ModelInstance originObject,
+			Vector3 dropsPositionAsVector, int duration) {
+
+		Vector2 posT = new Vector2(dropsPositionAsVector.x,dropsPositionAsVector.y);
+		
+		return create(originObject, posT.x, posT.y, duration);
+	}
 
 	/**
 	 * currently a crude method that only supports rotations on a 2d plane
@@ -70,5 +79,6 @@ public class FaceAndMoveTo  {
 		return new Movement[]{rot,forward};
 		
 	}
+
 
 }

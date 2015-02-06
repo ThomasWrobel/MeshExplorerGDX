@@ -41,6 +41,10 @@ public class Creature implements hitable {
 	
 	ModelInstance creaturemodel;
 	
+	
+	
+
+final static int zPlane = 70; //the horizontal plane the creatures exist on. should be used for all z values in positions.
 	//current location
 	float x = 0;
 	float y = 0;
@@ -78,7 +82,7 @@ public class Creature implements hitable {
 	
 	//base color
 	Color crearturesColor = Color.WHITE;
-	
+		
 	
 	//lighter color for when clicked on
 	Color hitColor = Color.GREEN.cpy().add(.5f, .5f, .5f, 1f);
@@ -98,7 +102,6 @@ public class Creature implements hitable {
 		
 		
 	}
-
 
 
 
@@ -190,15 +193,15 @@ public class Creature implements hitable {
 
 		//when hit move away randomly		
 		
-		//float angle = (float) (Math.random()*360);
-		//movementControll.setMovement(true,new RotateLeft(angle,100),new Forward(70,200));
+		float angle = (float) (Math.random()*360);
+		movementControll.setMovement(creaturemodel.transform,true,new RotateLeft(angle,60),new Forward(70,150));
 		
 		//test motion
-		float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
-		float EY = parentpolution.centeredOnThisLocation.getHubsY(Align.center);
-		float EZ = getCenter().z;
-		movementControll.setMovement(creaturemodel.transform,true,MoveTo.create(creaturemodel.transform, EX, EY,EZ,3000));//
-		
+		//float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
+		//float EY = parentpolution.centeredOnThisLocation.getHubsY(Align.center);
+		//float EZ = getCenter().z;
+		//movementControll.setMovement(creaturemodel.transform);//
+		//run to center of location; creaturemodel.transform,true,MoveTo.create(creaturemodel.transform, EX, EY,EZ,3000)
 		
 				
 		
@@ -339,8 +342,8 @@ public class Creature implements hitable {
 			//add to world
 			Gdx.app.log(logstag, "creating drop on screen");
 			
-			double x = this.x+ (-20+Math.random()*40);			
-			double y = this.y+ (-20+Math.random()*40);
+			float x = (float) (this.x+ (-20+Math.random()*40));			
+			float y = (float) (this.y+ (-20+Math.random()*40));
 						
 			MainExplorationView.addnewdrop(newdrop,x, y);			
 			
@@ -370,8 +373,23 @@ public class Creature implements hitable {
 		drops.add(drop);
 		
 	}
+
+
+
+	public void fireReactionToDrop(Vector3 dropsPositionAsVector, DataObject newdrop) {
+		
+		
+		float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
+		float EY = parentpolution.centeredOnThisLocation.getHubsY(Align.center);
+		float EZ = getCenter().z;
+		movementControll.setMovement(creaturemodel.transform,true,FaceAndMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
+		
+		
+	}
 	
-	
+	public float getEyeSightRange(){
+		return 250f;
+	}
 	
 	
 }

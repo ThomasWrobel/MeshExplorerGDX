@@ -716,9 +716,8 @@ public class LocationsHub extends Table {
 			PlayersData.addUnlockedLink(LocationsNode);
 		}
 		
-		//remove background and replace with color if its set
-		MessyModelMaker.removeAnimatedNoiseTextureToRectangle(backgroundObject);
-		if (backcolour!=null){
+		//remove background noise and replace with color if its set
+		if (backgroundObject!=null){
 			setBackgroundColour(backcolour);
 		}
 		
@@ -746,8 +745,11 @@ public class LocationsHub extends Table {
 	
 	
 	public void setBackgroundColour( Color col) {
-
 		
+		if (col==null){
+			col=Color.CLEAR; //default
+		}
+				
 		Gdx.app.log(logstag,"setting back color to:"+col.toString());
 		backcolour = col;
 		
@@ -755,12 +757,16 @@ public class LocationsHub extends Table {
 			addBackground(); 
 		}
 		
-		
+	
 		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.1f);
 		
 		backgroundObject.materials.get(0).clear();
 		backgroundObject.materials.get(0).set(ColorAttribute.createDiffuse(col));
 		backgroundObject.materials.get(0).set(blendingAttribute2);
+
+		Gdx.app.log(logstag,"setting shader to normal:");
+		backgroundObject.userData=MyShaderProvider.shadertypes.standardlibgdx;
+		
         
 	}
 	
@@ -802,7 +808,7 @@ public class LocationsHub extends Table {
 		
 		
 		
-		MessyModelMaker.giveAnimatedNoiseTextureToRectangle(backgroundObject);
+		//MessyModelMaker.giveAnimatedNoiseTextureToRectangle(backgroundObject);
 		
 		
 	}

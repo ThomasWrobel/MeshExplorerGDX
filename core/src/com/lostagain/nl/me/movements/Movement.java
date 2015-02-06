@@ -33,6 +33,11 @@ public class Movement {
 	
 	float durationTotalMS = 1000;
 	float durationMSEachMove= 1000;
+	/**
+	 * determains if we are the on last cycle
+		//That is if we are within 1 "durationMSEachMove" of "durationTotal"
+	 */
+	boolean onLastRepeat = false;
 	
 	/**
 	 * durationMSEachMove - duration the movement takes
@@ -73,23 +78,47 @@ public class Movement {
 		destination.getRotation(rotation);
 		
 	};
+	
+	
+	public Matrix4 onUpdate(float totalTimePast){
+		//detect if on last cycle
+		//That is if we are within 1 "durationMSEachMove" of "durationTotal"
+		if (totalTimePast>(durationTotalMS-durationMSEachMove)){
+			onLastRepeat = true;
+			//Gdx.app.log(logstag, "onLastRepeat="+onLastRepeat+" t="+totalTimePast+" out of "+durationTotalMS);
+		} else {
+			onLastRepeat = false;
+		}
+		
+		//use different update function depending if we are working relative or not
+		if (currenttype.equals(MovementTypes.Absolute)){
+			return onUpdateAbsolute(totalTimePast);
+		} else if (currenttype.equals(MovementTypes.Relative)) {
+			return onUpdateRelative(totalTimePast);
+		}
+		
+		//if we arnt relative or absolute we return null
+		//this probably means this isnt a real movement, but a marker for a REPEAT of all motions in a sequence of motions
+		return null;
+	}
+	
 	/**
 	 * returns the new position based on the total time elapsed into this movement
 	 * if we are working in relative mode we lerp between 0,0,0 and the destination (ie, we are messuring the displacement)
 	 * 
-	 * @param delta
+	 * @param totalTimePast
 	 * @return
 	 */
-	public Matrix4 onUpdate(float delta){	
-		if (delta>durationTotalMS){
+	public Matrix4 onUpdateRelative(float totalTimePast){	
+		if (totalTimePast>durationTotalMS){
 			return destination;
 		}
 		
-		float subdelta=delta;
+		float subdelta=totalTimePast;
 		
-		if (delta>durationMSEachMove) {
+		if (totalTimePast>durationMSEachMove) {
 			
-			subdelta=delta%durationMSEachMove;
+			subdelta=totalTimePast%durationMSEachMove;
 			
 			 onRepeat();
 		}

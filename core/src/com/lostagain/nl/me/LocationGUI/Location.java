@@ -6,11 +6,13 @@ import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.creatures.Population;
 import com.lostagain.nl.uti.MeshWorld;
 
@@ -28,6 +30,11 @@ public class Location {
 			
 	
 	
+	public ArrayList<Population> getLocationsPopulations() {
+		return locationsPopulations;
+	}
+
+
 	int locX = 0;
 	int locy = 0;
 	
@@ -270,6 +277,34 @@ public class Location {
 		}
 		
 		return num;
+	}
+	
+	
+	/**
+	 * returns the locations near a certain point
+	 * 
+	 * @param point
+	 * @param radius
+	 */
+	public static ArrayList<Location> LocationsWithinRange(Vector2 point, float radius){
+		
+		ArrayList<Location> locationsWithinRange = new ArrayList<Location>();
+		
+		for (Location loc : AllLocations.values()) {
+			
+			float LocX = loc.getHubsX(Align.center);
+			float LocY = loc.getHubsY(Align.center);
+			Vector2 locationsPosition = new Vector2(LocX,LocY);
+			
+			float distanceTo = point.dst(locationsPosition);
+			
+			if (distanceTo<radius){
+				locationsWithinRange.add(loc);
+			}
+			
+		}
+
+		return locationsWithinRange;
 	}
 	
 }

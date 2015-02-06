@@ -32,7 +32,6 @@ import com.lostagain.nl.me.movements.RotateLeft;
 /** defines what a basic infovore looks like and how it behaves**/
 public class BasicInfovore extends Creature implements Animating {
 	
-final static int zPlane = 70; //the horizontal plane the creatures exist on. should be used for all z values in positions.
 
 	private static String logstag="ME.BasicInfovore";
 	
@@ -63,7 +62,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		createmodel(x,y,zPlane); //-50 is the default plane they are placed onto
 		
 		//set movement (this creature wonders in a square by default
-		movementControll.setMovement(creaturemodel.transform,false,new Jerk2D(creaturemodel,20f,30f,500f,1000f), new REPEAT());//
+		movementControll.setMovement(creaturemodel.transform,false,new Jerk2D(creaturemodel,20f,30f,500f,10000f), new REPEAT());//
 	//	movementControll.setMovement(creaturemodel,false,new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//
 		
 		

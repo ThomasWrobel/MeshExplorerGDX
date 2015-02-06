@@ -7,12 +7,15 @@ import java.util.HashSet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.LocationGUI.Location;
+import com.lostagain.nl.me.objects.DataObject;
 
 /** represents a population of a particular type in a particular area**/
 public class Population {
@@ -294,4 +297,89 @@ public class Population {
 	public int getCurrentNumberOfCreatures(){
 		return populationsCreatures.size();
 	}
+	
+	
+	
+	/**
+	 * 
+	 * gets all the creatures in this population in range of a particular point
+	 * 
+	 *
+	 * @param location - target location
+	 * @param radius - range
+	 * @return
+	 */
+	public ArrayList<Creature> getCreaturesNearbye(Vector3 location, float radius, boolean useCreaturesSight){
+		
+		ArrayList<Creature> creaturesWithinRange = new ArrayList<Creature>();
+		
+		for (Creature creature : populationsCreatures) {
+			
+			Vector3 creaturesPosition = creature.getCenter();
+			float distanceTo = location.dst(creaturesPosition);
+			
+			if (useCreaturesSight){
+				if (distanceTo<creature.getEyeSightRange()){
+					creaturesWithinRange.add(creature);
+				}
+			}
+			
+			if (distanceTo<radius){
+				creaturesWithinRange.add(creature);
+			}
+			
+		}
+
+		return creaturesWithinRange;
+	}
+
+
+	/**
+	 * Test all nearby populations for any reactions to this drop
+	 * 
+	 * At the moment creatures will move towards the drop if they are in range
+	 * @param newdrop
+	 * @param x
+	 * @param y
+	 */
+	public static void testForReactionsToNewDrop(DataObject newdrop, float x,
+			float y) {
+
+		Vector3 dropsPositionAsVector = new Vector3(x,y,Creature.zPlane); //zPlane is the default vertical position. As the locations are 2D and the creatures 3D, we need to assume the creatures are on the 2D plane
+		 //In future the getCreaturesNearby function could be changed to ignore the z axis when testing for nearby things, but I cant see why creatures should move far from their zPlane anyway. The 3D is mostly for effects and style, not gameplay
+		
+		
+		//first get nearby locations
+		ArrayList<Location> nearbylocations = Location.LocationsWithinRange(new Vector2(x,y), 500);
+		
+		//then loop over them finding creatures near the drop point
+		//we dont test all locations as its wastefull to test things far away
+		ArrayList<Creature> allNearbyCreatures = new ArrayList<Creature>();
+		for (Location location : nearbylocations) {
+			
+			Gdx.app.log(logstag, "dropped near: "+location.locationsnode);
+			
+			//get creatures nearby - a location can have a few populations so we need to test all of them
+			for (Population pop : location.getLocationsPopulations()) {
+								
+				allNearbyCreatures.addAll(pop.getCreaturesNearbye(dropsPositionAsVector, 25,true)); //the true means it uses the creatures eyesight range. The 25 means even a blind creature can sense it within this distance
+				
+								
+			}
+			
+		}
+		
+
+		Gdx.app.log(logstag, "dropped near: "+allNearbyCreatures.size()+"creatures");
+		//now loop firing creatures reactions
+		for (Creature creature : allNearbyCreatures) {
+			
+			creature.fireReactionToDrop(dropsPositionAsVector,newdrop);
+			
+		}
+		
+	}
+	
+
+	
 }
