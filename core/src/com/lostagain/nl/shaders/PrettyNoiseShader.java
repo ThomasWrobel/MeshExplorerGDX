@@ -17,7 +17,7 @@ import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
  * @author Tom
  *
  */
-public class TestShader implements Shader {
+public class PrettyNoiseShader implements Shader {
 	 ShaderProgram program;
 	 Camera camera;
 	 RenderContext context;

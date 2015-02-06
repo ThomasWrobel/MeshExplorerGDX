@@ -73,9 +73,28 @@ Unused;
 
 Gondalwind - 
 
-Lock ideas;
+Lock/puzzle ideas;
+-----------------
 
 Name 6 doctors (doctor who actors count, as does any fictional doctor)
+
+Opersite lock - each clue has something you need to give the opersite off (many locks)
+
+Property - "Melting point over 300+solid" (materials like tungstan)
+         - Alive, non Vertebrate
+         
+Large quanitys - 10 lifeforms or 10 round things
+
+Maths Puzzle - basic sum/answer
+
+Quiz - name the 5 Marx brothers
+	 - a marvel/dc superhero 
+	 - acted in films X and Y
+Complete - complete a sentance? 
+		 - Complete a set (some already filled in?)
+		 
+
+
 
 
 

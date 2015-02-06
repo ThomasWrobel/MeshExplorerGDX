@@ -140,7 +140,7 @@ public class Movement {
 			//(etc)
 			
 			float WholeDelta = totalTimePast-subdelta;	//work out last "step" (that is, difference between current subdetail and the last whole duration past 		
-			Gdx.app.log(logstag, "_____________________________________________wholeDelta="+WholeDelta+" last one was"+LastWholeDelta);
+		//	Gdx.app.log(logstag, "_____________________________________________wholeDelta="+WholeDelta+" last one was"+LastWholeDelta);
 			if (WholeDelta>LastWholeDelta){ //if more then the last one
 		
 				

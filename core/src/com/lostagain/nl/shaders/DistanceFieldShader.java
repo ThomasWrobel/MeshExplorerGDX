@@ -34,7 +34,7 @@ public class DistanceFieldShader implements Shader {
 	    int u_worldTrans;
 	    int u_sampler2D; 
 	    
-	    int a_usesDiffuseColor;
+	    int a_colorFlag;
 	    int u_diffuseColor;
 	    
     @Override
@@ -53,9 +53,9 @@ public class DistanceFieldShader implements Shader {
           
           u_projViewTrans = program.getUniformLocation("u_projViewTrans");
           u_worldTrans = program.getUniformLocation("u_worldTrans");
-          u_sampler2D =   program.getUniformLocation("u_diffuseTexture");
+          u_sampler2D =   program.getUniformLocation("u_texture");
           
-        //  a_usesDiffuseColor =  program.getUniformLocation("a_usesDiffuseColor");
+          a_colorFlag =  program.getUniformLocation("u_colorFlag");
           u_diffuseColor =  program.getUniformLocation("u_diffuseColor");
     }
     
@@ -97,10 +97,11 @@ public class DistanceFieldShader implements Shader {
     	 
     	 if (renderable.material.has(ColorAttribute.Diffuse)){
 				
-    		// program.setUniformf(a_usesDiffuseColor,1);
+    		 program.setUniformf(a_colorFlag,1);
     		 program.setUniformf(u_diffuseColor, ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse)).color);
+    		 
     	 } else {
-    		// program.setUniformf(a_usesDiffuseColor,0);
+    		 program.setUniformf(a_colorFlag,0);
     		 program.setUniformf(u_diffuseColor, Color.ORANGE);
     	 }
     	 

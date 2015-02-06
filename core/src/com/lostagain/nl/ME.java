@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Timer;
@@ -73,7 +74,11 @@ public class ME extends Game {
     	
     //	font = new BitmapFont();
     	batch = new SpriteBatch();
+
+
     	
+  		
+  		
     	Gdx.app.setLogLevel(Application.LOG_INFO);
     	Gdx.app.log(logstag, "loading..");
     	

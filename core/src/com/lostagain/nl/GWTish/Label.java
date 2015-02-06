@@ -61,8 +61,16 @@ public class Label {
 		
 	}
 	
+	static public Texture generateTexture(String text,int TITLE_WIDTH,int TITLE_HEIGHT, float sizeratio) {
+		
+		Pixmap textPixmap = generatePixmap( text, TITLE_WIDTH, TITLE_HEIGHT,  sizeratio);
+		
+
+	    return new Texture(textPixmap,true);
+	}
 	
-	private Texture generateTexture(String text) {
+	static public Pixmap generatePixmap(String text,int TITLE_WIDTH,int TITLE_HEIGHT, float sizeratio) {
+		
 		
 		  String Letters=text;
 		  Pixmap textPixmap = new Pixmap(TITLE_WIDTH, TITLE_HEIGHT, Format.RGBA8888);
@@ -80,7 +88,7 @@ public class Label {
 
 		    int currentX=0;
 	
-		  float scaledown = 1f;
+		  float scaledown = sizeratio;
 		 			  
 		  Glyph defaultglyph = data.getGlyph(Letters.charAt(0));
 		  
@@ -149,7 +157,7 @@ public class Label {
 			}
 			
 		    
-		    return new Texture(textPixmap,true);
+		    return textPixmap;
 		  
 	}
 	
@@ -160,7 +168,7 @@ public class Label {
 	
 		//mat.set(TextureAttribute.createDiffuse(idealAnimation.getKeyFrame(0)));
 
-    	Texture texture = generateTexture(contents); //new Texture(Gdx.files.internal("data/dfield.png"), true);
+    	Texture texture = generateTexture(contents,TITLE_WIDTH, TITLE_HEIGHT,1f); //new Texture(Gdx.files.internal("data/dfield.png"), true);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest
 		
 		Material mat = 	new Material(TextureAttribute.createDiffuse(texture),

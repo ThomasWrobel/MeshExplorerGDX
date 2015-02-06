@@ -49,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -66,6 +67,7 @@ import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.objects.DataObject;
+import com.lostagain.nl.shaders.DistanceFieldShader;
 import com.lostagain.nl.uti.SpiffyGenericTween;
 import com.lostagain.nl.uti.SpiffyTweenConstructor;
 import com.lostagain.nl.uti.SpiffyVector2Tween;
@@ -93,9 +95,7 @@ public class MainExplorationView implements Screen {
 	public static Stage gameStage;		
 	public static Stage guiStage;
 
-	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),1000f); //note we start high up and zoom in at the start as a little intro
 	
-
 	
 	public static Float CurrentZoom = 1f;
 	
@@ -118,8 +118,11 @@ public class MainExplorationView implements Screen {
 	Sound dropSound;
 	Music rainMusic;
 	
+	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),1000f); //note we start high up and zoom in at the start as a little intro
+	public static Vector3 zoomToAtStartPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),444f); //note we start high up and zoom in at the start as a little intro
+
 	public static MECamera camera = new MECamera();
-	
+
 	/** I dont know really how to use this correctly :-/ **/
 	public static RenderContext rcontext;
 	
@@ -203,7 +206,7 @@ public class MainExplorationView implements Screen {
 	//DistanceFieldShader testshader = new DistanceFieldShader();
 	
 	
-	Shader testdefaultShader;
+	public static ShaderProgram distancefieldshader;
 	
 	Label testlabel = new Label("ME.ModelManagment: _-testing ray in :425.04813 models\r\n" + 
 			"ME.ModelManagment: _-testing ray in :699.75104 models\r\n" + 
@@ -377,12 +380,28 @@ public class MainExplorationView implements Screen {
 
 
 		//create background
+		Gdx.app.log(logstag,"creating distance field shader");
+		  String vert = Gdx.files.internal("shaders/distancefieldvert_spritebatch.glsl").readString();
+        String frag = Gdx.files.internal("shaders/distancefieldfrag.glsl").readString();
+        
+        //String prefix = createPrefix(renderable, this.get);
+        
+         distancefieldshader = new ShaderProgram(vert, frag);
 
-
+         
+        if (!distancefieldshader.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + distancefieldshader.getLog());
+        int u_diffuseColor =  distancefieldshader.getUniformLocation("u_diffuseColor");
+      
+        int u_colorFlag =  distancefieldshader.getUniformLocation("u_colorFlag");
+        
+        distancefieldshader.setUniformf(u_diffuseColor, Color.ORANGE);
+        distancefieldshader.setUniformf(u_colorFlag, 1f);
+      
 		Gdx.app.log(logstag,"creating game stage");
 
 		gameStage = new PerspectiveStage();
-
+		
+		
 		InputMultiplexer multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(guiStage);
 		multiplexer.addProcessor(gameStage);
@@ -495,6 +514,11 @@ public class MainExplorationView implements Screen {
 		Vector3 dest = new Vector3(newX,newY,newZ);
 		
 
+
+		camera.setTargetPosition(dest); //new system replaces a lot below
+		
+		
+		
 		//asign new tweens
 		//currentCameraTweenX = SpiffyTweenConstructor.Create(CurrentX.doubleValue(),newX, 25);
 		//currentCameraTweenY = SpiffyTweenConstructor.Create(CurrentY.doubleValue(),newY, 25);
@@ -578,17 +602,18 @@ public class MainExplorationView implements Screen {
 		//camera.rotate(45, 0, 0, 1);
 		//camera.position.set(CurrentX, CurrentY, CurrentZ);
 		
-		camera.position.set(currentPos);
+	//	camera.setTargetPosition(currentPos);
+		camera.updatePosition(delta);
+		
+		//camera.position.set(currentPos);
 		
 		//also set camera overlay
-		MECamera.mainOverlay.transform.setToTranslation(currentPos.x, currentPos.y, currentPos.z);
+	//	MECamera.mainOverlay.transform.setToTranslation(currentPos.x, currentPos.y, currentPos.z);
 				
 		
 		//change opacity of overlay based on z
 		//in future we probably need to change this to something "effect defendant" so different conditions can trigger different camera effects
-		float heightbasedopacity = (currentPos.z-380.0f)/1000.0f; //(600 - 1000)/1000 
 		
-		MECamera.mainOverlay.setEffectOpacity(heightbasedopacity);
 		
 		// create the camera and the SpriteBatch
 		/*
@@ -639,7 +664,7 @@ public class MainExplorationView implements Screen {
 
 		gameStage.act(delta); //Gdx.graphics.getDeltaTime()
 		gameStage.draw();
-		
+	
 		
 		//  game.batch.setProjectionMatrix(camera.combined);
 
@@ -816,7 +841,9 @@ public class MainExplorationView implements Screen {
 
 		if (Gdx.input.isKeyPressed(Keys.UP))
 		{
-			currentPos.y = currentPos.y+(200* Gdx.graphics.getDeltaTime());        	
+			
+			camera.setTargetPosition(currentPos);
+			currentPos.y = currentPos.y+(200* Gdx.graphics.getDeltaTime());
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.DOWN))
@@ -830,7 +857,7 @@ public class MainExplorationView implements Screen {
 			if ( currentmode == cammode.ortha){
 			//	CurrentZoom = CurrentZoom +(2* Gdx.graphics.getDeltaTime()); 
 
-				float newzoom = (0.0133333315344f*currentPos.z)-4.9199985961765f;	//the formular works out a ratio between zoom and z position			
+				float newzoom = (0.0133333315344f*currentPos.z)-4.9199985961765f;	//the formula works out a ratio between zoom and z position			
 				CurrentZoom = newzoom;
 				
 				//Gdx.app.log(logstag,currentPos.z+","+CurrentZoom);
@@ -867,8 +894,15 @@ public class MainExplorationView implements Screen {
 
 
 		// begin a new batch (for interface text and the cursor)
+		
+		
 		ME.batch.begin();
+		
+          
 
+  		//gameStage.getBatch().setShader(program);
+  		//ME.batch.setShader(program);
+  		
 		if (customCursor!=null){
 
 			float xc = Gdx.input.getX();

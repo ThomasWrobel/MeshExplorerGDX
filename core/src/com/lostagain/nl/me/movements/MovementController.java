@@ -14,7 +14,8 @@ public class MovementController {
 	private static String logstag="ME.MovementController";
 	
 	
-	Movement currentMovement = new Forward(300,8500); //just a test for now
+	public Movement currentMovement = new Forward(300,8500); //just a test for now
+	
 	int currentMovementNumber = 0;
 	
 	ArrayList<Movement> movements = new ArrayList<Movement>();
@@ -64,7 +65,7 @@ public class MovementController {
 	 * @param source
 	 * @return
 	 */
-	public Matrix4 update(float delta, Matrix4 objectsNativePosition){
+	public Matrix4 update(float delta){ //, Matrix4 objectsNativePosition
 
 		if (currentMovement==null){
 			return lastNodesLocationMatrix;
@@ -227,7 +228,7 @@ public class MovementController {
 	 * Setting resume after means it will resume the current motions after - but only if no resumeAfter is already pending
 	 * @param movement
 	 */
-	public void setMovement(ModelInstance object,boolean resumeAfter,Movement... create) {
+	public void setMovement(Matrix4 lastLocation,boolean resumeAfter,Movement... create) {
 		if (resumeAfter && old_movements.isEmpty()){
 			Gdx.app.log(logstag, "_____________________________________________setting resume after");
 			old_movements.clear();
@@ -242,10 +243,12 @@ public class MovementController {
 			
 			Matrix4 displacement;
 			if (currentMovement.currenttype == MovementTypes.Absolute){
-				currentMovement.lastLocation = object.transform;//.cpy().mul(lastNodesLocationMatrix);
-				 displacement = currentMovement.onUpdateAbsolute(currentTimeWithinMovement);//,object.transform.cpy().mul(lastNodesLocationMatrix)); 
+				
+				currentMovement.lastLocation = lastLocation;//.cpy().mul(lastNodesLocationMatrix);
+				
+				// displacement = currentMovement.onUpdateAbsolute(currentTimeWithinMovement);//,object.transform.cpy().mul(lastNodesLocationMatrix)); 
 				 
-				 lastNodesLocationMatrix.set(displacement);
+				 lastNodesLocationMatrix.set(lastLocation);
 			} else {
 			
 				 displacement = currentMovement.onUpdate(currentTimeWithinMovement); //currentTimeWithinMovement
@@ -258,7 +261,7 @@ public class MovementController {
 		
 		currentMovementNumber=0;
 		currentMovement=movements.get(0);
-		currentMovement.onRestart(lastNodesLocationMatrix);
+		currentMovement.onRestart(lastLocation);
 		//refresh if needed every time its set
 		currentMovement.onRepeat();
 		
@@ -299,10 +302,10 @@ public class MovementController {
 	 * 
 	 * @return absolute worldspace transform for new location
 	 */
-	public Matrix4 getUpdate(float delta, ModelInstance creaturemodel,Matrix4 origin) {
+	public Matrix4 getUpdate(float delta, Matrix4 origin) {
 		
 		
-		return update(delta, origin);
+		return update(delta);
 		
 		/*
 		if (currentMovement.currenttype == MovementTypes.Absolute){

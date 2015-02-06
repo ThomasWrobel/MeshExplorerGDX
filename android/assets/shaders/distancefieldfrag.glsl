@@ -21,18 +21,16 @@ varying vec2 vTexCoord;
 
 varying vec4 v_diffuseColor;
 //varying vec4 v_diffuseColor;
+varying float v_colorFlag;
  
  
- 
-#if defined(colorFlag)
-varying vec4 v_color;
-#endif
   
 
 varying MED vec2 v_diffuseUV;
  
+//uniform sampler2D u_diffuseTexture;
 
-uniform sampler2D u_diffuseTexture;
+uniform sampler2D u_texture;
 
  
 const float smoothing =  0.25/(4.0*32.0); //0.25/(filesmooth*fontfilescale)                     //0.001953125//1.0/16.0;  
@@ -43,18 +41,19 @@ float contour(in float d, in float w) {
 }
 
 float samp(in vec2 uv, float w) {
-    return contour(texture2D(u_diffuseTexture, vTexCoord).a, w);
+    return contour(texture2D(u_texture, vTexCoord).a, w);
 }
 
 void main() {
 
-	float colorFlag = 0.0;
+	float colorFlag = v_colorFlag;
 	vec4 diffuse = vec4(1.0,0.0,0.0,1.0);
 	 
-	if ((colorFlag==1.0))
+	 
+	if ((colorFlag==0.0))
 	{
 		//vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor * v_color;
-		diffuse = vec4(0.0,1.0,0.0,1.0);
+		diffuse = texture2D(u_texture, vTexCoord);//vec4(0.0,1.0,0.0,1.0);
 	}
 	else 
 	{
@@ -65,7 +64,7 @@ void main() {
 
 
  	//the alpha of the incoming texture acts as the distance from inside a letter to outside
- 	float dist = texture2D(u_diffuseTexture, vTexCoord).a;
+ 	float dist = texture2D(u_texture, vTexCoord).a;
  	 	 	
  	// fwidth helps keep outlines a constant width irrespective of scaling
     // GLSL's fwidth = abs(dFdx(uv)) + abs(dFdy(uv))
@@ -92,8 +91,13 @@ void main() {
     alpha = (alpha + 0.5 * asum) / 3.0;
 
     // -------
-
-    gl_FragColor = vec4(diffuse.rgb, alpha);
+	// 
+	//diffuse.rgb = vec4(1.0,0.0,0.0,1.0).rgb;
+	//diffuse=diffuse+1;
+	//alpha = (alpha*0.5) +dist;
+	
+	
+    gl_FragColor = vec4( diffuse.rgb, alpha); //diffuse.rgb
  	 	 	
  	 	 	//OLD VERSION:
  	//now we use that distance to make a new alpha

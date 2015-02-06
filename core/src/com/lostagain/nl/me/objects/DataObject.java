@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
@@ -125,8 +126,8 @@ public class DataObject extends Image
 			 } else if (dataname.length()>40){
 				 
 				 dataname = dataname.substring(0, 20) +"\n"
-						   +dataname.substring(20, 40) +"\n"
-						   +dataname.substring(40);
+						  + dataname.substring(20, 40) +"\n"
+						  + dataname.substring(40);
 			 }
 				
 			 createImage();
@@ -200,14 +201,18 @@ public class DataObject extends Image
 		
 		
 		
-	 /** creates the image of the dataobject (outline and text, with filters) **/
+	 /** creates the image of the dataobject (outline and text, with filters) 
+	  * 
+	  * currently has a lot of redundant code (see end, a lot of the earlier stuff isnt used at all)**/
 	 public void createImage(){
 			//the following should be cached so we don't need to keep regenerating the images
 			
 		    String Letters=dataname;
-		    
+		   
 		    Pixmap textPixmap = new Pixmap(TITLE_WIDTH, TITLE_HEIGHT, Format.RGBA8888); //imagesTexture.getTextureData().consumePixmap();
 		    
+		    //remove color background for the moment
+		    /*
 					textPixmap.setColor(0.3f, 0.2f, 0.2f, 1);					
 					textPixmap.fill();
 					textPixmap.setColor(1, 0, 0, 1);					
@@ -218,7 +223,8 @@ public class DataObject extends Image
 					textPixmap.drawRectangle(2, 2, TITLE_WIDTH-4, TITLE_HEIGHT-4);
 					textPixmap.setColor(0.1f, 0, 0, 0.5f);					
 					textPixmap.drawRectangle(3, 3, TITLE_WIDTH-6, TITLE_HEIGHT-6);
-					
+				*/
+		    
 			    // get the glyph info
 			  //  BitmapFontData data = ME.font.getData();
 			    
@@ -258,7 +264,7 @@ public class DataObject extends Image
 					
 					//if a glyph is null (ie, unsupported character), we use a default space
 					if (glyph==null){
-						current_testedwidth=current_testedwidth+ defaultglyph.width +3;
+						current_testedwidth=current_testedwidth+ defaultglyph.xadvance +3;
 						continue;
 						
 					}
@@ -374,15 +380,36 @@ public class DataObject extends Image
 			
 				//add border
 				Pixmap finalpixmap = new Pixmap(TITLE_WIDTH+(ImageBorder*2), TITLE_HEIGHT+(ImageBorder*2), Format.RGBA8888);
-				finalpixmap.drawPixmap(textPixmap, ImageBorder,ImageBorder);
+								
+				finalpixmap.fill();
+				finalpixmap.setColor(1, 0, 0, 0);					
+				finalpixmap.drawRectangle(0, 0, TITLE_WIDTH, TITLE_HEIGHT);
+				finalpixmap.setColor(0.6f, 0, 0, 0.5f);					
+				finalpixmap.drawRectangle(1, 1, TITLE_WIDTH-2, TITLE_HEIGHT-2);
+				finalpixmap.setColor(0.3f, 0, 0, 1f);					
+				finalpixmap.drawRectangle(2, 2, TITLE_WIDTH-4, TITLE_HEIGHT-4);
+				finalpixmap.setColor(0.1f, 0, 0, 0.5f);					
+				finalpixmap.drawRectangle(3, 3, TITLE_WIDTH-6, TITLE_HEIGHT-6);
 				
-				imagesTextureWithMipMaps = new Texture(finalpixmap,true);
+			    Pixmap newtextPixmap = com.lostagain.nl.GWTish.Label.generatePixmap(dataname,TITLE_WIDTH,TITLE_HEIGHT,1f);//scaledown
+			    
+			//	finalpixmap.drawPixmap(textPixmap, ImageBorder,ImageBorder);
+				finalpixmap.drawPixmap(newtextPixmap, ImageBorder,ImageBorder);
+				
+				imagesTextureWithMipMaps = new Texture(finalpixmap,true); //finalpixmap
 				textPixmap.dispose();
 				finalpixmap.dispose();
 				
 				imagesTextureWithMipMaps.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
+				imagesTextureWithMipMaps.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 				this.setDrawable(new SpriteDrawable(new Sprite(imagesTextureWithMipMaps)));
 				
+				 
+			    
+			   
+			  //  texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			  //  this.setDrawable(new SpriteDrawable(new Sprite(texture)));
+			   
 			    return;
 	 }
 
@@ -414,10 +441,17 @@ public class DataObject extends Image
 
 	public void setStoredIn(DataObjectDropTarget dataObjectDropSpot) {
 		storedin=dataObjectDropSpot;
-		
-		
 	}
 
+	@Override
+	public void draw (Batch batch, float parentAlpha) {
+		batch.setShader(MainExplorationView.distancefieldshader);
+
+
+		super.draw(batch, parentAlpha);
+		batch.setShader(null);
+	}
+	
 	/** should be fired any time the mouse is released while holding a dataobject **/
 	public void droppedAt(float x, float y) {
 

@@ -2,6 +2,7 @@ package com.lostagain.nl;
 
 import java.util.logging.Logger;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector2;
@@ -16,7 +17,9 @@ public class PerspectiveStage  extends Stage {
 
 	static Logger Log = Logger.getLogger("PerspectiveStage");
 	
-	    @Override
+	    
+
+		@Override
 	    public Vector2 screenToStageCoordinates (Vector2 screenCoords) {
 	    	
 	        Ray pickRay = getViewport().getPickRay(screenCoords.x, screenCoords.y);

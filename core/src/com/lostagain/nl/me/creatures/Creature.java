@@ -25,7 +25,7 @@ import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.movements.FaceAndMoveTo;
 import com.lostagain.nl.me.movements.FaceTowards;
 import com.lostagain.nl.me.movements.Forward;
-import com.lostagain.nl.me.movements.Jerk;
+import com.lostagain.nl.me.movements.Jerk2D;
 import com.lostagain.nl.me.movements.MoveTo;
 import com.lostagain.nl.me.movements.MovementController;
 import com.lostagain.nl.me.movements.REPEAT;
@@ -138,7 +138,7 @@ public class Creature implements hitable {
 		ModelManagment.addmodel(creaturemodel);
 		ModelManagment.addHitable(this);
 		
-		movementControll = new MovementController(creaturemodel.transform,new Jerk(creaturemodel,30f,50f,500f,30000f));//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
+		movementControll = new MovementController(creaturemodel.transform,new Jerk2D(creaturemodel,30f,50f,400f,4000f));//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
 		//movementControll = new MovementController(creaturemodel.transform, new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//
 				
 	}
@@ -197,7 +197,7 @@ public class Creature implements hitable {
 		float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
 		float EY = parentpolution.centeredOnThisLocation.getHubsY(Align.center);
 		float EZ = getCenter().z;
-		movementControll.setMovement(creaturemodel,true,MoveTo.create(creaturemodel, EX, EY,EZ,3000));//
+		movementControll.setMovement(creaturemodel.transform,true,MoveTo.create(creaturemodel.transform, EX, EY,EZ,3000));//
 		
 		
 				
@@ -354,7 +354,7 @@ public class Creature implements hitable {
 		
 		if (movementControll.isMoving()){
 			
-			Matrix4 displacementFromOrigin = movementControll.getUpdate(delta,creaturemodel,origin).cpy();		
+			Matrix4 displacementFromOrigin = movementControll.getUpdate(delta,origin).cpy();		
 			creaturemodel.transform = displacementFromOrigin; //origin.cpy().mul(displacementFromOrigin);
 		
 		}

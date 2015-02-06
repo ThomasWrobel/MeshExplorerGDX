@@ -19,7 +19,7 @@ public class MoveTo  {
 		Vector3 posT = new Vector3();
 		targetObject.transform.getTranslation(posT);		
 			
-		return create(originObject, posT.x, posT.y,posT.z, duration);
+		return create(originObject.transform, posT.x, posT.y,posT.z, duration);
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class MoveTo  {
 	 * @param duration
 	 * @return
 	 */
-	public static  Movement create(ModelInstance originObject, float ex, float ey,float ez, int duration) {
+	public static  Movement create(Matrix4 originLoc, float ex, float ey,float ez, int duration) {
 
 /*
 		Vector3 posO = new Vector3();
@@ -59,7 +59,7 @@ public class MoveTo  {
 		
 		*/
 		 Vector3 destination_loc = new Vector3(ex,ey,ez);
-		Matrix4 destinationmatrix =originObject.transform.cpy().setTranslation(destination_loc);
+		Matrix4 destinationmatrix =originLoc.cpy().setTranslation(destination_loc);
 		
 		Movement newmovement= new Movement(destinationmatrix,duration);
 		newmovement.currenttype = MovementTypes.Absolute;

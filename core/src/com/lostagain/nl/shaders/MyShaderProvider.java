@@ -50,7 +50,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		case test:
 		{
 			
-			return new TestShader();
+			return new PrettyNoiseShader();
 		}
 		case invert:
 			

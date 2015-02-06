@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
-public class Jerk extends Movement {
+public class Jerk2D extends Movement {
 	
 	Matrix4 currentDestination = new Matrix4();
 	
@@ -25,7 +25,7 @@ public class Jerk extends Movement {
 	 * @param maxdistance 
 	 * @param durationTotalMS
 	 */
-	public Jerk(ModelInstance creaturemodel ,float mindistance, float maxdistance, float durationMSEachMove,float durationTotal) {
+	public Jerk2D(ModelInstance creaturemodel ,float mindistance, float maxdistance, float durationMSEachMove,float durationTotal) {
 		super( getDest(mindistance,maxdistance,creaturemodel.transform) , durationMSEachMove, durationTotal); //matrix isn't important its not used
 		
 		
@@ -37,7 +37,7 @@ public class Jerk extends Movement {
 		this.startingLocation=creaturemodel.transform.cpy();
 		this.lastLocation = startingLocation;
 	}
-	
+		
 	/**
 	 * returns the new position based on the total time eclipsed into this movement
 	 * @param delta
@@ -46,12 +46,49 @@ public class Jerk extends Movement {
 	static public Matrix4 getDest(float mindistance, float maxdistance,Matrix4 origin){	
 		
 		Matrix4 start = origin.cpy();
+								
+		Vector3 newposition = new Vector3();
+		start.getTranslation(newposition);
+
+		
+		float angle = (float) (Math.random()*360);
+		float distance =  (float) (mindistance+(Math.random()*(maxdistance-mindistance)));
+		
+		//work out new X/Y 
+		newposition.x = (float) (newposition.x + (Math.cos(Math.toRadians(angle))*distance));
+		newposition.y = (float) (newposition.y + (Math.sin(Math.toRadians(angle))*distance));
+		
+		
+		
+		// Vector3 axisVec = new Vector3();
+	     //   float existingangle = (float) (rotation.getAxisAngle(axisVec) * axisVec.nor().z);
+	       // existingangle = existingangle < 0 ? existingangle + 360 : existingangle; //convert <0 value
+
+	        //rotation.setFromAxis(axisVec, 45);
+			//start.set(rotation);//axisVec, existing angle+55);
+			
+		
+		//	start.setTranslation(newposition);
+			start.setToRotation(new Vector3(0,0,1), angle).setTranslation(newposition);
+			
+		//	start.mul(new Matrix4().setToRotation(new Vector3(0,0,1), angle));
+
+		//	Gdx.app.log(logstag, "___________________________angle="+existingangle);
+		//	Gdx.app.log(logstag, "___________________________old pos="+newposition.x+","+newposition.y+","+newposition.z);
+		
+
+		
+
+/*
 		
 		
 		//angle and translation need to be dealt with separately else you get weird issues with scaling and possibly other things
 		Vector3 newposition = new Vector3();
+		Vector3 oldposition = new Vector3();
+		
 		start.getTranslation(newposition);
-
+		start.getTranslation(oldposition);
+		
 		Gdx.app.log(logstag, "___________________________old pos="+newposition.x+","+newposition.y+","+newposition.z);
 		
 		// between 5 and 10
@@ -70,15 +107,19 @@ public class Jerk extends Movement {
 		newposition.y = newposition.y + range;
 
 		range = (float) (mindistance+(Math.random()*(maxdistance-mindistance)));
+			
 		//then move it to a random direction
 		range=(float) ((Math.signum((Math.random()-0.5)))*range);
 		
-		newposition.z = newposition.z + range;
+		//newposition.z = newposition.z + range;
 		
 
-		Gdx.app.log(logstag, "___________________________new pos="+newposition.x+","+newposition.y+","+newposition.z);
+	//	start.setToLookAt(oldposition, newposition, new Vector3(0,0,0));
+		//new Matrix4().setToRotation(new Vector3(), 45).mul(start);
 		
-		return start.setToTranslation(newposition); //end is just the start with the new position
+		Gdx.app.log(logstag, "___________________________new pos="+newposition.x+","+newposition.y+","+newposition.z);
+		*/
+		return start;///new Matrix4(). .setToRotation(new Vector3(0,0,1), 45).mulLeft(start);//start.setTranslation(newposition); //end is just the start with the new position
 		//rot
 		//Quaternion newrotation = new Quaternion();
 		//start.getRotation(newrotation);
@@ -89,11 +130,12 @@ public class Jerk extends Movement {
 
 	
 	//we get a new destination each repeat
+	//if on final repeat we should go back to the origin to make looping easier
 	@Override
 	public void onRepeat(){
 		super.onRepeat();
 		
-		Gdx.app.log(logstag, "_____________________________________________refreshSetup=");
+	//	Gdx.app.log(logstag, "_____________________________________________refreshSetup=");
 		
 		//store the last location
 		lastLocation = modelins.transform;
@@ -104,7 +146,7 @@ public class Jerk extends Movement {
 		//break the destination down into rotation and translation (one day we might use scale too)		
 		destination.getTranslation(position);		
 
-		Gdx.app.log(logstag, "______________________position="+position.x+","+position.y+","+position.z+")");
+		//Gdx.app.log(logstag, "______________________position="+position.x+","+position.y+","+position.z+")");
 						
 		//rot			
 		destination.getRotation(rotation);
