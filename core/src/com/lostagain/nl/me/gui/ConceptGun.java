@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
@@ -27,8 +28,11 @@ import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.models.MessyModelMaker;
+import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.objects.DataObject;
+import com.lostagain.nl.shaders.ConceptBeamShader;
+import com.lostagain.nl.shaders.MyShaderProvider;
 
 /** the concept gun is in many ways the main gimic of the game 
  * 
@@ -203,7 +207,7 @@ public class ConceptGun  extends WidgetGroup {
 
 	/**creates a screen relative beam from the interface to the point clicked
 	 * 
-	 * Note; This is just for the effect of firing, objects will react to being independant of this function as they are triggered
+	 * Note; This is just for the effect of firing, objects will react to being independent of this function as they are triggered
 	 * by their own mouse actions **/
 	public void fireAt(float x, float y){
 
@@ -224,7 +228,7 @@ public class ConceptGun  extends WidgetGroup {
 
 
 		//size
-		int width = 45;
+		int width = 175;
 
 		Vector2 cp = new Vector2(x,y);						
 		Vector2 cursor_on_stage =  MainExplorationView.gameStage.screenToStageCoordinates(cp);
@@ -235,8 +239,24 @@ public class ConceptGun  extends WidgetGroup {
 		//col.a  = 1 - (500 / 1000) ^ 2;
 
 		//generate mesh and texture
-		ModelInstance newlazer = MessyModelMaker.createLine(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,true,false,10); //10 makes sure the end point is wayyyyyyyy of the screen at the top to ensure the beam end never becomes visible during movement
-
+		
+		ModelInstance newlazer = ModelMaker.createLineBetween(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,10);
+		
+		
+		
+		
+	//	MessyModelMaker.createLine(fx, fy, width, cursor_on_stage.x-(width/2), cursor_on_stage.y,22,col,true,false,10); //10 makes sure the end point is wayyyyyyyy of the screen at the top to ensure the beam end never becomes visible during movement
+		
+		Gdx.app.log(logstag, "set to gun beam ");
+		newlazer.userData = MyShaderProvider.shadertypes.conceptbeam;
+	//	newlazer.nodes.get(0).
+		
+		//Renderable test = new Renderable();		
+		//newlazer.getRenderable(test);
+	//	test.shader = new ConceptBeamShader();
+		//	ModelManagment.myshaderprovider.testListShader(test);
+		
+		
 		if (lazer!=null){
 			MessyModelMaker.removeModelInstance(lazer); //one beam at a time for now!
 		}
@@ -260,6 +280,7 @@ public class ConceptGun  extends WidgetGroup {
 			//update beam is mouse still down
 			if (Gdx.input.isTouched()){
 				Vector2 tooPoint  = MainExplorationView.gameStage.screenToStageCoordinates(firePoint.cpy());
+				
 				Vector2 fromPoint = MainExplorationView.getCurrentStageCursorPosition();// .gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
 				Vector2 fromPointOri = fromPoint.cpy(); //MainExplorationView.gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
 
@@ -274,6 +295,9 @@ public class ConceptGun  extends WidgetGroup {
 				newmatrix.setToRotation(0, 0, 1, newAng);
 
 				lazer.transform.mul(newmatrix);
+				
+				Gdx.app.log(logstag, " user data:"+lazer.userData.toString());
+
 			}
 
 			//	Color col = currentColor;
@@ -290,9 +314,9 @@ public class ConceptGun  extends WidgetGroup {
 
 			lazer.materials.get(0).set(new BlendingAttribute((float) (wave*0.3)));
 
-			lazer.materials.get(1).set(new BlendingAttribute(wave));
+			//lazer.materials.get(1).set(new BlendingAttribute(wave));
 
-			lazer.materials.get(2).set(new BlendingAttribute((float) (wave*0.7)));
+			//lazer.materials.get(2).set(new BlendingAttribute((float) (wave*0.7)));
 
 			//lazer.materials.get(3).set(new BlendingAttribute(wave)); //ColorAttribute.createDiffuse(col)
 

@@ -146,6 +146,10 @@ public class NoiseShader implements Shader {
     public boolean canRender (Renderable instance) {
     	
     	shadertypes shaderenum = (shadertypes) instance.userData;
+    	if (shaderenum==null){
+    		return false;
+    	}
+    //	Gdx.app.log(logstag, "testing if noiseshader can render:"+shaderenum.toString());
     	
     	if (shaderenum==shadertypes.noise){
     		return true;

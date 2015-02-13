@@ -99,7 +99,7 @@ public class PrettyNoiseShader implements Shader {
     public boolean canRender (Renderable instance) {
 	shadertypes shaderenum = (shadertypes) instance.userData;
     	
-    	if (shaderenum==shadertypes.test){
+    	if (shaderenum==shadertypes.prettynoise){
     		return true;
     	} else {
     		return false;

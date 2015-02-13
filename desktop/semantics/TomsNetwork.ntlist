@@ -87,6 +87,7 @@ profresearchmessages.txt rdfs:subClassOf me:messages.
 profresearchmessages.txt me:ison ProfPPResearch.
 profresearchmessages.txt me:writtenin me:stdascii.
 ME:ConceptGun1 me:ison ProfPPResearch.
+ME:ConceptGun1 me:ison BobsOutpost.
 
 "Moewww!" me:DescriptionOf thecatspc.
 

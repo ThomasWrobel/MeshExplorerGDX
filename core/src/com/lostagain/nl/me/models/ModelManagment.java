@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -32,7 +33,7 @@ public class ModelManagment {
 	//for optimization
 	public static Array<ModelInstance> allModelInstances = new Array<ModelInstance>();
 	
-
+	public static MyShaderProvider myshaderprovider = new MyShaderProvider();
 	ModelBuilder modelBuilder = new ModelBuilder();
 
 
@@ -84,7 +85,9 @@ public void updateAnimatedBacks(float deltatime){
 	       // String frag = Gdx.files.internal("shaders/test.fragment.glsl").readString();
 	        
 			//modelBatch = new ModelBatch(vert,frag);
-	        modelBatch = new ModelBatch(new MyShaderProvider());
+	//	 MyShaderProvider myshaderprovider = new MyShaderProvider();
+		
+	        modelBatch = new ModelBatch(myshaderprovider);
 	        
 
 			
@@ -110,10 +113,12 @@ public void updateAnimatedBacks(float deltatime){
 			
 			
 			
-			Model  model1 = modelBuilder.createSphere(150, 150, 150, 20, 20,
-					blob,Usage.Position | Usage.Normal | Usage.TextureCoordinates );
+			//Model  model1 = modelBuilder.createSphere(150, 150, 150, 20, 20,
+			//		blob,Usage.Position | Usage.Normal | Usage.TextureCoordinates );
 			
 			//String alias = model1.meshes.get(0).getVertexAttribute(Usage.TextureCoordinates).alias;
+	        
+		//	Model model1 = ModelMaker.createRectangleAt(0, 0, 30, 200, 200, Color.BLACK, blob);
 			
 
 			//Gdx.app.log(logstag,"aliasaliasaliasalias = "+alias);
@@ -126,8 +131,9 @@ public void updateAnimatedBacks(float deltatime){
 
 			//  ModelInstance model4 = createRectangleAt(50f,50f,10f,200f,0f);
 
-			ModelInstance instance = new ModelInstance(model1); 
-			instance.userData = MyShaderProvider.shadertypes.test;
+			ModelInstance instance = ModelMaker.createRectangleAt(0, 0, 30, 200, 200, Color.BLACK, blob); // new ModelInstance(model1); 
+			
+			instance.userData = MyShaderProvider.shadertypes.conceptbeam;
 			
 			ModelManagment.addmodel(instance);
 

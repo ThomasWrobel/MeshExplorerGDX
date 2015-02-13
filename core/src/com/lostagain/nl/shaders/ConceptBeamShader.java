@@ -3,44 +3,38 @@ package com.lostagain.nl.shaders;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 
 /**
- * Basic normal-colourish shader.
- * good for a template for other shaders
+ * This shader handles the beam the projects from the players concept gun
  * 
  * @author Tom
  *
  */
-public class InvertShader extends DefaultShader {
-
-	 final static String logstag = "ME.InvertShader";
-	 public InvertShader(Renderable renderable) {
-		super(renderable);
-		// TODO Auto-generated constructor stub
-	}
-
-	ShaderProgram program;
+public class ConceptBeamShader implements Shader {
+	 ShaderProgram program;
 	 Camera camera;
 	 RenderContext context;
-	 
+	 final static String logstag = "ME.ConceptBeamShader";
 	   int u_projViewTrans;
-	    int u_worldTrans;
-	    int u_sampler2D;
-	  
+	   int u_worldTrans;
+	    int u_time;
+	    
+	   private float time;
+	   
     @Override
     public void init () {
     	
-    	  String vert = Gdx.files.internal("shaders/defaulttest.vertex.glsl").readString();
-          String frag = Gdx.files.internal("shaders/defaulttest.fragment.glsl").readString();
+    	Gdx.app.log(logstag, "init concept beam");
+    	
+    	
+    	  String vert = Gdx.files.internal("shaders/conceptbeamvert.glsl").readString();
+          String frag = Gdx.files.internal("shaders/conceptbeamfrag.glsl").readString();
           
           program = new ShaderProgram(vert, frag);
           if (!program.isCompiled()){
@@ -49,25 +43,30 @@ public class InvertShader extends DefaultShader {
           
           u_projViewTrans = program.getUniformLocation("u_projViewTrans");
           u_worldTrans = program.getUniformLocation("u_worldTrans");
-          u_sampler2D =   program.getUniformLocation("u_diffuseTexture");
+          u_time = program.getUniformLocation("u_time"); 
     }
     
-    //@Override
+    @Override
     public void dispose () {
     	
     	program.dispose();
     	
     }
     
-   // @Override
+    @Override
     public void begin (Camera camera, RenderContext context) {  
     	
     	   this.camera = camera;
            this.context = context;
-           
+           //update time
+     	  time = time+ Gdx.graphics.getDeltaTime();
+     	  
     	  program.begin();
     	  //the the variable for the cameras projectino to be passed to the shader
     	  program.setUniformMatrix(u_projViewTrans, camera.combined);
+    	  program.setUniformf(u_time, time);
+    	  
+    	  
     	  
     	  context.setDepthTest(GL20.GL_LEQUAL);    	  
           context.setCullFace(GL20.GL_BACK);
@@ -75,55 +74,40 @@ public class InvertShader extends DefaultShader {
     	  
     }
     
-   // @Override
+    @Override
     public void render (Renderable renderable) {  
     	//set the variable for the objects world transform to be passed to the shader
     	 program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
     	 
     	 
-    	 //program.setUniformf(TexCoord, value);
-    	 
-    	 if (renderable.material.get(TextureAttribute.Diffuse)!=null){
-    		 
-    		 Texture testtexture = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;  
-    		 
-    		 program.setUniformi(u_sampler2D, context.textureBinder.bind(testtexture));
-    		 
-    		 
-    		 
-    	 }// else {
-    		// program.setUniformi(u_sampler2D, 0);
-    	 //}
-    	 
-    	 
-    	 
-    	 
-    	 //program.setUniformi(u_sampler2D, 0);
-    	
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,
     	            renderable.meshPartSize);
     }
     
-   // @Override
+    @Override
     public void end () { 
     	
     	 program.end();
     }
     
-   // @Override
+    @Override
     public int compareTo (Shader other) {
         return 0;
     }
     
-   // @Override
+    @Override
     public boolean canRender (Renderable instance) {
-    	
-    	shadertypes shaderenum = (shadertypes) instance.userData;
-     	Gdx.app.log(logstag, "testing if invertshader can render:"+shaderenum.toString());
-     	
-    	if (shaderenum==shadertypes.invert){
+
+    
+	shadertypes shaderenum = (shadertypes) instance.userData;
+	if (shaderenum==null){
+		return false;
+	}
+	//Gdx.app.log(logstag, "testing if concept beam can render:"+shaderenum.toString());
+	
+    	if (shaderenum==shadertypes.conceptbeam){
     		return true;
     	} else {
     		return false;

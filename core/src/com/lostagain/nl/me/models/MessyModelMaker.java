@@ -62,8 +62,8 @@ public class MessyModelMaker {
 
 	 //Experiments
 	
-	static Pixmap pixmap;
-	static ByteBuffer temp;
+	//static Pixmap pixmap;
+	//static ByteBuffer temp;
 	
 	
 	private static ArrayList<ModelInstance> animatedbacks = new ArrayList<ModelInstance>();
@@ -192,7 +192,7 @@ public class MessyModelMaker {
 	 * @param col - colour
 	 * @param withStartBlob
 	 * @param withEndBlob - a white blob at the end
-	 * @param lengthMultiplayer - usefull if you want a line to "overshot its end point. (say, to simulate infinity)"
+	 * @param lengthMultiplayer - useful if you want a line to "overshot its end point. (say, to simulate infinity)"
 	 * @return
 	 */
 	static public ModelInstance createLine(float tooX, float tooY, float width,
@@ -660,7 +660,7 @@ public class MessyModelMaker {
 	//Doesnt work in gwt
 	public static Pixmap createNoiseImage(int w, int h){
 		
-		
+		Pixmap pixmap;
 		pixmap = new Pixmap(w, h, Format.RGBA8888);
 		//pixmap.setColor(22f, 22f, 22f, 0f);
 		

@@ -647,14 +647,13 @@ public class MainExplorationView implements Screen {
 		background.modelBatch.begin( camera);
 
 		//rcontext.begin();
-		//testdefaultShader.begin(camera, rcontext);
-		
-		background.modelBatch.render(ModelManagment.allModelInstances	);
+		//testdefaultShader.begin(camera, rcontext);		
+		background.modelBatch.render(ModelManagment.allModelInstances);
 		
 		//testdefaultShader.end();
 		background.modelBatch.end();	
-		//rcontext.end();
 		
+		//rcontext.end();		
 		//testshader.begin();
 		//testshader.setUniformMatrix("u_projTrans", camera.projection);
 		//testshader.setUniformi("u_texture", 0);

@@ -1,19 +1,25 @@
 package com.lostagain.nl.me.models;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class ModelMaker {
-	
+
+	final static String logstag = "ME.ModelMaker";
 	static public ModelInstance createRectangleAt(int x, int y,int z, int w, int h,Color MColor,Material mat) {
 
 		ModelInstance newmodel  = new ModelInstance(createRectangle(0, 0, w,h, 0,mat ));
@@ -22,6 +28,30 @@ public class ModelMaker {
 		
 		return newmodel;
 	}
+	
+	static public ModelInstance createRectangleEndCenteredAt(int x, int y,int z, int w, int h,Color MColor,Material mat) {
+		return createRectangleEndCenteredAt( x,  y, z,  w,  h, MColor, mat,0,0);
+	}
+	static public ModelInstance createRectangleEndCenteredAt(int x, int y,int z, int w, int h,Color MColor,Material mat,float disX,float disY) {
+
+		ModelInstance newmodel  = new ModelInstance(createRectangle(-(w/2)+disX, disY, (w/2)+disX,h+disY, 0,mat ));
+
+		newmodel.transform.setToTranslation(x,y,z);
+		
+		return newmodel;
+	}
+	/**
+	 * Creates a rectangle at the co-ordinates.
+	 * If material is null it uses a default one
+	 * 
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @param z
+	 * @param mat
+	 * @return
+	 */
 	
 	static public Model createRectangle(float x1,float y1,float x2,float y2,float z,Material mat ) {
 
@@ -38,9 +68,17 @@ public class ModelMaker {
 
 		//Node node = modelBuilder.node();
 		//node.translation.set(11,11,5);		
-		
-		meshBuilder = modelBuilder.part("bit", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal|Usage.TextureCoordinates, mat);
-
+		if (mat!=null){
+			meshBuilder = modelBuilder.part("bit", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal|Usage.TextureCoordinates, mat);
+		} else {
+			
+			Material defaultmaterial = new Material(ColorAttribute.createDiffuse(Color.WHITE), 
+					ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(1f), 
+					FloatAttribute.createShininess(16f));
+			
+			meshBuilder = modelBuilder.part("bit", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal|Usage.TextureCoordinates, defaultmaterial);
+					
+		}
 		
 		//meshBuilder.cone(5, 5, 5, 10);
 		
@@ -67,4 +105,40 @@ public class ModelMaker {
 
 		return model;
 	}
+
+	public static ModelInstance createLineBetween(float fromX, float fromY,int width, float tooX, float tooY, int atZ, Color col, int lengthMultiplayer) {
+		
+		float halfwidth = (width/2);
+		
+		Vector2 fromPoint = new Vector2(fromX,fromY); //we subtrack half the width to make the line center aligned
+		Vector2 tooPoint  = new Vector2(tooX,tooY); 
+
+		fromPoint.sub(tooPoint);      
+
+		//Log.info("angle="+corner2.angle());
+		//Log.info("length="+corner2.len());
+
+		float ang = fromPoint.angle()+90;
+
+		//Gdx.app.log(logstag, " creating from point:"+fromPoint.x+","+fromPoint.y+" ---- "+tooPoint.x+","+tooPoint.y+"  ang="+ang);
+		//ang=ang+45;
+		
+		float displacementDownY = -60;
+		float displacementDownX = 0;
+		ModelInstance newline = createRectangleEndCenteredAt((int)(fromX),(int)(fromY),(int)atZ,(int)width,(int)((fromPoint.len()*lengthMultiplayer)),col,null,displacementDownX,displacementDownY);
+		                                       
+		//newline.materials.get(0).set(new BlendingAttribute(0.25f));
+
+		Matrix4 newmatrix = new Matrix4();
+		newmatrix.setToRotation(0, 0, 1, ang);
+
+		newline.transform.mul(newmatrix);
+		//newlinetop.transform.mul(newmatrix);
+
+		Gdx.app.log(logstag,"x="+fromX+"y="+fromY);
+		
+		return newline;
+	}
+
+	
 }
