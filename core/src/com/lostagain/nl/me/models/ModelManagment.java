@@ -233,9 +233,9 @@ public void updateAnimatedBacks(float deltatime){
 		
 	}
 
-	public static void removeHitable(hitable model) {
+	public static boolean removeHitable(hitable model) {
 		
-		hitables.removeValue(model,true);
+		return hitables.removeValue(model,true);
 
 		
 		

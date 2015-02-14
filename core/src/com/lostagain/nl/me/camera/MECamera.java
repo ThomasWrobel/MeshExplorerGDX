@@ -21,6 +21,8 @@ import com.lostagain.nl.me.movements.MovementController;
 public class MECamera extends PerspectiveCamera {
 	
 	public static EffectOverlay mainOverlay= new EffectOverlay();
+
+	public static CameraBackground background= new CameraBackground();
 	Matrix4 startingLocation = new Matrix4();
 
 	final static String logstag = "ME.MECamera";
@@ -87,6 +89,9 @@ public class MECamera extends PerspectiveCamera {
 		mainOverlay.transform.setTranslation(position);
 		float heightbasedopacity = (position.z-380.0f)/1000.0f; //(600 - 1000)/1000 		
 		MECamera.mainOverlay.setEffectOpacity(heightbasedopacity);
+		
+		mainOverlay.transform.setTranslation(position);
+		background.transform.setTranslation(position).mul(new Matrix4().setToTranslation(0, 0, -600));
 		
 	}
 

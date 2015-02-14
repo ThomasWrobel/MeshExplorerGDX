@@ -15,6 +15,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 	//known shaders
 	static public enum shadertypes {
 		prettynoise,
+		subtlegrid,
 		invert,
 		standardlibgdx, 
 		noise,
@@ -91,6 +92,10 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		case distancefield:
 		{
 			return new DistanceFieldShader();
+		}
+		case subtlegrid:
+		{
+			return new SubtleGrid();
 		}
 		default:
 			return super.createShader(renderable);

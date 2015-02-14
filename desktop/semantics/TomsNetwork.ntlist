@@ -19,7 +19,7 @@ smallInfovorPopulation me:anydrop Human.
 smallInfovorPopulation me:exactdrop Apple.
 smallInfovorPopulation me:anydrop Fish.
 smallInfovorPopulation me:killedon "fruit".
-smallInfovorPopulation me:hitPoints 2.
+smallInfovorPopulation me:hitPoints 10.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #003300.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #005522.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #11BB00.

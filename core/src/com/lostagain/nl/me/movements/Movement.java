@@ -15,8 +15,10 @@ public class Movement {
 
 	Matrix4 destination;
 	
-	Vector3 position = new Vector3();
-	Quaternion rotation = new Quaternion();		
+	Vector3 destposition = new Vector3();
+	Quaternion destrotation = new Quaternion();		
+	Vector3 destscale = new Vector3(1f,1f,1f);
+	
 	float LastWholeDelta = 0;
 	
 	enum MovementTypes{
@@ -57,10 +59,14 @@ public class Movement {
 		
 		
 		//break the destination down into rotation and translation (one day we might use scale too)		
-		destination.getTranslation(position);		
+		destination.getTranslation(destposition);		
 		
 		//rot			
-		destination.getRotation(rotation);
+		destination.getRotation(destrotation);
+		
+		//scale
+		destination.getScale(destscale);
+		
 		
 	};
 	
@@ -72,11 +78,13 @@ public class Movement {
 		
 		
 		//break the destination down into rotation and translation (one day we might use scale too)		
-		destination.getTranslation(position);		
+		destination.getTranslation(destposition);		
 		
 		//rot			
-		destination.getRotation(rotation);
-		
+		destination.getRotation(destrotation);
+
+		//scale
+		destination.getScale(destscale);
 	};
 	
 	
@@ -124,17 +132,20 @@ public class Movement {
 		}
 		
 					
-			//if we are working in relative mode we lerp between 0,0,0 and the destination (ie, we are messuring the displacement)
+			//if we are working in relative mode we lerp between 0,0,0 and the destination (ie, we are measuring the change)
 			
 			float ratio = (subdelta/durationMSEachMove); //scales the time position from start to end to between 0.0 and 1.0
 			
 			//angle and translation need to be dealt with separately else you get weird issues with scaling and possibly other things
-			Vector3 newposition = new Vector3().lerp(position, ratio);
+			Vector3 newposition = new Vector3().lerp(destposition, ratio);
 			
 			//rot
-			Quaternion newrotation = new Quaternion().slerp(rotation, ratio);
+			Quaternion newrotation = new Quaternion().slerp(destrotation, ratio);
 					
-			return new Matrix4(newposition,newrotation,new Vector3(1f, 1f, 1f));
+			//scale
+			Vector3 newscale =  new Vector3(1f,1f,1f).lerp(destscale, ratio);
+			
+			return new Matrix4(newposition,newrotation,newscale);
 		
 		
 		
@@ -185,24 +196,31 @@ public class Movement {
 					
 			//if we are working in absolute we lerp between current location and destination
 			Matrix4 start = lastLocation;
-			
+			//loc
 			Vector3 startLocation = new Vector3();
 			start.getTranslation(startLocation);		
-			Quaternion startRotation = new Quaternion();	
 			
-			//rot				
+			//rot			
+			Quaternion startRotation = new Quaternion();	
 			start.getRotation(startRotation);
 			
+			//scale
+			Vector3 startScale = new Vector3();
+			start.getScale(startScale);	
+			//Gdx.app.log(logstag, "_____________________________________________start scale="+start.getScaleX());
 			
 			float ratio = (subdelta/durationMSEachMove); //scales the time position from start to end to between 0.0 and 1.0
 			
 			//angle and translation need to be dealt with separately else you get weird issues with scaling and possibly other things
-			Vector3 newposition = startLocation.lerp(position, ratio);
+			Vector3 newposition = startLocation.lerp(destposition, ratio);
 			
 			//rot
-			Quaternion newrotation = startRotation.slerp(rotation, ratio);
-					
-			return new Matrix4(newposition,newrotation,new Vector3(1f, 1f, 1f));
+			Quaternion newrotation = startRotation.slerp(destrotation, ratio);
+			
+			//scale
+			Vector3 newscale = startScale.lerp(destscale, ratio);
+			
+			return new Matrix4(newposition,newrotation,newscale);
 		
 		
 		
@@ -223,6 +241,7 @@ public class Movement {
 	 */
 	public void onRestart(Matrix4 newstart) {
 		lastLocation = newstart;
+		//Gdx.app.log(logstag, "_____________________________________________lastLocation scale="+lastLocation.getScaleX());
 	}
 	
 

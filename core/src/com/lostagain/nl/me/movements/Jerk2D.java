@@ -152,14 +152,14 @@ public class Jerk2D extends Movement {
 		}
 	
 		//break the destination down into rotation and translation (one day we might use scale too)		
-		destination.getTranslation(position);		
+		destination.getTranslation(destposition);		
 
 		//Gdx.app.log(logstag, "______________________position="+position.x+","+position.y+","+position.z+")");
 						
 		//rot			
-		destination.getRotation(rotation);
+		destination.getRotation(destrotation);
 		
-		
+		destination.getScale(destscale);
 				
 	}
 	

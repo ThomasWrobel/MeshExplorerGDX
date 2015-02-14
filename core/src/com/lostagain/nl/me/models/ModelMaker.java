@@ -140,5 +140,23 @@ public class ModelMaker {
 		return newline;
 	}
 
+	public ModelInstance createSphere(float radius){
+		
+		ModelBuilder modelBuilder = new ModelBuilder();
+
+        Material blob = new Material(
+        		ColorAttribute.createDiffuse(Color.PINK), 
+				ColorAttribute.createSpecular(Color.WHITE),
+				new BlendingAttribute(1f), 
+				FloatAttribute.createShininess(16f));
+
+		modelBuilder.begin();
+		Model model =  modelBuilder.createSphere(radius, radius, radius, 20, 20,
+						blob,Usage.Position | Usage.Normal | Usage.TextureCoordinates );
+	
+		
+		return new ModelInstance(model);
+		
+	}
 	
 }

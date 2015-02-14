@@ -161,7 +161,8 @@ public class MainExplorationView implements Screen {
     
     boolean newtouch=true; //if a touch event has just started
     
-	boolean touchedAModel = false;
+	public static boolean touchedAModel = false;
+	
     
  
 	
@@ -684,10 +685,7 @@ public class MainExplorationView implements Screen {
 				
 				//trigger concept gun
 				usersGUI.ConceptGun.fireAt(Gdx.input.getX(), Gdx.input.getY());				
-				
-				Ray ray = camera.getPickRay(Gdx.input.getX(), Gdx.input.getY());
-				touchedAModel = ModelManagment.testForHit(ray);
-				Gdx.app.log(logstag,"_-touch down on a model-_");
+			
 					
 			}
 			

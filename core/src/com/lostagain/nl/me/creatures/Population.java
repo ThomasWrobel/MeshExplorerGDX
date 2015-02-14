@@ -66,7 +66,7 @@ public class Population {
 		query,clicks,cant
 	}
 	destructOn destructionType = null; //defaults to a clicks unless a query is specified
-	int hitPoints = 1; //can have more in future, possibly scaled to an attack variable
+	int hitPoints = 10; //default can have more in future, possibly scaled to an attack variable
 	
 	//require node matching this query to destroy
 	String queryToDestroy = "";

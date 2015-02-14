@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
@@ -77,11 +78,16 @@ public class ConceptGun  extends WidgetGroup {
 	
 	
 	//other
-
 	ModelInstance lazer;
+	
 
+
+	private float currenscreentargetX=0f;
+	private float currenscreentargetY=0f;
+	private float timeSinceLastHitCheck = 0f;
+	
 	private float currenttime=0f;
-	private float totaltime=0.8f;
+	private float totaltime=1.8f; //0.8
 
 	public ConceptGun() {
 
@@ -232,7 +238,8 @@ public class ConceptGun  extends WidgetGroup {
 
 		Vector2 cp = new Vector2(x,y);						
 		Vector2 cursor_on_stage =  MainExplorationView.gameStage.screenToStageCoordinates(cp);
-
+		Gdx.app.log(logstag, " createBeamEffect targeting stage:"+cursor_on_stage.x+","+cursor_on_stage.y);
+		
 		//color
 		Color col = new Color(randomColorFromConcept());
 
@@ -272,16 +279,38 @@ public class ConceptGun  extends WidgetGroup {
 
 	}
 
+	/**
+	 * if the gun is firing this tests for hits under its target
+	 */
+	public void testForHits(){
+
+		Vector2 currentCursor = MainExplorationView.getCurrentCursorScreenPosition();
+		
+		Gdx.app.log(logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
+		Ray ray = MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
+		MainExplorationView.touchedAModel = ModelManagment.testForHit(ray);
+		
+		if (MainExplorationView.touchedAModel){
+			Gdx.app.log(logstag,"_-touch down on a model-_");
+		}
+	}
+	
 	public void update(float delta){
 		if (lazer!=null){
 
+			
 			//work out new angle (if mouse has moved)
 
 			//update beam is mouse still down
 			if (Gdx.input.isTouched()){
+			
+				
 				Vector2 tooPoint  = MainExplorationView.gameStage.screenToStageCoordinates(firePoint.cpy());
 				
 				Vector2 fromPoint = MainExplorationView.getCurrentStageCursorPosition();// .gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
+				//currenscreentargetX = fromPoint.x; //update cursor pos
+			//	currenscreentargetY = fromPoint.y;
+				
 				Vector2 fromPointOri = fromPoint.cpy(); //MainExplorationView.gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
 
 				fromPoint.sub(tooPoint); 	
@@ -296,7 +325,19 @@ public class ConceptGun  extends WidgetGroup {
 
 				lazer.transform.mul(newmatrix);
 				
-				Gdx.app.log(logstag, " user data:"+lazer.userData.toString());
+				//Gdx.app.log(logstag, " user data:"+lazer.userData.toString());
+
+			//	Gdx.app.log(logstag, " timeSinceLastHitCheck:"+timeSinceLastHitCheck);
+				//check for new hits every repeat of pulse
+				timeSinceLastHitCheck = timeSinceLastHitCheck + delta;
+				if (timeSinceLastHitCheck>0.100){
+					timeSinceLastHitCheck = timeSinceLastHitCheck -0.100f;
+					Gdx.app.log(logstag, " hit check triggered! "+timeSinceLastHitCheck);					
+					testForHits();
+				}
+				
+				
+				
 
 			}
 
@@ -307,12 +348,12 @@ public class ConceptGun  extends WidgetGroup {
 			//Gdx.app.log(logstag, " times:"+times);
 
 
-			float wave = (float) Math.cos(((times)*(2*Math.PI))+Math.PI);   //Math.pow((1f - ((10-currenttime) / 10f)),2);// ^ 2f;
+			//float wave = (float) Math.cos(((times)*(2*Math.PI))+Math.PI);   //Math.pow((1f - ((10-currenttime) / 10f)),2);// ^ 2f;
 			// col.a = (wave+1)/2;
 
 			//Gdx.app.log(logstag, " a"+col.a);
 
-			lazer.materials.get(0).set(new BlendingAttribute((float) (wave*0.3)));
+			//lazer.materials.get(0).set(new BlendingAttribute((float) (wave*0.3)));
 
 			//lazer.materials.get(1).set(new BlendingAttribute(wave));
 

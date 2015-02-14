@@ -237,6 +237,8 @@ public class MovementController {
 			old_movements.clear();
 			old_movements.addAll(movements);
 			resumeold=true;
+		} else {
+			resumeold=false;
 		}
 		
 		movements.clear();
@@ -276,7 +278,13 @@ public class MovementController {
 		//totalTime = currentMovement.durationMS; //total time of all movements
 		
 	}
-	
+	public boolean isGoingToResumeAfter() {
+		
+			return resumeold;
+		
+		
+	}
+
 	
 	public boolean isMoving() {
 		if (currentMovement!=null){

@@ -29,6 +29,7 @@ import com.lostagain.nl.me.movements.Jerk2D;
 import com.lostagain.nl.me.movements.MoveTo;
 import com.lostagain.nl.me.movements.MovementController;
 import com.lostagain.nl.me.movements.REPEAT;
+import com.lostagain.nl.me.movements.RelativeScale;
 import com.lostagain.nl.me.movements.RotateLeft;
 import com.lostagain.nl.me.movements.RunAwayFrom;
 import com.lostagain.nl.me.objects.DataObject;
@@ -54,7 +55,8 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 	 * the starting location of the creature 
 	 */
 	Matrix4 origin = new Matrix4();
-		
+	Matrix4 currerntScale =  new Matrix4().scl(1f);
+	
 	//movement
 	MovementController movementControll;//,new Forward(-300,1000)
 	
@@ -76,7 +78,8 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
     
 	destructOn destructionType = destructOn.clicks; //defaults to a clicks if no query specified
 	int numOfHitsLeft = 10;
-
+	boolean destroyed = false;
+	
 	//query that defines what removes it
 	String queryToDestroy; 
 	
@@ -188,12 +191,18 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 
 
 	private void hit() {
-		
+		Gdx.app.log(logstag, " creature hit  ");	
+		if (destroyed){
+			Gdx.app.log(logstag, " already being destroyed ");
+			return;
+		}
 		ConceptGun.animateImpactEffect();
 
 		//when hit move away randomly		
 		
 		float angle = (float) (Math.random()*360);
+		
+		Gdx.app.log(logstag, " setting movementControll currently moving: "+movementControll.isMoving());	
 		movementControll.setMovement(creaturemodel.transform,true,new RotateLeft(angle,60),new Forward(70,150));
 		
 		//test motion
@@ -249,7 +258,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 						// this is what happens if the concept was in the acceptable results
 						//for what can destroy (or at least damage) this creature
 						numOfHitsLeft--;
-						
+						Gdx.app.log(logstag, " creature numOfHitsLeft  "+numOfHitsLeft);
 						if (numOfHitsLeft<1){
 							//fire the destroy command on this creature
 							Creature.this.destroy();
@@ -282,10 +291,24 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 	
 	/** runs the animation of this creature getting damaged **/
 	protected void damaged() {
+
+		Gdx.app.log(logstag,"creature damaged");
 		
 		final ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);		
 		attribute.color.set( Color.RED );
 		
+		
+		//make this thing bigger (slowly gets bigger then explodes is the plan)
+
+		currerntScale.scl(1.2f);
+		//creaturemodel.transform.scl(1.1f);
+
+		Gdx.app.log(logstag,"making bigger:"+currerntScale.getScaleX());
+		Gdx.app.log(logstag,"animating:"+movementControll.isMoving());
+		Gdx.app.log(logstag,"resuming after:"+movementControll.isGoingToResumeAfter());
+		movementControll.setMovement(creaturemodel.transform,false,new RelativeScale(1.2f,50));
+		//update radius
+		this.hitradius = (int) (hitradius * 1.2f);
 		
 		Timer.schedule(new Task(){
 
@@ -303,16 +326,17 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 
 
 	protected void destroy() {
+		destroyed=true;
+		//ConceptGun.animateImpactEffect();
+		//remove from visuals
+		ModelManagment.removeModel(creaturemodel);
 
-		ConceptGun.animateImpactEffect();
+		Gdx.app.log(logstag,"_destroying model....removed:"+ModelManagment.removeHitable(this));
 		
-		Gdx.app.log(logstag,"_destroying model");
 		
 		movementControll.clearMovement();
 				
-		//remove from visuals
-		ModelManagment.removeModel(creaturemodel);
-		ModelManagment.removeHitable(this);
+	
 				
 		//ensure its gone
 		creaturemodel=null;
@@ -358,8 +382,9 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		if (movementControll.isMoving()){
 			
 			Matrix4 displacementFromOrigin = movementControll.getUpdate(delta,origin).cpy();		
-			creaturemodel.transform = displacementFromOrigin; //origin.cpy().mul(displacementFromOrigin);
+			creaturemodel.transform =  displacementFromOrigin;//.mul(currerntScale); // displacementFromOrigin;// .scl(currerntScale); //origin.cpy().mul(displacementFromOrigin);
 		
+			
 		}
 		
 		
