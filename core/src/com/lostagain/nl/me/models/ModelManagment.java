@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.lostagain.nl.me.creatures.Creature;
+import com.lostagain.nl.shaders.ConceptBeamShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
 
 public class ModelManagment {
@@ -107,7 +108,7 @@ public void updateAnimatedBacks(float deltatime){
 	        		ColorAttribute.createDiffuse(Color.BLUE), 
 					ColorAttribute.createSpecular(Color.WHITE),
 					new BlendingAttribute(1f), 
-					FloatAttribute.createShininess(16f),new MyShaderProvider.ConceptBeamAttribute(0.4f,Color.BLUE,Color.WHITE));
+					FloatAttribute.createShininess(16f),new ConceptBeamShader.ConceptBeamAttribute(0.4f,Color.BLUE,Color.WHITE));
 
 	        blob.set(TextureAttribute.createDiffuse(blobtexture));
 			

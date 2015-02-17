@@ -22,6 +22,11 @@ import com.lostagain.nl.uti.MeshWorld;
 public class Location {
 
 	final static String logstag = "ME.Location";
+	/**
+	 * When locations are made, this gives them a slight randomization in their x/y position
+	 * This stops a grid of locations forming thats a bit too regular
+	 */
+	final static float PositionNoise = 50;
 	
 	public LocationsHub locationsHub;
 	
@@ -96,20 +101,31 @@ public class Location {
 		String domain = locationsnode.getPURI();
 		Gdx.app.log(logstag, "domain is=="+domain);
 
+		
+		
+		//Currently the location is taking from the domain (its makes a arbitary position from the letters)
+		//We then check if theres any existing locations at that spot, and if so, we move around the domain to find the Next Unused Position
+		//This results in locations forming a star like patturn around their domains center
+		//In future we might want to look into different layout forms for different domains to help give them their own flavour
 		Vector2 loc =  MeshWorld.locationFromDomain(domain);
+		
 
 		int X = (int) loc.x;  //(int) (Math.random()*2500);
 		int Y = (int) loc.y; //500;
 		
-		//random y very slightly just for stylistic effect
-		Y = (int) (Y + (Math.random()*200 -10));
+		//random position very slightly just for stylistic effect
 		
-		Gdx.app.log(logstag, "getting unused location. Testing:"+X+","+Y);
+		Y = (int) (Y + (Math.random()*PositionNoise -(PositionNoise/2)));
+		X = (int) (X + (Math.random()*PositionNoise -(PositionNoise/2)));
+		
+		Gdx.app.log(logstag, "getting unused location for "+locationsnode.getPLabel()+". Testing:"+X+","+Y);
 
-		X = getNextUnusedPosition(X,Y);
+		//X = getNextUnusedPosition(X,Y);
+		Vector2 newLocation = getNextUnusedPosition(X,Y); 
 		
 		//set up as normal
-		seupLocation(locationsnode, X, Y);
+		seupLocation(locationsnode, (int)newLocation.x, (int)newLocation.y); //just cast for now for rounding. Could also use Math.Floor. Not really important the precise half pixel.
+		
 	}
 	
 	private void getLocationsPropertys() {
@@ -201,12 +217,110 @@ public class Location {
 		MainExplorationView.addnewlocation(locationsHub,X, Y);
 	}
 	
-	private static int getNextUnusedPosition(int x, int y) {
+	
+	/**
+	 * Attempts to find the nearest free spot around the current point.
+	 * 
+	 * Tests clockwise by a regular number of degrees
+	 * Moving out further if no free space found within that circle, and test again
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	private static Vector2 getNextUnusedPosition(int x, int y) {
+		
+		Vector2 requestedPosition = new Vector2(x,y);
+		
+		//spacing distance
+		float dis = 500+PositionNoise; //should be set to at least the container size + the position variance
+		Vector2 newPosition = null;
+		boolean spaceFree=true;
+		
+		//we currently have a cap on 10 enlargements of the initial distance (so, 500x10) will be the maximum range it will check before giving up
+		//on finding a free space
+		//Note, it will have to be a pretty crowded location to ever get this far
+		for (int i = 0; i < 10; i++) {
+		
+		Vector2 offset = new Vector2(0,dis*i);	
+		
+		int testingAng=0;
+		
+		for (testingAng = 0; testingAng < 360; testingAng=testingAng+90) {
+			
+			offset.rotate(testingAng); //rotate the offset to the new angle
+			
+			//get new position to test
+			newPosition =  new Vector2(requestedPosition);	//the new position is the old one	
+			newPosition.add(offset); //with the offset added to it
+			
+			Gdx.app.log(logstag, "Testing "+testingAng+" position:"+newPosition.x+","+newPosition.y);
+			
+			//test the position			
+			spaceFree=testIfPositionFree(newPosition);
+			
+			if (spaceFree){
+				return newPosition;//if free we just return the found position 
+			}
+			
+		}
+
+		Gdx.app.log(logstag, "ran out of positions in range,moving out ");
+		
+		}
+		return newPosition;
+		
+	}
+	
+	
+	
+	
+	private static boolean testIfPositionFree(Vector2 testingAng) {
+		
+		int CONHEIGHT = 500;
+		int CONWIDTH = 500;
+		
+		//loop over all locations, displace X if its overlaps
+		for (LocationsHub con : AllLocationContainers.values()) {
+
+			float miny = con.getY();
+			float maxy = con.getY() + con.getHeight();
+
+			float minx = con.getX();
+			float maxx = con.getX() + con.getWidth();
+
+			Gdx.app.log(logstag, "loc="+con.displayLocation);
+
+			//Gdx.app.log(logstag, "minx="+minx+" maxx="+maxx+" x="+testingAng.x);
+			//Gdx.app.log(logstag, "miny="+miny+" maxy="+maxy+" y="+testingAng.y);
+			
+			//if within y with margin
+			if (((testingAng.y+CONHEIGHT)>miny-5) && (testingAng.y<maxy+5))
+			{
+				Gdx.app.log(logstag, "within y");
+				
+				if (((testingAng.x+CONWIDTH)>minx-5) && (testingAng.x<maxx+5)){
+
+					Gdx.app.log(logstag, "within x and y - we hit "+con.displayLocation);
+
+					return false;
+
+				}
+
+			}
+
+		}
+				
+		return true;
+	}
+
+	private static int getNextUnusedPosition_OldLinearMethod(int x, int y) {
 
 		Boolean xchanged = true;
 
 		int CONHEIGHT = 500;
 		int CONWIDTH = 500;
+			
 
 		while (xchanged)
 		{

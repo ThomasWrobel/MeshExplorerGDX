@@ -503,7 +503,7 @@ public class LocationsHub extends Table {
 	}
 
 	/** populates the contents on this machine from the supplied nodes **/
-	protected void populateContents(ArrayList<SSSNode> testresult) {
+	protected void populateContents(ArrayList<SSSNode> contentResults) {
 
 
 
@@ -523,9 +523,9 @@ public class LocationsHub extends Table {
 		int data=0;
 		int abil=0;
 
-		Gdx.app.log(logstag,"_____________contents:  "+testresult.size());
+		Gdx.app.log(logstag,"_____________contents:  "+contentResults.size());
 
-		for (SSSNode sssNode : testresult) {
+		for (SSSNode sssNode : contentResults) {
 
 
 			Gdx.app.log(logstag,"Adding :"+sssNode.getPLabel());
@@ -610,19 +610,19 @@ public class LocationsHub extends Table {
 		DoSomethingWithNodesRunnable callback2 = new DoSomethingWithNodesRunnable(){
 
 			@Override
-			public void run(ArrayList<SSSNode> testresult, boolean invert) {
+			public void run(ArrayList<SSSNode> contents, boolean invert) {
 
-				if (testresult.size()>0){
+				if (contents.size()>0){
 
 					//remove duplicates by using an HashSet
 					// add elements to al, including duplicates
 					HashSet hs = new HashSet();
-					hs.addAll(testresult);
-					testresult.clear();
-					testresult.addAll(hs);
+					hs.addAll(contents);
+					contents.clear();
+					contents.addAll(hs);
 
 					Gdx.app.log(logstag,"populate contents");
-					populateContents(testresult);
+					populateContents(contents);
 
 
 				}

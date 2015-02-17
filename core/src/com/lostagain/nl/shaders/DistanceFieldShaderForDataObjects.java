@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.lostagain.nl.shaders.ConceptBeamShader.ConceptBeamAttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 
 /**
@@ -27,6 +29,50 @@ public class DistanceFieldShaderForDataObjects implements Shader {
 
 	public static DistanceFieldShaderForDataObjects Default = new DistanceFieldShaderForDataObjects();
 		 
+	 ///------------------
+	// Create a custom attribute, see https://github.com/libgdx/libgdx/wiki/Material-and-environment
+	// See also: http://blog.xoppa.com/using-materials-with-libgdx/
+   /**
+	 * The presence of this parameter will cause the DistanceFieldttribute to be used
+	 * */
+	public static class DistanceFieldttribute extends Attribute {
+		public final static String Alias = "DistanceFieldttribute";
+		public final static long ID = register(Alias);
+
+		public float smoothing;
+		public Color fontcolour;
+		public Color backcolour;
+		/**
+		 * The presence of this parameter will cause the DistanceFieldShaderForDataObjects to be used
+		 * @param smoothing - how smooth the font is rendered at (should be set to 0.25/(filesmooth*fontfilescale))
+		 * @param fontcolour - the colour of the font (defaults to the colour in the texture if null)
+		 * @param backcolour - background colour (defaults to transparent if null)
+		 */
+		public DistanceFieldttribute (final float smoothing,final Color fontcolour,final Color backcolour ) {
+			
+			super(ID);
+			this.smoothing = smoothing;
+			this.fontcolour =fontcolour;
+			this.backcolour = backcolour;
+		}
+
+		@Override
+		public Attribute copy () {
+			return new ConceptBeamAttribute(smoothing,fontcolour,backcolour);
+		}
+
+		@Override
+		protected boolean equals (Attribute other) {
+			if ((((ConceptBeamAttribute)other).width == smoothing) &&
+				(((ConceptBeamAttribute)other).beamcolor == fontcolour) &&
+				(((ConceptBeamAttribute)other).corecolor == backcolour) 
+				){
+				return true;
+				
+			}
+			return false;
+		}
+	}	
 	
 	
 	public ShaderProgram program;

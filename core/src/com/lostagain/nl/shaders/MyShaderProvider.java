@@ -24,42 +24,8 @@ public class MyShaderProvider extends DefaultShaderProvider {
 	final static String logstag = "ME.MyShaderProvider";
 	
 	
-	//attribute types
-	// Create a custom attribute, see https://github.com/libgdx/libgdx/wiki/Material-and-environment
-		// See also: http://blog.xoppa.com/using-materials-with-libgdx/
-		public static class ConceptBeamAttribute extends Attribute {
-			public final static String Alias = "ConceptBeamAttribute";
-			public final static long ID = register(Alias);
+	//attribute types stored in shader types themselves
 
-			public float width;
-			public Color beamcolor;
-			public Color corecolor;
-			
-			public ConceptBeamAttribute (final float width,final Color beamcolor,final Color corecolor ) {
-				
-				super(ID);
-				this.width = width;
-				this.beamcolor = beamcolor;
-				this.corecolor = corecolor;
-			}
-
-			@Override
-			public Attribute copy () {
-				return new ConceptBeamAttribute(width,beamcolor,corecolor);
-			}
-
-			@Override
-			protected boolean equals (Attribute other) {
-				if ((((ConceptBeamAttribute)other).width == width) &&
-					(((ConceptBeamAttribute)other).beamcolor == beamcolor) &&
-					(((ConceptBeamAttribute)other).corecolor == corecolor) 
-					){
-					return true;
-					
-				}
-				return false;
-			}
-		}	
 	
 	
 	

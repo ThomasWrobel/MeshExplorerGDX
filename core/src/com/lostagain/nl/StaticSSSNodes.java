@@ -34,14 +34,14 @@ public class StaticSSSNodes {
 	public static final SSSNode knows =  SSSNode.createSSSNode(ME.INTERNALNS+"knows", ME.INTERNALNS);
 	
 	//default language
-	public static final SSSNode stdascii =  SSSNode.createSSSNode(ME.INTERNALNS+"stdascii",ME.INTERNALNS+"stdascii", ME.INTERNALNS,new SSSNode[]{language});
+	public static final SSSNode stdascii =  SSSNode.createSSSNode("Stdascii",ME.INTERNALNS+"stdascii", ME.INTERNALNS,new SSSNode[]{language});
 
 	//other languages
-	public static final SSSNode scram1 =  SSSNode.createSSSNode(ME.INTERNALNS+"scram1",ME.INTERNALNS+"scram1", ME.INTERNALNS,new SSSNode[]{language});
+	public static final SSSNode scram1 =  SSSNode.createSSSNode("Scram1",ME.INTERNALNS+"scram1", ME.INTERNALNS,new SSSNode[]{language});
 
 	//Ability's
-	public static final SSSNode ability= SSSNode.createSSSNode(ME.INTERNALNS+"ability", ME.INTERNALNS+"ability", ME.INTERNALNS,new SSSNode[]{software});	
-	public static final SSSNode decoder= SSSNode.createSSSNode(ME.INTERNALNS+"decoder", ME.INTERNALNS+"decoder", ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode ability= SSSNode.createSSSNode("Ability", ME.INTERNALNS+"ability", ME.INTERNALNS,new SSSNode[]{software});	
+	public static final SSSNode decoder= SSSNode.createSSSNode("Decoder", ME.INTERNALNS+"decoder", ME.INTERNALNS,new SSSNode[]{ability});
 	
 	//define decoders
 	public static final SSSNode asciidecoder= SSSNode.createSSSNode ("Asciidecoder" , ME.INTERNALNS+"asciidecoder",  ME.INTERNALNS,new SSSNode[]{decoder});
@@ -51,14 +51,14 @@ public class StaticSSSNodes {
 	public static final SSSNodesWithCommonProperty knowsScram1 = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(knows, scram1, new SSSNode[]{scram1decoder});
 	
 	//scanner (scans links and retrieves downloads)
-	public static final SSSNode scanner = SSSNode.createSSSNode(ME.INTERNALNS+"scanner", ME.INTERNALNS+"scanner", ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode scanner = SSSNode.createSSSNode("scanner", ME.INTERNALNS+"scanner", ME.INTERNALNS,new SSSNode[]{ability});
 	public static final SSSNode prototype_scanner = SSSNode.createSSSNode("PrototypeScanner", ME.INTERNALNS+"PrototypeScanner", ME.INTERNALNS,new SSSNode[]{scanner});
 	
 	//memory ability	
-	public static final SSSNode STMemoryAbility = SSSNode.createSSSNode(ME.INTERNALNS+"STMemoryAbility", ME.INTERNALNS+"STMemoryAbility", ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode STMemoryAbility = SSSNode.createSSSNode("STMemoryAbility", ME.INTERNALNS+"STMemoryAbility", ME.INTERNALNS,new SSSNode[]{ability});
 	
 	//concept gun ability	
-	public static final SSSNode ConceptGun1 = SSSNode.createSSSNode(ME.INTERNALNS+"ConceptGun1", ME.INTERNALNS+"ConceptGun1", ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode ConceptGun1 = SSSNode.createSSSNode("ConceptGun1", ME.INTERNALNS+"ConceptGun1", ME.INTERNALNS,new SSSNode[]{ability});
 		
 	
 	//give it base abilities

@@ -140,9 +140,15 @@ public class ME extends Game {
     	        	
     		        //Use LibGDX's default Arial font.
     		      //  
-    		        
+    	        	//ArrayList<SSSNode> workingnodes = SSSNode.getAllKnownNodes();
+    		      //  for (SSSNode sssNode : workingnodes) {						
 
-    	        	ME.startgame();
+        	      //  	Gdx.app.log(logstag,"_________"+sssNode.getPLabel());
+        	        	
+        	        	
+					//}
+
+    	        	ME.startgame(); 
     	        	
     	        	
     	        	final DoSomethingWithNodesRunnable display = new DoSomethingWithNodesRunnable(){

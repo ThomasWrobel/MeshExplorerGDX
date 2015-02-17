@@ -252,9 +252,9 @@ public class ConceptGun  extends WidgetGroup {
 		
 	//	MessyModelMaker.createLine(fx, fy, width, cursor_on_stage.x-(width/2), cursor_on_stage.y,22,col,true,false,10); //10 makes sure the end point is wayyyyyyyy of the screen at the top to ensure the beam end never becomes visible during movement
 		
-		
+		//ColorAttribute.createDiffuse(Color.RED),
 		Gdx.app.log(logstag, "set to gun beam ");
-		Material lazerMat = new Material("LazerMaterial", ColorAttribute.createDiffuse(Color.RED),new MyShaderProvider.ConceptBeamAttribute(0.25f,Color.RED,Color.WHITE),new BlendingAttribute(0.95f));//
+		Material lazerMat = new Material("LazerMaterial", new ConceptBeamShader.ConceptBeamAttribute(0.25f,col,Color.WHITE),new BlendingAttribute(0.95f));//
 		
 		ModelInstance newlazer = ModelMaker.createLineBetween(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,lazerMat,10);
 				
