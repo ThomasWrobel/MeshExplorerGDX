@@ -6,3 +6,4 @@ bus
 sun
 pluto
 england
+ME:STMemoryAbility

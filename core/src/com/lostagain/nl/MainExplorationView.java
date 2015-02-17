@@ -392,9 +392,8 @@ public class MainExplorationView implements Screen {
 
          
         if (!distancefieldshader.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + distancefieldshader.getLog());
-        int u_diffuseColor =  distancefieldshader.getUniformLocation("u_diffuseColor");
-      
-        int u_colorFlag =  distancefieldshader.getUniformLocation("u_colorFlag");
+        int u_diffuseColor =  distancefieldshader.getUniformLocation("u_diffuseColor");      
+        int u_colorFlag    =  distancefieldshader.getUniformLocation("u_colorFlag");
         
         distancefieldshader.setUniformf(u_diffuseColor, Color.ORANGE);
         distancefieldshader.setUniformf(u_colorFlag, 1f);

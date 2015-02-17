@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.lostagain.nl.shaders.MyShaderProvider.ConceptBeamAttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 
 /**
@@ -24,8 +25,12 @@ public class ConceptBeamShader implements Shader {
 	   int u_projViewTrans;
 	   int u_worldTrans;
 	    int u_time;
+	    int u_width;
+	    int u_beamcolour;
+	    int u_corecolour;
 	    
 	   private float time;
+	   
 	   
     @Override
     public void init () {
@@ -44,6 +49,11 @@ public class ConceptBeamShader implements Shader {
           u_projViewTrans = program.getUniformLocation("u_projViewTrans");
           u_worldTrans = program.getUniformLocation("u_worldTrans");
           u_time = program.getUniformLocation("u_time"); 
+          
+          //beam style
+          u_width = program.getUniformLocation("u_width"); 
+          u_corecolour = program.getUniformLocation("u_corecolour"); 
+          u_beamcolour = program.getUniformLocation("u_beamcolour"); 
     }
     
     @Override
@@ -80,6 +90,11 @@ public class ConceptBeamShader implements Shader {
     	 program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
     	 
     	 
+    	 ConceptBeamAttribute beamStyle = (ConceptBeamAttribute)renderable.material.get(ConceptBeamAttribute.ID);
+    	 program.setUniformf(u_width, beamStyle.width);//testAttr.width
+    	 program.setUniformf(u_beamcolour, beamStyle.beamcolor);//testAttr.width
+    	 program.setUniformf(u_corecolour, beamStyle.corecolor);//testAttr.width
+    	 
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,
@@ -100,7 +115,10 @@ public class ConceptBeamShader implements Shader {
     @Override
     public boolean canRender (Renderable instance) {
 
-    
+    	if (instance.material.has(MyShaderProvider.ConceptBeamAttribute.ID)){
+    		return true;
+    	}
+    /*
 	shadertypes shaderenum = (shadertypes) instance.userData;
 	if (shaderenum==null){
 		return false;
@@ -114,6 +132,7 @@ public class ConceptBeamShader implements Shader {
     	}
     	
     }
-    
-    
+    */
+    	return false;
+    }
 }

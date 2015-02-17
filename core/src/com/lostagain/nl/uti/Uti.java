@@ -28,14 +28,14 @@ public class Uti {
 		Query answers = Query.createQuerySafely(queryToDestroy);
 		
 
-		Gdx.app.log(logstag,"vulnerable to="+answers.toString());
+	//	Gdx.app.log(logstag,"vulnerable to="+answers.toString());
 		
 		DoSomethingWithNodesRunnable RunWhenDone = new DoSomethingWithNodesRunnable(){
 
 			@Override
 			public void run(ArrayList<SSSNode> newnodes, boolean invert) {
 				
-				Gdx.app.log(logstag,"vulnerable to="+newnodes.toString());
+				//Gdx.app.log(logstag,"vulnerable to="+newnodes.toString());
 				
 				if (newnodes.contains(appliedConcept)){
 					runIfInResults.run();

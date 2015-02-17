@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -216,11 +217,11 @@ public class ConceptGun  extends WidgetGroup {
 	 * Note; This is just for the effect of firing, objects will react to being independent of this function as they are triggered
 	 * by their own mouse actions **/
 	public void fireAt(float x, float y){
-
-		if (disabledFire){
+//
+		if (disabledFire || lazer!=null){
 			return;
 		}
-		MainExplorationView.currentPos.z = MainExplorationView.currentPos.z+5f; 
+		//MainExplorationView.currentPos.z = MainExplorationView.currentPos.z+5f; 
 		//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom +0.02f; 
 		
 		Gdx.app.log(logstag, " createBeamEffect targeting:"+x+","+y);
@@ -246,16 +247,22 @@ public class ConceptGun  extends WidgetGroup {
 		//col.a  = 1 - (500 / 1000) ^ 2;
 
 		//generate mesh and texture
-		
-		ModelInstance newlazer = ModelMaker.createLineBetween(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,10);
-		
-		
+	
 		
 		
 	//	MessyModelMaker.createLine(fx, fy, width, cursor_on_stage.x-(width/2), cursor_on_stage.y,22,col,true,false,10); //10 makes sure the end point is wayyyyyyyy of the screen at the top to ensure the beam end never becomes visible during movement
 		
+		
 		Gdx.app.log(logstag, "set to gun beam ");
-		newlazer.userData = MyShaderProvider.shadertypes.conceptbeam;
+		Material lazerMat = new Material("LazerMaterial", ColorAttribute.createDiffuse(Color.RED),new MyShaderProvider.ConceptBeamAttribute(0.25f,Color.RED,Color.WHITE),new BlendingAttribute(0.95f));//
+		
+		ModelInstance newlazer = ModelMaker.createLineBetween(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,lazerMat,10);
+				
+		
+		//newlazer.userData = MyShaderProvider.shadertypes.conceptbeam;
+		
+		
+		
 	//	newlazer.nodes.get(0).
 		
 		//Renderable test = new Renderable();		
@@ -291,7 +298,7 @@ public class ConceptGun  extends WidgetGroup {
 		MainExplorationView.touchedAModel = ModelManagment.testForHit(ray);
 		
 		if (MainExplorationView.touchedAModel){
-			Gdx.app.log(logstag,"_-touch down on a model-_");
+			Gdx.app.log(logstag,"_-(hit something)-_");
 		}
 	}
 	
@@ -330,8 +337,8 @@ public class ConceptGun  extends WidgetGroup {
 			//	Gdx.app.log(logstag, " timeSinceLastHitCheck:"+timeSinceLastHitCheck);
 				//check for new hits every repeat of pulse
 				timeSinceLastHitCheck = timeSinceLastHitCheck + delta;
-				if (timeSinceLastHitCheck>0.100){
-					timeSinceLastHitCheck = timeSinceLastHitCheck -0.100f;
+				if (timeSinceLastHitCheck>0.200){
+					timeSinceLastHitCheck = timeSinceLastHitCheck -0.200f;
 					Gdx.app.log(logstag, " hit check triggered! "+timeSinceLastHitCheck);					
 					testForHits();
 				}
@@ -339,12 +346,20 @@ public class ConceptGun  extends WidgetGroup {
 				
 				
 
+			} else {
+				//remove lazer 
+				
+				//reset
+				currenttime=0;			
+				MessyModelMaker.removeModelInstance(lazer);
+				lazer=null;;
+				
 			}
 
 			//	Color col = currentColor;
 			currenttime = currenttime+delta;
 
-			float times = currenttime/totaltime;
+			//float times = currenttime/totaltime;
 			//Gdx.app.log(logstag, " times:"+times);
 
 
@@ -366,7 +381,7 @@ public class ConceptGun  extends WidgetGroup {
 				MessyModelMaker.removeModelInstance(lazer);
 				lazer=null;
 				
-				MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-5f; 
+				//MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-5f; 
 				//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom -0.02f; 
 			}
 

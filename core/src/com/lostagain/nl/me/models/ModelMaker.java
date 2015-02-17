@@ -32,9 +32,10 @@ public class ModelMaker {
 	static public ModelInstance createRectangleEndCenteredAt(int x, int y,int z, int w, int h,Color MColor,Material mat) {
 		return createRectangleEndCenteredAt( x,  y, z,  w,  h, MColor, mat,0,0);
 	}
+	
 	static public ModelInstance createRectangleEndCenteredAt(int x, int y,int z, int w, int h,Color MColor,Material mat,float disX,float disY) {
 
-		ModelInstance newmodel  = new ModelInstance(createRectangle(-(w/2)+disX, disY, (w/2)+disX,h+disY, 0,mat ));
+		ModelInstance newmodel  = new ModelInstance(createRectangle(-(w/2)+disX, disY, (w/2)+disX,h+disY, 0, mat));
 
 		newmodel.transform.setToTranslation(x,y,z);
 		
@@ -106,7 +107,7 @@ public class ModelMaker {
 		return model;
 	}
 
-	public static ModelInstance createLineBetween(float fromX, float fromY,int width, float tooX, float tooY, int atZ, Color col, int lengthMultiplayer) {
+	public static ModelInstance createLineBetween(float fromX, float fromY,int width, float tooX, float tooY, int atZ, Color col,Material mat, int lengthMultiplayer) {
 		
 		float halfwidth = (width/2);
 		
@@ -125,7 +126,7 @@ public class ModelMaker {
 		
 		float displacementDownY = -60;
 		float displacementDownX = 0;
-		ModelInstance newline = createRectangleEndCenteredAt((int)(fromX),(int)(fromY),(int)atZ,(int)width,(int)((fromPoint.len()*lengthMultiplayer)),col,null,displacementDownX,displacementDownY);
+		ModelInstance newline = createRectangleEndCenteredAt((int)(fromX),(int)(fromY),(int)atZ,(int)width,(int)((fromPoint.len()*lengthMultiplayer)), col, mat, displacementDownX,displacementDownY);
 		                                       
 		//newline.materials.get(0).set(new BlendingAttribute(0.25f));
 

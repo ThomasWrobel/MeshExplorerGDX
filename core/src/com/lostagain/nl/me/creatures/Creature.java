@@ -42,9 +42,6 @@ public class Creature implements hitable {
 	
 	ModelInstance creaturemodel;
 	
-	
-	
-
 final static int zPlane = 70; //the horizontal plane the creatures exist on. should be used for all z values in positions.
 	//current location
 	float x = 0;
@@ -144,9 +141,9 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		ModelManagment.addmodel(creaturemodel);
 		ModelManagment.addHitable(this);
 		
-		movementControll = new MovementController(creaturemodel.transform,new Jerk2D(creaturemodel,30f,50f,400f,4000f));//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
+		//movementControll = new MovementController(creaturemodel.transform,new Jerk2D(creaturemodel,30f,50f,400f,4000f));//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
 		//movementControll = new MovementController(creaturemodel.transform, new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//
-				
+		startCreaturesStandardMovement();	
 	}
 
 	public void setColor(Color newcol){
@@ -166,7 +163,8 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		
 		attribute.color.set(hitColor);
 		
-		
+
+		hit();
 	}
 
 
@@ -183,7 +181,6 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		}
 		
 		
-		hit();
 		
 	}
 
@@ -196,14 +193,14 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 			Gdx.app.log(logstag, " already being destroyed ");
 			return;
 		}
-		ConceptGun.animateImpactEffect();
+		//ConceptGun.animateImpactEffect();
 
 		//when hit move away randomly		
 		
 		float angle = (float) (Math.random()*360);
 		
 		Gdx.app.log(logstag, " setting movementControll currently moving: "+movementControll.isMoving());	
-		movementControll.setMovement(creaturemodel.transform,true,new RotateLeft(angle,60),new Forward(70,150));
+		movementControll.setMovement(creaturemodel.transform,true,new RotateLeft(angle,60),new Forward(50,250));
 		
 		//test motion
 		//float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
@@ -292,10 +289,23 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 	/** runs the animation of this creature getting damaged **/
 	protected void damaged() {
 
-		Gdx.app.log(logstag,"creature damaged");
+		Gdx.app.log(logstag,"_________creature damaged");
 		
 		final ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);		
-		attribute.color.set( Color.RED );
+		
+		
+		float r = (float) Math.random();
+		float g = (float) Math.random();
+		float b = (float) Math.random();
+		Color col =  new Color();
+		Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );
+		
+		
+				Gdx.app.log(logstag,"_________creature col="+col.toString());
+				
+				setColor( col);
+		//attribute.color.set(col) ;
+		
 		
 		
 		//make this thing bigger (slowly gets bigger then explodes is the plan)
@@ -306,22 +316,41 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		Gdx.app.log(logstag,"making bigger:"+currerntScale.getScaleX());
 		Gdx.app.log(logstag,"animating:"+movementControll.isMoving());
 		Gdx.app.log(logstag,"resuming after:"+movementControll.isGoingToResumeAfter());
+		
+		
 		movementControll.setMovement(creaturemodel.transform,false,new RelativeScale(1.2f,50));
+		
 		//update radius
 		this.hitradius = (int) (hitradius * 1.2f);
+		
+		
 		
 		Timer.schedule(new Task(){
 
 			@Override
 			public void run() {
+				//after enlarging we restart the creatures standard movement.
+				Creature.this.startCreaturesStandardMovement();
+				
 				// TODO Auto-generated method stub
 				attribute.color.set( crearturesColor );
 			}
 			
 			
 		}, 0.2f);
+		
 	}
 
+
+
+
+	protected void startCreaturesStandardMovement() {
+		if (destroyed){
+			Gdx.app.log(logstag, " already being destroyed,cantset movement ");
+			return;
+		}
+		movementControll = new MovementController(creaturemodel.transform,new Jerk2D(creaturemodel,30f,50f,400f,4000f));
+	}
 
 
 

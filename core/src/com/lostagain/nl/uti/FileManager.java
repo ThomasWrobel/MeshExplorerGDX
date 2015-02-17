@@ -45,7 +45,7 @@ public class FileManager implements SSSGenericFileManager{
 			boolean forcePost) {
 		
 		if (!location.contains("://")){
-		   getLocalFile(location, runoncomplete, runonerror);
+		   getLocalFile(location, runoncomplete, runonerror); //Note; Currently all relative path game files need to be compiled in
 		} else {
 		   getFromURL(location, runoncomplete, runonerror,forcePost);
 		}

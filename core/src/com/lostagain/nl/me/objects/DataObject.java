@@ -1,6 +1,7 @@
 package com.lostagain.nl.me.objects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -10,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,6 +28,8 @@ import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.gui.DataObjectDropTarget;
 import com.lostagain.nl.me.gui.Inventory;
+import com.lostagain.nl.shaders.DistanceFieldShader;
+import com.lostagain.nl.shaders.DistanceFieldShaderForDataObjects;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
@@ -445,9 +450,24 @@ public class DataObject extends Image
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
-		batch.setShader(MainExplorationView.distancefieldshader);
-
-
+		
+		//this should all be moved into its own program
+		//MainExplorationView.distancefieldshader.setUniformf("u_pixel_step", super.getWidth(),super.getHeight());   
+       // int u_diffuseColor =  MainExplorationView.distancefieldshader.getUniformLocation("u_diffuseColor");      
+       // int u_colorFlag    =  MainExplorationView.distancefieldshader.getUniformLocation("u_colorFlag");
+        
+       // DistanceFieldShaderForDataObjects .distancefieldshader.setUniformf(u_diffuseColor, Color.ORANGE);
+      //  DistanceFieldShaderForDataObjects.distancefieldshader.setUniformf(u_colorFlag, 1f);
+		
+		ShaderProgram defaultObjectShader = DistanceFieldShaderForDataObjects.getProgram();
+		DistanceFieldShaderForDataObjects.setDefaults(1f,Color.ORANGE);
+		
+				
+		batch.setShader(defaultObjectShader);
+		
+		
+		
+				
 		super.draw(batch, parentAlpha);
 		batch.setShader(null);
 	}

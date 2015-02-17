@@ -38,14 +38,22 @@ attribute vec4 a_color;
 uniform vec4 u_diffuseUVTransform;
 varying vec2 v_diffuseUV;
 
+// this calculated in vertex shader
+// width/height = triangle/quad width/height in px;
+//vec2 pixel_step = vec2(1/width, 1/height); 
+uniform vec2 u_pixel_step;
+varying vec2 pixel_step;
  
 void main() {
 
 	v_colorFlag=u_colorFlag;
+	
   //  v_texCoord0 = a_texCoord0;   
     v_color = a_color;
+    
     vTexCoord = a_texCoord0;
     
+    pixel_step = u_pixel_step;
    // v_usesDiffuseColor =  a_usesDiffuseColor;
   	v_diffuseColor = u_diffuseColor;
   	

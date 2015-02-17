@@ -1,0 +1,11 @@
+[To: Myself]
+
+Took a bit longer then expected, but finished a prototype weapon to use against the creatures.
+It fires a beam of data filled with the concept you specify. The creatures seem to take this data into themselves till 
+they decompile(?) and vanish.
+Different creatures seem vulnerable to different concepts. Specificly they seem to have a vulerability to anything
+that forfils a semanticly checked set of propertys.
+
+Anyway, I'm off to test it by shotting things.
+
+[From: Prof. Pickles]

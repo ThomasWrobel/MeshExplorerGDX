@@ -10,6 +10,21 @@ precision mediump float;
 #define HIGH
 #endif
 
+
+
+
+
+
+// this calculated in vertex shader
+// width/height = triangle/quad width/height in px;
+//vec2 pixel_step = vec2(1/width, 1/height);  
+varying vec2 pixel_step;
+    
+
+//
+//float fwidth = abs(dx) + abs(dy);     
+//----------------------------
+
 //incoming texture
 //uniform sampler2D u_diffuseTexture;
 
@@ -31,6 +46,18 @@ varying MED vec2 v_diffuseUV;
 //uniform sampler2D u_diffuseTexture;
 
 uniform sampler2D u_texture;
+
+//WORKAROUND if fwidth/above extension is not supported
+//http://stackoverflow.com/questions/22442304/glsl-es-dfdx-dfdy-analog
+float myFunc(vec2 p){
+return p.x*p.x - p.y; // that's our function. We want derivative from it.
+}
+
+//These things are to get around the fwidth function being missing on some GPUs
+float current = myFunc(vTexCoord);
+float dfdx = myFunc(vTexCoord + pixel_step.x) - current;
+float dfdy = myFunc(vTexCoord + pixel_step.y) - current;
+  
 
  
 const float smoothing =  0.25/(4.0*32.0); //0.25/(filesmooth*fontfilescale)                     //0.001953125//1.0/16.0;  
@@ -68,7 +95,10 @@ void main() {
  	 	 	
  	// fwidth helps keep outlines a constant width irrespective of scaling
     // GLSL's fwidth = abs(dFdx(uv)) + abs(dFdy(uv))
+    
     float width = fwidth(dist);
+       	 	
+   // float width = abs(dFdx(dist)) + abs(dFdy(dist));           
        	 	
  	 	 	// supersampled version
 

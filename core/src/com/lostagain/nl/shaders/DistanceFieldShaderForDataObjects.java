@@ -23,12 +23,15 @@ import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
  * @author Tom
  *
  */
-public class DistanceFieldShader implements Shader {
-	ShaderProgram program;
-	
-	 
+public class DistanceFieldShaderForDataObjects implements Shader {
 
-	Camera camera;
+	public static DistanceFieldShaderForDataObjects Default = new DistanceFieldShaderForDataObjects();
+		 
+	
+	
+	public ShaderProgram program;
+		 
+	 Camera camera;
 	 RenderContext context;
 	 
 	 final static String logstag = "ME.DistanceFieldShader";
@@ -45,7 +48,7 @@ public class DistanceFieldShader implements Shader {
     @Override
     public void init () {
     	
-    	  String vert = Gdx.files.internal("shaders/distancefieldvert.glsl").readString();
+    	  String vert = Gdx.files.internal("shaders/distancefieldvert_spritebatch.glsl").readString();
           String frag = Gdx.files.internal("shaders/distancefieldfrag.glsl").readString();
           
           //String prefix = createPrefix(renderable, this.get);
@@ -64,6 +67,7 @@ public class DistanceFieldShader implements Shader {
           u_diffuseColor =  program.getUniformLocation("u_diffuseColor");
           
           u_pixel_step =  program.getUniformLocation("u_pixel_step");
+          
     }
     
     @Override
@@ -82,7 +86,7 @@ public class DistanceFieldShader implements Shader {
     	  program.begin();
     	  //the the variable for the cameras projectino to be passed to the shader
     	  program.setUniformMatrix(u_projViewTrans, camera.combined);
-    	  
+
     	  context.setDepthTest(GL20.GL_LEQUAL);    	  
           context.setCullFace(GL20.GL_BACK);
           
@@ -111,14 +115,13 @@ public class DistanceFieldShader implements Shader {
     	 }
     	 
     	 if (renderable.material.has(ColorAttribute.Diffuse)){				
-    		 program.setUniformf(a_colorFlag,1);
+    		 program.setUniformf(a_colorFlag,1f);
     		 program.setUniformf(u_diffuseColor, ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse)).color);    		 
     	 } else {
-    		 program.setUniformf(a_colorFlag,0);
+    		 program.setUniformf(a_colorFlag,0f);
     		 program.setUniformf(u_diffuseColor, Color.ORANGE);
     	 }
-    	 
-    	 
+		 
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,
@@ -147,16 +150,36 @@ public class DistanceFieldShader implements Shader {
     	
     	shadertypes shaderenum = (shadertypes) instance.userData;
     	if (shaderenum==null){
-    		return false;
+    		return false; 
     	}
     //	Gdx.app.log(logstag, "testing if distance field can render:"+shaderenum.toString());
     	
-    	if (shaderenum==shadertypes.distancefield){
+    	if (shaderenum==shadertypes.distancefieldfordataobjects){
     		return true;
     	} else {
     		return false;
     	}
     }
+
+    /**
+     * returns the default copy of this shader, compiling it if needed
+     * @return
+     */
+	public static ShaderProgram getProgram() {
+		if (Default.program==null){
+			Default.init();
+		}
+		// TODO Auto-generated method stub
+		return Default.program;
+	}
+
+	
+	public static void setDefaults(float f, Color orange) {
+		
+		Default.program.setUniformf(Default.a_colorFlag,1f);
+		Default.program.setUniformf(Default.u_diffuseColor, Color.ORANGE);
+		
+	}
     
     
 }

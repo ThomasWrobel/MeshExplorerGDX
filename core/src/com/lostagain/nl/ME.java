@@ -250,16 +250,16 @@ public class ME extends Game {
     	  final ArrayList<String> trustedIndexs = new  ArrayList<String>();  	  
     	  
     	
-    	  String fullPathOfHomeOntology = SuperSimpleSemantics.fileManager.getAbsolutePath("semantics\\TomsNetwork.ntlist");
+    	  String fullPathOfHomeOntology = SuperSimpleSemantics.fileManager.getAbsolutePath("semantics/TomsNetwork.ntlist"); //semantics\\TomsNetwork.ntlist
     	  
-    	  trustedIndexs.add("semantics\\TomsNetwork.ntlist");    
+    	  trustedIndexs.add(fullPathOfHomeOntology);    //semantics\\TomsNetwork.ntlist
  
     	  //its important to add the full path to the knowndatabases array
-    	  //necause the SSS will automaticaly expand short urls and filepaths to
+    	  //because the SSS will automaticaly expand short urls and filepaths to
     	  //absolute when needed internally
     	  //Thus if theres a "is this loaded already?" comparison, we need
     	  //to check full path against full path
-    	  Gdx.app.log(logstag,"______fullPathOfHomeOntology________"+fullPathOfHomeOntology);
+    	  Gdx.app.log(logstag,"______fullPathOfHomeOntology:-:________"+fullPathOfHomeOntology);
     	  knownDatabases.add(fullPathOfHomeOntology);
 
       	//  trustedIndexs.add("http://darkflame.co.uk/semantics/darksnet.ntlist"); //testing 

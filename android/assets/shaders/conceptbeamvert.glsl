@@ -4,6 +4,10 @@
 uniform mat4 u_worldTrans;
 uniform mat4 u_projViewTrans;
 
+uniform float u_width; 
+uniform vec4 u_beamcolour;
+uniform vec4 u_corecolour;
+
 //in
 attribute vec3 a_position;
 //attribute vec3 a_normal;
@@ -15,11 +19,20 @@ attribute vec4 Color;
 //"out" varyings to our fragment shader
 varying vec4 vColor;
 varying vec2 fPosition;
- 
+
+//style data
+varying float width; 
+varying vec4 beamcolour;
+varying vec4 corecolour;
+
 void main() {
 
     vColor = Color;
     fPosition = a_texCoord0;
+    
+    width = u_width;
+    beamcolour = u_beamcolour;
+    corecolour = u_corecolour;
     
     gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);
 	

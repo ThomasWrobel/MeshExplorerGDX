@@ -4,6 +4,11 @@ uniform vec2 resolution;
 varying vec2 fPosition;
 varying vec3 fNormal;
 
+//styledata
+varying float width;
+varying vec4 beamcolour;
+varying vec4 corecolour;
+
 void main()
 {
   
@@ -17,9 +22,9 @@ void main()
   //params (in future make these editable at shader creation?)
   vec4 back = vec4(0.0,0,0,0.0);  //background (default transparent)
   vec4 col = back;
-  vec4 beam = vec4(1.0,0.0,0.0,1.0); //beam
-  vec4 core = vec4(2.0,1.0,1.0,1.0);  //core (note ranges outside 0-1 can be used)
-  float width = 0.25; // used to be 0.04
+  vec4 beam = beamcolour;// vec4(1.0,0.0,0.0,1.0); //beam
+  vec4 core = corecolour;//vec4(2.0,1.0,1.0,1.0);  //core (note ranges outside 0-1 can be used)
+  //float width =  0.25; // used to be 0.04
   
    float tsin = abs(sin((2.0*u_time)-x));
   if (y<(width) && y>-width) 

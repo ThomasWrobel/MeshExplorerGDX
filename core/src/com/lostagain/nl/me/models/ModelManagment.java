@@ -107,7 +107,7 @@ public void updateAnimatedBacks(float deltatime){
 	        		ColorAttribute.createDiffuse(Color.BLUE), 
 					ColorAttribute.createSpecular(Color.WHITE),
 					new BlendingAttribute(1f), 
-					FloatAttribute.createShininess(16f));
+					FloatAttribute.createShininess(16f),new MyShaderProvider.ConceptBeamAttribute(0.4f,Color.BLUE,Color.WHITE));
 
 	        blob.set(TextureAttribute.createDiffuse(blobtexture));
 			
@@ -132,6 +132,7 @@ public void updateAnimatedBacks(float deltatime){
 			//  ModelInstance model4 = createRectangleAt(50f,50f,10f,200f,0f);
 
 			ModelInstance instance = ModelMaker.createRectangleAt(0, 0, 30, 200, 200, Color.BLACK, blob); // new ModelInstance(model1); 
+			
 			
 			instance.userData = MyShaderProvider.shadertypes.conceptbeam;
 			
@@ -181,8 +182,8 @@ public void updateAnimatedBacks(float deltatime){
 		//Gdx.app.log(logstag,"_-testing hit in :"+position.y +" y");
 		
         
-		Gdx.app.log(logstag,"_-testing ray in :"+ray.origin.x+" models");
-		Gdx.app.log(logstag,"_-testing ray in :"+ray.origin.y+" models");
+		Gdx.app.log(logstag,"_-testing ray at :"+ray.origin.x+","+ray.origin.y);
+		
 		
 		Vector3 position = new Vector3();
 		int result = -1;
@@ -219,7 +220,7 @@ public void updateAnimatedBacks(float deltatime){
 	    }
 	 
 	    if (result!=-1){
-
+	    	Gdx.app.log(logstag,"_closest hit was_"+result);
             closesttouched.fireTouchDown();
             mousedownOn.add(closesttouched);
             

@@ -28,7 +28,7 @@ vec2 p = ( gl_FragCoord.xy / u_resolution.xy );
 		}
 	}
 	
-		float r=a*p.x;
+	float r=a*p.x;
 	float g=a*p.y;
 	float b=a;
 	vec4 col = mix(vec4(0,0,1,1),vec4(r,g,b,1),0.1);
