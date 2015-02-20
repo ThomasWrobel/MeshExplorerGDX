@@ -32,6 +32,9 @@ import com.lostagain.nl.me.movements.REPEAT;
 import com.lostagain.nl.me.movements.RelativeScale;
 import com.lostagain.nl.me.movements.RotateLeft;
 import com.lostagain.nl.me.movements.RunAwayFrom;
+import com.lostagain.nl.me.newmovements.NewForward;
+import com.lostagain.nl.me.newmovements.NewMovementController;
+import com.lostagain.nl.me.newmovements.NewRotateLeft;
 import com.lostagain.nl.me.objects.DataObject;
 import com.lostagain.nl.uti.Uti;
 
@@ -54,8 +57,8 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 	Matrix4 origin = new Matrix4();
 	Matrix4 currerntScale =  new Matrix4().scl(1f);
 	
-	//movement
-	MovementController movementControll;//,new Forward(-300,1000)
+	//movement (switching to new system)
+	NewMovementController movementControll;//,new Forward(-300,1000)
 	
 	//parent population
 	Population parentpolution;
@@ -141,9 +144,14 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		ModelManagment.addmodel(creaturemodel);
 		ModelManagment.addHitable(this);
 		
+		//make bigger (test only)
+		creaturemodel.transform.mul(new Matrix4().setToScaling(0.5f, 2.5f,0.5f));
+		
+		movementControll = new NewMovementController(creaturemodel.transform);//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
+		
 		//movementControll = new MovementController(creaturemodel.transform,new Jerk2D(creaturemodel,30f,50f,400f,4000f));//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
 		//movementControll = new MovementController(creaturemodel.transform, new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//
-		startCreaturesStandardMovement();	
+	//	startCreaturesStandardMovement();	
 	}
 
 	public void setColor(Color newcol){
@@ -200,7 +208,9 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		float angle = (float) (Math.random()*360);
 		
 		Gdx.app.log(logstag, " setting movementControll currently moving: "+movementControll.isMoving());	
-		movementControll.setMovement(creaturemodel.transform,true,new RotateLeft(angle,60),new Forward(50,250));
+		//movementControll.setMovement(creaturemodel.transform,false,new RotateLeft(angle,60),new Forward(50,250));
+		
+		movementControll.setMovement(creaturemodel.transform,false,new NewRotateLeft(90,90),new NewForward(50,250));
 		
 		//test motion
 		//float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
@@ -317,8 +327,8 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		Gdx.app.log(logstag,"animating:"+movementControll.isMoving());
 		Gdx.app.log(logstag,"resuming after:"+movementControll.isGoingToResumeAfter());
 		
-		
-		movementControll.setMovement(creaturemodel.transform,false,new RelativeScale(1.2f,50));
+		float durationOfEnlargement = 500f; //the time taken to enlarge. We also use this to set a timer for when the creature should restart moving
+		//movementControll.setMovement(creaturemodel.transform,false,new RelativeScale(1.2f,durationOfEnlargement));
 		
 		//update radius
 		this.hitradius = (int) (hitradius * 1.2f);
@@ -337,7 +347,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 			}
 			
 			
-		}, 0.2f);
+		}, (durationOfEnlargement+150)/1000); //the movement should start again shortly after the enlargement ends. We devide by 1000 as Timer.schedule needs the time in seconds, not ms 
 		
 	}
 
@@ -349,7 +359,14 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 			Gdx.app.log(logstag, " already being destroyed,cantset movement ");
 			return;
 		}
-		movementControll = new MovementController(creaturemodel.transform,new Jerk2D(creaturemodel,30f,50f,400f,4000f));
+				
+
+		Gdx.app.log(logstag,"startCreaturesStandardMovement scale="+creaturemodel.transform.getScaleX()+","+creaturemodel.transform.getScaleY());
+		
+		//movementControll = new NewMovementController(creaturemodel.transform,new Jerk2D(creaturemodel,30f,50f,400f,8000f), new REPEAT());
+		
+		//movementControll.setMovement(creaturemodel.transform,false,new Jerk2D(creaturemodel,30f,50f,400f,4000f), new REPEAT());
+		
 	}
 
 
@@ -408,11 +425,12 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 	
 	public void updatePosition(float delta){
 		
-		if (movementControll.isMoving()){
+		if (movementControll!=null && movementControll.isMoving()){
 			
-			Matrix4 displacementFromOrigin = movementControll.getUpdate(delta,origin).cpy();		
+			Matrix4 displacementFromOrigin = movementControll.getUpdate(delta).cpy();		
 			creaturemodel.transform =  displacementFromOrigin;//.mul(currerntScale); // displacementFromOrigin;// .scl(currerntScale); //origin.cpy().mul(displacementFromOrigin);
 		
+			//Gdx.app.log(logstag, "_______________current size="+creaturemodel.transform .getScaleX()+","+creaturemodel.transform .getScaleY()+","+creaturemodel.transform .getScaleZ()+")");
 			
 		}
 		
@@ -436,8 +454,9 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
 		float EY = parentpolution.centeredOnThisLocation.getHubsY(Align.center);
 		float EZ = getCenter().z;
-		movementControll.setMovement(creaturemodel.transform,true,FaceAndMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
-		
+		//temp disabled while converting to new movement system
+		//movementControll.setMovement(creaturemodel.transform,false,FaceAndMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
+		//the false above should be true
 		
 	}
 	

@@ -12,10 +12,12 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.math.Intersector;
@@ -91,26 +93,94 @@ public void updateAnimatedBacks(float deltatime){
 	        modelBatch = new ModelBatch(myshaderprovider);
 	        
 
-			
+	        //First we add one object at the center with a defaultshader used
+	       // Its VERY important to use a defaultshader object as the first thing created, else
+	        //the default shader will get confused and think it can render things with other shaders too.
+	        //This is because to figure out if it can render something it always compared to the first object it gets.
+	        
+	        //We also have to have transparence on the first shader we make else transparency wont be supported at all
+	        Material testmaterial = new Material(
+	        		ColorAttribute.createDiffuse(Color.BLUE), 
+					ColorAttribute.createSpecular(Color.WHITE),
+					new BlendingAttribute(1f), 
+					FloatAttribute.createShininess(16f));
+	        
 
-	    	NoiseAnimation testNoise = new NoiseAnimation();
-			Gdx.app.log(logstag,"creating testbounc");
-			testNoise.create();
+	        ModelInstance centermaker = ModelMaker.createCenterPoint(testmaterial);
+
 			
-			FileHandle imageFileHandle3 = Gdx.files.internal("data/badlogic.jpg"); 
-	        
-	        //Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE0);
-	        Texture blobtexture = new Texture(imageFileHandle3);
-	      //  blobtexture.bind(0);
-	                
-	        
-	        Material blob = new Material(
+			Renderable renderableWithoutAttribute = new Renderable();
+			centermaker.getRenderable(renderableWithoutAttribute);
+			
+	    	DefaultShader test = new DefaultShader(renderableWithoutAttribute);
+	    	
+	        Material testmaterial2 = new Material(
 	        		ColorAttribute.createDiffuse(Color.BLUE), 
 					ColorAttribute.createSpecular(Color.WHITE),
 					new BlendingAttribute(1f), 
 					FloatAttribute.createShininess(16f),new ConceptBeamShader.ConceptBeamAttribute(0.4f,Color.BLUE,Color.WHITE));
 
-	        blob.set(TextureAttribute.createDiffuse(blobtexture));
+	    	 
+
+		
+	    	 
+	    	 
+	    		ModelInstance instance = ModelMaker.createRectangleAt(0, 0, 30, 200, 200, Color.BLACK, testmaterial2); // new ModelInstance(model1); 
+	    		instance.userData = MyShaderProvider.shadertypes.conceptbeam;
+	    		Renderable renderableWithAttribute = new Renderable();
+			    instance.getRenderable(renderableWithAttribute);
+	    	
+	    	Boolean defaultCanRender = test.canRender(renderableWithAttribute);
+
+			ModelManagment.addmodel(centermaker);
+			ModelManagment.addmodel(instance);
+
+		  	Gdx.app.log(logstag,"default created with attribute = "+defaultCanRender);
+			
+			
+			
+			
+	        //A lot of earlier code used for creating and debugging objects and shaders is below
+			//While its not critical, please leave for now as its a good reference for cutting and pasting tests
+
+	    	//NoiseAnimation testNoise = new NoiseAnimation();
+			//Gdx.app.log(logstag,"creating testbounc");
+			//testNoise.create();
+			
+			//FileHandle imageFileHandle3 = Gdx.files.internal("data/badlogic.jpg"); 
+	        
+	        //Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE0);
+	       // Texture blobtexture = new Texture(imageFileHandle3);
+	      //  blobtexture.bind(0);
+	                
+	        /*
+	        Material testmaterial = new Material(
+	        		ColorAttribute.createDiffuse(Color.BLUE), 
+					ColorAttribute.createSpecular(Color.WHITE),
+					new BlendingAttribute(1f), 
+					FloatAttribute.createShininess(16f),new ConceptBeamShader.ConceptBeamAttribute(0.4f,Color.BLUE,Color.WHITE));
+
+	       // testmaterial.set(TextureAttribute.createDiffuse(blobtexture));
+	        
+	    	ModelInstance instance = ModelMaker.createRectangleAt(0, 0, 30, 200, 200, Color.BLACK, testmaterial); // new ModelInstance(model1); 
+			Renderable renderableWithAttribute = new Renderable();
+			instance.getRenderable(renderableWithAttribute);
+			
+	    	DefaultShader test = new DefaultShader(renderableWithAttribute);
+	    	Boolean defaultCanRender = test.canRender(renderableWithAttribute);
+	    	//If true this means a default shader created with a renderable with the custom attribute will by rendered by DefaultShader
+	    	Gdx.app.log(logstag,"default created with attribute = "+defaultCanRender);
+	    	
+	    	
+	    	ModelInstance instance2 = ModelMaker.createRectangleAt(0, 0, 30, 200, 200, Color.BLACK,null);
+	    	Renderable renderableWithoutAttribute = new Renderable();
+	    	instance2.getRenderable(renderableWithoutAttribute);
+			
+	    	DefaultShader test2 = new DefaultShader(renderableWithoutAttribute);
+	    	Boolean defaultCanRender2 = test2.canRender(renderableWithAttribute); //now we test if the shader created without the attribute will render with one.
+	    	//If true this means a default shader will think it can render 
+	    	Gdx.app.log(logstag,"default created without attribute = "+defaultCanRender2);
+	    	
 			
 			
 			
@@ -132,7 +202,6 @@ public void updateAnimatedBacks(float deltatime){
 
 			//  ModelInstance model4 = createRectangleAt(50f,50f,10f,200f,0f);
 
-			ModelInstance instance = ModelMaker.createRectangleAt(0, 0, 30, 200, 200, Color.BLACK, blob); // new ModelInstance(model1); 
 			
 			
 			instance.userData = MyShaderProvider.shadertypes.conceptbeam;
@@ -148,10 +217,11 @@ public void updateAnimatedBacks(float deltatime){
 			
 			
 			
-			
+			*/
 			
 			//for some reason transparency's dont work till we add something with a transparent texture for the first time
 
+		  	/*
 	    	Texture texture = new Texture(Gdx.files.internal("data/dfield.png"), false);
 			texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 			
@@ -161,7 +231,8 @@ public void updateAnimatedBacks(float deltatime){
 	        ModelInstance instance3 = new ModelInstance(model2);      
 
 			ModelManagment.addmodel(instance3);
-			
+			*/
+		  	
 			//instance.transform.setToTranslation(200,500,10);
 
 			//  environment = new Environment();

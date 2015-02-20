@@ -43,7 +43,13 @@ public class MovementController {
 		
 		if (movements.length>0){
 			currentMovement = this.movements.get(0);
+			Gdx.app.log(logstag, "_________________prenew start0 scale on repeat="+lastNodesLocationMatrix.getScaleX());
+			
+			
 			currentMovement.onRestart(lastNodesLocationMatrix);
+			
+			Gdx.app.log(logstag, "_________________prenew start0 scale on repeat="+currentMovement.lastTransform.getScaleX());
+			
 			//refresh if needed every time its set
 			currentMovement.onRepeat();
 			
@@ -60,6 +66,8 @@ public class MovementController {
 	 * in order to interpolinate between its positions.
 	 * 
 	 * If in relative mode, this isnt needed as the returned Matrix is the displacement from where it is already.
+	 * 
+	 * NOTE: This returns the new world space translation
 	 * 
 	 * @param delta
 	 * @param source
@@ -104,7 +112,7 @@ public class MovementController {
 			if (currentMovementNumber>=movements.size()){
 				Gdx.app.log(logstag, "_____________________________________________ENDING movement=");
 				
-				if (!resumeold){
+				if (!resumeold || old_movements.size()==0){
 					
 					currentMovement=null;
 					currentMovementNumber=0;
@@ -116,12 +124,16 @@ public class MovementController {
 				} else {
 					
 					resumeold=false;
-					movements.clear();
+					movements.clear();					
+					
 					movements.addAll(old_movements);
 					
 					currentMovement = movements.get(0);	
 					currentMovement.onRestart(lastNodesLocationMatrix);
 					//refresh if needed every time its set
+					Gdx.app.log(logstag, "__mc_____________prenew start0 scale on repeat="+lastNodesLocationMatrix.getScaleX());
+					
+					
 					currentMovement.onRepeat();
 					
 					old_movements.clear();
@@ -139,9 +151,7 @@ public class MovementController {
 			
 			currentMovement = movements.get(currentMovementNumber);
 			
-			//refresh if needed every time its set
-			currentMovement.onRestart(lastNodesLocationMatrix);
-			
+		
 			//should also refresh lastposition if we are on a absolute motion at this point as its blank by default? Should be set to last location 
 			
 			
@@ -152,6 +162,11 @@ public class MovementController {
 				
 				currentMovement.onRepeat();
 				currentMovement.onRestart(lastNodesLocationMatrix);
+			} else {
+				
+				//refresh if needed every time its set
+				currentMovement.onRestart(lastNodesLocationMatrix);
+				
 			}
 			
 			
@@ -249,7 +264,7 @@ public class MovementController {
 			Matrix4 displacement;
 			if (currentMovement.currenttype == MovementTypes.Absolute){
 				
-				currentMovement.lastLocation = lastLocation;//.cpy().mul(lastNodesLocationMatrix);
+				currentMovement.lastTransform = lastLocation;//.cpy().mul(lastNodesLocationMatrix);
 				
 				// displacement = currentMovement.onUpdateAbsolute(currentTimeWithinMovement);//,object.transform.cpy().mul(lastNodesLocationMatrix)); 
 				 
@@ -267,7 +282,12 @@ public class MovementController {
 		currentMovementNumber=0;
 		currentMovement=movements.get(0);
 		currentMovement.onRestart(lastLocation);
+		
+		
 		//refresh if needed every time its set
+		Gdx.app.log(logstag, "_____________prenew start0 scale on repeat_="+currentMovement.lastTransform.getScaleX());
+		
+		
 		currentMovement.onRepeat();
 		
 		currentTime = 0; //the current eclipsed time in total;
@@ -313,7 +333,7 @@ public class MovementController {
 	 * 
 	 * @return absolute worldspace transform for new location
 	 */
-	public Matrix4 getUpdate(float delta, Matrix4 origin) {
+	public Matrix4 getUpdate(float delta) {
 		
 		
 		return update(delta);

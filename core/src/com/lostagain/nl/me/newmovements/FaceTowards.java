@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.movements;
+package com.lostagain.nl.me.newmovements;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -8,26 +8,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
-public class FaceAndMoveTo  {
+public class FaceTowards  {
 
 
 	final static String logstag = "ME.FaceTowards";
 	//static Matrix4 Left = new Matrix4().setToRotation(0, 0, 1, 90);
-	static public Movement[] create(ModelInstance originObject, ModelInstance targetObject, int duration) {
+	static public RotateLeft create(ModelInstance originObject, ModelInstance targetObject, int duration) {
 		
 		
 		Vector3 posT = new Vector3();
 		targetObject.transform.getTranslation(posT);		
 			
-		return create(originObject, posT.x, posT.y, duration);
-	}
-	
-	
-	public static Movement[] create(ModelInstance originObject,
-			Vector3 dropsPositionAsVector, int duration) {
-
-		Vector2 posT = new Vector2(dropsPositionAsVector.x,dropsPositionAsVector.y);
-		
 		return create(originObject, posT.x, posT.y, duration);
 	}
 
@@ -43,9 +34,8 @@ public class FaceAndMoveTo  {
 	 * @param duration
 	 * @return
 	 */
-	public static  Movement[] create(ModelInstance originObject, float ex, float ey, int duration) {
-		
-		
+	public static RotateLeft create(ModelInstance originObject, float ex, float ey, int duration) {
+
 		Vector3 posO = new Vector3();
 		originObject.transform.getTranslation(posO);
 		
@@ -58,31 +48,25 @@ public class FaceAndMoveTo  {
 		
 		Gdx.app.log(logstag,"_____________________________________existing angle="+existingangle); //relative to x axis pointing left anticlockwise
 	
-		float scalex = originObject.transform.getScaleX(); //get how much the object has been scaled
-		float scaley = originObject.transform.getScaleY();
 		
-		Vector2 fromPoint = new Vector2(posO.x/scalex,posO.y/scaley); //we need to scale them down due to how the positions might have been scaled up if the matrix is scaled (I hate how matrixs work :-/ Just cant get it in my head)
-		Vector2 tooPoint  = new Vector2(ex/scalex,ey/scaley);
+		Vector2 fromPoint = new Vector2(posO.x,posO.y);
+		Vector2 tooPoint  = new Vector2(ex,ey);
 
 		fromPoint.sub(tooPoint);      
 
 		//Log.info("length="+corner2.len());
 
-		float angle =  180+fromPoint.angle(); //absolute angle between the two objects
+		float angle = 180+fromPoint.angle(); //absolute angle between the two objects
+		
 		Gdx.app.log(logstag,"________target angle="+angle); //should point towards ex/ey 
 		
-		float distance = fromPoint.len();
 
 		
 		//difference between this angle and existing one
 		angle = angle - existingangle;
 		
-		RotateLeft rot  = new RotateLeft(angle,500);
-		Forward forward = new Forward(distance,duration-500);
-				
-		return new Movement[]{rot,forward};
 		
+		return new RotateLeft(angle,duration);
 	}
-
 
 }

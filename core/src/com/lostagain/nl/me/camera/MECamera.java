@@ -71,7 +71,7 @@ public class MECamera extends PerspectiveCamera {
 	public void updatePosition(float delta)
 	{
 		if (movement.currentMovement!=null){
-			Matrix4 newlocation = movement.getUpdate(delta,startingLocation);
+			Matrix4 newlocation = movement.getUpdate(delta);
 		
 		
 			newlocation.getTranslation(position);

@@ -111,7 +111,7 @@ public class Location {
 		
 
 		int X = (int) loc.x;  //(int) (Math.random()*2500);
-		int Y = (int) loc.y; //500;
+		int Y = (int) loc.y; //500;	
 		
 		//random position very slightly just for stylistic effect
 		

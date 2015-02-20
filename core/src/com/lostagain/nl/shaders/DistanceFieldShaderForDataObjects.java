@@ -132,7 +132,10 @@ public class DistanceFieldShaderForDataObjects implements Shader {
     	  program.begin();
     	  //the the variable for the cameras projectino to be passed to the shader
     	  program.setUniformMatrix(u_projViewTrans, camera.combined);
-
+    	  
+    		 program.setUniformf(a_colorFlag,0f);
+    		 program.setUniformf(u_diffuseColor, Color.ORANGE);
+    		 
     	  context.setDepthTest(GL20.GL_LEQUAL);    	  
           context.setCullFace(GL20.GL_BACK);
           

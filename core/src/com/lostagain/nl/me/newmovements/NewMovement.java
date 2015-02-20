@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.movements;
+package com.lostagain.nl.me.newmovements;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -7,17 +7,15 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 /**
+ * NEW VERSION
+ * 
  * defines a simple movement in 3d space
  * @author Tom
  *
  */
-public class Movement {
+public class NewMovement {
 
-	Matrix4 destination;
-	
-	Vector3 destposition = new Vector3();
-	Quaternion destrotation = new Quaternion();		
-	Vector3 destscale = new Vector3(1f,1f,1f);
+	PosRotScale destination;
 	
 	float LastWholeDelta = 0;
 	
@@ -26,12 +24,13 @@ public class Movement {
 		Absolute,
 		REPEAT
 	}
-	public Matrix4 lastTransform; //Absolute movements need to supply this value
+	
+	public PosRotScale lastTransform; //Absolute movements need to supply this value
 	
 	
 	MovementTypes currenttype = MovementTypes.Relative;
 	
-	private static String logstag="ME.Movement";
+	private static String logstag="ME.NewMovement";
 	
 	float durationTotalMS = 1000;
 	float durationMSEachMove= 1000;
@@ -51,44 +50,27 @@ public class Movement {
 	 * @param durationMSEachMove
 	 * @param durationTotalMS
 	 */
-	public Movement(Matrix4 destination,float durationMSEachMove, float durationTotalMS){
+	public NewMovement(PosRotScale destination,float durationMSEachMove, float durationTotalMS){
 		
 		this.durationTotalMS=durationTotalMS;
 		this.destination=destination;
 		this.durationMSEachMove=durationMSEachMove;
-		
-		
-		//break the destination down into rotation and translation (one day we might use scale too)		
-		destination.getTranslation(destposition);		
-		
-		//rot			
-		destination.getRotation(destrotation);
-		
-		//scale
-		destination.getScale(destscale);
+			
 		
 		
 	};
 	
-	public Movement(Matrix4 destination,float durationTotalMS){
+	public NewMovement(PosRotScale destination,float durationTotalMS){
 		
 		this.durationTotalMS=durationTotalMS;
 		this.destination=destination;
 		this.durationMSEachMove=durationTotalMS;
 		
-		
-		//break the destination down into rotation and translation (one day we might use scale too)		
-		destination.getTranslation(destposition);		
-		
-		//rot			
-		destination.getRotation(destrotation);
-
-		//scale
-		destination.getScale(destscale);
 	};
 	
 	
-	public Matrix4 onUpdate(float totalTimePast){
+	public PosRotScale onUpdate(float totalTimePast){
+		
 		//detect if on last cycle
 		//That is if we are within 1 "durationMSEachMove" of "durationTotal"
 		if (totalTimePast>(durationTotalMS-durationMSEachMove)){
@@ -106,18 +88,19 @@ public class Movement {
 		}
 		
 		//if we arnt relative or absolute we return null
-		//this probably means this isnt a real movement, but a marker for a REPEAT of all motions in a sequence of motions
+		//this probably means this isn't a real movement, but a marker for a REPEAT of all motions in a sequence of motions
 		return null;
 	}
 	
 	/**
-	 * returns the new position based on the total time elapsed into this movement
-	 * if we are working in relative mode we lerp between 0,0,0 and the destination (ie, we are messuring the displacement)
+	 * returns the new PosRotScale based on the total time elapsed into this movement
+	 * if we are working in relative mode we lerp between 0,0,0 and the destination (ie, we are measuring the displacement)
 	 * 
 	 * @param totalTimePast
 	 * @return
 	 */
-	public Matrix4 onUpdateRelative(float totalTimePast){	
+	public PosRotScale onUpdateRelative(float totalTimePast){
+		
 		if (totalTimePast>durationTotalMS){
 			return destination;
 		}
@@ -127,7 +110,7 @@ public class Movement {
 		if (totalTimePast>durationMSEachMove) {
 			
 			subdelta=totalTimePast%durationMSEachMove;
-			Gdx.app.log(logstag, "_____________________prenew startRR scale on repeat="+lastTransform.getScaleX()+","+lastTransform.getScaleY()+","+lastTransform.getScaleZ()+")");
+		//	Gdx.app.log(logstag, "_____________________prenew startRR scale on repeat="+lastTransform.getScaleX()+","+lastTransform.getScaleY()+","+lastTransform.getScaleZ()+")");
 			
 			 onRepeat();
 		}
@@ -138,17 +121,19 @@ public class Movement {
 			float ratio = (subdelta/durationMSEachMove); //scales the time position from start to end to between 0.0 and 1.0
 			
 			//angle and translation need to be dealt with separately else you get weird issues with scaling and possibly other things
-			Vector3 newposition = new Vector3().lerp(destposition, ratio);
+			Vector3 newposition = new Vector3().lerp(destination.position, ratio);
 			
 			//rot
-			Quaternion newrotation = new Quaternion().slerp(destrotation, ratio);
+			Quaternion newrotation = new Quaternion().slerp(destination.rotation, ratio);
 					
 			//scale
-			Vector3 newscale =  new Vector3(1f,1f,1f).lerp(destscale, ratio);
+			Vector3 newscale =  new Vector3(1f,1f,1f).lerp(destination.scale, ratio);
 			
-			Gdx.app.log(logstag, "______ current scaleX="+newscale.x);
+			Gdx.app.log(logstag, "______ current rel position "+newposition.x+","+newposition.y+","+newposition.z);
+
+			Gdx.app.log(logstag, "___ current rel scale "+newscale.toString() );	
 			
-			return new Matrix4(newposition,newrotation,newscale);
+			return new PosRotScale(newposition,newrotation,newscale);
 		
 		
 		
@@ -157,7 +142,8 @@ public class Movement {
 	}
 
 	
-	public Matrix4 onUpdateAbsolute(float totalTimePast) { //Matrix4 startlocation
+	
+	public PosRotScale onUpdateAbsolute(float totalTimePast) { //Matrix4 startlocation
 		
 		if (totalTimePast>durationTotalMS){
 			return destination;
@@ -185,7 +171,7 @@ public class Movement {
 			float WholeDelta = totalTimePast-subdelta;	//work out last "step" (that is, difference between current subdetail and the last whole duration past 		
 		//	Gdx.app.log(logstag, "_____________________________________________wholeDelta="+WholeDelta+" last one was"+LastWholeDelta);
 			if (WholeDelta>LastWholeDelta){ //if more then the last one
-				Gdx.app.log(logstag, "_______________prenew start scale on repeat="+lastTransform.getScaleX()+","+lastTransform.getScaleY()+","+lastTransform.getScaleZ()+")");
+			//	Gdx.app.log(logstag, "_______________prenew start scale on repeat="+lastTransform.getScaleX()+","+lastTransform.getScaleY()+","+lastTransform.getScaleZ()+")");
 				
 				
 				onRepeat();
@@ -199,37 +185,35 @@ public class Movement {
 		
 					
 			//if we are working in absolute we lerp between current location and destination
-			Matrix4 start = lastTransform;
+		PosRotScale start = lastTransform;
 			//loc
-			Vector3 startLocation = new Vector3();
-			start.getTranslation(startLocation);		
+			Vector3 startLocation = start.position.cpy();	
 			
 			//rot			
-			Quaternion startRotation = new Quaternion();	
-			start.getRotation(startRotation);
+			Quaternion startRotation = start.rotation.cpy();
 			
 			//scale
-			Vector3 startScale = new Vector3();
-			start.getScale(startScale);	
+			Vector3 startScale = start.scale.cpy();
+			
 			//Gdx.app.log(logstag, "_____________________________________________start scale="+start.getScaleX());
 			
 			float ratio = (subdelta/durationMSEachMove); //scales the time position from start to end to between 0.0 and 1.0
 			
 			//angle and translation need to be dealt with separately else you get weird issues with scaling and possibly other things
-			Vector3 newposition = startLocation.lerp(destposition, ratio);
+			Vector3 newposition = startLocation.lerp(destination.position, ratio);
 			
 			//rot
-			Quaternion newrotation = startRotation.slerp(destrotation, ratio);
+			Quaternion newrotation = startRotation.slerp(destination.rotation, ratio);
 			
 			//scale
-			Gdx.app.log(logstag, "______a current startscale="+startScale.x);
-			Gdx.app.log(logstag, "______a current destscale="+destscale.x);
-			Gdx.app.log(logstag, "______a current lerp="+ratio);
-			Vector3 newscale = startScale.lerp(destscale, ratio);
+		//	Gdx.app.log(logstag, "______a current startscale="+startScale.x);
+		//	Gdx.app.log(logstag, "______a current destscale="+destscale.x);
+		//	Gdx.app.log(logstag, "______a current lerp="+ratio);
+			Vector3 newscale = startScale.lerp(destination.scale, ratio);
 
 			Gdx.app.log(logstag, "______a current scaleX="+newscale.x);
 			
-			return new Matrix4(newposition,newrotation,newscale);
+			return new PosRotScale(newposition,newrotation,newscale);
 		
 		
 		
@@ -248,7 +232,7 @@ public class Movement {
 	 * this should be fired every time the animation is started.
 	 * In the case of absolute movements it needs to set the current location as the new lastLocation
 	 */
-	public void onRestart(Matrix4 newstart) {
+	public void onRestart(PosRotScale newstart) {
 		lastTransform = newstart;
 		//Gdx.app.log(logstag, "_____________________________________________lastLocation scale="+lastLocation.getScaleX());
 	}

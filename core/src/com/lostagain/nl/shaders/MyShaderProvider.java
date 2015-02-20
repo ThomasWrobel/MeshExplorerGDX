@@ -75,6 +75,11 @@ public class MyShaderProvider extends DefaultShaderProvider {
 	@Override
 	protected Shader createShader (final Renderable renderable) {
 		
+		//new method for selection (we should slowly move the things from the switch statement to this method)
+		if (renderable.material.has(ConceptBeamShader.ConceptBeamAttribute.ID)){
+			return new ConceptBeamShader();			
+		}
+		
 		//pick shader based on renderable?
 		shadertypes shaderenum = (shadertypes) renderable.userData;
 	
@@ -103,11 +108,10 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		{
 			return new NoiseShader();
 		}
-		case conceptbeam:
-		{
-			Gdx.app.log(logstag, "creating concept gun beam ");
-			return new ConceptBeamShader();
-		}
+		//case conceptbeam:
+	//	{
+	////		Gdx.app.log(logstag, "creating concept gun beam ");
+		//}
 		case distancefield:
 		{
 			return new DistanceFieldShader();

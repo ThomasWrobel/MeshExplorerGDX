@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.movements;
+package com.lostagain.nl.me.newmovements;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;

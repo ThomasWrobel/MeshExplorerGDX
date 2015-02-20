@@ -159,5 +159,22 @@ public class ModelMaker {
 		return new ModelInstance(model);
 		
 	}
+
+	/**
+	 * This object is intended to be a centerpiece of the co-ordinate system.
+	 * Usefull for debugging, but should not be removed totally as ModelManagement demands a single defaultshaded objected created before everything
+	 * else. It uses one of these.
+	 * 
+	 * @param material
+	 * @return
+	 */
+	public static ModelInstance createCenterPoint(Material material) {
+
+		ModelBuilder modelBuilder = new ModelBuilder();
+		//note; maybe these things could be pre-created and stored rather then a new one each time?
+		Model model =  modelBuilder.createXYZCoordinates(125f, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		
+		return new ModelInstance(model);
+	}
 	
 }
