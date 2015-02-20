@@ -6,11 +6,11 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
-public class Jerk2D extends Movement {
+public class NewJerk2D extends NewMovement {
 	
 	Matrix4 currentDestination = new Matrix4();
 	
-	Matrix4 startingTransform; //origin point to jerk relative to
+	PosRotScale startingTransform; //origin point to jerk relative to
 	float mindistance = 0;
 	float maxdistance = 0;
 	ModelInstance modelins;
@@ -25,7 +25,7 @@ public class Jerk2D extends Movement {
 	 * @param maxdistance 
 	 * @param durationTotalMS
 	 */
-	public Jerk2D(ModelInstance creaturemodel ,float mindistance, float maxdistance, float durationMSEachMove,float durationTotal) {
+	public NewJerk2D(ModelInstance creaturemodel ,float mindistance, float maxdistance, float durationMSEachMove,float durationTotal) {
 		super( getDest(mindistance,maxdistance,creaturemodel.transform) , durationMSEachMove, durationTotal); //matrix isn't important its not used
 		
 		
@@ -34,8 +34,8 @@ public class Jerk2D extends Movement {
 		this.mindistance=mindistance;
 		this.maxdistance=maxdistance;
 		this.modelins = creaturemodel;
-		this.startingTransform=creaturemodel.transform.cpy();
-		
+		//this.startingTransform=creaturemodel.transform.cpy();
+		this.startingTransform=new PosRotScale(creaturemodel.transform);
 		this.lastTransform = startingTransform;
 		
 	}
@@ -45,7 +45,7 @@ public class Jerk2D extends Movement {
 	 * @param delta
 	 * @return
 	 */
-	static public Matrix4 getDest(float mindistance, float maxdistance,Matrix4 origin){	
+	static public PosRotScale getDest(float mindistance, float maxdistance,Matrix4 origin){	
 		
 		Matrix4 start = origin.cpy();
 								
@@ -77,10 +77,10 @@ public class Jerk2D extends Movement {
 			//start.setToRotation(new Vector3(0,0,1), angle).setTranslation(newposition).scl(newscale);
 			
 			Quaternion quart = new Quaternion(new Vector3(0,0,1), angle);
-			Matrix4 dest = new Matrix4(newposition, quart , newscale);
+			PosRotScale dest = new PosRotScale(newposition, quart , newscale);
 			
 			
-			Gdx.app.log(logstag, "______ dest scaleX="+dest.getScaleX());
+			//Gdx.app.log(logstag, "______ dest scaleX="+dest.getScaleX());
 			
 		//	start.mul(new Matrix4().setToRotation(new Vector3(0,0,1), angle));
 
@@ -151,7 +151,7 @@ public class Jerk2D extends Movement {
 		Gdx.app.log(logstag, "_____________________________________________refreshSetup=");
 		
 		//store the last location
-		lastTransform = modelins.transform;//this often has the wrong values why?
+		lastTransform = new PosRotScale(modelins.transform);//this often has the wrong values why?
 		/*
 		 * ME.Movement: ______a current lerp=0.9614514
 ME.Movement: ______a current scaleX=1.2145704 <------------should be this (ish(
@@ -165,7 +165,7 @@ ME.Movement: ______a current destscale=1.2
 ME.Movement: ______a current lerp=0.0029626465
 ME.Movement: ______a current scaleX=1.4858993
 		 */
-		Gdx.app.log(logstag, "______________________new start scale on repeat="+lastTransform.getScaleX()+","+lastTransform.getScaleY()+","+lastTransform.getScaleZ()+")");
+		//Gdx.app.log(logstag, "______________________new start scale on repeat="+lastTransform.getScaleX()+","+lastTransform.getScaleY()+","+lastTransform.getScaleZ()+")");
 		
 		//if we are on the last repeat, we head back to the original position
 		//this allows looping without a net displacement
@@ -173,31 +173,31 @@ ME.Movement: ______a current scaleX=1.4858993
 			destination = startingTransform;				
 		} else {
 			//else we calculate a new random location
-			destination = getDest( mindistance,  maxdistance, startingTransform);
+			destination = getDest( mindistance,  maxdistance, startingTransform.createMatrix());
 		}
 	
 		//break the destination down into rotation and translation (one day we might use scale too)		
-		destination.getTranslation(destposition);		
+		//destination.getTranslation(destposition);		
 
 		//Gdx.app.log(logstag, "______________________position="+position.x+","+position.y+","+position.z+")");
 						
 		//rot			
-		destination.getRotation(destrotation);
+		//destination.getRotation(destrotation);
 		
-		destination.getScale(destscale);
+		//destination.getScale(destscale);
 	
-		Gdx.app.log(logstag, "______________________new dest scale on repeat="+destscale.x+","+destscale.y+","+destscale.z+")");
+		//Gdx.app.log(logstag, "______________________new dest scale on repeat="+destscale.x+","+destscale.y+","+destscale.z+")");
 				
 	}
 	
 	@Override
-	public void onRestart(Matrix4 newstart) {
+	public void onRestart(PosRotScale newstart){
 		super.onRestart(newstart);
 		
 		startingTransform = newstart;
 		
 
-		Gdx.app.log(logstag, "______________________new scale onRestart="+startingTransform.getScaleX()+","+startingTransform.getScaleY()+","+startingTransform.getScaleZ()+")");
+	//	Gdx.app.log(logstag, "______________________new scale onRestart="+startingTransform.getScaleX()+","+startingTransform.getScaleY()+","+startingTransform.getScaleZ()+")");
 		
 		
 		

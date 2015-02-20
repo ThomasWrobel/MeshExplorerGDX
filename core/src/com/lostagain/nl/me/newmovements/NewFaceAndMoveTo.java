@@ -8,12 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
-public class FaceAndMoveTo  {
+public class NewFaceAndMoveTo  {
 
 
-	final static String logstag = "ME.FaceTowards";
+	final static String logstag = "ME.NewFaceAndMoveTo";
 	//static Matrix4 Left = new Matrix4().setToRotation(0, 0, 1, 90);
-	static public Movement[] create(ModelInstance originObject, ModelInstance targetObject, int duration) {
+	static public NewMovement[] create(ModelInstance originObject, ModelInstance targetObject, int duration) {
 		
 		
 		Vector3 posT = new Vector3();
@@ -23,7 +23,7 @@ public class FaceAndMoveTo  {
 	}
 	
 	
-	public static Movement[] create(ModelInstance originObject,
+	public static NewMovement[] create(ModelInstance originObject,
 			Vector3 dropsPositionAsVector, int duration) {
 
 		Vector2 posT = new Vector2(dropsPositionAsVector.x,dropsPositionAsVector.y);
@@ -37,13 +37,15 @@ public class FaceAndMoveTo  {
 	 * and the needed angle will need to be found.
 	 * (as motions are relative to face something it needs to know where its facing already so it knows how far to turn)
 	 * 
+	 * Note; This works good enough for most 2d uses right now but isnt totally accurate
+	 * 
 	 * @param originObject
 	 * @param ex
 	 * @param ey
 	 * @param duration
 	 * @return
 	 */
-	public static  Movement[] create(ModelInstance originObject, float ex, float ey, int duration) {
+	public static  NewMovement[] create(ModelInstance originObject, float ex, float ey, int duration) {
 		
 		
 		Vector3 posO = new Vector3();
@@ -61,8 +63,8 @@ public class FaceAndMoveTo  {
 		float scalex = originObject.transform.getScaleX(); //get how much the object has been scaled
 		float scaley = originObject.transform.getScaleY();
 		
-		Vector2 fromPoint = new Vector2(posO.x/scalex,posO.y/scaley); //we need to scale them down due to how the positions might have been scaled up if the matrix is scaled (I hate how matrixs work :-/ Just cant get it in my head)
-		Vector2 tooPoint  = new Vector2(ex/scalex,ey/scaley);
+		Vector2 fromPoint = new Vector2(posO.x,posO.y); //we need to scale them down due to how the positions might have been scaled up if the matrix is scaled (I hate how matrixs work :-/ Just cant get it in my head)
+		Vector2 tooPoint  = new Vector2(ex,ey);
 
 		fromPoint.sub(tooPoint);      
 
@@ -77,10 +79,10 @@ public class FaceAndMoveTo  {
 		//difference between this angle and existing one
 		angle = angle - existingangle;
 		
-		RotateLeft rot  = new RotateLeft(angle,500);
-		Forward forward = new Forward(distance,duration-500);
+		NewRotateLeft rot  = new NewRotateLeft(angle,500);
+		NewForward forward = new NewForward(distance,duration-500);
 				
-		return new Movement[]{rot,forward};
+		return new NewMovement[]{rot,forward};
 		
 	}
 

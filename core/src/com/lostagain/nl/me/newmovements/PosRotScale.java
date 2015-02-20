@@ -34,7 +34,14 @@ public class PosRotScale {
 		this.scale = scale;
 		
 	}
-	
+	/**
+	 *  Stores a position, rotation and scale.
+	 *  
+	 *  Scale defaults to 1f,1f,1f
+	 *  The rest 0,0,0
+	 *  
+	 *  
+	 */
 	public PosRotScale() {
 		
 	}
@@ -82,7 +89,7 @@ public class PosRotScale {
 		
 		
 		
-		//just testing position for now		
+		//------------------	
 		position = position.add(changeByThisAmountRot.position);		
 		rotation = rotation.mul(changeByThisAmountRot.rotation);
 		
@@ -111,7 +118,10 @@ public class PosRotScale {
 		
 	}
 
-	
+	/**
+	 * replaces the Rotation with the new Rotation  (doesn't effect anything else)
+	 * @param this
+	 */
 	public PosRotScale setToRotation(int i, int j, int k, float angleInDeg) {
 		rotation.set(new Vector3(i,j,k), angleInDeg);
 
@@ -119,6 +129,42 @@ public class PosRotScale {
 		
 		
 		return this;
+	}
+
+	
+	/**
+	 * replaces the position with the new position  (doesn't effect anything else)
+	 * @param destination_loc
+	 */
+	public PosRotScale setToPosition(Vector3 newposition) {
+		position = newposition.cpy();
+
+		return this;
+	}
+
+	/**
+	 * replaces the scale with the new scale (doesn't effect anything else)
+	 * @param newscale
+	 * @return
+	 */
+	public PosRotScale setToScaling(Vector3 newscale) {
+		scale = newscale.cpy();
+		
+		return this;
+	}
+
+	/**
+	 * makes a matrix from this PosRotScale 
+	 * 
+	 * basically; new Matrix4(position,rotation.nor(),scale);
+	 * 
+	 * Note the rotation is normalized, which is required by Matirx4
+	 * 
+	 * @return
+	 */
+	public Matrix4 createMatrix() {
+		// TODO Auto-generated method stub
+		return  new Matrix4(position,rotation.nor(),scale);
 	}
 	
 	

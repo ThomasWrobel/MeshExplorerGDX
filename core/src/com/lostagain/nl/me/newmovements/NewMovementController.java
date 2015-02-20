@@ -33,7 +33,15 @@ public class NewMovementController {
 	float currentTime = 0; //the current eclipsed time in total;
 	float currentTimeWithinMovement = 0; //the current elipsed time within the specific movement
 	float totalTime = 10000; //total time of all movements
-	
+	/**
+	 * 
+	 *  creates a new movement controller for the object
+	 *  Do not create a new controller for an existing object. Just set new movements with   the .setMovement commands
+	 *  This ensures the last movement is correctly interrupted.
+	 *  
+	 * @param objectsOrigin
+	 * @param movements
+	 */
 	public NewMovementController(Matrix4 objectsOrigin, NewMovement... movements) {
 		super();
 		
@@ -68,7 +76,6 @@ public class NewMovementController {
 	 * If the movement is absolute, it needs the object passed so it can work out where it is already
 	 * in order to interpolinate between its positions.
 	 * 
-	 * If in relative mode, this isnt needed as the returned Matrix is the displacement from where it is already.
 	 * 
 	 * NOTE: This returns the new world space translation
 	 * 

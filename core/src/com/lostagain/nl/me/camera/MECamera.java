@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.MainExplorationView;
-import com.lostagain.nl.me.movements.MoveTo;
-import com.lostagain.nl.me.movements.MovementController;
+import com.lostagain.nl.me.newmovements.NewMoveTo;
+import com.lostagain.nl.me.newmovements.NewMovementController;
 
 /**
  * Home to all game camera control functions
@@ -36,13 +36,13 @@ public class MECamera extends PerspectiveCamera {
 	 * Note; Not all movement types support full 3d yet - specifically rotations are 2d.
 	 * Translations should be ok, and thats all thats needed for the camera right now.
 	 */
-	MovementController movement;
+	NewMovementController movement;
 
 	public MECamera() {
 		super(defaultFieldOfView, defaultViewportWidth, defaultViewportHeight);
 		near=0.5f;
 		far=1900.0f;
-		movement = new MovementController(this.view);
+		movement = new NewMovementController(this.view);
 		
 		this.position.set(MainExplorationView.currentPos);
 		
@@ -54,7 +54,7 @@ public class MECamera extends PerspectiveCamera {
 		super(i, width, height);
 		near=0.5f;
 		far=1900.0f;
-		movement = new MovementController(this.view);
+		movement = new NewMovementController(this.view);
 		
 
 		this.position.set(MainExplorationView.currentPos);
@@ -112,7 +112,7 @@ public class MECamera extends PerspectiveCamera {
 
 
 		
-		movement.setMovement(currentLoc, false,  MoveTo.create(currentLoc,newposition.x,newposition.y,newposition.z,4000));
+		movement.setMovement(currentLoc, false,  NewMoveTo.create(currentLoc,newposition.x,newposition.y,newposition.z,4000));
 		
 		
 	}

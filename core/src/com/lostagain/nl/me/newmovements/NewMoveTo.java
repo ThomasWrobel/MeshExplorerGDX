@@ -7,14 +7,16 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.lostagain.nl.me.newmovements.Movement.MovementTypes;
+import com.lostagain.nl.me.newmovements.NewMovement.MovementTypes;
 
-public class MoveTo  {
+public class NewMoveTo  {
 
 
 	final static String logstag = "ME.MoveTo";
+	
 	//static Matrix4 Left = new Matrix4().setToRotation(0, 0, 1, 90);
-	static public Movement create(ModelInstance originObject, ModelInstance targetObject, int duration) {
+	
+	static public NewMovement create(ModelInstance originObject, ModelInstance targetObject, int duration) {
 		
 		Vector3 posT = new Vector3();
 		targetObject.transform.getTranslation(posT);		
@@ -23,12 +25,17 @@ public class MoveTo  {
 	}
 	
 	
-	public static Movement create(Matrix4 originLoc,
-			Vector3 destination_loc, int duration) {
+	static public NewMovement create(Matrix4 originLoc,Vector3 destination_loc, int duration) {
 
-		Matrix4 destinationmatrix =originLoc.cpy().setTranslation(destination_loc);
+	//	Matrix4 destinationmatrix = originLoc.cpy().setTranslation(destination_loc);		
+		PosRotScale destinationState = new PosRotScale(originLoc); //make a new PosRotScale from the original location
 		
-		Movement newmovement= new Movement(destinationmatrix,duration);
+		//but we change its position
+		destinationState.setToPosition(destination_loc);
+		
+		
+				
+		NewMovement newmovement= new NewMovement(destinationState,duration);
 		newmovement.currenttype = MovementTypes.Absolute;
 		
 		return newmovement;
@@ -43,7 +50,7 @@ public class MoveTo  {
 	 * @param duration
 	 * @return
 	 */
-	public static  Movement create(Matrix4 originLoc, float ex, float ey,float ez, int duration) {
+	public static  NewMovement create(Matrix4 originLoc, float ex, float ey,float ez, int duration) {
 
 /*
 		Vector3 posO = new Vector3();
@@ -74,6 +81,14 @@ public class MoveTo  {
 		 
 		return create( originLoc, destination_loc,  duration);
 		
+	}
+
+
+	public static NewMovement create(ModelInstance creaturemodel,
+			Vector3 dropsPositionAsVector, int duration) {
+		
+		
+		return create(creaturemodel.transform, dropsPositionAsVector,  duration);
 	}
 
 
