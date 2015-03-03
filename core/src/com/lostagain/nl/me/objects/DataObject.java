@@ -28,6 +28,7 @@ import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.gui.DataObjectDropTarget;
 import com.lostagain.nl.me.gui.Inventory;
+import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 import com.lostagain.nl.shaders.DistanceFieldShaderForDataObjects;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
@@ -193,7 +194,7 @@ public class DataObject extends Image
 		private void pickup() {
 			
 			//we hold the item (dont add to inventory by default)
-			ME.playersInventory.holdItem(this);
+			STMemory.holdItem(this);
 						
 
 			//add it to the users machine
@@ -531,7 +532,7 @@ public class DataObject extends Image
 		if (addedToObject){
 			
 		} else {
-			Inventory.dropHeldItem(true);
+			STMemory.dropHeldItem(true);
 		}
 		
 		return;

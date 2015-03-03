@@ -65,6 +65,8 @@ import com.lostagain.nl.me.creatures.Population;
 import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.GUIBar;
 import com.lostagain.nl.me.gui.Inventory;
+import com.lostagain.nl.me.gui.STMemory;
+import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.objects.DataObject;
@@ -635,13 +637,22 @@ public class MainExplorationView implements Screen {
 
 		camera.update();
 
+		
+		
+		
 		//Note we draw this here because its in the background and should appear behind the other elements
 		//Each render is sort of like a "layer" and appears in the order they are rendered
 		//regardless of 3d positions within that layer
 		background.updateAnimatedBacks(delta);
 		ModelManagment.updateObjectMovementAndFrames(delta);//--
 		
+		//we start other updates
+		
+		//update the guns animation
 		usersGUI.ConceptGun.update(delta);
+		
+		//update any scans and their  bars
+		ScanManager.update(delta);
 		
 		
 		background.modelBatch.begin( camera);
@@ -690,7 +701,7 @@ public class MainExplorationView implements Screen {
 			
 			
 			
-			if (!dragging && !cancelnextdragclick && !touchedAModel && Inventory.currentlyHeld == null){
+			if (!dragging && !cancelnextdragclick && !touchedAModel && STMemory.currentlyHeld == null){
 				dragging = true;
 				dragstart = TimeUtils.millis();
 				

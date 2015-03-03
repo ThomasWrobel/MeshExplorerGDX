@@ -29,12 +29,13 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 
 	Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 	
-	int DownloadSpeed = 10;	//will become players connection speed
-	ArrayList<ObjectFile> objectsBeingDownloaded = new ArrayList<ObjectFile>();
+	//int DownloadSpeed = 10;	//will become players connection speed
 	
-	final Timer	 objectDownloader = new Timer();
-
-	final Task objectDownloadTask;
+	//ArrayList<ObjectFile> objectsBeingDownloaded = new ArrayList<ObjectFile>();
+	
+	//final Timer	 objectDownloader = new Timer();
+	//final Task objectDownloadTask;
+	
 	private ArrayList<SSSNode> allContentsNodes = new  ArrayList<SSSNode>();
 	
 	static Boolean isRunning = false;
@@ -84,7 +85,8 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
         
         
 		this.contentsTitle = contentsTitle;
-
+/*
+		
 		objectDownloadTask = new Task(){
 
 				@Override
@@ -106,7 +108,7 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 	   					ObjectFile currentObjectFile = ObjectFilesToUpdate.next();	   										
 	   					currentObjectFile.stepForwardDownloadingAmount(SPEEDSTEP);
 	   					
-	   					if (currentObjectFile.currentMode!=ObjectFileState.Downloading){
+	   					if (currentObjectFile.currentMode!=ObjectFileState.Analysing){
 	   						ObjectFilesToUpdate.remove();
 	   						currentObjectFile.validate();
 	   					}
@@ -124,7 +126,7 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 	   		};
 	   		
 	   	 
-		
+		*/
 		Label title = new Label(contentsTitle,skin);
 		//title.setX(150);
 	//	title.setY(50);
@@ -146,6 +148,8 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 		scrollTable.validate();
 	}
 	
+	//No longer needed. Scanmanager does it all
+	/*
 	public void startScanningObjectFile(final ObjectFile ObjectFile){
 
 		ObjectFile.setScanningAmount(0);
@@ -168,7 +172,8 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 		}
 		
 		
-	}
+	}*/
+	
 	public void addObjectFile(ObjectFile ObjectFile){
 		
 		//ensure its not already on here

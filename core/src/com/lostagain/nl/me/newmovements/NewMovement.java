@@ -211,7 +211,7 @@ public class NewMovement {
 		//	Gdx.app.log(logstag, "______a current lerp="+ratio);
 			Vector3 newscale = startScale.lerp(destination.scale, ratio);
 
-			Gdx.app.log(logstag, "______a current scaleX="+newscale.x);
+		//	Gdx.app.log(logstag, "______a current scaleX="+newscale.x);
 			
 			return new PosRotScale(newposition,newrotation,newscale);
 		

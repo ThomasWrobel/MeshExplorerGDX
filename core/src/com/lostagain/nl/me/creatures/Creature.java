@@ -20,6 +20,7 @@ import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.creatures.Population.destructOn;
 import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.Inventory;
+import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.newmovements.NEWREPEAT;
@@ -30,6 +31,7 @@ import com.lostagain.nl.me.newmovements.NewMoveTo;
 import com.lostagain.nl.me.newmovements.NewMovementController;
 import com.lostagain.nl.me.newmovements.NewRelativeScale;
 import com.lostagain.nl.me.newmovements.NewRotateLeft;
+import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.me.objects.DataObject;
 import com.lostagain.nl.uti.Uti;
 
@@ -140,13 +142,28 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		ModelManagment.addHitable(this);
 		
 		//make bigger (test only)
-		creaturemodel.transform.mul(new Matrix4().setToScaling(0.5f, 2.5f,0.5f));
+		//creaturemodel.transform.mul(new Matrix4().setToScaling(0.5f, 2.5f,0.5f));
+		//rotate (test only)
+		//creaturemodel.transform.mul(new Matrix4().setToRotation(new Vector3(0f,0f,1f), 45));
+		
+		PosRotScale startScaleAndRotation = new PosRotScale();
+		startScaleAndRotation.setToPosition(new Vector3(30f, 40f, 50f));
+		startScaleAndRotation.setToRotation(0f, 0f, 1f, 45);
+		startScaleAndRotation.setToScaling(new Vector3(0.5f, 2.5f,0.5f));
+		Gdx.app.log(logstag, " setting to: "+startScaleAndRotation.toString());	
+		Matrix4 test = startScaleAndRotation.createMatrix();
+		PosRotScale test2 = new PosRotScale(test);
+		Gdx.app.log(logstag, " check after conversion: "+test2.toString());	
+		
+		creaturemodel.transform.mul(startScaleAndRotation.createMatrix()); 
+		
+		
 		
 		movementControll = new NewMovementController(creaturemodel.transform);//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
 		
 		//movementControll = new MovementController(creaturemodel.transform,new Jerk2D(creaturemodel,30f,50f,400f,4000f));//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
 		//movementControll = new MovementController(creaturemodel.transform, new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//
-		startCreaturesStandardMovement();	
+	//	startCreaturesStandardMovement();	
 	}
 
 	public void setColor(Color newcol){
@@ -241,8 +258,8 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 			SSSNode appliedConcept;
 			if (!ConceptGun.disabledFire){
 				appliedConcept = ConceptGun.equipedConcept;
-			} else if (Inventory.currentlyHeld!=null) {
-				appliedConcept = Inventory.currentlyHeld.itemsnode;					
+			} else if (STMemory.currentlyHeld!=null) {
+				appliedConcept = STMemory.currentlyHeld.itemsnode;					
 			} else {
 				Gdx.app.log(logstag,"_nothing currently equiped to fight creature");	
 				return;
@@ -362,8 +379,10 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		
 		//movementControll = new NewMovementController(creaturemodel.transform,new NewRotateLeft(90,590),new NewForward(50,2050),new NEWREPEAT());
 		//movementControll.setMovement(creaturemodel.transform,false,new NewRotateLeft(90,590),new NewForward(50,2050),new NEWREPEAT());
+		//new NewJerk2D(creaturemodel,70f,80f,2000f,8000f)
 		
-		movementControll.setMovement(creaturemodel.transform,false,new NewJerk2D(creaturemodel,30f,50f,4000f,400000f), new NEWREPEAT());
+		
+		movementControll.setMovement(creaturemodel.transform,false,new NewJerk2D(creaturemodel,70f,80f,2000f,8000f), new NEWREPEAT());
 		
 		
 	}
@@ -395,6 +414,9 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 			Gdx.app.log(logstag,"droping drops with the dropdrops(drops) call.");
 			dropdrops(drops);
 		}
+		
+		
+		
 	}
 
 
@@ -455,7 +477,29 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		float EZ = getCenter().z;
 		//temp disabled while converting to new movement system
 		
-		movementControll.setMovement(creaturemodel.transform,true,NewFaceAndMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
+		movementControll.setMovement(creaturemodel.transform,false,NewFaceAndMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
+		
+		//temp resume after (really shouldnt need this but currently autoresume seems broke)
+		
+
+		
+	
+		
+		Timer.schedule(new Task(){
+
+			@Override
+			public void run() {
+				
+				Gdx.app.log(logstag, "___resuming movement after NewMoveTo___");
+				Gdx.app.log(logstag, "___Current State is: ___"+new PosRotScale(creaturemodel.transform).toString());
+				
+				
+				movementControll.setMovement(creaturemodel.transform,false,new NewJerk2D(creaturemodel,70f,80f,2000f,8000f), new NEWREPEAT());
+
+			}
+			
+			
+		}, (2000+150)/1000); //the movement should start again shortly after the enlargement ends. We devide by 1000 as Timer.schedule needs the time in seconds, not ms 
 		
 		//movementControll.setMovement(creaturemodel.transform,false,NewMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
 		

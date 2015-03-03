@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.darkflame.client.interfaces.GenericProgressMonitor;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
@@ -22,11 +23,12 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.gui.DataObjectSlot;
+import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.objects.DataObject;
 
 
 /** An object filelink represents a single object node that can be downloaded **/
-public class ObjectFile extends WidgetGroup {
+public class ObjectFile extends WidgetGroup implements GenericProgressMonitor{
 
 	ProgressBar downloadPercentage;
 
@@ -48,7 +50,7 @@ public class ObjectFile extends WidgetGroup {
 	
 		
 	enum ObjectFileState {
-		Normal,Downloading,AlreadyHave;
+		Normal,Analysing,AlreadyHave;
 	}
 
 	ObjectFileState currentMode =  ObjectFileState.Normal;
@@ -95,7 +97,7 @@ public class ObjectFile extends WidgetGroup {
 					
 					
 					//remove download button and change mode to downloading
-					download();
+					requestObjectScan();
 					
 				}
 			}
@@ -216,18 +218,27 @@ public class ObjectFile extends WidgetGroup {
 		
 	}
 	
-	private void download(){
-		
-		currentMode = ObjectFileState.Downloading;
+	private void requestObjectScan(){
 		
 		
-		
-		 setScanningStyle();
 		 
 	//	ProgressBar.setStyles(Style.BACKGROUND.is(Background.solid(Color.argb(255, 250,50, 55))));
 
 
-		currentParent.startScanningObjectFile(this);
+		//currentParent.startScanningObjectFile(this); //contents screen no longer handles object scans
+		 
+		//addScan returns boolean that represents if it started ok or not
+		boolean successfullyStarted =  ScanManager.addNewScan(this);
+		 
+		//if it did we change the style and set its mode to downloading
+		if (successfullyStarted){
+			
+			currentMode = ObjectFileState.Analysing;
+			
+			setScanningStyle();
+			 
+		}
+		
 		
 
 
@@ -253,11 +264,9 @@ public class ObjectFile extends WidgetGroup {
 		
 		downloadPercentage.setValue(Percentage);
 		
-		
-		//crude, we should really adjust size rather then re-adding it
-		//super.add(AbsoluteLayout.at(ProgressBar, 0, 0,pixals,20));
-		//have to re-add this one to make sure its on top *(dunno how to set z-index)
-		//super.add(AbsoluteLayout.at(downloadButton, 50, 0));	
+		if (Percentage>=100){
+			this.downloadComplete();
+		}
 		
 		
 	}
@@ -350,6 +359,36 @@ public class ObjectFile extends WidgetGroup {
 		//add it to the users machine
 		ME.playersInventory.addItem(new DataObject(objectsnode));
 		
+		
+	}
+
+	@Override
+	public void setTotalProgressUnits(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addToTotalProgressUnits(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCurrentProcess(String message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stepProgressForward() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCurrentProgress(int Percentage) {
+		setScanningAmount(Percentage);
 		
 	}
 }

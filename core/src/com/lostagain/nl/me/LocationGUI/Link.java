@@ -27,12 +27,13 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.models.MessyModelMaker;
 
 import java.util.logging.Logger;
 
 
-public class Link extends WidgetGroup implements GenericProgressMonitor{
+public class Link extends WidgetGroup implements GenericProgressMonitor {
 
 	static Logger Log = Logger.getLogger("ME.Link");
 	final static String logstag = "ME.Link";
@@ -68,7 +69,9 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	private double TOTAL_LOAD_UNITS=1;
 	private double LOAD_PROGRESS=0;
 
-	private boolean realLink=false;
+	/** Determines if this is a link to a real url or just an internal fake link from one local location to another**/
+	private boolean realURLLink=false;
+	
 	int RealScanAmount =0;
 	private static long scanStartTime=0l;
 
@@ -126,7 +129,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 					Gdx.app.log(logstag,"trying to go to:"+linksToThisPC.getPURI());
 							
 					//double check if it was a realscan that the database is loaded (should not be needed if loading progress was handled correctly, which it currently is not)
-					if (realLink){
+					if (realURLLink){
 
 						Gdx.app.log(logstag,"checking if url loaded:");
 						
@@ -145,7 +148,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 					switch (currentMode)
 					{
 					case Unknown:
-						 scan();
+						 requestScan();
 						break;
 					case Closed:
 						//as we already know its locked, we could probably
@@ -195,15 +198,8 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		
 	}
 
-	private void scan(){
+	private void requestScan(){
 		
-		Gdx.app.log(logstag,"___________________________________sc");
-		
-		
-		currentMode = LinkMode.Scanning;
-		
-		gotoLinkButton.setText(SCANNING+LocationsName);
-		gotoLinkButton.pack();
 		//super.setStyles(Style.BACKGROUND.is(Background.solid(Color.argb(255, 50,50, 255))));
 		
 	//	ProgressBar.setStyles(Style.BACKGROUND.is(Background.solid(Color.argb(255, 250,50, 55))));
@@ -213,18 +209,26 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		//check if needs a new database loaded
 		Boolean newDatabaseLoading=ME.checkForUnloadedDatabaseAndLoad(linksToThisPC);
 		
+		boolean successfullyStarted = false;
+		
 		if (!newDatabaseLoading){
 			
 			Gdx.app.log(logstag,"triggering scan");
-			currentParent.startScanningLink(this);
-			realLink=false;
+			
+			//currentParent.startScanningLink(this); Linkscreen used to handle scans. Now its handled by the scan manager
+			successfullyStarted = ScanManager.addNewScan(this); //will add a new scan to start scanning
+			
+			
+			realURLLink=false;
+			
+			
 		} else {
 
 			Gdx.app.log(logstag,"triggering remote scan");
 			
-			realLink=true;
+			realURLLink=true;
 
-			this.setScanningAmount(0);
+			this.setStandardLinkScanningAmount(0);
 			
 			//currentParent.startScanningLink(this);
 			
@@ -233,9 +237,27 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 			//sources at once
 			SuperSimpleSemantics.setGenericLoadingMonitor(this);
 			
+			//assume true for now (the real url scan needs replacing really)
+			successfullyStarted = true;
 		}
 
-		scanStartTime = TimeUtils.millis();
+		if (successfullyStarted){
+
+			Gdx.app.log(logstag,"___________________________________starting link scan");
+			
+			
+			currentMode = LinkMode.Scanning;
+			
+			gotoLinkButton.setText(SCANNING+LocationsName);
+			gotoLinkButton.pack();
+			
+			scanStartTime = TimeUtils.millis();
+	
+			
+		}
+		
+		
+		
 
 	}
 	
@@ -267,18 +289,27 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 
 	//used to indicate the link is being scanned
 	//speed is based on Node timed security / scanner speed
-	public void setScanningAmount(int Percentage){
+	public void setStandardLinkScanningAmount(int Percentage){
 		
 		//float pixels = (super.size().width()/100)*Percentage;
 	//	ProgressBar.setText("-"+Percentage);
-		if (!realLink){
+		if (!realURLLink){
 			//int combined = (RealScanAmount+Percentage/2);
 			scanPercentage.setValue(Percentage);
 				
-		} else {
-			int combined = (RealScanAmount+Percentage)/2;
-			scanPercentage.setValue(RealScanAmount);
+		} 
+		
+		//if percentage is 100% we fire competition
+		if (Percentage>=100)
+		{
+			this.scanComplete();
 		}
+		
+		//not used anymore
+		//else {
+		//	int combined = (RealScanAmount+Percentage)/2;
+		//	scanPercentage.setValue(RealScanAmount);
+		//}
 		
 		
 		
@@ -308,12 +339,12 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		if (PercentageScanned>=100) {
 			PercentageScanned = 100;
 
-			setScanningAmount(PercentageScanned);
+			setStandardLinkScanningAmount(PercentageScanned);
 			scanComplete();
 			
 		} else {
 		
-			setScanningAmount(PercentageScanned);
+			setStandardLinkScanningAmount(PercentageScanned);
 		}
 		
 	}
@@ -366,7 +397,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	void reCheckLinkLine() {
 		boolean loaded = true;
 		
-		if (realLink){
+		if (realURLLink){
 			
 			Gdx.app.log(logstag,"testing reallink if any databases are still needed to be loaded before enableing link and new location");
 			loaded = ME.checkDatabaseIsLoaded(linksToThisPC); //ensures any databases at this points too are loaded
@@ -400,12 +431,12 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		if (PercentageScanned>=100) {
 			
 			PercentageScanned = 100;		
-			setScanningAmount(PercentageScanned);
+			setStandardLinkScanningAmount(PercentageScanned);
 			scanComplete();
 			
 		} else {
 		
-			setScanningAmount(PercentageScanned);
+			setStandardLinkScanningAmount(PercentageScanned);
 			
 		}
 		
@@ -460,7 +491,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		// TODO Auto-generated method stub
 		TOTAL_LOAD_UNITS = i;
 		
-		updateRealPercentageScanned();
+		updateSemanticScan();
 		
 	}
 
@@ -468,10 +499,10 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 	public void addToTotalProgressUnits(int i) {
 		
 		TOTAL_LOAD_UNITS = TOTAL_LOAD_UNITS + i;
-		updateRealPercentageScanned();
+		updateSemanticScan();
 	}
 
-	private void updateRealPercentageScanned() {
+	private void updateSemanticScan() {
 		
 		//Note: We use "floor" here to ensure we are as pessimistic as possible when determining loading
 		//Thus 99.9% isn't assumed to be 100% and thus triggering loaded complete!
@@ -491,7 +522,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 				@Override
 				public void run() {
 					Gdx.app.log(logstag," final link updates ");
-					setScanningAmount(RealScanAmount);
+					setStandardLinkScanningAmount(RealScanAmount);
 					scanComplete();
 
 				}
@@ -502,7 +533,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 				
 				@Override
 				public void run() {
-					setScanningAmount(RealScanAmount);
+					setStandardLinkScanningAmount(RealScanAmount);
 				}
 			});
 		}
@@ -536,14 +567,22 @@ public class Link extends WidgetGroup implements GenericProgressMonitor{
 		LOAD_PROGRESS = LOAD_PROGRESS + 1;
 			
 
-		updateRealPercentageScanned();
+		updateSemanticScan();
 	}
 
 	@Override
 	public void setCurrentProgress(int i) {
+		
 		LOAD_PROGRESS = i;
 
-		updateRealPercentageScanned();
+		if (!realURLLink){
+			setStandardLinkScanningAmount((int)Math.floor(LOAD_PROGRESS));
+		} else {
+			updateSemanticScan();
+		}
+	
+		
+		
 	}
 	
 	

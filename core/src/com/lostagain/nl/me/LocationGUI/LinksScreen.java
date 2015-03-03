@@ -32,14 +32,14 @@ public class LinksScreen extends Table implements LocationScreen {
 	
 	/** scan updates every 0.1 seconds. Normally takes 100steps (so 0.1*100 = 10secs)
 	 * but (ScanSpeed/ number of current scans) gets subtracted per step**/
-	int scanSpeed = 10;	
+	//int scanSpeed = 10;	
 	
 	
 	
-	ArrayList<Link> linksBeingScanned= new ArrayList<Link>();
+	//ArrayList<Link> linksBeingScanned= new ArrayList<Link>();
 	
-	final Timer	 linkDownloader = new Timer();
-	final Task linkDownloadTask;
+	//final Timer	 linkDownloader = new Timer();
+	//final Task linkDownloadTask;
 
 	ArrayList<Link> allLinks = new ArrayList<Link>();
 
@@ -47,7 +47,7 @@ public class LinksScreen extends Table implements LocationScreen {
 	
 	
 	
-	static Boolean isDownloading = false;
+//	static Boolean isDownloading = false;
 
 	public LinksScreen(LocationsHub parentLocationContainer, SSSNode securedBy) {
 		super();
@@ -56,6 +56,7 @@ public class LinksScreen extends Table implements LocationScreen {
 		super.setDebug(true, true);
 		
 		//Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		/*
 		linkDownloadTask = new Task() {
 
 				@Override
@@ -97,7 +98,7 @@ public class LinksScreen extends Table implements LocationScreen {
 				}
 	   			
 	   		};
-	   	 
+	   	 */	
 		
 	//	super.add(title);
 		
@@ -135,10 +136,13 @@ public class LinksScreen extends Table implements LocationScreen {
 		
 	}
 	
+	
+	//No longer needed. Scanmanager does it all
+	/*
 	public void startScanningLink(final Link link){
 		Log.info("startScanningLink");
 		
-		link.setScanningAmount(0);
+		link.setStandardLinkScanningAmount(0);
 	
 		boolean wasadded = linksBeingScanned.add(link);
 		
@@ -156,7 +160,7 @@ public class LinksScreen extends Table implements LocationScreen {
 			
 		}
 		
-	}
+	}*/
 
 
 	public void removeAllContents() {

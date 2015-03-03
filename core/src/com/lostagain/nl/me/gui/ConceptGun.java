@@ -300,6 +300,7 @@ public class ConceptGun  extends WidgetGroup {
 		if (MainExplorationView.touchedAModel){
 			Gdx.app.log(logstag,"_-(hit something)-_");
 		}
+		
 	}
 	
 	public void update(float delta){

@@ -47,6 +47,24 @@ public class NewJerk2D extends NewMovement {
 	 */
 	static public PosRotScale getDest(float mindistance, float maxdistance,Matrix4 origin){	
 		
+		//Start the destination state as a copy of the original
+		PosRotScale destinationState = new PosRotScale(origin);
+		
+		//Pick a new location to goto within the radius of the existing one
+		Vector3 newposition = new Vector3(destinationState.position);
+		float angle = (float) (Math.random()*360);
+		float distance =  (float) (mindistance+(Math.random()*(maxdistance-mindistance)));
+		
+		//work out new X/Y 
+		newposition.x = (float) (newposition.x + (Math.cos(Math.toRadians(angle))*distance));
+		newposition.y = (float) (newposition.y + (Math.sin(Math.toRadians(angle))*distance));
+		
+		//now set the destination to this new position (keeping Z the same as this is 2D movement only
+		destinationState.setToPosition(new Vector3(newposition.x,newposition.y,destinationState.position.z));
+		
+		
+		
+		/*
 		Matrix4 start = origin.cpy();
 								
 		Vector3 newposition = new Vector3();
@@ -130,7 +148,7 @@ public class NewJerk2D extends NewMovement {
 		
 		Gdx.app.log(logstag, "___________________________new pos="+newposition.x+","+newposition.y+","+newposition.z);
 		*/
-		return dest;///new Matrix4(). .setToRotation(new Vector3(0,0,1), 45).mulLeft(start);//start.setTranslation(newposition); //end is just the start with the new position
+		return destinationState;///new Matrix4(). .setToRotation(new Vector3(0,0,1), 45).mulLeft(start);//start.setTranslation(newposition); //end is just the start with the new position
 		//rot
 		//Quaternion newrotation = new Quaternion();
 		//start.getRotation(newrotation);

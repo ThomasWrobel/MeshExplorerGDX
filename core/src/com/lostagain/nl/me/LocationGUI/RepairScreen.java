@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 
 
+
 import javax.swing.GroupLayout.Alignment;
 
 import com.badlogic.gdx.Gdx;
@@ -46,6 +47,7 @@ import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
 import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.gui.Inventory;
+import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.objects.DataObject;
 
 /**
@@ -598,10 +600,10 @@ public class RepairScreen extends Group  implements LocationScreen {
 				@Override
 				public void clicked(InputEvent ev, float x , float y){
 					
-					SSSNode ItemNode = Inventory.currentlyHeld.itemsnode;
+					SSSNode ItemNode = STMemory.currentlyHeld.itemsnode;
 					
 					//if not carrying item ignore
-					if (Inventory.currentlyHeld==null){
+					if (STMemory.currentlyHeld==null){
 						return;
 					}
 
@@ -614,7 +616,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 						
 						Gdx.app.log(logstag,"contains:"+acceptableAnswers.contains(ItemNode));
 			
-						ME.playersInventory.dropHeldItem(true);
+						STMemory.dropHeldItem(true);
 						
 						setModeAccepted(ItemNode);
 						
@@ -627,7 +629,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 						
 						source.rejectedAnsAnimation();		
 
-						ME.playersInventory.dropHeldItem(true);
+						STMemory.dropHeldItem(true);
 					}
 				}
 							

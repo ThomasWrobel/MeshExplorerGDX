@@ -46,9 +46,34 @@ public class PosRotScale {
 		
 	}
 	
-	public PosRotScale(Matrix4 lastLocation) {
+	public PosRotScale(Matrix4 setToThis) {
 		
-		this.setToMatrix(lastLocation);
+		this.setToMatrix(setToThis);
+		
+		
+	}
+	
+	/**<br>
+	 * Displays Pos,Rot and Scale in the form<br>
+	 * <br>
+	 * [0,0,0][0,0,0,0][0,0,0]<br>
+	 *  which is<br>
+	 * [x,y,z][[angleaxis],[angle]][scale x,scale y,scale z]<br>
+	 * <br>
+	 *  axis angle is in degrees<br>
+	 */
+	@Override
+	public String toString(){
+		
+		Vector3 axis = new Vector3();
+		float angle = rotation.getAxisAngle(axis);
+		
+		
+		String stateAsString = "["+position.x+","+position.y+","+position.z+"]"
+				             + "["+axis.x+","+axis.y+","+axis.z+","+angle+"]"
+				             + "["+scale.x+","+scale.y+","+scale.z+"]";
+		
+		return stateAsString;
 		
 		
 	}
@@ -112,7 +137,7 @@ public class PosRotScale {
 	 */
 	public void setToMatrix(Matrix4 lastLocation) {
 		
-		lastLocation.getTranslation(position); //does this need to be divided by the scale?
+		lastLocation.getTranslation(position); 
 		lastLocation.getRotation(rotation);
 		lastLocation.getScale(scale); 
 		
@@ -122,7 +147,7 @@ public class PosRotScale {
 	 * replaces the Rotation with the new Rotation  (doesn't effect anything else)
 	 * @param this
 	 */
-	public PosRotScale setToRotation(int i, int j, int k, float angleInDeg) {
+	public PosRotScale setToRotation(float i, float j, float k, float angleInDeg) {
 		rotation.set(new Vector3(i,j,k), angleInDeg);
 
 		Gdx.app.log(logstag, " setting rot to angle :"+rotation.getAngle());	

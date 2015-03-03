@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -39,6 +40,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 	
 	
 	static HashSet<DataObject> carryingObjects = new HashSet<DataObject>();
+	public static DataObject currentlyHeld;
 	
 	int ItemLimit = 7; //can be expanded in future
 	
@@ -47,8 +49,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 	 * This is to help stop missclicks dropping items straight away*/
 	private static long lastTime=0l;
 
-	public static SSSNode currentlyHeld;
-
+	//public static SSSNode currentlyHeld;
 	private float prefwidth;
 
 	private float prefheight;
@@ -121,6 +122,124 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		dataobject.remove();
 		
 	}
+	
+
+	
+	protected static void setCurrentlyHeld(DataObject object) {
+		
+		currentlyHeld=object;
+		
+		/*
+		// 
+		
+
+		 
+		// SpriteBatch batch = new SpriteBatch();
+		 
+		// ME.font.draw(batch, "test text", 5, 5);
+
+		
+		//the following should be catched so we dont need to keep regenerating the images
+		
+	    String Letters=itemsnode2.getPLabel();
+	    
+	    
+			    int TILE_WIDTH=130;
+			    int TILE_HEIGHT=30;
+			    
+				Pixmap textPixmap = new Pixmap(TILE_WIDTH, TILE_HEIGHT, Format.RGBA8888);
+				textPixmap.setColor(0.44f, 0.44f, 0.44f, 1);
+				
+				textPixmap.fill();
+				
+		    // get the glyph info
+		    BitmapFontData data = ME.font.getData();
+		    Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0]));
+		    
+			// draw the character onto our base pixmap
+		  
+		  int totalwidth=0;
+		  //precalcwidth
+		    for (int i = 0; i < Letters.length(); i++) {
+				
+				Glyph glyph = data.getGlyph(Letters.charAt(i));
+				
+				totalwidth=totalwidth+ glyph.width+5;
+			}
+			
+		    int currentX=0;
+		    int xpad = ((TILE_WIDTH-totalwidth)/2);
+		    
+			for (int i = 0; i < Letters.length(); i++) {
+				
+				Glyph glyph = data.getGlyph(Letters.charAt(i));
+				
+				textPixmap.drawPixmap(
+						fontPixmap,
+						xpad+currentX,
+						(TILE_HEIGHT - glyph.height) / 2, 
+						glyph.srcX,
+						glyph.srcY, glyph.width, glyph.height);
+				
+				currentX=currentX+ glyph.width+5;
+			}
+			
+			// save this as a new texture
+		    Texture texture = new Texture(currentlyHeld.getDrawable());
+		    */
+		    MainExplorationView.setCursor(currentlyHeld.imagesTextureWithMipMaps);
+		    
+		    
+
+		lastTime = TimeUtils.millis();
+		
+	}
+	public static void dropHeldItem(){
+		
+		
+		dropHeldItem(false);
+		
+	}
+	public static void dropHeldItem(boolean overrideDelay){
+		
+
+		long LastHeld =  TimeUtils.timeSinceMillis(lastTime);
+		
+		//have a delay to ensure they dont drop it straight away by mistake
+		if (LastHeld>500 || overrideDelay)
+		{
+			//set cursor to none
+			MainExplorationView.setCursor(null);
+			
+			if (currentlyHeld!=null){
+			//dump on ground where cursor is
+			dropItemToGround(currentlyHeld);
+			
+			
+			//remove currently held
+			currentlyHeld=null;
+			}
+			
+		}
+		
+	}
+	
+	 private static void dropItemToGround(DataObject item) {
+		 
+		 
+		 //get cursor location
+		 Vector2 cursor = MainExplorationView.getCurrentStageCursorPosition();
+		 
+		 //drop the item on the ground
+		 MainExplorationView.addnewdrop(item, cursor.x, cursor.y);
+		 
+		 
+		 
+		
+	}
+	
+	
+	
 	public  boolean 	 addItem(DataObject dataobject){
 		if (carryingObjects.size()<ItemLimit){
 		
@@ -163,11 +282,11 @@ public class STMemory extends Table implements DataObjectDropTarget {
 
 			Gdx.app.log(logstag,"clickedWhileHolding");
 			
-			Boolean success = addItem(Inventory.currentlyHeld);
+			Boolean success = addItem(currentlyHeld);
 
 			//if was successfully added we set currently held to nothing
 			if (success){
-					Inventory.currentlyHeld = null;
+					currentlyHeld = null;
 			} else {
 				
 				//should have some feedback here for STMemory full up
@@ -184,7 +303,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			boolean accepted = addItem(droppedOn);
 			
 			
-			if (droppedOn==Inventory.currentlyHeld && accepted){
+			if (droppedOn==currentlyHeld && accepted){
 				
 				droppedOn.setRotation(0); //ensure its straight when going on
 				droppedOn.setScale(1); //natural scale (might change in future)
@@ -194,7 +313,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 				
 				
 				
-				Inventory.currentlyHeld = null;			
+				currentlyHeld = null;			
 				MainExplorationView.setCursor(null);
 				
 				
@@ -211,5 +330,13 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			
 			 removeItem(dataobject);
 		}
-
+		
+		static public void holdItem(DataObject objectsnode) {
+			if (currentlyHeld==null){
+				setCurrentlyHeld(objectsnode);
+			} else {
+				dropHeldItem(true);
+			}
+			
+		}
 }

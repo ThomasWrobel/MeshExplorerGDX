@@ -157,11 +157,11 @@ public class DataObjectSlot  extends WidgetGroup implements DataObjectDropTarget
 			 	@Override
 				public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 			 		
-			 		if (Inventory.currentlyHeld!=null)
+			 		if (STMemory.currentlyHeld!=null)
 			 				{
 
 						 Gdx.app.log(logstag,"_________________: Object dropped from slot "+x+","+y);
-			 					Inventory.currentlyHeld.droppedAt(x, y);
+						 STMemory.currentlyHeld.droppedAt(x, y);
 			 				}
 			 		 
 					
@@ -305,13 +305,13 @@ public class DataObjectSlot  extends WidgetGroup implements DataObjectDropTarget
 		
 		stored.setTouchable(Touchable.disabled);
 		
-		if (droppedOn==Inventory.currentlyHeld){
+		if (droppedOn==STMemory.currentlyHeld){
 			
-			Gdx.app.log(logstag, "removing "+Inventory.currentlyHeld.itemsnode.toString()+" from held");
+			Gdx.app.log(logstag, "removing "+STMemory.currentlyHeld.itemsnode.toString()+" from held");
 			
 			
 			
-			Inventory.currentlyHeld = null;			
+			STMemory.currentlyHeld = null;			
 			MainExplorationView.setCursor(null);
 			
 			
