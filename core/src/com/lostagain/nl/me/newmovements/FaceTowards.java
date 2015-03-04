@@ -13,7 +13,7 @@ public class FaceTowards  {
 
 	final static String logstag = "ME.FaceTowards";
 	//static Matrix4 Left = new Matrix4().setToRotation(0, 0, 1, 90);
-	static public RotateLeft create(ModelInstance originObject, ModelInstance targetObject, int duration) {
+	static public RotateLeft create(AnimatableModelInstance originObject, ModelInstance targetObject, int duration) {
 		
 		
 		Vector3 posT = new Vector3();
@@ -34,7 +34,7 @@ public class FaceTowards  {
 	 * @param duration
 	 * @return
 	 */
-	public static RotateLeft create(ModelInstance originObject, float ex, float ey, int duration) {
+	public static RotateLeft create(AnimatableModelInstance originObject, float ex, float ey, int duration) {
 
 		Vector3 posO = new Vector3();
 		originObject.transform.getTranslation(posO);

@@ -24,6 +24,7 @@ import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.InfovoreAnimation;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 /** defines what a basic infovore looks like and how it behaves**/
 public class BasicInfovore extends Creature implements Animating {
@@ -93,10 +94,11 @@ public class BasicInfovore extends Creature implements Animating {
         mat.set(blendingAttribute2);
         
 		
-		creaturemodel = new ModelInstance(model);				
-		creaturemodel.transform.setToTranslation(x,y,z);
+		creaturemodel = new AnimatableModelInstance(model);				
+		creaturemodel.setToPosition(new Vector3(x,y,z));
+		
 		//store this initial transform as its native position
-		this.origin = creaturemodel.transform;
+		this.origin = creaturemodel.transState.copy();
 		
 		
 		super.setmodel(creaturemodel);

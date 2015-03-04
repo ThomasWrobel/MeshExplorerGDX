@@ -2,18 +2,18 @@ package com.lostagain.nl.me.newmovements;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.Matrix4;
+//import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 public class NewJerk2D extends NewMovement {
 	
-	Matrix4 currentDestination = new Matrix4();
+	PosRotScale currentDestination = new PosRotScale();
 	
 	PosRotScale startingTransform; //origin point to jerk relative to
 	float mindistance = 0;
 	float maxdistance = 0;
-	ModelInstance modelins;
+	AnimatableModelInstance modelins;
 	
 	final static String logstag = "ME.Jerk";
 	/**
@@ -25,8 +25,8 @@ public class NewJerk2D extends NewMovement {
 	 * @param maxdistance 
 	 * @param durationTotalMS
 	 */
-	public NewJerk2D(ModelInstance creaturemodel ,float mindistance, float maxdistance, float durationMSEachMove,float durationTotal) {
-		super( getDest(mindistance,maxdistance,creaturemodel.transform) , durationMSEachMove, durationTotal); //matrix isn't important its not used
+	public NewJerk2D(AnimatableModelInstance creaturemodel ,float mindistance, float maxdistance, float durationMSEachMove,float durationTotal) {
+		super( getDest(mindistance,maxdistance,creaturemodel.transState) , durationMSEachMove, durationTotal); //matrix isn't important its not used
 		
 		
 		currenttype = MovementTypes.Absolute;
@@ -35,7 +35,7 @@ public class NewJerk2D extends NewMovement {
 		this.maxdistance=maxdistance;
 		this.modelins = creaturemodel;
 		//this.startingTransform=creaturemodel.transform.cpy();
-		this.startingTransform=new PosRotScale(creaturemodel.transform);
+		this.startingTransform=  creaturemodel.transState.copy(); //new PosRotScale(creaturemodel.transform);
 		this.lastTransform = startingTransform;
 		
 	}
@@ -45,10 +45,10 @@ public class NewJerk2D extends NewMovement {
 	 * @param delta
 	 * @return
 	 */
-	static public PosRotScale getDest(float mindistance, float maxdistance,Matrix4 origin){	
+	static public PosRotScale getDest(float mindistance, float maxdistance,PosRotScale origin){	
 		
 		//Start the destination state as a copy of the original
-		PosRotScale destinationState = new PosRotScale(origin);
+		PosRotScale destinationState = origin.copy();
 		
 		//Pick a new location to goto within the radius of the existing one
 		Vector3 newposition = new Vector3(destinationState.position);
@@ -169,7 +169,7 @@ public class NewJerk2D extends NewMovement {
 		Gdx.app.log(logstag, "_____________________________________________refreshSetup=");
 		
 		//store the last location
-		lastTransform = new PosRotScale(modelins.transform);//this often has the wrong values why?
+		lastTransform = modelins.transState.copy();//this often has the wrong values why?
 		/*
 		 * ME.Movement: ______a current lerp=0.9614514
 ME.Movement: ______a current scaleX=1.2145704 <------------should be this (ish(
@@ -191,7 +191,7 @@ ME.Movement: ______a current scaleX=1.4858993
 			destination = startingTransform;				
 		} else {
 			//else we calculate a new random location
-			destination = getDest( mindistance,  maxdistance, startingTransform.createMatrix());
+			destination = getDest( mindistance,  maxdistance, startingTransform);
 		}
 	
 		//break the destination down into rotation and translation (one day we might use scale too)		

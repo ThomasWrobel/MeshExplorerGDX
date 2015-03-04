@@ -2,7 +2,7 @@ package com.lostagain.nl.me.newmovements;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.Matrix4;
+//import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -16,19 +16,18 @@ public class NewMoveTo  {
 	
 	//static Matrix4 Left = new Matrix4().setToRotation(0, 0, 1, 90);
 	
-	static public NewMovement create(ModelInstance originObject, ModelInstance targetObject, int duration) {
+	static public NewMovement create(AnimatableModelInstance originObject, AnimatableModelInstance targetObject, int duration) {
 		
-		Vector3 posT = new Vector3();
-		targetObject.transform.getTranslation(posT);		
+		Vector3 posT = targetObject.transState.position.cpy();	
 			
-		return create(originObject.transform, posT.x, posT.y,posT.z, duration);
+		return create(originObject.transState, posT.x, posT.y,posT.z, duration);
 	}
 	
 	
-	static public NewMovement create(Matrix4 originLoc,Vector3 destination_loc, int duration) {
+	static public NewMovement create(PosRotScale originLoc,Vector3 destination_loc, int duration) {
 
 	//	Matrix4 destinationmatrix = originLoc.cpy().setTranslation(destination_loc);		
-		PosRotScale destinationState = new PosRotScale(originLoc); //make a new PosRotScale from the original location
+		PosRotScale destinationState = originLoc.copy(); //make a new PosRotScale from the original location
 		
 		//but we change its position
 		destinationState.setToPosition(destination_loc);
@@ -50,7 +49,7 @@ public class NewMoveTo  {
 	 * @param duration
 	 * @return
 	 */
-	public static  NewMovement create(Matrix4 originLoc, float ex, float ey,float ez, int duration) {
+	public static  NewMovement create(PosRotScale originLoc, float ex, float ey,float ez, int duration) {
 
 /*
 		Vector3 posO = new Vector3();
@@ -84,11 +83,11 @@ public class NewMoveTo  {
 	}
 
 
-	public static NewMovement create(ModelInstance creaturemodel,
+	public static NewMovement create(AnimatableModelInstance creaturemodel,
 			Vector3 dropsPositionAsVector, int duration) {
 		
 		
-		return create(creaturemodel.transform, dropsPositionAsVector,  duration);
+		return create(creaturemodel.transState, dropsPositionAsVector,  duration);
 	}
 
 

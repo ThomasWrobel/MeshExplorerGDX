@@ -1,6 +1,6 @@
 package com.lostagain.nl.me.newmovements;
 
-import com.badlogic.gdx.math.Matrix4;
+//import com.badlogic.gdx.math.Matrix4;
 
 public class NewForward extends NewMovement {
 	

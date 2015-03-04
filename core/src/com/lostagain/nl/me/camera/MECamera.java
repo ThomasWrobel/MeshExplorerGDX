@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.newmovements.NewMoveTo;
 import com.lostagain.nl.me.newmovements.NewMovementController;
+import com.lostagain.nl.me.newmovements.PosRotScale;
 
 /**
  * Home to all game camera control functions
@@ -42,7 +43,7 @@ public class MECamera extends PerspectiveCamera {
 		super(defaultFieldOfView, defaultViewportWidth, defaultViewportHeight);
 		near=0.5f;
 		far=1900.0f;
-		movement = new NewMovementController(this.view);
+		movement = new NewMovementController(new PosRotScale(this.view));
 		
 		this.position.set(MainExplorationView.currentPos);
 		
@@ -54,7 +55,7 @@ public class MECamera extends PerspectiveCamera {
 		super(i, width, height);
 		near=0.5f;
 		far=1900.0f;
-		movement = new NewMovementController(this.view);
+		movement = new NewMovementController(new PosRotScale(this.view));
 		
 
 		this.position.set(MainExplorationView.currentPos);
@@ -71,7 +72,7 @@ public class MECamera extends PerspectiveCamera {
 	public void updatePosition(float delta)
 	{
 		if (movement.currentMovement!=null){
-			Matrix4 newlocation = movement.getUpdate(delta);
+			Matrix4 newlocation = movement.getUpdate(delta).createMatrix();
 		
 		
 			newlocation.getTranslation(position);
@@ -108,7 +109,8 @@ public class MECamera extends PerspectiveCamera {
 		Gdx.app.log(logstag, "______________________new     position="+newposition.x+","+newposition.y+","+newposition.z+")");
 		
 		
-		Matrix4 currentLoc = new Matrix4().setToTranslation(position);
+		PosRotScale currentLoc = new PosRotScale().setToPosition(position);
+		
 
 
 		

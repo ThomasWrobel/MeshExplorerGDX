@@ -23,6 +23,7 @@ import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NEWREPEAT;
 import com.lostagain.nl.me.newmovements.NewFaceAndMoveTo;
 import com.lostagain.nl.me.newmovements.NewForward;
@@ -40,7 +41,7 @@ public class Creature implements hitable {
 
 	private static String logstag="ME.Creature";
 	
-	ModelInstance creaturemodel;
+	AnimatableModelInstance creaturemodel;
 	
 final static int zPlane = 70; //the horizontal plane the creatures exist on. should be used for all z values in positions.
 	//current location
@@ -51,7 +52,8 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 	/**
 	 * the starting location of the creature 
 	 */
-	Matrix4 origin = new Matrix4();
+	PosRotScale origin = new PosRotScale();
+	
 	Matrix4 currerntScale =  new Matrix4().scl(1f);
 	
 	//movement (switching to new system)
@@ -108,8 +110,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 	@Override
 	public Vector3 getCenter() {
 		
-		Vector3 tmp = new Vector3();
-		creaturemodel.transform.getTranslation(tmp);
+		Vector3 tmp = creaturemodel.transState.position.cpy();
 				
 		return tmp;  // new Vector3(x,y,z);
 	}
@@ -126,14 +127,14 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 
 
 	@Override
-	public Matrix4 getTransform() {
-		return creaturemodel.transform;
+	public PosRotScale getTransform() {
+		return creaturemodel.transState;
 	}
 
 
 
 
-	public void setmodel(ModelInstance model) {
+	public void setmodel(AnimatableModelInstance model) {
 		
 		creaturemodel = model;
 		
@@ -146,20 +147,28 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		//rotate (test only)
 		//creaturemodel.transform.mul(new Matrix4().setToRotation(new Vector3(0f,0f,1f), 45));
 		
+		
 		PosRotScale startScaleAndRotation = new PosRotScale();
-		startScaleAndRotation.setToPosition(new Vector3(30f, 40f, 50f));
+		
+		
+		startScaleAndRotation.setToPosition(new Vector3(30f, 40f, 50f)); //not we offset from the existing position
+		
 		startScaleAndRotation.setToRotation(0f, 0f, 1f, 45);
 		startScaleAndRotation.setToScaling(new Vector3(0.5f, 2.5f,0.5f));
+		
 		Gdx.app.log(logstag, " setting to: "+startScaleAndRotation.toString());	
 		Matrix4 test = startScaleAndRotation.createMatrix();
 		PosRotScale test2 = new PosRotScale(test);
 		Gdx.app.log(logstag, " check after conversion: "+test2.toString());	
 		
-		creaturemodel.transform.mul(startScaleAndRotation.createMatrix()); 
+		creaturemodel.transState.displaceBy(startScaleAndRotation);
+		creaturemodel.sycnTransform();
+		
+		//creaturemodel.transform.mul(startScaleAndRotation.createMatrix()); 
 		
 		
 		
-		movementControll = new NewMovementController(creaturemodel.transform);//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
+		movementControll = new NewMovementController(creaturemodel.transState);//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
 		
 		//movementControll = new MovementController(creaturemodel.transform,new Jerk2D(creaturemodel,30f,50f,400f,4000f));//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
 		//movementControll = new MovementController(creaturemodel.transform, new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//
@@ -340,7 +349,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		Gdx.app.log(logstag,"resuming after:"+movementControll.isGoingToResumeAfter());
 		
 		float durationOfEnlargement = 500f; //the time taken to enlarge. We also use this to set a timer for when the creature should restart moving
-		movementControll.setMovement(creaturemodel.transform,false,new NewRelativeScale(1.2f,durationOfEnlargement));
+		movementControll.setMovement(creaturemodel.transState,false,new NewRelativeScale(1.2f,durationOfEnlargement));
 		
 		//update radius
 		this.hitradius = (int) (hitradius * 1.2f);
@@ -382,7 +391,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		//new NewJerk2D(creaturemodel,70f,80f,2000f,8000f)
 		
 		
-		movementControll.setMovement(creaturemodel.transform,false,new NewJerk2D(creaturemodel,70f,80f,2000f,8000f), new NEWREPEAT());
+		movementControll.setMovement(creaturemodel.transState,false,new NewJerk2D(creaturemodel,70f,80f,2000f,8000f), new NEWREPEAT());
 		
 		
 	}
@@ -448,8 +457,13 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		
 		if (movementControll!=null && movementControll.isMoving()){
 			
-			Matrix4 displacementFromOrigin = movementControll.getUpdate(delta).cpy();		
-			creaturemodel.transform =  displacementFromOrigin;//.mul(currerntScale); // displacementFromOrigin;// .scl(currerntScale); //origin.cpy().mul(displacementFromOrigin);
+			
+			
+			creaturemodel.setTransform(movementControll.getUpdate(delta));
+			
+			
+			//Matrix4 displacementFromOrigin = movementControll.getUpdate(delta).cpy();		
+			//creaturemodel.transform =  displacementFromOrigin;//.mul(currerntScale); // displacementFromOrigin;// .scl(currerntScale); //origin.cpy().mul(displacementFromOrigin);
 		
 			//Gdx.app.log(logstag, "_______________current size="+creaturemodel.transform .getScaleX()+","+creaturemodel.transform .getScaleY()+","+creaturemodel.transform .getScaleZ()+")");
 			
@@ -477,7 +491,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		float EZ = getCenter().z;
 		//temp disabled while converting to new movement system
 		
-		movementControll.setMovement(creaturemodel.transform,false,NewFaceAndMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
+		movementControll.setMovement(creaturemodel.transState,false,NewFaceAndMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
 		
 		//temp resume after (really shouldnt need this but currently autoresume seems broke)
 		
@@ -491,10 +505,10 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 			public void run() {
 				
 				Gdx.app.log(logstag, "___resuming movement after NewMoveTo___");
-				Gdx.app.log(logstag, "___Current State is: ___"+new PosRotScale(creaturemodel.transform).toString());
+				Gdx.app.log(logstag, "___Current State is: ___"+ creaturemodel.transState.toString());
 				
 				
-				movementControll.setMovement(creaturemodel.transform,false,new NewJerk2D(creaturemodel,70f,80f,2000f,8000f), new NEWREPEAT());
+				movementControll.setMovement(creaturemodel.transState,false,new NewJerk2D(creaturemodel,70f,80f,2000f,8000f), new NEWREPEAT());
 
 			}
 			

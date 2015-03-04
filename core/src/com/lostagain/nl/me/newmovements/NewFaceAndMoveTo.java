@@ -2,7 +2,7 @@ package com.lostagain.nl.me.newmovements;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.Matrix4;
+//import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -13,17 +13,17 @@ public class NewFaceAndMoveTo  {
 
 	final static String logstag = "ME.NewFaceAndMoveTo";
 	//static Matrix4 Left = new Matrix4().setToRotation(0, 0, 1, 90);
-	static public NewMovement[] create(ModelInstance originObject, ModelInstance targetObject, int duration) {
+	static public NewMovement[] create(AnimatableModelInstance originObject, AnimatableModelInstance targetObject, int duration) {
 		
 		
-		Vector3 posT = new Vector3();
-		targetObject.transform.getTranslation(posT);		
+
+		Vector3 posT = targetObject.transState.position.cpy();	
 			
 		return create(originObject, posT.x, posT.y, duration);
 	}
 	
 	
-	public static NewMovement[] create(ModelInstance originObject,
+	public static NewMovement[] create(AnimatableModelInstance originObject,
 			Vector3 dropsPositionAsVector, int duration) {
 
 		Vector2 posT = new Vector2(dropsPositionAsVector.x,dropsPositionAsVector.y);
@@ -45,14 +45,16 @@ public class NewFaceAndMoveTo  {
 	 * @param duration
 	 * @return
 	 */
-	public static  NewMovement[] create(ModelInstance originObject, float ex, float ey, int duration) {
+	public static  NewMovement[] create(AnimatableModelInstance originObject, float ex, float ey, int duration) {
 		
+
+		Vector3 posO = originObject.transState.position.cpy();	
+		//Vector3 posO = new Vector3();
+		//originObject.transform.getTranslation(posO);
 		
-		Vector3 posO = new Vector3();
-		originObject.transform.getTranslation(posO);
-		
-		Quaternion rotation = new Quaternion();
-		originObject.transform.getRotation(rotation,true); //existing rotation
+		Quaternion rotation = originObject.transState.rotation.cpy();	
+		//Quaternion rotation = new Quaternion();
+		//originObject.transform.getRotation(rotation,true); //existing rotation
 		
 		 Vector3 axisVec = new Vector3();
 	        float existingangle = (float) (rotation.getAxisAngle(axisVec) * axisVec.nor().z);
@@ -60,8 +62,8 @@ public class NewFaceAndMoveTo  {
 		
 		Gdx.app.log(logstag,"_____________________________________existing angle="+existingangle); //relative to x axis pointing left anticlockwise
 	
-		float scalex = originObject.transform.getScaleX(); //get how much the object has been scaled
-		float scaley = originObject.transform.getScaleY();
+		//float scalex = originObject.transform.getScaleX(); //get how much the object has been scaled
+		//float scaley = originObject.transform.getScaleY();
 		
 		Vector2 fromPoint = new Vector2(posO.x,posO.y); //we need to scale them down due to how the positions might have been scaled up if the matrix is scaled (I hate how matrixs work :-/ Just cant get it in my head)
 		Vector2 tooPoint  = new Vector2(ex,ey);

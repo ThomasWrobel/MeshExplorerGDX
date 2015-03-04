@@ -22,9 +22,9 @@ public class PosRotScale {
 
 	private static String logstag="ME.PosRotScale";
 	
-	Vector3 position = new Vector3();
-	Quaternion rotation = new Quaternion();		
-	Vector3 scale = new Vector3(1f,1f,1f);
+	public Vector3 position = new Vector3();
+	public Quaternion rotation = new Quaternion();		
+	public Vector3 scale = new Vector3(1f,1f,1f);
 	
 	public PosRotScale(Vector3 position, Quaternion rotation, Vector3 scale) {
 		super();
@@ -190,6 +190,13 @@ public class PosRotScale {
 	public Matrix4 createMatrix() {
 		// TODO Auto-generated method stub
 		return  new Matrix4(position,rotation.nor(),scale);
+	}
+	
+	public void setTo(PosRotScale objectsOrigin) {
+		position = objectsOrigin.position.cpy();
+		rotation = objectsOrigin.rotation.cpy();
+		scale = objectsOrigin.scale.cpy();
+		
 	}
 	
 	

@@ -6,7 +6,6 @@ import java.util.Arrays;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.me.newmovements.NewMovement.MovementTypes;
@@ -42,11 +41,11 @@ public class NewMovementController {
 	 * @param objectsOrigin
 	 * @param movements
 	 */
-	public NewMovementController(Matrix4 objectsOrigin, NewMovement... movements) {
+	public NewMovementController(PosRotScale objectsOrigin, NewMovement... movements) {
 		super();
 		
 		//origin used as lastNodesLocationMatrix 
-		lastNodesLocationMatrix.setToMatrix(objectsOrigin);
+		lastNodesLocationMatrix.setTo(objectsOrigin);
 		
 		this.movements = new ArrayList<NewMovement>(Arrays.asList( movements));
 		
@@ -77,26 +76,27 @@ public class NewMovementController {
 	 * in order to interpolinate between its positions.
 	 * 
 	 * 
-	 * NOTE: This returns the new world space translation
+	 * NOTE: This returns the new world space translation in a PosRotScale
+	 * (try not to convert to Matrix till as late as possible)
 	 * 
 	 * @param delta
 	 * @param source
 	 * @return
 	 */
 	
-	public Matrix4 update(float delta){
+	public PosRotScale update(float delta){
 		
 		PosRotScale newstate = updatePosRotScale(delta);
 		
 		//Quaternion temprotation = new Quaternion(new Vector3(0,0,1),newstate.rotation.getAngle());
 		
-		Matrix4 state = new Matrix4(newstate.position,newstate.rotation.nor(),newstate.scale);//new Vector3(1.2f,1f,1f)
+		//Matrix4 state = new Matrix4(newstate.position,newstate.rotation.nor(),newstate.scale);//new Vector3(1.2f,1f,1f)
 	
-		Gdx.app.log(logstag, " new scalex: "+state.getScaleX()+ " new scaley: "+state.getScaleY());
+		//Gdx.app.log(logstag, " new scalex: "+state.getScaleX()+ " new scaley: "+state.getScaleY());
 		
 		
 		
-		return state;
+		return newstate;
 		
 	}
 	
@@ -288,7 +288,7 @@ public class NewMovementController {
 	 * Setting resume after means it will resume the current motions after - but only if no resumeAfter is already pending
 	 * @param movement
 	 */
-	public void setMovement(Matrix4 lastLocation,boolean resumeAfter,NewMovement... create) {
+	public void setMovement(PosRotScale lastLocation,boolean resumeAfter,NewMovement... create) {
 		if (resumeAfter && old_movements.isEmpty()){
 			Gdx.app.log(logstag, "_____________________________________________setting resume after");
 			old_movements.clear();
@@ -306,10 +306,10 @@ public class NewMovementController {
 			PosRotScale displacement;
 			if (currentMovement.currenttype == MovementTypes.Absolute){
 				
-				currentMovement.lastTransform = new PosRotScale(lastLocation);//.cpy().mul(lastNodesLocationMatrix);
+				currentMovement.lastTransform.setTo(lastLocation);//.cpy().mul(lastNodesLocationMatrix);
 				
 				// displacement = currentMovement.onUpdateAbsolute(currentTimeWithinMovement);//,object.transform.cpy().mul(lastNodesLocationMatrix)); 
-				 lastNodesLocationMatrix.setToMatrix(lastLocation);
+				 lastNodesLocationMatrix.setTo(lastLocation);
 				 
 			} else {
 			
@@ -323,7 +323,8 @@ public class NewMovementController {
 		
 		currentMovementNumber=0;
 		currentMovement=movements.get(0);
-		currentMovement.onRestart(new PosRotScale(lastLocation));
+		
+		currentMovement.onRestart(lastLocation);
 		
 		
 		//refresh if needed every time its set
@@ -375,7 +376,8 @@ public class NewMovementController {
 	 * 
 	 * @return absolute worldspace transform for new location
 	 */
-	public Matrix4 getUpdate(float delta) {
+	public PosRotScale getUpdate(float delta) {
+		
 		
 		
 		return update(delta);
