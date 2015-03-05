@@ -58,7 +58,7 @@ public class DistanceFieldShaderForDataObjects implements Shader {
 
 		@Override
 		public Attribute copy () {
-			return new ConceptBeamAttribute(smoothing,fontcolour,backcolour);
+			return new DistanceFieldttribute(smoothing,fontcolour,backcolour);
 		}
 
 		@Override

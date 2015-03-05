@@ -11,9 +11,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.MyShaderProvider;
 
-public class CameraBackground extends ModelInstance {
+public class CameraBackground extends AnimatableModelInstance {
 
 	//public static ModelInstance CameraOverlay = null;
 	static int w = 3000;

@@ -59,10 +59,10 @@ public class NewJerk2D extends NewMovement {
 		newposition.x = (float) (newposition.x + (Math.cos(Math.toRadians(angle))*distance));
 		newposition.y = (float) (newposition.y + (Math.sin(Math.toRadians(angle))*distance));
 		
+		destinationState.rotation.set(new Vector3(0f, 0f, 1f), angle);
+		
 		//now set the destination to this new position (keeping Z the same as this is 2D movement only
 		destinationState.setToPosition(new Vector3(newposition.x,newposition.y,destinationState.position.z));
-		
-		
 		
 		/*
 		Matrix4 start = origin.cpy();

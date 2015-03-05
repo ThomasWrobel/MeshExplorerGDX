@@ -172,7 +172,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		
 		//movementControll = new MovementController(creaturemodel.transform,new Jerk2D(creaturemodel,30f,50f,400f,4000f));//new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());
 		//movementControll = new MovementController(creaturemodel.transform, new Forward(200,3000),new RotateLeft(90,1000), new REPEAT());//
-	//	startCreaturesStandardMovement();	
+		startCreaturesStandardMovement();	
 	}
 
 	public void setColor(Color newcol){
@@ -332,9 +332,9 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );
 		
 		
-				Gdx.app.log(logstag,"_________creature col="+col.toString());
+		Gdx.app.log(logstag,"_________creature col="+col.toString());
 				
-				setColor( col);
+		setColor( col);
 		//attribute.color.set(col) ;
 		
 		
@@ -348,11 +348,12 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		Gdx.app.log(logstag,"animating:"+movementControll.isMoving());
 		Gdx.app.log(logstag,"resuming after:"+movementControll.isGoingToResumeAfter());
 		
-		float durationOfEnlargement = 500f; //the time taken to enlarge. We also use this to set a timer for when the creature should restart moving
+		float durationOfEnlargement = 150f; //the time taken to enlarge. We also use this to set a timer for when the creature should restart moving
+		
 		movementControll.setMovement(creaturemodel.transState,false,new NewRelativeScale(1.2f,durationOfEnlargement));
 		
 		//update radius
-		this.hitradius = (int) (hitradius * 1.2f);
+		hitradius = (int) (hitradius * 1.2f);
 		
 		
 		
@@ -368,7 +369,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 			}
 			
 			
-		}, (durationOfEnlargement+150)/1000); //the movement should start again shortly after the enlargement ends. We devide by 1000 as Timer.schedule needs the time in seconds, not ms 
+		}, (durationOfEnlargement+250)/1000); //the movement should start again shortly after the enlargement ends. We devide by 1000 as Timer.schedule needs the time in seconds, not ms 
 		
 	}
 

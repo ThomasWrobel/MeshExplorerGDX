@@ -114,6 +114,7 @@ public class PosRotScale {
 		
 		
 		
+		
 		//------------------	
 		position = position.add(changeByThisAmountRot.position);		
 		rotation = rotation.mul(changeByThisAmountRot.rotation);

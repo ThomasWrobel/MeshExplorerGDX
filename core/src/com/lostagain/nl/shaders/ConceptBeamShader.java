@@ -32,6 +32,7 @@ public class ConceptBeamShader implements Shader {
 	    int u_width;
 	    int u_beamcolour;
 	    int u_corecolour;
+	    int u_shotFrequency;
 	    
 	   private float time;
 	   
@@ -49,31 +50,39 @@ public class ConceptBeamShader implements Shader {
 			public float width;
 			public Color beamcolor;
 			public Color corecolor;
+			public float shotFrequency;
+			
 			/**
 			 * The presence of this parameter will cause the ConceptBeamShader to be used
 			 * @param width - width of beam
 			 * @param beamcolor - its color
 			 * @param corecolor - color of its core (normally white for a intense glow at the middle of the beam)
 			 */
-			public ConceptBeamAttribute (final float width,final Color beamcolor,final Color corecolor ) {
+			public ConceptBeamAttribute (final float width,final Color beamcolor,final float shotFrequency, final Color corecolor ) {
 				
 				super(ID);
 				this.width = width;
 				this.beamcolor = beamcolor;
 				this.corecolor = corecolor;
+				this.shotFrequency = shotFrequency;
+				
 			}
 
 			@Override
 			public Attribute copy () {
-				return new ConceptBeamAttribute(width,beamcolor,corecolor);
+				return new ConceptBeamAttribute(width,beamcolor,shotFrequency,corecolor);
 			}
 
 			@Override
 			protected boolean equals (Attribute other) {
-				if ((((ConceptBeamAttribute)other).width == width) &&
+				if (
+					(((ConceptBeamAttribute)other).width == width) &&
 					(((ConceptBeamAttribute)other).beamcolor == beamcolor) &&
+					(((ConceptBeamAttribute)other).shotFrequency == shotFrequency) &&
 					(((ConceptBeamAttribute)other).corecolor == corecolor) 
-					){
+					)
+				
+				{
 					return true;
 					
 				}
@@ -97,13 +106,14 @@ public class ConceptBeamShader implements Shader {
           }
           
           u_projViewTrans = program.getUniformLocation("u_projViewTrans");
-          u_worldTrans = program.getUniformLocation("u_worldTrans");
-          u_time = program.getUniformLocation("u_time"); 
+          u_worldTrans    = program.getUniformLocation("u_worldTrans");
+          u_time          = program.getUniformLocation("u_time"); 
           
           //beam style
           u_width = program.getUniformLocation("u_width"); 
           u_corecolour = program.getUniformLocation("u_corecolour"); 
           u_beamcolour = program.getUniformLocation("u_beamcolour"); 
+          u_shotFrequency = program.getUniformLocation("u_shotFrequency"); 
     }
     
     @Override
@@ -122,10 +132,11 @@ public class ConceptBeamShader implements Shader {
      	  time = time+ Gdx.graphics.getDeltaTime();
      	  
     	  program.begin();
-    	  //the the variable for the cameras projectino to be passed to the shader
+    	  
+    	  //the the variable for the cameras projection to be passed to the shader
     	  program.setUniformMatrix(u_projViewTrans, camera.combined);
     	  program.setUniformf(u_time, time);
-    	  
+    
     	  
     	  
     	  context.setDepthTest(GL20.GL_LEQUAL);    	  
@@ -141,10 +152,12 @@ public class ConceptBeamShader implements Shader {
     	 
     	 
     	 ConceptBeamAttribute beamStyle = (ConceptBeamAttribute)renderable.material.get(ConceptBeamAttribute.ID);
-    	 program.setUniformf(u_width, beamStyle.width);//testAttr.width
+    	 
+    	 program.setUniformf(u_width, beamStyle.width);//testAttr.width    	 
     	 program.setUniformf(u_beamcolour, beamStyle.beamcolor);//testAttr.width
     	 program.setUniformf(u_corecolour, beamStyle.corecolor);//testAttr.width
-    	 
+      	 program.setUniformf(u_shotFrequency, beamStyle.shotFrequency);
+      	  
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,

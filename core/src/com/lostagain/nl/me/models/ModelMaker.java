@@ -141,7 +141,7 @@ public class ModelMaker {
 		return newline;
 	}
 
-	public ModelInstance createSphere(float radius){
+	static public ModelInstance createSphere(float radius){
 		
 		ModelBuilder modelBuilder = new ModelBuilder();
 

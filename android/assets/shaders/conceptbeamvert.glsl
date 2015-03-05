@@ -7,6 +7,7 @@ uniform mat4 u_projViewTrans;
 uniform float u_width; 
 uniform vec4 u_beamcolour;
 uniform vec4 u_corecolour;
+uniform float u_shotFrequency;
 
 //in
 attribute vec3 a_position;
@@ -24,6 +25,7 @@ varying vec2 fPosition;
 varying float width; 
 varying vec4 beamcolour;
 varying vec4 corecolour;
+varying float shotFrequency;
 
 void main() {
 
@@ -33,6 +35,7 @@ void main() {
     width = u_width;
     beamcolour = u_beamcolour;
     corecolour = u_corecolour;
+    shotFrequency = u_shotFrequency;
     
     gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);
 	

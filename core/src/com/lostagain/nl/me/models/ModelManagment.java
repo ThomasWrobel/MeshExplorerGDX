@@ -100,7 +100,7 @@ public void updateAnimatedBacks(float deltatime){
 	        
 	        //We also have to have transparence on the first shader we make else transparency wont be supported at all
 	        Material testmaterial = new Material(
-	        		ColorAttribute.createDiffuse(Color.BLUE), 
+	        		ColorAttribute.createDiffuse(Color.RED), 
 					ColorAttribute.createSpecular(Color.WHITE),
 					new BlendingAttribute(1f), 
 					FloatAttribute.createShininess(16f));
@@ -118,7 +118,9 @@ public void updateAnimatedBacks(float deltatime){
 	        		ColorAttribute.createDiffuse(Color.BLUE), 
 					ColorAttribute.createSpecular(Color.WHITE),
 					new BlendingAttribute(1f), 
-					FloatAttribute.createShininess(16f),new ConceptBeamShader.ConceptBeamAttribute(0.4f,Color.BLUE,Color.WHITE));
+					FloatAttribute.createShininess(16f),
+					new ConceptBeamShader.ConceptBeamAttribute(0.4f,Color.BLUE,5.0f,Color.WHITE)
+	        		);
 
 	    	 
 

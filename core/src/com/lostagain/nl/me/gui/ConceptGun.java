@@ -13,7 +13,9 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -28,10 +30,12 @@ import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.objects.DataObject;
 import com.lostagain.nl.shaders.ConceptBeamShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
@@ -48,8 +52,13 @@ import com.lostagain.nl.shaders.MyShaderProvider;
  * The style of the beam should eventually reflect some aspects of the concept thats equiped into it 
  * Start with just color, but add size and some other effects later **/
 public class ConceptGun  extends WidgetGroup {
+	final static String logstag = "ME.ConceptGun";
 
+	//guns current stats
 	static int MaxComplexityLevel = 2; //will be used to determine how complex the equipped class can be
+	static float FireFrequency = 2.5f;//means the gun will actually hit targets at this frequency per sec regardless of visual effect (you should ensure your visuals are sycned to this)
+	
+	
 	public static SSSNode equipedConcept = null; //the currently equipped concept. Think of it as ammo
 
 	//private static float firePointX = 0;
@@ -57,7 +66,6 @@ public class ConceptGun  extends WidgetGroup {
 
 	private static Vector2 firePoint = new Vector2(0,0);
 
-	final static String logstag = "ME.ConceptGun";
 
 	DataObjectSlot conceptInUse = new DataObjectSlot();
 	int height = 50; //width is always screen width as its a bar at the top
@@ -79,7 +87,7 @@ public class ConceptGun  extends WidgetGroup {
 	
 	
 	//other
-	ModelInstance lazer;
+	AnimatableModelInstance lazer;
 	
 
 
@@ -254,10 +262,32 @@ public class ConceptGun  extends WidgetGroup {
 		
 		//ColorAttribute.createDiffuse(Color.RED),
 		Gdx.app.log(logstag, "set to gun beam ");
-		Material lazerMat = new Material("LazerMaterial", new ConceptBeamShader.ConceptBeamAttribute(0.25f,col,Color.WHITE),new BlendingAttribute(0.95f));//
+		Material lazerMat = new Material("LazerMaterial", new ConceptBeamShader.ConceptBeamAttribute(0.25f,col,FireFrequency,Color.WHITE),new BlendingAttribute(0.95f));//
 		
-		ModelInstance newlazer = ModelMaker.createLineBetween(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,lazerMat,10);
-				
+	//	ModelInstance newlazer = ModelMaker.createLineBetween(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,lazerMat,1);
+		
+		//new method we just create a rectangle then rotate/set its position ourselves
+		float hw = width/2.0f;
+		//float height = Math.abs(fy  - cursor_on_stage.y);
+		float height = Gdx.graphics.getHeight()*1.5f; //always do it a bit bigger to allow for movements
+		
+		Model lazermodel = ModelMaker.createRectangle(0-hw, 0, hw, height, 22, lazerMat);
+		
+		AnimatableModelInstance newlazer = new AnimatableModelInstance(lazermodel);
+		
+		//attach to camera?
+		
+		
+		//give it the position and rotation of the camera
+		//Vector3 direction = MainExplorationView.camera.direction;
+		//Gdx.app.log(logstag, "direction "+direction.x+","+direction.y+","+direction.z);
+		
+		//Vector3 up = MainExplorationView.camera.up;
+		//Gdx.app.log(logstag, "up "+up.x+","+up.y+","+up.z);
+
+		
+		//(how to sycn to camera?)
+		
 		
 		//newlazer.userData = MyShaderProvider.shadertypes.conceptbeam;
 		
@@ -312,10 +342,12 @@ public class ConceptGun  extends WidgetGroup {
 			//update beam is mouse still down
 			if (Gdx.input.isTouched()){
 			
-				
+				//from is the fire target
+				Vector2 fromPoint = MainExplorationView.getCurrentStageCursorPosition();// .gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
+				//too is the gun mussel (yeah, backwards a bit I know)
 				Vector2 tooPoint  = MainExplorationView.gameStage.screenToStageCoordinates(firePoint.cpy());
 				
-				Vector2 fromPoint = MainExplorationView.getCurrentStageCursorPosition();// .gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
+				
 				//currenscreentargetX = fromPoint.x; //update cursor pos
 			//	currenscreentargetY = fromPoint.y;
 				
@@ -326,21 +358,24 @@ public class ConceptGun  extends WidgetGroup {
 
 				Gdx.app.log(logstag, " from point:"+fromPoint.x+","+fromPoint.y+" ---- "+tooPoint.x+","+tooPoint.y+"  ang="+newAng);
 
-				lazer.transform.setToTranslation(fromPointOri.x,fromPointOri.y,22);
+				lazer.transState.position.set(fromPointOri.x,fromPointOri.y,22);
+				lazer.transState.rotation.set(new Vector3(0f,0f,1f), newAng);
+				lazer.sycnTransform();
+				
 
-				Matrix4 newmatrix = new Matrix4();			
-				newmatrix.setToRotation(0, 0, 1, newAng);
+			//	Matrix4 newmatrix = new Matrix4();			
+				//newmatrix.setToRotation(0, 0, 1, newAng);
 
-				lazer.transform.mul(newmatrix);
+			//	lazer.transform.mul(newmatrix);
 				
 				//Gdx.app.log(logstag, " user data:"+lazer.userData.toString());
 
 			//	Gdx.app.log(logstag, " timeSinceLastHitCheck:"+timeSinceLastHitCheck);
 				//check for new hits every repeat of pulse
 				timeSinceLastHitCheck = timeSinceLastHitCheck + delta;
-				if (timeSinceLastHitCheck>0.200){
-					timeSinceLastHitCheck = timeSinceLastHitCheck -0.200f;
-					Gdx.app.log(logstag, " hit check triggered! "+timeSinceLastHitCheck);					
+				if (timeSinceLastHitCheck>(1/FireFrequency)){
+					timeSinceLastHitCheck = timeSinceLastHitCheck - (1/FireFrequency); // (1/FireFrequency) is interval
+					Gdx.app.log(logstag, " hit check triggered! " + timeSinceLastHitCheck);					
 					testForHits();
 				}
 				

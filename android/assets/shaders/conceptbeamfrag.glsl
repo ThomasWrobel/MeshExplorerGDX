@@ -8,6 +8,7 @@ varying vec3 fNormal;
 varying float width;
 varying vec4 beamcolour;
 varying vec4 corecolour;
+varying float shotFrequency;
 
 void main()
 {
@@ -20,13 +21,17 @@ void main()
   x = (x*2.0)-1.0;
   
   //params (in future make these editable at shader creation?)
-  vec4 back = vec4(0.0,0,0,0.0);  //background (default transparent)
+  
+  vec4 back = vec4(0.4,0.4,0.4,1.0);  //background (default transparent)
   vec4 col = back;
   vec4 beam = beamcolour;// vec4(1.0,0.0,0.0,1.0); //beam
   vec4 core = corecolour;//vec4(2.0,1.0,1.0,1.0);  //core (note ranges outside 0-1 can be used)
+  
   //float width =  0.25; // used to be 0.04
   
-   float tsin = abs(sin((2.0*u_time)-x));
+  
+   float tsin = abs(sin((shotFrequency*u_time)-x)); //shotFrequency used to be 2.0
+   
   if (y<(width) && y>-width) 
   {
         
@@ -41,7 +46,7 @@ void main()
      intensity  = (width-abs(y*corethick))*(1.0/width);
      
      if (intensity<0.0){
-       intensity = 0.0;
+       		intensity = 0.0;
      }
      
 

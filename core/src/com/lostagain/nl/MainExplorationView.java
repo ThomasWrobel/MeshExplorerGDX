@@ -410,7 +410,7 @@ public class MainExplorationView implements Screen {
 		multiplexer.addProcessor(gameStage);
 		Gdx.input.setInputProcessor(multiplexer);
 		
-		gameStage.getViewport().setCamera(camera);
+		gameStage.getViewport().setCamera((PerspectiveCamera)camera);//because we use a special camera class we cast first to ensure all the supervariables will be used 
 		// stage.getCamera().translate(0, 250, 0);
 
 		gameStage.getCamera().update();
@@ -955,12 +955,12 @@ public class MainExplorationView implements Screen {
 		
 
 		//camera = new PerspectiveCamera(60,width,height); //new OrthographicCamera(width, height);
-		camera.translate(height/2,width/2, 0);
-		camera.near=0.5f;
-		camera.far=1900.0f;
-		camera.update();
+	    ((PerspectiveCamera)camera).translate(height/2,width/2, 0);
+	    ((PerspectiveCamera)camera).near=0.5f;
+	    ((PerspectiveCamera)camera).far=1900.0f;
+	    ((PerspectiveCamera)camera).update();
 		
-		gameStage.getViewport().setCamera(camera);
+		gameStage.getViewport().setCamera((PerspectiveCamera)camera);
 		gameStage.getViewport().setScreenSize(width, height);
 		gameStage.getViewport().setWorldSize(width, height);
 		gameStage.getViewport().update(width, height, true);  
