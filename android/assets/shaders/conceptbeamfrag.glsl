@@ -22,7 +22,7 @@ void main()
   
   //params (in future make these editable at shader creation?)
   
-  vec4 back = vec4(0.4,0.4,0.4,1.0);  //background (default transparent)
+  vec4 back = vec4(0.0,0.0,0.0,0.0);  //background (default transparent)
   vec4 col = back;
   vec4 beam = beamcolour;// vec4(1.0,0.0,0.0,1.0); //beam
   vec4 core = corecolour;//vec4(2.0,1.0,1.0,1.0);  //core (note ranges outside 0-1 can be used)

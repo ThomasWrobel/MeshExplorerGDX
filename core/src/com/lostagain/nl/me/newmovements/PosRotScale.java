@@ -121,7 +121,7 @@ public class PosRotScale {
 		
 		scale = scale.scl(changeByThisAmountRot.scale);
 
-		Gdx.app.log(logstag, " new scale: "+scale.toString() );	
+		//Gdx.app.log(logstag, " new scale: "+scale.toString() );	
 		
 		
 		return this;

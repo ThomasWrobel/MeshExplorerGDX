@@ -148,7 +148,7 @@ public class Jerk2D extends Movement {
 		
 		
 		
-		Gdx.app.log(logstag, "_____________________________________________refreshSetup=");
+	//	Gdx.app.log(logstag, "_____________________________________________refreshSetup=");
 		
 		//store the last location
 		lastTransform = modelins.transform;//this often has the wrong values why?

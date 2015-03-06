@@ -80,6 +80,10 @@ public class MyShaderProvider extends DefaultShaderProvider {
 			return new ConceptBeamShader();			
 		}
 		
+		if (renderable.material.has(NoiseShader.NoiseShaderAttribute.ID)){
+			return new NoiseShader(renderable);			
+		}
+		
 		//pick shader based on renderable?
 		shadertypes shaderenum = (shadertypes) renderable.userData;
 	
@@ -104,14 +108,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 	          
 			return new DefaultShader(renderable, new DefaultShader.Config(vert, frag)); // new InvertShader(renderable);
 		}
-		case noise:
-		{
-			return new NoiseShader();
-		}
-		//case conceptbeam:
-	//	{
-	////		Gdx.app.log(logstag, "creating concept gun beam ");
-		//}
+	
 		case distancefield:
 		{
 			return new DistanceFieldShader();

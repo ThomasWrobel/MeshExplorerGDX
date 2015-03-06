@@ -166,7 +166,7 @@ public class NewJerk2D extends NewMovement {
 		
 		
 		
-		Gdx.app.log(logstag, "_____________________________________________refreshSetup=");
+	//	Gdx.app.log(logstag, "_____________________________________________refreshSetup=");
 		
 		//store the last location
 		lastTransform = modelins.transState.copy();//this often has the wrong values why?

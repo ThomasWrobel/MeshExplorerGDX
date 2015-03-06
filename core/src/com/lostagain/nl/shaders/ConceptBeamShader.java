@@ -136,10 +136,15 @@ public class ConceptBeamShader implements Shader {
     	  //the the variable for the cameras projection to be passed to the shader
     	  program.setUniformMatrix(u_projViewTrans, camera.combined);
     	  program.setUniformf(u_time, time);
-    
+    	  
+    	//  glEnable(GL_BLEND);
+    	 // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    	 
+    	  context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
     	  
     	  
-    	  context.setDepthTest(GL20.GL_LEQUAL);    	  
+    	  
+    	//  context.setDepthTest(GL20.GL_LEQUAL);    	  
           context.setCullFace(GL20.GL_BACK);
           
     	  

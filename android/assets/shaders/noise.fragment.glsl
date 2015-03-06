@@ -33,13 +33,39 @@ float rand(vec2 co){
     return fract(sin(sn) * c);
 }
 
-void main( void ) {
-	float x;
-	vec2 position = ( gl_FragCoord.xy / resolution.xy ) + mouse / 4.0;
+void main( void ) 
+{
 
-	x = rand(vec2(u_time*position.y, u_time/position));
+
+
+
+	vec2 position = ( gl_FragCoord.xy / resolution.xy ) + mouse / 4.0;
 	
+	float r;
+	float g;
+	float b;
 	
-  	gl_FragColor = vec4(x, x, x, u_alpha);
+	vec4 tint = vec4(1.0,1.0,1.0,1.0);
+	
+    //full color noise mode 
+    #ifdef rgbmodeFlag
+	 r = rand(vec2(u_time*position.y, u_time/position));
+	 g = rand(vec2(u_time*position.y+1, u_time/position));
+	 b = rand(vec2(u_time*position.y+2, u_time/position));
+	#else
+	 r = rand(vec2(u_time*position.y, u_time/position));
+	 g = r;
+	 b = r;
+	#endif
+	 
+	//multiple by tint (standard tint is white)
+	//float col = rand(vec2(u_time*position.y, u_time/position));
+	
+	 r = tint.r * r;
+	 g = tint.g * g;
+	 b = tint.b * b;
+	 
+	
+  	gl_FragColor = vec4(r, g, b, u_alpha);
   	
 }

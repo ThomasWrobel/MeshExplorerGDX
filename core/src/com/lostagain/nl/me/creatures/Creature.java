@@ -504,6 +504,9 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 
 			@Override
 			public void run() {
+				if (creaturemodel==null){
+					return;
+				}
 				
 				Gdx.app.log(logstag, "___resuming movement after NewMoveTo___");
 				Gdx.app.log(logstag, "___Current State is: ___"+ creaturemodel.transState.toString());

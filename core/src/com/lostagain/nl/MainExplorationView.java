@@ -256,7 +256,7 @@ public class MainExplorationView implements Screen {
 	//	guiStage.addActor(usersGUI.STMemoryPop); //temp should be part of gui
 		//guiStage.addActor(usersGUI.ConceptGun); //temp should be part of gui
 	//	usersGUI.ConceptGun.validate();
-
+/*
 		cameraTweenTask = new Task() {
 			@Override
 			public void run() {
@@ -317,7 +317,7 @@ public class MainExplorationView implements Screen {
 			}
 
 		};
-
+*/
 
 		Gdx.app.log(logstag,"creating textures");
 		
@@ -526,19 +526,19 @@ public class MainExplorationView implements Screen {
 		//currentCameraTweenX = SpiffyTweenConstructor.Create(CurrentX.doubleValue(),newX, 25);
 		//currentCameraTweenY = SpiffyTweenConstructor.Create(CurrentY.doubleValue(),newY, 25);
 		
-		currentCameraTween = new SpiffyVector3Tween(currentPos,dest, 25);
+		//currentCameraTween = new SpiffyVector3Tween(currentPos,dest, 25);
 		//Vector3 test1 = new Vector3(0,0,0);
 		//Vector3 est2  = new Vector3(10,10,10);
 		//SpiffyVector3Tween testtwe = new SpiffyVector3Tween(test1,est2, 25);
 		//Gdx.app.log(logstag,"end = "+testtwe.endPoint().x);
 		
-		currentTargetLocation = locationcontainer;
-		//ensure camera animator is running
-		if (!cameraTweenTask.isScheduled()){
-			Gdx.app.log(logstag,"triggering timer");
-			cameraTimer.scheduleTask(cameraTweenTask, 0.1f);
+		//currentTargetLocation = locationcontainer;
+		////ensure camera animator is running
+		//if (!cameraTweenTask.isScheduled()){
+		//	Gdx.app.log(logstag,"triggering timer");
+		//	cameraTimer.scheduleTask(cameraTweenTask, 0.1f);
 
-		}
+		//}
 
 		
 		//add the requested location to the  array list, but only if its different from
@@ -937,6 +937,7 @@ public class MainExplorationView implements Screen {
 		
 
 		Gdx.app.log(logstag,"resizeing to.."+width+","+height);
+		camera.removeAllDefaultAttachments();//clean up first
 		camera = new MECamera(60,width,height);
 		/*
 		if ( currentmode == cammode.ortha){
@@ -1141,6 +1142,14 @@ public class MainExplorationView implements Screen {
 		
 	}
 
+	
+	public static Ray getCurrentStageCursorRay() {
+		
+	Vector2 currentCursor = getCurrentCursorScreenPosition();
+		
+		Gdx.app.log(logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
+		return MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
+	}
 	
 	public static Vector2 getCurrentStageCursorPosition() {
 

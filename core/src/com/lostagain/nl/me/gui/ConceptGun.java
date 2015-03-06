@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -36,6 +42,7 @@ import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
+import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.me.objects.DataObject;
 import com.lostagain.nl.shaders.ConceptBeamShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
@@ -64,7 +71,7 @@ public class ConceptGun  extends WidgetGroup {
 	//private static float firePointX = 0;
 	//private static float firePointY = 0;
 
-	private static Vector2 firePoint = new Vector2(0,0);
+	private static Vector2 firePoint = new Vector2(0,0); //relative to the middle of the top of the screen
 
 
 	DataObjectSlot conceptInUse = new DataObjectSlot();
@@ -98,11 +105,15 @@ public class ConceptGun  extends WidgetGroup {
 	private float currenttime=0f;
 	private float totaltime=1.8f; //0.8
 
+	private PosRotScale lazerbeamdisplacement = new PosRotScale(0f,0f,-50f);
+
+	Vector2 beamcenteroffset = new Vector2(0,10.5f);
+	
 	public ConceptGun() {
 
 		LabelStyle back = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));		
 		Color ColorM = new Color(Color.MAROON);
-		ColorM.a=0.8f;
+		ColorM.a=0.95f;
 		back.background = DefaultStyles.colors.newDrawable("white", ColorM);
 		Label backgroundobject = new Label("",back);
 		backgroundobject.setPosition(0,0);
@@ -243,14 +254,14 @@ public class ConceptGun  extends WidgetGroup {
 
 
 		//size
-		int width = 175;
+		int width = 10;
 
 		Vector2 cp = new Vector2(x,y);						
 		Vector2 cursor_on_stage =  MainExplorationView.gameStage.screenToStageCoordinates(cp);
 		Gdx.app.log(logstag, " createBeamEffect targeting stage:"+cursor_on_stage.x+","+cursor_on_stage.y);
 		
 		//color
-		Color col = new Color(randomColorFromConcept());
+		Color BeamColor = new Color(randomColorFromConcept());
 
 		//col.a  = 1 - (500 / 1000) ^ 2;
 
@@ -262,20 +273,44 @@ public class ConceptGun  extends WidgetGroup {
 		
 		//ColorAttribute.createDiffuse(Color.RED),
 		Gdx.app.log(logstag, "set to gun beam ");
-		Material lazerMat = new Material("LazerMaterial", new ConceptBeamShader.ConceptBeamAttribute(0.25f,col,FireFrequency,Color.WHITE),new BlendingAttribute(0.95f));//
+		
+		/*
+        Material testmaterial = new Material(
+        		ColorAttribute.createDiffuse(Color.RED), 
+				ColorAttribute.createSpecular(Color.WHITE),
+				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.5f), 
+				FloatAttribute.createShininess(16f));
+        
+		
+		*/
+		
+		Material lazerMat = new Material("LazerMaterial", new ConceptBeamShader.ConceptBeamAttribute(0.35f,BeamColor,FireFrequency,Color.WHITE));
+				
+				
+				//ColorAttribute.createDiffuse(Color.ORANGE),
+				//new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.5f));//new ConceptBeamShader.ConceptBeamAttribute(0.25f,col,FireFrequency,Color.WHITE),
+		
 		
 	//	ModelInstance newlazer = ModelMaker.createLineBetween(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,lazerMat,1);
 		
 		//new method we just create a rectangle then rotate/set its position ourselves
 		float hw = width/2.0f;
 		//float height = Math.abs(fy  - cursor_on_stage.y);
-		float height = Gdx.graphics.getHeight()*1.5f; //always do it a bit bigger to allow for movements
+		float height = Gdx.graphics.getHeight()*1.1f; //always do it a bit bigger to allow for movements
 		
-		Model lazermodel = ModelMaker.createRectangle(0-hw, 0, hw, height, 22, lazerMat);
+		//note we offset its creation points by the beam center offset
+		//this means the "center" of the rectangle is where the beam effect his and can be adjusted easily to match any change inthe graphic effect
+		Model lazermodel = ModelMaker.createRectangle((0-hw)-beamcenteroffset.x, -beamcenteroffset.y, hw-beamcenteroffset.x, height-beamcenteroffset.y, 0, lazerMat);
 		
 		AnimatableModelInstance newlazer = new AnimatableModelInstance(lazermodel);
 		
+		//align to camera
+		
 		//attach to camera?
+		newlazer.transState.setTo(MainExplorationView.camera.transState);
+		
+		MainExplorationView.camera.attachThis(newlazer, lazerbeamdisplacement);
+		
 		
 		
 		//give it the position and rotation of the camera
@@ -321,14 +356,16 @@ public class ConceptGun  extends WidgetGroup {
 	 */
 	public void testForHits(){
 
-		Vector2 currentCursor = MainExplorationView.getCurrentCursorScreenPosition();
+		//Vector2 currentCursor = MainExplorationView.getCurrentCursorScreenPosition();
 		
-		Gdx.app.log(logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
-		Ray ray = MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
-		MainExplorationView.touchedAModel = ModelManagment.testForHit(ray);
+		//Gdx.app.log(logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
+		//Ray ray = MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
+		
+		Ray ray = MainExplorationView.getCurrentStageCursorRay();
+		MainExplorationView.touchedAModel = ModelManagment.testForHits(ray,true);
 		
 		if (MainExplorationView.touchedAModel){
-			Gdx.app.log(logstag,"_-(hit something)-_");
+			Gdx.app.log(logstag,"_-(hit at least one thing)-_");
 		}
 		
 	}
@@ -343,14 +380,38 @@ public class ConceptGun  extends WidgetGroup {
 			if (Gdx.input.isTouched()){
 			
 				//from is the fire target
-				Vector2 fromPoint = MainExplorationView.getCurrentStageCursorPosition();// .gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
+				Vector2 fromPoint = MainExplorationView.getCurrentCursorScreenPosition();   //MainExplorationView.getCurrentStageCursorPosition();// .gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
 				//too is the gun mussel (yeah, backwards a bit I know)
-				Vector2 tooPoint  = MainExplorationView.gameStage.screenToStageCoordinates(firePoint.cpy());
+				Vector2 tooPoint  = firePoint.cpy(); ///MainExplorationView.gameStage.screenToStageCoordinates(firePoint.cpy());
 				
+				//setup fake camera to work this out (note; really stupid but I struggled with the maths)
+				Ray ray = MainExplorationView.camera.getRelativePickRay(fromPoint.x,fromPoint.y);
+								
+				//we need a plane at the distance of the lazer
+				Plane testplane = new Plane(new Vector3(0f, 0f,-1f),-50f);//MainExplorationView.camera.direction.rotate(new Vector3(0f, 0f,1f),90),-50f);
+			
+				Vector3 intersection = new Vector3();
+				Intersector.intersectRayPlane(ray, testplane, intersection);
+				//Gdx.app.log(logstag,"_intersection "+foundinc+" = "+intersection.toString());
+				
+			
+				lazerbeamdisplacement.setToPosition(new Vector3(intersection.x,intersection.y,-50));
+				
+				//set rotation				
+				fromPoint.sub(tooPoint);
+				
+				float newAng = 180-(fromPoint.angle()+90);	
+				lazerbeamdisplacement.setToRotation(0, 0, 1, newAng);
+			
+				
+				
+				
+				
+				MainExplorationView.camera.updateAtachment(lazer,lazerbeamdisplacement);
 				
 				//currenscreentargetX = fromPoint.x; //update cursor pos
 			//	currenscreentargetY = fromPoint.y;
-				
+				/*
 				Vector2 fromPointOri = fromPoint.cpy(); //MainExplorationView.gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
 
 				fromPoint.sub(tooPoint); 	
@@ -361,7 +422,7 @@ public class ConceptGun  extends WidgetGroup {
 				lazer.transState.position.set(fromPointOri.x,fromPointOri.y,22);
 				lazer.transState.rotation.set(new Vector3(0f,0f,1f), newAng);
 				lazer.sycnTransform();
-				
+				*/
 
 			//	Matrix4 newmatrix = new Matrix4();			
 				//newmatrix.setToRotation(0, 0, 1, newAng);

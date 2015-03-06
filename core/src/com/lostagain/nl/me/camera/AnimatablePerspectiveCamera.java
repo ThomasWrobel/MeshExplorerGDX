@@ -61,7 +61,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera {
     
     	super.position.set(transState.position);
     	
-    	Gdx.app.log(logstag, "______________________new     position="+super.position.x+","+super.position.y+","+super.position.z+")");
+    //	Gdx.app.log(logstag, "______________________new     position="+super.position.x+","+super.position.y+","+super.position.z+")");
 		
     	//these rotations might not be correct
     	final Vector3 tmp = new Vector3();
@@ -120,10 +120,12 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera {
 	/** stick to
 	 * Lets you stick one object to another. Its position and rotation will shift as its parent does.
 	 * You can specific a PosRotScale for its displacement from parent.
-	 * Note; This should check for inheritance loops at some point it does not at the moment**/
+	 * Note; This should check for inheritance loops at some point it does not at the moment
+	 * 
+	 * Note; Displacement is not copied. Changes to the given displacement will continue to effect the objects position**/
 	public void attachThis(AnimatableModelInstance objectToAttach, PosRotScale displacement){
 
-		Gdx.app.log(logstag,"_____________________________________adding object "); 
+	//	Gdx.app.log(logstag,"_____________________________________adding object "); 
 		
 		//add if not already there
 		if (!attachlist.containsKey(objectToAttach))
@@ -132,24 +134,31 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera {
 		}
 		
 
-		Gdx.app.log(logstag,"_____________________________________total objects now: "+attachlist.size()); 
+	//	Gdx.app.log(logstag,"_____________________________________total objects now: "+attachlist.size()); 
 		
 		
 	}
 	
 	private void updateAllAttachedObjects(){
 
-		Gdx.app.log(logstag,"_____________________________________updateAllAttachedObjects ="+attachlist.size()); 
+		//Gdx.app.log(logstag,"_____________________________________updateAllAttachedObjects ="+attachlist.size()); 
 		
 		for (AnimatableModelInstance object : attachlist.keySet()) {
 			
 			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(object));
 			object.setTransform(newposition);
-
-			Gdx.app.log(logstag,"_____________________________________cam position is ="+transState.position); 
-			Gdx.app.log(logstag,"_____________________________________setting attached position to ="+newposition); 
+//
+		//	Gdx.app.log(logstag,"_____________________________________cam position is ="+transState.position); 
+		//	Gdx.app.log(logstag,"_____________________________________setting attached position to ="+newposition); 
 			
 		}
+	}
+
+	public void updateAtachment(AnimatableModelInstance lazer,
+			PosRotScale lazerbeamdisplacement) {
+		
+		attachlist.put(lazer, lazerbeamdisplacement);
+		
 	}
 	
 	

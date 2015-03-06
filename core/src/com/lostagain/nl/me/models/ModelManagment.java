@@ -242,7 +242,13 @@ public void updateAnimatedBacks(float deltatime){
 			// environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 	}
 	
-	public static boolean testForHit(Ray ray) {
+	/**
+	 * 
+	 * @param ray
+	 * @param hitsPenetrate  - if the hits penetrate it means everything under the cursor will count as hit, not just the top.
+	 * @return
+	 */
+	public static boolean testForHits(Ray ray,boolean hitsPenetrate) {
 		
 		Gdx.app.log(logstag,"_-testing hit in :"+hitables.size+" models");
 
@@ -273,9 +279,12 @@ public void updateAnimatedBacks(float deltatime){
 	      //  position.add(instance.getCenter());
 	        
 	        float dist2 = ray.origin.dst2(position);
-	        if (distance >= 0f && dist2 > distance)
+	        
+	        if ((distance >= 0f && dist2 > distance) && !hitsPenetrate)
+	        {
 	            continue;
-	 
+	        }
+	        
 	        if (Intersector.intersectRaySphere(ray, instance.getCenter(), instance.getRadius(), null)) {
 	    		Gdx.app.log(logstag,"_hit in :"+i);
 	    		
@@ -284,7 +293,9 @@ public void updateAnimatedBacks(float deltatime){
 	            
 	             closesttouched = instance;
 	            
-	            
+	            if (hitsPenetrate){
+	            	  closesttouched.fireTouchDown();
+	            }
 	            
 	        }
 	        
@@ -293,7 +304,7 @@ public void updateAnimatedBacks(float deltatime){
 	        
 	    }
 	 
-	    if (result!=-1){
+	    if (result!=-1 && !hitsPenetrate){
 	    	Gdx.app.log(logstag,"_closest hit was_"+result);
             closesttouched.fireTouchDown();
             mousedownOn.add(closesttouched);

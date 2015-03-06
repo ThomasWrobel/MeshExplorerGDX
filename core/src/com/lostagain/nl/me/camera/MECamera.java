@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
@@ -36,6 +37,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	
 	public static EffectOverlay mainOverlay= new EffectOverlay();
 	public static CameraBackground background= new CameraBackground();
+	AnimatableModelInstance testattachment;
 	
 	Matrix4 startingLocation = new Matrix4();
 
@@ -44,6 +46,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	static int defaultViewportHeight = 480;
 	
 	
+	PerspectiveCamera dummycam;
 	
 	/**
 	 * Handles the cameras motions
@@ -58,7 +61,8 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		far=1900.0f;
 		movement = new NewMovementController(new PosRotScale(this.view));
 		
-	
+
+		setupDummyCam();
         addDefaultCameraAttachments();
 		
 		
@@ -66,7 +70,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		
 		this.setToPosition(MainExplorationView.currentPos);
 		
-	//	setTargetPosition(MainExplorationView.zoomToAtStartPos);
+		setTargetPosition(MainExplorationView.zoomToAtStartPos);
 	}
 
 
@@ -93,13 +97,22 @@ public class MECamera extends AnimatablePerspectiveCamera {
 				Model model = 	modelBuilder.createXYZCoordinates(35f, mat, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 	
 		
-		AnimatableModelInstance testattachment = new AnimatableModelInstance(model);
+		testattachment = new AnimatableModelInstance(model);
 		ModelManagment.addmodel(testattachment);
 		
 		super.attachThis(testattachment, new PosRotScale(0f,0f,-100f));
 		
 	}
 
+	/**
+	 * removes all the attachments from the camera and scene
+	 * @return 
+	 */
+	public void removeAllDefaultAttachments(){
+						
+		ModelManagment.removeModel(testattachment);
+		
+	}
 
 	public MECamera(int i, int width, int height) {
 		super(i, width, height);
@@ -107,12 +120,12 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		far=1900.0f;
 		movement = new NewMovementController(new PosRotScale(this.view));
 		
-
+		setupDummyCam();
         addDefaultCameraAttachments();
         
 		this.setToPosition(MainExplorationView.currentPos);
 
-		//setTargetPosition(MainExplorationView.zoomToAtStartPos);
+		setTargetPosition(MainExplorationView.zoomToAtStartPos);
 
 	}
 	
@@ -181,8 +194,8 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		}
 
 
-		Gdx.app.log(logstag, "______________________current position="+transState.position.x+","+transState.position.y+","+transState.position.z+")");
-		Gdx.app.log(logstag, "______________________new     position="+newposition.x+","+newposition.y+","+newposition.z+")");
+		//Gdx.app.log(logstag, "______________________current position="+transState.position.x+","+transState.position.y+","+transState.position.z+")");
+	//	Gdx.app.log(logstag, "______________________new     position="+newposition.x+","+newposition.y+","+newposition.z+")");
 		
 		
 		PosRotScale currentLoc = new PosRotScale().setToPosition(transState.position);
@@ -211,6 +224,33 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		
 	}
 
+
+	public void updateAtachment(AnimatableModelInstance lazer,
+			PosRotScale lazerbeamdisplacement) {
+
+		super.updateAtachment(lazer, lazerbeamdisplacement);
+		
+	}
+
 	
-	
+	/** the dummy cam is used to get rays from a clone of this camera at zero,zero,zero looking down.
+	 * This is usefull for selectiving things positioned relative to this cameras real position**/
+	private void setupDummyCam(){
+		
+		 dummycam = new PerspectiveCamera(fieldOfView,viewportWidth,viewportHeight);
+		
+		
+	}
+
+	/**
+	 * You can use this ray, together with a plane at the right distance, to figure out the intersection pointbetween clicking and a relatively 
+	 * positioned object attached to this camera
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public Ray getRelativePickRay(float x, float y) {
+		return dummycam.getPickRay(x,y);
+	}
 }
