@@ -98,7 +98,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	
 		
 		testattachment = new AnimatableModelInstance(model);
-		ModelManagment.addmodel(testattachment);
+		ModelManagment.addmodel(testattachment,ModelManagment.RenderOrder.infrontStage);
 		
 		super.attachThis(testattachment, new PosRotScale(0f,0f,-100f));
 		

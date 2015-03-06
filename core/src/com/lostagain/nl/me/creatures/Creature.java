@@ -139,7 +139,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		creaturemodel = model;
 		
 		//set to model lists
-		ModelManagment.addmodel(creaturemodel);
+		ModelManagment.addmodel(creaturemodel,ModelManagment.RenderOrder.zdecides);
 		ModelManagment.addHitable(this);
 		
 		//make bigger (test only)
@@ -154,7 +154,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		startScaleAndRotation.setToPosition(new Vector3(30f, 40f, 50f)); //not we offset from the existing position
 		
 		startScaleAndRotation.setToRotation(0f, 0f, 1f, 45);
-		startScaleAndRotation.setToScaling(new Vector3(0.5f, 2.5f,0.5f));
+		//startScaleAndRotation.setToScaling(new Vector3(0.5f, 2.5f,0.5f));
 		
 		Gdx.app.log(logstag, " setting to: "+startScaleAndRotation.toString());	
 		Matrix4 test = startScaleAndRotation.createMatrix();
@@ -510,8 +510,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 				
 				Gdx.app.log(logstag, "___resuming movement after NewMoveTo___");
 				Gdx.app.log(logstag, "___Current State is: ___"+ creaturemodel.transState.toString());
-				
-				
+								
 				movementControll.setMovement(creaturemodel.transState,false,new NewJerk2D(creaturemodel,70f,80f,2000f,8000f), new NEWREPEAT());
 
 			}

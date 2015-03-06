@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
@@ -32,9 +33,11 @@ public class ModelManagment {
 
 	private static String logstag="ME.ModelManagment";
 	
-	//might need to be divided into transparent and non-transparent at some point
-	//for optimization
-	public static Array<ModelInstance> allModelInstances = new Array<ModelInstance>();
+	/** All the 3d models that appear BEHIND the sprite ones **/
+	public static Array<ModelInstance> allBackgroundInstances = new Array<ModelInstance>();
+	
+	/** All the 3d models that appear INFRONT of the sprite ones **/
+	public static Array<ModelInstance> allForgroundInstances = new Array<ModelInstance>();
 	
 	public static MyShaderProvider myshaderprovider = new MyShaderProvider();
 	ModelBuilder modelBuilder = new ModelBuilder();
@@ -52,14 +55,47 @@ public class ModelManagment {
 	/**all models currently moving **/
 	public static Array<Creature> movingObjects = new Array<Creature>();
 	
-	public static void addmodel(ModelInstance model) {
-		allModelInstances.add(model);
+	
+	static public enum RenderOrder {
+		behindStage,infrontStage,zdecides
+	}
+	
+	
+	/** adds the model to the render list.
+	 * At this time it chooses if its a background or forground object based on its Z position
+	 * If Z is less then the stage Z (0) its behind
+	 * If its more then its 	in front**/
+	public static void addmodel(ModelInstance model, RenderOrder order) {				
+		
+		float Z = model.transform.getValues()[Matrix4.M23];
+	  	Gdx.app.log(logstag,"z = "+Z);
+
+	  	if (order == RenderOrder.behindStage){
+	  		allBackgroundInstances.add(model);
+	  		return;
+	  	}
+	  	
+	  	if (order == RenderOrder.infrontStage){
+	  		allForgroundInstances.add(model);
+	  		return;
+	  	}
+	  	
+		//depending on if we are above/below the stage position we add it accordingly		
+	  	if (Z<5){
+	  		allBackgroundInstances.add(model);
+	  	} else {
+	  		allForgroundInstances.add(model);
+	  	}
 		
 	}
 
 	public static void removeModel(ModelInstance model) {
-		allModelInstances.removeValue(model,true);
+		allBackgroundInstances.removeValue(model,true);
+		allForgroundInstances.removeValue(model,true);
 	}
+	
+	
+	
 
 public void updateAnimatedBacks(float deltatime){
 		
@@ -134,8 +170,8 @@ public void updateAnimatedBacks(float deltatime){
 	    	
 	    	Boolean defaultCanRender = test.canRender(renderableWithAttribute);
 
-			ModelManagment.addmodel(centermaker);
-			ModelManagment.addmodel(instance);
+			ModelManagment.addmodel(centermaker,RenderOrder.infrontStage);
+			ModelManagment.addmodel(instance,RenderOrder.infrontStage);
 
 		  	Gdx.app.log(logstag,"default created with attribute = "+defaultCanRender);
 			

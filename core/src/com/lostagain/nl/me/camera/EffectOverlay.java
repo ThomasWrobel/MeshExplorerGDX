@@ -34,7 +34,7 @@ public class EffectOverlay extends AnimatableModelInstance {
 							//  new NoiseShader.NoiseShaderAttribute(false,Color.ORANGE));		
 		//userData = MyShaderProvider.shadertypes.noise; 
 
-		ModelManagment.addmodel(this);
+		ModelManagment.addmodel(this,ModelManagment.RenderOrder.infrontStage);
 		
 	}
 

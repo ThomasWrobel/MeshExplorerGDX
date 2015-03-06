@@ -659,7 +659,7 @@ public class MainExplorationView implements Screen {
 
 		//rcontext.begin();
 		//testdefaultShader.begin(camera, rcontext);		
-		background.modelBatch.render(ModelManagment.allModelInstances);
+		background.modelBatch.render(ModelManagment.allBackgroundInstances);
 		
 		//testdefaultShader.end();
 		background.modelBatch.end();	
@@ -676,7 +676,19 @@ public class MainExplorationView implements Screen {
 		gameStage.act(delta); //Gdx.graphics.getDeltaTime()
 		gameStage.draw();
 	
+		//background.modelBatch.getRenderContext().begin();
+		//background.modelBatch.getRenderContext().setBlending(true, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		//background.modelBatch.getRenderContext().setCullFace(GL20.GL_FRONT);
 		
+		background.modelBatch.begin( camera);
+		//rcontext.begin();
+		//testdefaultShader.begin(camera, rcontext);		
+		background.modelBatch.render(ModelManagment.allForgroundInstances);
+		
+		//testdefaultShader.end();
+		background.modelBatch.end();	
+		//background.modelBatch.getRenderContext().end();
+
 		//  game.batch.setProjectionMatrix(camera.combined);
 
 		// process user input

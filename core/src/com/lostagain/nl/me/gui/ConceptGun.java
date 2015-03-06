@@ -254,7 +254,7 @@ public class ConceptGun  extends WidgetGroup {
 
 
 		//size
-		int width = 10;
+		int width = 15;
 
 		Vector2 cp = new Vector2(x,y);						
 		Vector2 cursor_on_stage =  MainExplorationView.gameStage.screenToStageCoordinates(cp);
@@ -296,7 +296,7 @@ public class ConceptGun  extends WidgetGroup {
 		//new method we just create a rectangle then rotate/set its position ourselves
 		float hw = width/2.0f;
 		//float height = Math.abs(fy  - cursor_on_stage.y);
-		float height = Gdx.graphics.getHeight()*1.1f; //always do it a bit bigger to allow for movements
+		float height = 100f; //Gdx.graphics.getHeight()*1.1f; //always do it a bit bigger to allow for movements
 		
 		//note we offset its creation points by the beam center offset
 		//this means the "center" of the rectangle is where the beam effect his and can be adjusted easily to match any change inthe graphic effect
@@ -306,7 +306,7 @@ public class ConceptGun  extends WidgetGroup {
 		
 		//align to camera
 		
-		//attach to camera?
+		//attach to camera?	
 		newlazer.transState.setTo(MainExplorationView.camera.transState);
 		
 		MainExplorationView.camera.attachThis(newlazer, lazerbeamdisplacement);
@@ -343,7 +343,7 @@ public class ConceptGun  extends WidgetGroup {
 
 
 		//display it		
-		ModelManagment.addmodel(lazer);
+		ModelManagment.addmodel(lazer,ModelManagment.RenderOrder.infrontStage);
 
 		currenttime = 0;
 
