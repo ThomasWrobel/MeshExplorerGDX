@@ -60,7 +60,7 @@ public class Location {
 	// Population creation (for each possible population)
 	
 	private static final HashMap<SSSNode,LocationsHub> AllLocationContainers = new HashMap<SSSNode,LocationsHub>();
-	private static final HashMap<SSSNode,Location> AllLocations = new HashMap<SSSNode,Location>();
+	private static final HashMap<SSSNode,Location>     AllLocations = new HashMap<SSSNode,Location>();
 
 	
 

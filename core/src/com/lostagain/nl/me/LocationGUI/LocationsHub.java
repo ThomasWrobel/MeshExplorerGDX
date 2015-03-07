@@ -376,9 +376,7 @@ public class LocationsHub extends Table {
 		
 		lowersplit.validate();
 		mainPages.validate();
-		
-		
-
+				
 		Gdx.app.log(logstag,"size of mainPages="+mainPages.getHeight());
 		Gdx.app.log(logstag,"size of lowersplit="+lowersplit.getHeight());
 		

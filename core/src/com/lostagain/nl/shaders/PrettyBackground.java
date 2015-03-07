@@ -7,17 +7,20 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 
 /**
- * creates a subtle grid shader (currently for the background)
+ * creates a PrettyBackground shader - currently using one from shadertoy (will replace)
  * It only works in hte background behind everyone else.
  * 
  * @author Tom
  *
  */
-public class SubtleGrid implements Shader {
+public class PrettyBackground implements Shader {
 	 ShaderProgram program;
 	 Camera camera;
 	 RenderContext context;
@@ -26,6 +29,7 @@ public class SubtleGrid implements Shader {
 	   int u_worldTrans;
 	    int u_time;
 	    int u_resolution;
+	    int u_mixcolour;
 	    
 	   private float time;
 	   
@@ -45,7 +49,7 @@ public class SubtleGrid implements Shader {
           u_time = program.getUniformLocation("u_time"); 
           u_resolution = program.getUniformLocation("u_resolution"); 
           
-          
+          u_mixcolour = program.getUniformLocation("u_mixcolour"); 
           
     }
     
@@ -65,11 +69,21 @@ public class SubtleGrid implements Shader {
      	  time = time+ Gdx.graphics.getDeltaTime();
      	  
     	  program.begin();
-    	  //the the variable for the cameras projectino to be passed to the shader
-    	  program.setUniformMatrix(u_projViewTrans, camera.combined);
-    	  program.setUniformf(u_time, time);
     	  
+    	  //the the variable for the cameras projection to be passed to the shader
+    	  program.setUniformMatrix(u_projViewTrans, camera.combined);
+    	  program.setUniformf(u_time, time);    	  
     	  program.setUniformf(u_resolution, 400,400);
+    	  
+    	  //get current position on the game field
+    	  Vector3 position = MainExplorationView.currentPos;
+    	  
+    	  
+    	  
+    	  program.setUniformf(u_mixcolour, MEDomain.getColorForPosition(position));
+    	  
+    	  
+    	  
     	  
     	 // context.setDepthTest(GL20.GL_LEQUAL);   
     	  context.setDepthTest(0);    	//We set to zero so this is behind everything 

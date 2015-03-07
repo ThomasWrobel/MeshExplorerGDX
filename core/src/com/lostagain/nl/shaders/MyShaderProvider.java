@@ -115,7 +115,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		}
 		case subtlegrid:
 		{
-			return new SubtleGrid();
+			return new PrettyBackground();
 		}
 		case distancefieldfordataobjects:
 		{

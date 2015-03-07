@@ -28,6 +28,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.LocationGUI.LocationScreen;
+import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.uti.FileManager;
 import com.lostagain.nl.uti.SpiffyGenericTween;
@@ -39,6 +40,9 @@ import com.lostagain.nl.uti.SpiffyTweenConstructor;
  * 
  * Home class will manage game setup and provide convenience shortcuts for major game
  * classes and variables.
+ * It also will maintain a list of all the domain objects (MEDomain) that are currently loaded, creating
+ * new ones when a new domain is opened for the first time (this happens at the same time as loading its index)
+ * 
  * 
  * @author Thomas Wrobel (at least, the first author....)
  * 
@@ -50,9 +54,9 @@ public class ME extends Game {
 //	static Logger Log = Logger.getLogger("ME");
 	
 	//semantics
-	public final static String INTERNALNS = "http://darkflame.co.uk/meshexplorer#";		
-	public final static HashSet<String> knownDatabases = new HashSet<String>();
-	       
+	public final static String INTERNALNS = "http://darkflame.co.uk/meshexplorer#";	
+	
+
 
     //global game stuff
 	static ME game;
@@ -102,7 +106,7 @@ public class ME extends Game {
     	game.setScreen(menu);
 
     	//setup semantics
-        setupSemantics();
+        setupSemanticsAndHomeDomain();
 
     	
         
@@ -110,7 +114,7 @@ public class ME extends Game {
 
     /** setup the semantic database/processing which is the core engine for the games 
      * locations,puzzles and..well..everything **/
-    public void setupSemantics()
+    public void setupSemanticsAndHomeDomain()
     {
   	  //turn some logs off
     //Log.setLevel(Level.OFF);
@@ -256,23 +260,27 @@ public class ME extends Game {
     	  final ArrayList<String> trustedIndexs = new  ArrayList<String>();  	  
     	  
     	
+    	
+    	  //its important to add the full path to the knowndatabases array
+    	  //because the SSS will automatically expand short urls and filepaths to
+    	  //absolute when needed internally
+    	  //Thus if theres a "is this loaded already?" comparison, we need
+    	  //to check full path against full path
     	  String fullPathOfHomeOntology = SuperSimpleSemantics.fileManager.getAbsolutePath("semantics/TomsNetwork.ntlist"); //semantics\\TomsNetwork.ntlist
     	  
     	  trustedIndexs.add(fullPathOfHomeOntology);    //semantics\\TomsNetwork.ntlist
  
-    	  //its important to add the full path to the knowndatabases array
-    	  //because the SSS will automaticaly expand short urls and filepaths to
-    	  //absolute when needed internally
-    	  //Thus if theres a "is this loaded already?" comparison, we need
-    	  //to check full path against full path
     	  Gdx.app.log(logstag,"______fullPathOfHomeOntology:-:________"+fullPathOfHomeOntology);
-    	  knownDatabases.add(fullPathOfHomeOntology);
+    	  
+    	  //create domain object from this database url
+    	  MEDomain homedomain = MEDomain.createNewDomain(fullPathOfHomeOntology);
+    	  MEDomain.setAsHomeDomain(homedomain); //set it as our home domain
+    	  MEDomain.setCurentDomain(homedomain);
 
       	//  trustedIndexs.add("http://darkflame.co.uk/semantics/darksnet.ntlist"); //testing 
-        //  knownDatabases.add("http://darkflame.co.uk/semantics/darksnet.ntlist");
+        //  knownDatabases.add("http://darkflame.co.uk/semantics/darksnet.ntlist");    	  
     	  
-    	  
-      	  SuperSimpleSemantics.loadIndexsAt(trustedIndexs);
+      	  SuperSimpleSemantics.loadIndexsAt(trustedIndexs); //we load the needed databases (which is only an array containing 1 database, but whatever...)
       	  
     }
     
@@ -308,7 +316,7 @@ public class ME extends Game {
  * @param linksToThisPC
  * @return
  */
-public static Boolean checkForUnloadedDatabaseAndLoad(SSSNode linksToThisPC) {
+public static Boolean checkForUnloadedDomainAndLoad(SSSNode linksToThisPC) {
 	
 	
 	String label = linksToThisPC.getPURI();
@@ -321,20 +329,25 @@ public static Boolean checkForUnloadedDatabaseAndLoad(SSSNode linksToThisPC) {
 		String databaseurl = label.substring(0, label.indexOf("#"));
 		
 		Gdx.app.log(logstag,"database url:"+databaseurl);
-		Gdx.app.log(logstag,"databases known:"+knownDatabases);
+		Gdx.app.log(logstag,"databases known:"+MEDomain.knownDomains);
 		
 		
 		//test if already loaded
-		if (!knownDatabases.contains(databaseurl)){
-
-			Gdx.app.log(logstag,"_____________________database not loaded:");
+		if (!MEDomain.domainloaded(databaseurl)){
+			//!knownDomains.contains(databaseurl)
 			
-			SuperSimpleSemantics.loadIndexAt(databaseurl);
-			
-			//we add it straight away before its loaded as we dont want to start loading it again
-			//Note; we should have a seperate list for "currently loading" in case another link to the same database is come accross
+			//we add it straight away before its loaded as we don't want to start loading it again
+			//Note; we should have a separate list for "currently loading" in case another link to the same database is come accross
 			//while this one is still loading. Then that new runWhenDone should also wait for the same database to load rather then being enabled straight away
-			knownDatabases.add(databaseurl);
+									
+			//create domain object we use the create function as that finds a spare location for us
+			//this also adds it to MEDomains domain list
+			MEDomain newDomain = MEDomain.createNewDomain(databaseurl);
+						
+			//create database
+			Gdx.app.log(logstag,"_____________________domains database not loaded:");
+			SuperSimpleSemantics.loadIndexAt(newDomain.getDomainsDataBaseURL());
+			
 			
 			return true;
 		}

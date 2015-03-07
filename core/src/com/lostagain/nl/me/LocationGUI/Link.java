@@ -207,7 +207,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 
 		
 		//check if needs a new database loaded
-		Boolean newDatabaseLoading=ME.checkForUnloadedDatabaseAndLoad(linksToThisPC);
+		Boolean newDatabaseLoading=ME.checkForUnloadedDomainAndLoad(linksToThisPC);
 		
 		boolean successfullyStarted = false;
 		

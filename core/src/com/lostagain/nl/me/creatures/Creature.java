@@ -43,7 +43,8 @@ public class Creature implements hitable {
 	
 	AnimatableModelInstance creaturemodel;
 	
-final static int zPlane = 70; //the horizontal plane the creatures exist on. should be used for all z values in positions.
+	final static int zPlane = 70; //the horizontal plane the creatures exist on. should be used for all z values in positions.
+	
 	//current location
 	float x = 0;
 	float y = 0;
@@ -138,6 +139,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		
 		creaturemodel = model;
 		
+		
 		//set to model lists
 		ModelManagment.addmodel(creaturemodel,ModelManagment.RenderOrder.zdecides);
 		ModelManagment.addHitable(this);
@@ -151,7 +153,7 @@ final static int zPlane = 70; //the horizontal plane the creatures exist on. sho
 		PosRotScale startScaleAndRotation = new PosRotScale();
 		
 		
-		startScaleAndRotation.setToPosition(new Vector3(30f, 40f, 50f)); //not we offset from the existing position
+		startScaleAndRotation.setToPosition(new Vector3(0f, 0f, 50f)); //now we offset from the existing position
 		
 		startScaleAndRotation.setToRotation(0f, 0f, 1f, 45);
 		//startScaleAndRotation.setToScaling(new Vector3(0.5f, 2.5f,0.5f));

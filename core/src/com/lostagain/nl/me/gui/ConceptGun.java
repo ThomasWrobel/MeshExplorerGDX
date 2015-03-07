@@ -64,7 +64,8 @@ public class ConceptGun  extends WidgetGroup {
 	//guns current stats
 	static int MaxComplexityLevel = 2; //will be used to determine how complex the equipped class can be
 	static float FireFrequency = 2.5f;//means the gun will actually hit targets at this frequency per sec regardless of visual effect (you should ensure your visuals are sycned to this)
-	
+	//size
+	static int width = 3;
 	
 	public static SSSNode equipedConcept = null; //the currently equipped concept. Think of it as ammo
 
@@ -98,16 +99,16 @@ public class ConceptGun  extends WidgetGroup {
 	
 
 
-	private float currenscreentargetX=0f;
-	private float currenscreentargetY=0f;
+	private float currenscreentargetX   = 0f;
+	private float currenscreentargetY   = 0f;
 	private float timeSinceLastHitCheck = 0f;
 	
 	private float currenttime=0f;
 	private float totaltime=1.8f; //0.8
 
-	private PosRotScale lazerbeamdisplacement = new PosRotScale(0f,0f,-50f);
+	private PosRotScale lazerbeamdisplacement = new PosRotScale(0f,0f,-30f);
 
-	Vector2 beamcenteroffset = new Vector2(0,10.5f);
+	Vector2 beamcenteroffset = new Vector2(0,4f);
 	
 	public ConceptGun() {
 
@@ -253,8 +254,7 @@ public class ConceptGun  extends WidgetGroup {
 		float fy = sc.y; 
 
 
-		//size
-		int width = 15;
+		
 
 		Vector2 cp = new Vector2(x,y);						
 		Vector2 cursor_on_stage =  MainExplorationView.gameStage.screenToStageCoordinates(cp);
@@ -296,7 +296,7 @@ public class ConceptGun  extends WidgetGroup {
 		//new method we just create a rectangle then rotate/set its position ourselves
 		float hw = width/2.0f;
 		//float height = Math.abs(fy  - cursor_on_stage.y);
-		float height = 100f; //Gdx.graphics.getHeight()*1.1f; //always do it a bit bigger to allow for movements
+		float height = 50f; //Gdx.graphics.getHeight()*1.1f; //always do it a bit bigger to allow for movements
 		
 		//note we offset its creation points by the beam center offset
 		//this means the "center" of the rectangle is where the beam effect his and can be adjusted easily to match any change inthe graphic effect
@@ -388,14 +388,14 @@ public class ConceptGun  extends WidgetGroup {
 				Ray ray = MainExplorationView.camera.getRelativePickRay(fromPoint.x,fromPoint.y);
 								
 				//we need a plane at the distance of the lazer
-				Plane testplane = new Plane(new Vector3(0f, 0f,-1f),-50f);//MainExplorationView.camera.direction.rotate(new Vector3(0f, 0f,1f),90),-50f);
+				Plane testplane = new Plane(new Vector3(0f, 0f,-1f),-10f);//MainExplorationView.camera.direction.rotate(new Vector3(0f, 0f,1f),90),-50f);
 			
 				Vector3 intersection = new Vector3();
 				Intersector.intersectRayPlane(ray, testplane, intersection);
 				//Gdx.app.log(logstag,"_intersection "+foundinc+" = "+intersection.toString());
 				
 			
-				lazerbeamdisplacement.setToPosition(new Vector3(intersection.x,intersection.y,-50));
+				lazerbeamdisplacement.setToPosition(new Vector3(intersection.x,intersection.y,-10));
 				
 				//set rotation				
 				fromPoint.sub(tooPoint);

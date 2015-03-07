@@ -10,6 +10,7 @@ uniform vec2 u_resolution;
 
 varying vec2 vTexCoord;
 
+varying vec4 mixcolour;
 float noise2d(vec2 p) {
 	return fract(sin(dot(p.xy/.32 ,vec2(1.98,7.3))) * 4.5453);
 }
@@ -31,7 +32,7 @@ vec2 p = ( gl_FragCoord.xy / u_resolution.xy );
 	float r=a*p.x;
 	float g=a*p.y;
 	float b=a;
-	vec4 col = mix(vec4(0,0,1,1),vec4(r,g,b,1),0.1);
+	vec4 col = mix(mixcolour,vec4(r,g,b,1),0.1);
 		
 	gl_FragColor = col;
 

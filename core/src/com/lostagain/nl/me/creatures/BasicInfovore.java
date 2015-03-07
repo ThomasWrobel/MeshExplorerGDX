@@ -76,7 +76,7 @@ public class BasicInfovore extends Creature implements Animating {
 		
 		// just a cube for now
 			
-		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.9f);
+		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.9f);
 		
 				//.createBox(15f, 15f, 15f, 
 		Material mat = new Material(ColorAttribute.createDiffuse(Color.WHITE));

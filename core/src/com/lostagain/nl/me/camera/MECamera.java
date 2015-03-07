@@ -68,7 +68,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		
 		//---------
 		
-		this.setToPosition(MainExplorationView.currentPos);
+		setToPosition(MainExplorationView.currentPos);
 		
 		setTargetPosition(MainExplorationView.zoomToAtStartPos);
 	}
@@ -83,24 +83,24 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		
 		
 		/// X/Y/Z marker to help debug
-        Material mat = new Material(
-        		ColorAttribute.createDiffuse(Color.RED), 
-				ColorAttribute.createSpecular(Color.WHITE),
-				new BlendingAttribute(1f), 
-				FloatAttribute.createShininess(16f));
+     //   Material mat = new Material(
+     //   		ColorAttribute.createDiffuse(Color.RED), 
+	//			ColorAttribute.createSpecular(Color.WHITE),
+	///			new BlendingAttribute(1f), 
+	//			FloatAttribute.createShininess(16f));
         
-    	ModelBuilder modelBuilder = new ModelBuilder();
+    //	ModelBuilder modelBuilder = new ModelBuilder();
 		//note; maybe these things could be pre-created and stored rather then a new one each time?
 		//Model model =   //modelBuilder.createSphere(55f, 55f, 25f, 20, 20,
 			//	mat,Usage.Position | Usage.Normal | Usage.TextureCoordinates );
 		
-				Model model = 	modelBuilder.createXYZCoordinates(35f, mat, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+			//	Model model = 	modelBuilder.createXYZCoordinates(35f, mat, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 	
 		
-		testattachment = new AnimatableModelInstance(model);
-		ModelManagment.addmodel(testattachment,ModelManagment.RenderOrder.infrontStage);
+		//testattachment = new AnimatableModelInstance(model);
+		//ModelManagment.addmodel(testattachment,ModelManagment.RenderOrder.infrontStage);
 		
-		super.attachThis(testattachment, new PosRotScale(0f,0f,-100f));
+		//super.attachThis(testattachment, new PosRotScale(0f,0f,-100f));
 		
 	}
 

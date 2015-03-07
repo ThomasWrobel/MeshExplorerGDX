@@ -5,10 +5,12 @@ precision mediump float;
 #endif
 
 uniform float u_time;
+
 uniform vec2 mouse;
 uniform vec2 resolution;
-
 varying vec2 vTexCoord;
+
+varying vec4 mixcolour;
 
 void main( void ) {
 
@@ -18,10 +20,12 @@ void main( void ) {
 	float color = 0.0;
 	color += sin( position.x * cos( u_time / 15.0 ) * 80.0 ) + cos( position.y * cos( u_time / 15.0 ) * 10.0 );
 	color += sin( position.y * sin( u_time / 10.0 ) * 40.0 ) + cos( position.x * sin( u_time / 25.0 ) * 40.0 );
-	color += sin( position.x * sin( u_time / 5.0 ) * 10.0 ) + sin( position.y * sin( u_time / 35.0 ) * 80.0 );
+	color += sin( position.x * sin( u_time / 5.0 ) * 10.0 ) + sin( position.y *  sin( u_time / 35.0 ) * 80.0 );
 	color *= sin( u_time / 10.0 ) * 0.5;
+	
+	vec4 basecolor = vec4( vec3( color, color * 0.5, sin( color + u_time / 3.0 ) * 0.75 ), 1.0 );
 
-	gl_FragColor = vec4( vec3( color, color * 0.5, sin( color + u_time / 3.0 ) * 0.75 ), 1.0 );
+	gl_FragColor = basecolor;
 
 //	vec2 p = vTexCoord.xy;//- resolution.xy/2.0;//gl_FragCoord.xy - resolution.xy/2.0;
 //	vec3 col = vec3(0.1,0.0,0.0);
