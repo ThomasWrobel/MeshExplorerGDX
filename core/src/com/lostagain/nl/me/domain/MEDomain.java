@@ -45,6 +45,10 @@ public class MEDomain {
 	
 	ColourMap domainsColourMap;
 	
+	public ColourMap getDomainsColourMap() {
+		return domainsColourMap;
+	}
+
 	ArrayList<Location> AllDomainsLocations = new ArrayList<Location>();
 
 	Color BaseColour;
@@ -76,8 +80,8 @@ public class MEDomain {
 	 * In future I might deal with that here as well **/
 	public static MEDomain createNewDomain(String databaseurl) {
 		
-		Color baseColor = Color.BLUE; //blue for now (temp)
-		Rectangle locationsArea = new Rectangle(-1000,-1000,2000,2000); //locations are (temp)
+		Color baseColor = new Color(0.0f,0.0f,0.5f,1.0f); //blue for now (temp)
+		Rectangle locationsArea = new Rectangle(-750,-750,1500,1500); //locations area (temp)
 
 		MEDomain newdomain = new MEDomain(databaseurl,locationsArea,baseColor);
 		
@@ -96,6 +100,11 @@ public class MEDomain {
 		
 		
 	}
+	
+	public static MEDomain getHomeDomain() {
+		return homeDomain;
+	}
+	
 
 	public String getDomainsDataBaseURL() {
 		return DomainsDataBaseURL;

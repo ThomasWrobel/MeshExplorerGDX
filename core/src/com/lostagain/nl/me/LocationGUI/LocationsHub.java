@@ -816,7 +816,6 @@ public class LocationsHub extends Table {
 
 	public float getZ() {
 		
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

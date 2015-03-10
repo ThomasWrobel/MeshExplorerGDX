@@ -44,9 +44,9 @@ public class PlayersData {
 	public static Location homeLoc;
 	
 	//the location of the computer on the grid
-	public static int homelocationX=200;
-	public static int homelocationY=500;
-	
+	public static int homelocationX=0; //200
+	public static int homelocationY=0;//500
+	public static int homelocationZ=0;//cant be anything else
 
 	/** mains a list of all the nodes of visited locations **/
 	private static ArrayList<SSSNode> hasVisitedArray = new  ArrayList<SSSNode>();

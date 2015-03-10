@@ -31,12 +31,15 @@ public class NewMoveTo  {
 		
 		//but we change its position
 		destinationState.setToPosition(destination_loc);
-		
+
+		Gdx.app.log(logstag, "_______________requested pos  :"+destination_loc);
 		
 				
 		NewMovement newmovement= new NewMovement(destinationState,duration);
 		newmovement.currenttype = MovementTypes.Absolute;
-		
+
+		Gdx.app.log(logstag, "_______________destination pos after creation:"+newmovement.destination.position);
+			
 		return newmovement;
 	}
 

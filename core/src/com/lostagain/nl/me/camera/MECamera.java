@@ -44,6 +44,9 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	static int defaultFieldOfView = 60;
 	static int defaultViewportWidth = 640;
 	static int defaultViewportHeight = 480;
+
+	public static float standardCameraHeightAboveLocations=444;
+	
 	
 	
 	PerspectiveCamera dummycam;
@@ -68,9 +71,9 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		
 		//---------
 		
-		setToPosition(MainExplorationView.currentPos);
+		//setToPosition(MainExplorationView.currentPos);
 		
-		setTargetPosition(MainExplorationView.zoomToAtStartPos);
+	//	setTargetPosition(MainExplorationView.zoomToAtStartPos);
 	}
 
 
@@ -123,9 +126,6 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		setupDummyCam();
         addDefaultCameraAttachments();
         
-		this.setToPosition(MainExplorationView.currentPos);
-
-		setTargetPosition(MainExplorationView.zoomToAtStartPos);
 
 	}
 	
@@ -202,6 +202,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		
 
 
+		Gdx.app.log(logstag,"moving to: "+newposition);
 		
 		movement.setMovement(currentLoc, false,  NewMoveTo.create(currentLoc,newposition.x,newposition.y,newposition.z,4000));
 		

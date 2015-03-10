@@ -43,6 +43,7 @@ public class Location {
 	int locX = 0;
 	int locy = 0;
 	
+	
 	public SSSNode locationsnode;
 	HashSet<SSSNodesWithCommonProperty> locationsPropertys; //will store all the SSSNodesWithCommonPropertys with the location in it. NOTE this will need refreshing if new sets are loaded 
 	
@@ -122,6 +123,7 @@ public class Location {
 
 		//X = getNextUnusedPosition(X,Y);
 		Vector2 newLocation = getNextUnusedPosition(X,Y); 
+		
 		
 		//set up as normal
 		seupLocation(locationsnode, (int)newLocation.x, (int)newLocation.y); //just cast for now for rounding. Could also use Math.Floor. Not really important the precise half pixel.
@@ -214,7 +216,7 @@ public class Location {
 		locationsHub = new LocationsHub(locationsnode);
 		AllLocationContainers.put(locationsnode,locationsHub);
 		
-		MainExplorationView.addnewlocation(locationsHub,X, Y);
+		MainExplorationView.addnewlocationHub(locationsHub,X, Y);
 	}
 	
 	
@@ -375,6 +377,10 @@ public class Location {
 
 	public float getHubsX(int align) {		
 		return locationsHub.getX(align);
+	}
+	
+	public float getHubsZ() {		
+		return locationsHub.getZ();
 	}
 	
 	/**

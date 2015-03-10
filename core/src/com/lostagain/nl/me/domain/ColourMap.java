@@ -4,30 +4,16 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Rectangle;
+import com.lostagain.nl.uti.HSLColor;
 
 public class ColourMap {
 
 	private static String logstag="ME.ColourMap";
-
-	/*
-	 * Generates a gradient based on color points. Start with simplee 4 points of colors (randomly offset from base color), but support more eleborate gradients for future
-
-- get requested x/y
-- get distances to color points
-- 5,6,3,9    
-- get total distance 23
-- work out ratio of each relative to that (5/23,6/23,3/23,9/23) etc
-- Loop over ratios and tint according to those proportions!
-
-
-
-
-
-
-If too slow burn everything into a 2D array to look up later?
-	 */
+	private static float colourInfluence = 0.35f; 
+	private static float finalBrightness = 0.8f; //color is multiplied by this, reduce it for darker backgrounds
 	
 	class ColourPoint {
 		
@@ -47,17 +33,52 @@ If too slow burn everything into a 2D array to look up later?
 	}
 	
 	
-	Color baseColour = Color.GREEN;
+	HSLColor baseColour =  new HSLColor();
+	
 	Rectangle coversArea = null;
 	ArrayList<ColourPoint> colourPoints = new ArrayList<ColourPoint>();
 	
 			
-	public  ColourMap(Rectangle coversArea,Color baseColour)
+	public  ColourMap(Rectangle coversArea,Color baseColourRGB)
 	{
-		this.baseColour = baseColour;
+		this.baseColour = new HSLColor(baseColourRGB);
 		this.coversArea = coversArea;
 		
 		generateMap();				
+		
+	}
+	
+	public Pixmap getPixMap(int SizeX,int SizeY)
+	{
+		Pixmap newmap = new Pixmap(SizeX,SizeY, Pixmap.Format.RGBA8888);
+		
+		//work out scaled ranges
+		float xScaleing = coversArea.width / SizeX;
+		float yScaleing = coversArea.height / SizeY;
+		
+		Gdx.app.log(logstag,"______xScaleing "+xScaleing+" ");
+		Gdx.app.log(logstag,"______yScaleing "+yScaleing+" ");
+		
+		for (int x = 0; x < SizeX; x++) {
+			
+			for (int y = 0; y < SizeY; y++) {
+				
+				//get color at right point in ColourMap
+				Vector2 ScaledPosition = new Vector2(coversArea.x + (x*xScaleing),coversArea.y +(y*yScaleing));
+				Color col = this.getColourAtPosition(ScaledPosition);
+				int ColInt = Color.rgba8888(col); //needs to be in its int form
+				
+				newmap.drawPixel(x, y, ColInt);
+			//	Gdx.app.log(logstag,"______ColInt "+ColInt+" ");
+				
+			}	
+			
+		}
+		
+		
+		
+		
+		return newmap;
 		
 	}
 	
@@ -65,8 +86,8 @@ If too slow burn everything into a 2D array to look up later?
 	{
 		colourPoints.clear(); //ensure clear in case regenerating
 		
-		//pick 4 random color points
-		int NumOfColors = 4;
+		//pick 8 random color points
+		int NumOfColors = 8;
 		
 		int minX = (int) coversArea.x;
 		int maxDisX = (int) (coversArea.width);
@@ -76,19 +97,64 @@ If too slow burn everything into a 2D array to look up later?
 		
 		for (int i = 0; i < NumOfColors; i++) {
 			
-			int X = (int) (minX+(Math.random()*maxDisX));
+			int X = (int) (minX+(Math.random()*maxDisX)); //maybe should space evenly? Or at least ensure they are spread out more? (test by making image!)
 			int Y = (int) (minY+(Math.random()*maxDisY));
 			
-			Color randomColor = new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),1f);
+			//Color randomColor = new Color((float)Math.random(),(float)Math.random(),(float)Math.random(),1f);
+			
+			
+			float randomHue = (float) ((Math.random() - 0.5f));
+			
+			
 			//blend with base color 50%
-			//randomColor.lerp(baseColour, 0.5f);
+		//	randomColor.lerp(baseColour, 0.5f);
+
+			//alter base color by hue
+
+			Gdx.app.log(logstag,"______h,s,l "+baseColour.toString()+" ");
+			
+			HSLColor newCol = baseColour.copy();
+			
+			Gdx.app.log(logstag,"______ newCol  "+ newCol.toString()+" ");
+			
+			newCol.h = newCol.h + (randomHue*colourInfluence);
+			
+			/*
+		//	
+			
+			//float existingR = baseColour.r;
+		//	float existingG = baseColour.g;
+		//	float existingB = baseColour.b;
+			
+		//	Gdx.app.log(logstag,"______alter r by  "+((randomColor.r - 0.5f)*colourInfluence)+" ");
+		//	Gdx.app.log(logstag,"______alter g by  "+((randomColor.g - 0.5f)*colourInfluence)+" ");
+		//	Gdx.app.log(logstag,"______alter b by  "+((randomColor.b - 0.5f)*colourInfluence)+" ");
+			
+			//the random color acts as a tint
+		//	float newR = (existingR + ((randomColor.r - 0.5f)*colourInfluence));
+		//	float newG = (existingG + ((randomColor.g - 0.5f)*colourInfluence));
+		//	float newB = (existingB + ((randomColor.b - 0.5f)*colourInfluence));
+			
+			
+		//	randomColor = new Color(newR,newG,newB,1f);
+			
+			//randomColor.add(baseColour);
+	//	randomColor.sub(new Color(finalBrightness,finalBrightness,finalBrightness,1f));
+			
+			Color randomColor = newCol.toRGB();
+			
+			
+	    	Gdx.app.log(logstag,"______randomColor "+randomColor.toString()+" ");
+		//	baseColour.mul(randomColor);
 			
 			//add it to our point list
-			colourPoints.add(new ColourPoint(randomColor,new Vector2(X,Y)));
+	
 
 			
 	    	Gdx.app.log(logstag,"______setting "+randomColor.toString()+" colour point at :________"+X+","+Y);
-	    	
+	    	*/
+			Color randomColor = newCol.toRGB();
+			colourPoints.add(new ColourPoint(randomColor,new Vector2(X,Y)));
 						
 		}
 			
@@ -96,7 +162,7 @@ If too slow burn everything into a 2D array to look up later?
 	
 	/**
 	 * gets the color to use as the background at a particular x/y point.
-	 * This could be optimised with a "cache" of an image to avoid all the distance tests
+	 * This could be optimized with a "cache" of an image to avoid all the distance tests
 	 * 
 	 * 
 - get requested x/y
@@ -115,7 +181,7 @@ If too slow burn everything into a 2D array to look up later?
 		for (ColourPoint cp : colourPoints) {
 			
 			//get distance to location
-			float distance = cp.location.dst2(Position.x, Position.y); //not we are actually getting the SQUARE of the distance as this is cheaper cpu wise, and we only need to compare them relatively anyway, not in absolute terms
+			float distance = cp.location.dst2(Position.x, Position.y); //note we are actually getting the SQUARE of the distance as this is cheaper cpu wise, and we only need to compare them relatively anyway, not in absolute terms
 			
 			//store it in the colourpoint
 			cp.distanceTemp = distance;

@@ -8,10 +8,14 @@ ProfPP rdfs:subClassOf  me:Computer.
 ProfPPResearch rdfs:subClassOf  me:Computer.
 AlicesPc rdfs:subClassOf  me:Computer.
 TheCatsPc rdfs:subClassOf  me:Computer.
-BobsOutpost  rdfs:subClassOf  me:Computer.
+BobsOutpost rdfs:subClassOf  me:Computer.
+LinguisticsStore rdfs:subClassOf  me:Computer.
+MysteriousGateway rdfs:subClassOf  me:Computer. 
+
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subClassOf me:Computer.
 
 BobsOutpost me:populatedBy smallInfovorPopulation.
+alicespc me:populatedBy smallInfovorPopulation.
 
 smallInfovorPopulation rdfs:subClassOf me:population.
 smallInfovorPopulation me:quantity 10.
@@ -27,7 +31,17 @@ smallInfovorPopulation http://dbpedia.org/ontology/Colour #00DD11.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #33BB55.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour Blue.
 
-alicespc me:populatedBy smallInfovorPopulation.
+
+bigInfovorPopulation rdfs:subClassOf me:population.
+bigInfovorPopulation me:quantity 80.
+bigInfovorPopulation me:killedon "Color=yellow".
+bigInfovorPopulation me:hitPoints 7.
+bigInfovorPopulation me:fromRadius 10.
+bigInfovorPopulation me:toRadius 80.
+bigInfovorPopulation http://dbpedia.org/ontology/Colour #FF3300.
+bigInfovorPopulation http://dbpedia.org/ontology/Colour #FF5522.
+
+
 
 profpp me:connectedTo BobsOutpost.
 profpp me:connectedTo alicespc. 
@@ -36,6 +50,8 @@ alicespc me:connectedTo BobsOutpost.
 alicespc me:connectedTo thecatspc.
 thecatspc me:connectedTo alicespc.
 BobsOutpost me:connectedTo me:everyone.
+MysteriousGateway me:connectedTo profpp. 
+LinguisticsStore me:connectedTo ProfPPResearch. 
 
 BobsOutpost http://dbpedia.org/ontology/Colour Green.
 thecatspc http://dbpedia.org/ontology/Colour Orange.
@@ -45,8 +61,7 @@ http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost http://dbp
 http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#test rdfs:subClassOf me:Computer.
 http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#test me:connectedTo http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost.
 
-http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:connectedTo profpp.
-http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:connectedTo me:everyone.
+http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost me:connectedTo MysteriousGateway.
 
 profpp me:SecuredBy MaxsFirewall.
 MaxsFirewall rdfs:subClassOf  me:Security.
@@ -93,6 +108,17 @@ ME:ConceptGun1 me:ison BobsOutpost.
 
 thecatspc.txt rdfs:subClassOf me:software.
 thecatspc.txt me:ison thecatspc.
+catspcmessages.txt me:ison thecatspc.
+catspcmessages.txt rdfs:subClassOf me:messages.
+catspcmessages.txt me:writtenin me:Scram1.
+
+"...LinguisticsStore..." me:DescriptionOf LinguisticsStore.
+
+me:Scram1decoder me:ison LinguisticsStore.
+LinguisticsStore me:populatedBy bigInfovorPopulation.
+
+"Location At The End Of Test Game !" me:DescriptionOf MysteriousGateway.
+
 
 isApple.txt rdfs:subClassOf Apple.
 isFruit.txt rdfs:subClassOf Fruit.

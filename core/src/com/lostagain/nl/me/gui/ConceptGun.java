@@ -97,10 +97,6 @@ public class ConceptGun  extends WidgetGroup {
 	//other
 	AnimatableModelInstance lazer;
 	
-
-
-	private float currenscreentargetX   = 0f;
-	private float currenscreentargetY   = 0f;
 	private float timeSinceLastHitCheck = 0f;
 	
 	private float currenttime=0f;
@@ -108,7 +104,7 @@ public class ConceptGun  extends WidgetGroup {
 
 	private PosRotScale lazerbeamdisplacement = new PosRotScale(0f,0f,-30f);
 
-	Vector2 beamcenteroffset = new Vector2(0,4f);
+	Vector2 beamcenteroffset = new Vector2(0,1f);
 	
 	public ConceptGun() {
 
@@ -274,17 +270,23 @@ public class ConceptGun  extends WidgetGroup {
 		//ColorAttribute.createDiffuse(Color.RED),
 		Gdx.app.log(logstag, "set to gun beam ");
 		
-		/*
-        Material testmaterial = new Material(
+/*
+        Material lazerMat = new Material(
         		ColorAttribute.createDiffuse(Color.RED), 
 				ColorAttribute.createSpecular(Color.WHITE),
-				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.5f), 
+				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1f), 
 				FloatAttribute.createShininess(16f));
         
-		
 		*/
 		
-		Material lazerMat = new Material("LazerMaterial", new ConceptBeamShader.ConceptBeamAttribute(0.35f,BeamColor,FireFrequency,Color.WHITE));
+		
+		
+		Material lazerMat = new Material("LazerMaterial", 
+				
+				               new ConceptBeamShader.ConceptBeamAttribute(0.35f,BeamColor,FireFrequency,Color.WHITE),
+							   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1f)
+		
+		);
 				
 				
 				//ColorAttribute.createDiffuse(Color.ORANGE),

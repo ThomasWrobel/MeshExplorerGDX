@@ -142,10 +142,14 @@ public class ConceptBeamShader implements Shader {
     	 
     	  context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
     	  
+    	  //lower for addative
+    	//  context.setBlending(true,GL20.GL_ONE ,GL20.GL_ONE);
     	  
+    	//  context.setDepthTest(GL20.GL_DEPTH_TEST);    	
+
+//    	  context.setDepthTest(GL20.GL_DEPTH_BUFFER_BIT);    	
     	  
-    	//  context.setDepthTest(GL20.GL_LEQUAL);    	  
-          context.setCullFace(GL20.GL_BACK);
+          //context.setCullFace(GL20.GL_BACK);
           
     	  
     }
@@ -153,6 +157,7 @@ public class ConceptBeamShader implements Shader {
     @Override
     public void render (Renderable renderable) {  
     	//set the variable for the objects world transform to be passed to the shader
+
     	 program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
     	 
     	 

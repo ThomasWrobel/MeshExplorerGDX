@@ -55,8 +55,8 @@ public class NewMovement {
 		this.durationTotalMS=durationTotalMS;
 		this.destination=destination;
 		this.durationMSEachMove=durationMSEachMove;
-			
-		
+				
+		Gdx.app.log(logstag,"destination.position set to: "+destination.position); //Z not updating??!?
 		
 	};
 	
@@ -65,6 +65,8 @@ public class NewMovement {
 		this.durationTotalMS=durationTotalMS;
 		this.destination=destination;
 		this.durationMSEachMove=durationTotalMS;
+
+		Gdx.app.log(logstag,"destination.position set to: "+destination.position); //Z not updating??!?
 		
 	};
 	
@@ -201,6 +203,10 @@ public class NewMovement {
 			
 			//angle and translation need to be dealt with separately else you get weird issues with scaling and possibly other things
 			Vector3 newposition = startLocation.lerp(destination.position, ratio);
+			
+
+		//	Gdx.app.log(logstag,"destination.position is: "+destination.position); //Z set right but doesn't update later
+			
 			
 			//rot
 			Quaternion newrotation = startRotation.slerp(destination.rotation, ratio);

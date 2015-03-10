@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -46,10 +48,10 @@ public class Creature implements hitable {
 	final static int zPlane = 70; //the horizontal plane the creatures exist on. should be used for all z values in positions.
 	
 	//current location
-	float x = 0;
-	float y = 0;
-	float z = 0;
-	
+	//float x = 0;
+	//float y = 0;
+	//float z = 0;
+	//
 	/**
 	 * the starting location of the creature 
 	 */
@@ -66,8 +68,6 @@ public class Creature implements hitable {
 	//drops, if any
 	ArrayList<SSSNode> drops=	new ArrayList<SSSNode>();
 	
-	//should be changed based on the size of the creature
-	int hitradius = 50;
 	
 	//Note, if needed we can calculate the radius and position we should use for hits
 	//with the below method;
@@ -78,7 +78,14 @@ public class Creature implements hitable {
     
 	destructOn destructionType = destructOn.clicks; //defaults to a clicks if no query specified
 	int numOfHitsLeft = 10;
-	boolean destroyed = false;
+	
+	
+	enum CreatureState {
+		alive,dieing,dead;
+	}
+	
+	CreatureState currentState = CreatureState.alive;
+	
 	
 	//query that defines what removes it
 	String queryToDestroy; 
@@ -86,16 +93,21 @@ public class Creature implements hitable {
 	//base color
 	Color crearturesColor = Color.WHITE;
 		
-	
+
+		
 	//lighter color for when clicked on
 	Color hitColor = Color.GREEN.cpy().add(.5f, .5f, .5f, 1f);
 	
+	//should be changed based on the size of the creature
+	int hitradius = 30;
+	
+	float lastHitDistance = -1f; //no hit by default
 
 	public Creature(float x, float y, Population parentPopulation, int hitPoints, String queryToDestroy, destructOn destructionType) {
 		
 		
-		this.x=x;
-		this.y=y;
+		//this.x=x;
+		//this.y=y;
 		this.parentpolution=parentPopulation;
 		
 
@@ -153,9 +165,9 @@ public class Creature implements hitable {
 		PosRotScale startScaleAndRotation = new PosRotScale();
 		
 		
-		startScaleAndRotation.setToPosition(new Vector3(0f, 0f, 50f)); //now we offset from the existing position
+	//	startScaleAndRotation.setToPosition(new Vector3(0f, 0f, 50f)); //now we offset from the existing position
 		
-		startScaleAndRotation.setToRotation(0f, 0f, 1f, 45);
+	//	startScaleAndRotation.setToRotation(0f, 0f, 1f, 45);
 		//startScaleAndRotation.setToScaling(new Vector3(0.5f, 2.5f,0.5f));
 		
 		Gdx.app.log(logstag, " setting to: "+startScaleAndRotation.toString());	
@@ -220,7 +232,7 @@ public class Creature implements hitable {
 
 	private void hit() {
 		Gdx.app.log(logstag, " creature hit  ");	
-		if (destroyed){
+		if (currentState != CreatureState.alive){
 			Gdx.app.log(logstag, " already being destroyed ");
 			return;
 		}
@@ -327,11 +339,15 @@ public class Creature implements hitable {
 		final ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);		
 		
 		
-		float r = (float) Math.random();
-		float g = (float) Math.random();
-		float b = (float) Math.random();
+	//	float r = (float) Math.random();
+	//	float g = (float) Math.random();
+	//	float b = (float) Math.random();
 		Color col =  new Color();
-		Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );
+		
+		col = this.crearturesColor.mul(new Color(1.2f,1.2f,1.2f,1.0f));
+		
+		
+	//	Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );
 		
 		
 		Gdx.app.log(logstag,"_________creature col="+col.toString());
@@ -356,22 +372,23 @@ public class Creature implements hitable {
 		
 		//update radius
 		hitradius = (int) (hitradius * 1.2f);
-		
-		
+				
 		
 		Timer.schedule(new Task(){
 
 			@Override
 			public void run() {
+				
 				//after enlarging we restart the creatures standard movement.
 				Creature.this.startCreaturesStandardMovement();
-				
-				// TODO Auto-generated method stub
 				attribute.color.set( crearturesColor );
+								
 			}
 			
 			
 		}, (durationOfEnlargement+250)/1000); //the movement should start again shortly after the enlargement ends. We devide by 1000 as Timer.schedule needs the time in seconds, not ms 
+		
+		
 		
 	}
 
@@ -379,7 +396,7 @@ public class Creature implements hitable {
 
 
 	protected void startCreaturesStandardMovement() {
-		if (destroyed){
+		if (currentState != CreatureState.alive){
 			Gdx.app.log(logstag, " already being destroyed,cantset movement ");
 			return;
 		}
@@ -402,7 +419,19 @@ public class Creature implements hitable {
 
 
 	protected void destroy() {
-		destroyed=true;
+		
+		//create drops, if any	(has to be done before the model is destroyed)
+				if (drops!=null && drops.size()>0){
+
+					Gdx.app.log(logstag,"droping drops with the dropdrops(drops) call.");
+					dropdrops(drops);
+				}
+				
+		
+		
+		//destroyed=true;
+		currentState = CreatureState.dead;
+		
 		//ConceptGun.animateImpactEffect();
 		//remove from visuals
 		ModelManagment.removeModel(creaturemodel);
@@ -420,12 +449,6 @@ public class Creature implements hitable {
 		//remove from population
 		parentpolution.removeFromPopulation(this);
 		
-		//create drops, if any	
-		if (drops!=null && drops.size()>0){
-
-			Gdx.app.log(logstag,"droping drops with the dropdrops(drops) call.");
-			dropdrops(drops);
-		}
 		
 		
 		
@@ -445,8 +468,9 @@ public class Creature implements hitable {
 			//add to world
 			Gdx.app.log(logstag, "creating drop on screen");
 			
-			float x = (float) (this.x+ (-20+Math.random()*40));			
-			float y = (float) (this.y+ (-20+Math.random()*40));
+			float x = (float) (this.getCenter().x+ (-20+Math.random()*40));			
+			float y = (float) (this.getCenter().y+ (-20+Math.random()*40));
+			
 						
 			MainExplorationView.addnewdrop(newdrop,x, y);			
 			
@@ -528,6 +552,37 @@ public class Creature implements hitable {
 	
 	public float getEyeSightRange(){
 		return 250f;
+	}
+
+
+
+	@Override
+	public void setLastHitsRange(float range) {
+		lastHitDistance=range;
+		
+	}
+
+
+
+	@Override
+	public float getLastHitsRange() {
+		return lastHitDistance;
+	}
+
+
+
+	@Override
+	public boolean isBlocker() {
+		return false;
+	}
+
+
+
+	@Override
+	public boolean rayHits(Ray ray) {
+				
+		return 	Intersector.intersectRaySphere(ray, this.getCenter(), this.getRadius(), null);
+		
 	}
 	
 	

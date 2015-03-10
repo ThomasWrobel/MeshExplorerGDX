@@ -126,7 +126,7 @@ public class MainExplorationView implements Screen {
 
 	public static MECamera camera = new MECamera();
 
-	/** I dont know really how to use this correctly :-/ **/
+	/** I dont know really how to use this correctly yet :-/ **/
 	public static RenderContext rcontext;
 	
 	Rectangle bucket;
@@ -136,8 +136,6 @@ public class MainExplorationView implements Screen {
 
 	public static GUIBar usersGUI;
 
-	//static SpiffyGenericTween<Double> currentCameraTweenX;
-	//static SpiffyGenericTween<Double> currentCameraTweenY;
 	static SpiffyVector3Tween currentCameraTween;
 	
 	static  Timer cameraTimer = new Timer();
@@ -318,6 +316,7 @@ public class MainExplorationView implements Screen {
 
 		};
 */
+		camera.setToPosition(MainExplorationView.currentPos);
 
 		Gdx.app.log(logstag,"creating textures");
 		
@@ -426,9 +425,13 @@ public class MainExplorationView implements Screen {
 	//	addnewlocation( PlayersData.homeLoc.locationsHub,200,500);
 
 
-		Gdx.app.log(logstag,"centering cameraf");
+		Gdx.app.log(logstag,"centering on starting location");
+		
 
-		centerViewOn( PlayersData.homeLoc,444);
+
+		//camera.setTargetPosition(MainExplorationView.zoomToAtStartPos);
+
+		centerViewOn( PlayersData.homeLoc,444f);
 
 		//test shader
 		// String vert = Gdx.files.internal("data/test.vertex.glsl").readString();
@@ -466,7 +469,7 @@ public class MainExplorationView implements Screen {
 
 	}
 
-	public static void addnewlocation(LocationsHub newloc,int x,int y) {
+	public static void addnewlocationHub(LocationsHub newloc,int x,int y) {
 
 		newloc.setPosition(x,y);
 		newloc.setClip(false);
@@ -484,18 +487,20 @@ public class MainExplorationView implements Screen {
 	}
 
 
-	public static void centerViewOn(Location currentlyOpenLocation2){		
+	public static void centerViewOn(Location locationcontainer){		
 		
 		coasting = false;
 		dragging = false;		
-		centerViewOn(currentlyOpenLocation2, currentPos.z,true); //set position in all dimensions but z which we keep the same
+
+		float newZ = locationcontainer.getHubsZ() + MECamera.standardCameraHeightAboveLocations;
+		centerViewOn(locationcontainer, newZ,true); //set position in all dimensions but z which we use ths standard value for
 				
 	}
 	public static void centerViewOn(Location currentlyOpenLocation2, float newZ){		
 		
 		coasting = false;
 		dragging = false;		
-		centerViewOn(currentlyOpenLocation2, newZ,true); //set position in all dimensions but z which we keep the same
+		centerViewOn(currentlyOpenLocation2, newZ,true); //set position in all dimensions but z which we specify
 				
 	}
 	public static void centerViewOn(Location locationcontainer, boolean addLocationToUndo){
@@ -507,6 +512,7 @@ public class MainExplorationView implements Screen {
 
 	public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo){
 
+		Gdx.app.log(logstag,"moving to z: "+newZ);
 		//CurrentX=locationcontainer.getCenterX();  //getX()+(locationcontainer.getWidth()/2);
 		//CurrentY=locationcontainer.getCenterY(); //getY()+(locationcontainer.getHeight()/2);
 
@@ -514,10 +520,13 @@ public class MainExplorationView implements Screen {
 		float newY = locationcontainer.getHubsY(Align.center);
 		
 		
+		
 		Vector3 dest = new Vector3(newX,newY,newZ);
 		
 
 
+		Gdx.app.log(logstag,"moving to: "+dest);
+		
 		camera.setTargetPosition(dest); //new system replaces a lot below
 		
 		
@@ -949,8 +958,14 @@ public class MainExplorationView implements Screen {
 		
 
 		Gdx.app.log(logstag,"resizeing to.."+width+","+height);
+		
 		camera.removeAllDefaultAttachments();//clean up first
-		camera = new MECamera(60,width,height);
+		//camera = new MECamera(60,width,height);
+		
+		camera.fieldOfView = 60;
+		camera.viewportWidth = width;
+		camera.viewportHeight = height;
+		
 		/*
 		if ( currentmode == cammode.ortha){
 			camera = new OrthographicCamera(width, width);
