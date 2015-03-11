@@ -142,7 +142,7 @@ public class ConceptBeamShader implements Shader {
     	 
     	  context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
     	  
-    	  //lower for addative
+    	  //lower for additive
     	//  context.setBlending(true,GL20.GL_ONE ,GL20.GL_ONE);
     	  
     	//  context.setDepthTest(GL20.GL_DEPTH_TEST);    	

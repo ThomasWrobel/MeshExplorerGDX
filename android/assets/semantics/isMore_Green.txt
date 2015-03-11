@@ -1,5 +1,0 @@
-pair
-grass
-leafs
-spinach
-coriader

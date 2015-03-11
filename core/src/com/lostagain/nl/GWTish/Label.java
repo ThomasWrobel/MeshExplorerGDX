@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
+import com.lostagain.nl.shaders.DistanceFieldShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
 
 /** A Libgdx label that will eventually emulate most of the features of a GWT label (ish)
@@ -173,7 +174,8 @@ public class Label {
 		
 		Material mat = 	new Material(TextureAttribute.createDiffuse(texture),
 									new BlendingAttribute(1f),
-									ColorAttribute.createDiffuse(Color.CYAN));
+									ColorAttribute.createDiffuse(Color.CYAN),
+									new DistanceFieldShader.DistanceFieldAttribute(true,5));
 		
 		labelModel = ModelMaker.createRectangle(0, 0, 400,400, 0, mat);
 
@@ -183,7 +185,7 @@ public class Label {
 		//newmatrix.setToRotation(0, 0, 1, -90);
 		//labelInstance.transform.mul(newmatrix);
 		
-		labelInstance.userData = MyShaderProvider.shadertypes.distancefield;
+		//labelInstance.userData = MyShaderProvider.shadertypes.distancefield;
 		
 		
 	}

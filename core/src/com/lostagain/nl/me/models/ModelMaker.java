@@ -162,7 +162,7 @@ public class ModelMaker {
 
 	/**
 	 * This object is intended to be a centerpiece of the co-ordinate system.
-	 * Usefull for debugging, but should not be removed totally as ModelManagement demands a single defaultshaded objected created before everything
+	 * Useful for debugging, but should not be removed totally as ModelManagement demands a single defaultshaded objected created before everything
 	 * else. It uses one of these.
 	 * 
 	 * @param material

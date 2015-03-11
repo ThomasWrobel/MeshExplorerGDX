@@ -101,7 +101,9 @@ public class StaticSSSNodes {
 	/** from and too radius for layout of creatures **/
 	public static final SSSNode fromRadius =  SSSNode.createSSSNode(ME.INTERNALNS+"fromRadius", ME.INTERNALNS);
 	public static final SSSNode toRadius =  SSSNode.createSSSNode(ME.INTERNALNS+"toRadius", ME.INTERNALNS);
-
+	
+	/** Determains the z position **/
+	public static final SSSNode atHeight =  SSSNode.createSSSNode(ME.INTERNALNS+"atHeight", ME.INTERNALNS);
 	
 	//DBPedia stuff
 		public static final SSSNode DBPediaColour =  SSSNode.createSSSNode("http://dbpedia.org/ontology/colour","http://dbpedia.org/ontology");

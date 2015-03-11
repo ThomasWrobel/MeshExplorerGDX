@@ -2,7 +2,9 @@ package com.lostagain.nl.shaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -12,6 +14,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
+import com.lostagain.nl.shaders.NoiseShader.NoiseShaderAttribute;
+import com.lostagain.nl.shaders.PrettyNoiseShader.PrettyNoiseShaderAttribute;
 
 /**
  * creates a PrettyBackground shader - currently using one from shadertoy (will replace)
@@ -32,6 +36,43 @@ public class PrettyBackground implements Shader {
 	    int u_mixcolour;
 	    
 	   private float time;
+	   
+	   
+		public static class PrettyBackgroundAttribute extends Attribute {
+			public final static String Alias = "PrettyBackgroundAttribute";
+			public final static long ID = register(Alias);
+			
+			/**
+			 * The presence of this parameter will cause the PrettyBackground to be used
+			 * 
+			 * @param rgbmode - if the noise is the full color
+			 * @param tintcolor - color of the tint
+			 */
+			public PrettyBackgroundAttribute () {
+				
+				super(ID);
+				
+			}
+
+			@Override
+			public Attribute copy () {
+				return new PrettyBackgroundAttribute();
+			}
+
+			@Override
+			protected boolean equals (Attribute other) {
+				if (
+					(true) //no checks because no params yet for this shader
+					)
+				
+				{
+					return true;
+					
+				}
+				return false;
+			}
+		}	
+	   
 	   
     @Override
     public void init () {

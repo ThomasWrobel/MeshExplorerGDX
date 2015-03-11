@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
+import com.lostagain.nl.shaders.NoiseShader.NoiseShaderAttribute;
 
 /**
  * Basic normal-colourish shader.
@@ -41,6 +43,45 @@ public class DistanceFieldShader implements Shader {
 	    int u_diffuseColor;
 	    int u_pixel_step;
 	    
+		public static class DistanceFieldAttribute extends Attribute {
+			public final static String Alias = "DistanceFieldAttribute";
+			public final static long ID = register(Alias);
+
+			public boolean rgbmode = false;
+			public float width = 0;
+			
+			/**
+			 * The presence of this parameter will cause the NoiseShader to be used
+			 * @param rgbmode - if the noise is the full color
+			 * @param tintcolor - color of the tint
+			 */
+			public DistanceFieldAttribute (final boolean rgbmode,final float width) {
+				
+				super(ID);
+				this.rgbmode = rgbmode;
+				this.width = width;
+				
+			}
+
+			@Override
+			public Attribute copy () {
+				return new DistanceFieldAttribute(rgbmode,width);
+			}
+
+			@Override
+			protected boolean equals (Attribute other) {
+				if (
+					(((DistanceFieldAttribute)other).rgbmode == rgbmode) &&
+					(((DistanceFieldAttribute)other).width == width) 
+					)
+				
+				{
+					return true;
+					
+				}
+				return false;
+			}
+		}	
 	    
     @Override
     public void init () {

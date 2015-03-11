@@ -32,10 +32,10 @@ public class Population {
 	//if its currently active
 	//in future populations not near the camera wont be active, and thus we wont bother testing
 	//them for clicks or animation updates
-	//efficiancy!
+	//Efficiency!
 	Boolean active = true; 
 	
-	//type of population (determains look and movement?)
+	//type of population (determines look and movement?)
 	enum creaturetype {
 		Infovore
 	}
@@ -50,6 +50,9 @@ public class Population {
 	//location spread
 	int fromRadius = 200;
 	int toRadius = 550;
+	
+	//z height
+	int atHeight = -50;
 	
 	//all the color tints of the population
 	ArrayList<Color> populationsColors = new ArrayList<Color>();
@@ -150,7 +153,9 @@ public class Population {
 			if (currentPred== StaticSSSNodes.fromRadius){
 				fromRadius = Integer.parseInt(currentValue.getPLabel());				
 			}
-			
+			if (currentPred== StaticSSSNodes.atHeight){
+				atHeight = Integer.parseInt(currentValue.getPLabel());				
+			}
 			if (currentPred== StaticSSSNodes.hitPoints){
 				hitPoints = Integer.parseInt(currentValue.getPLabel());				
 			}
@@ -230,7 +235,7 @@ public class Population {
 			//get drops
 			
 			//create based on type						
-			BasicInfovore newcreature = new BasicInfovore(this,x, y, hitPoints,queryToDestroy,destructionType);
+			BasicInfovore newcreature = new BasicInfovore(this,x, y,atHeight, hitPoints,queryToDestroy,destructionType);
 					
 			newcreature.setColor(randomColorFromPop());
 			

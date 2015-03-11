@@ -39,6 +39,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.shaders.MyShaderProvider;
+import com.lostagain.nl.shaders.NoiseShader;
 
 //functions in here should slowly be made tidy and moved to "modelmaker"
 public class MessyModelMaker {
@@ -565,6 +566,14 @@ public class MessyModelMaker {
 	}*/
 
 	public static Material createNoiseMaterial() {
+		
+		  Material mat =
+				  new Material(
+				  new NoiseShader.NoiseShaderAttribute(false,Color.ORANGE),
+				  new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.99f)
+				  );
+		
+		/*
 		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f);
 		
     Texture texture = new Texture(createNoiseImage(300,300));
@@ -574,7 +583,8 @@ public class MessyModelMaker {
 				FloatAttribute.createShininess(16f));
         
         mat.set(TextureAttribute.createDiffuse(texture));
-        mat.set(blendingAttribute2);
+        mat.set(blendingAttribute2);*/
+		
 		return mat;
 	}
 	

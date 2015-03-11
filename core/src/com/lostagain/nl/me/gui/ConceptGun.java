@@ -82,7 +82,20 @@ public class ConceptGun  extends WidgetGroup {
 	final Label status = new Label("needs ammo",DefaultStyles.linkstyle);
 
 
-	public static boolean disabledFire = true;
+//	public static boolean disabledFire = true;
+	
+	enum LazerState {
+		disabled,fireing,
+		/** ready means its over 50% charged. If unfired it will continue charging till 100% **/
+		ready,
+		/** less then 50% charged, cant fire **/
+		charging
+	}
+	
+	static LazerState currentLazerState = LazerState.disabled;
+	
+	Material currentBeamMaterial;
+	
 	
 
 	//ammo dependent styles
@@ -99,9 +112,12 @@ public class ConceptGun  extends WidgetGroup {
 	
 	private float timeSinceLastHitCheck = 0f;
 	
-	private float currenttime=0f;
-	private float totaltime=1.8f; //0.8
+	private float totalCharge=5f; //0.8
 
+	private SpriteProgressBar rechargeProgress = new SpriteProgressBar();
+	
+	private float rechargeTime=totalCharge;
+	
 	private PosRotScale lazerbeamdisplacement = new PosRotScale(0f,0f,-30f);
 
 	Vector2 beamcenteroffset = new Vector2(0,1f);
@@ -128,17 +144,25 @@ public class ConceptGun  extends WidgetGroup {
 
 
 		status.setPosition(70, 10, Align.center);
+		
 		super.addActor(backgroundobject);	
 		super.addActor(status);
 
+		rechargeProgress.setWidth (DataObject.getStandardWidth());
+		rechargeProgress.setHeight(DataObject.getStandardHeight());
+		rechargeProgress.invalidateHierarchy();
+		
+		super.addActor(rechargeProgress);		
 		super.addActor(conceptInUse);
 
-
+		
 		conceptInUse.onDragRun(new Runnable() {
 			public void run() {
 				
 				status.setText("Ammo Not Set:");
-				disabledFire = true;
+				//disabledFire = true;
+				currentLazerState = LazerState.disabled;
+				
 				equipedConcept = null;
 				
 				
@@ -153,8 +177,10 @@ public class ConceptGun  extends WidgetGroup {
 
 				status.setText("Ammo Set To: "+drop.itemsnode.getPLabel());
 				Gdx.app.log(logstag, "Ammo Set To: "+drop.itemsnode.getPLabel());
-
-				disabledFire = false;
+				
+				currentLazerState = LazerState.ready;
+				
+				//disabledFire = false;
 				equipedConcept = drop.itemsnode;
 
 				updateRayStyle(drop);
@@ -188,7 +214,13 @@ public class ConceptGun  extends WidgetGroup {
 			}
 			
 		};
+		
+		
 
+		//generate lazer mesh and texture		
+		createLazerObject(randomColorFromConcept());
+
+		
 		this.invalidate();
 	}
 
@@ -220,8 +252,12 @@ public class ConceptGun  extends WidgetGroup {
 		//temp commwent out
 		this.setPosition(this.getParent().getWidth(),this.getParent().getHeight()-height);		//MainExplorationView.guiStage.getHeight()
 
-		conceptInUse.setPosition(this.getWidth()-conceptInUse.getWidth(), height-5,Align.topRight);
 
+		rechargeProgress.layout();
+		
+		    conceptInUse.setPosition(this.getWidth()-conceptInUse.getWidth(), height-5,Align.topRight);
+		rechargeProgress.setPosition(this.getWidth()-conceptInUse.getWidth(), height-5,Align.topRight);
+		
 		status.setPosition(90, 10, Align.bottom);
 
 		firePoint.x = super.getWidth()/2;
@@ -234,7 +270,12 @@ public class ConceptGun  extends WidgetGroup {
 	 * by their own mouse actions **/
 	public void fireAt(float x, float y){
 //
-		if (disabledFire || lazer!=null){
+		//if (disabledFire || lazer!=null){
+			
+		//	return;
+		//}
+		
+		if (currentLazerState != LazerState.ready){
 			return;
 		}
 		//MainExplorationView.currentPos.z = MainExplorationView.currentPos.z+5f; 
@@ -244,12 +285,6 @@ public class ConceptGun  extends WidgetGroup {
 
 		//from
 		Vector2 sc = MainExplorationView.gameStage.screenToStageCoordinates(firePoint.cpy());
-
-
-		float fx = sc.x;
-		float fy = sc.y; 
-
-
 		
 
 		Vector2 cp = new Vector2(x,y);						
@@ -260,97 +295,105 @@ public class ConceptGun  extends WidgetGroup {
 		Color BeamColor = new Color(randomColorFromConcept());
 
 		//col.a  = 1 - (500 / 1000) ^ 2;
-
-		//generate mesh and texture
-	
+		
+		//set color
+		lazer.materials.get(0).set(new ConceptBeamShader.ConceptBeamAttribute(0.35f,BeamColor,FireFrequency,Color.WHITE));
 		
 		
-	//	MessyModelMaker.createLine(fx, fy, width, cursor_on_stage.x-(width/2), cursor_on_stage.y,22,col,true,false,10); //10 makes sure the end point is wayyyyyyyy of the screen at the top to ensure the beam end never becomes visible during movement
-		
-		//ColorAttribute.createDiffuse(Color.RED),
-		Gdx.app.log(logstag, "set to gun beam ");
-		
-/*
-        Material lazerMat = new Material(
-        		ColorAttribute.createDiffuse(Color.RED), 
-				ColorAttribute.createSpecular(Color.WHITE),
-				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1f), 
-				FloatAttribute.createShininess(16f));
-        
-		*/
-		
-		
-		
-		Material lazerMat = new Material("LazerMaterial", 
-				
-				               new ConceptBeamShader.ConceptBeamAttribute(0.35f,BeamColor,FireFrequency,Color.WHITE),
-							   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1f)
-		
-		);
-				
-				
-				//ColorAttribute.createDiffuse(Color.ORANGE),
-				//new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.5f));//new ConceptBeamShader.ConceptBeamAttribute(0.25f,col,FireFrequency,Color.WHITE),
-		
-		
-	//	ModelInstance newlazer = ModelMaker.createLineBetween(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,lazerMat,1);
-		
-		//new method we just create a rectangle then rotate/set its position ourselves
-		float hw = width/2.0f;
-		//float height = Math.abs(fy  - cursor_on_stage.y);
-		float height = 50f; //Gdx.graphics.getHeight()*1.1f; //always do it a bit bigger to allow for movements
-		
-		//note we offset its creation points by the beam center offset
-		//this means the "center" of the rectangle is where the beam effect his and can be adjusted easily to match any change inthe graphic effect
-		Model lazermodel = ModelMaker.createRectangle((0-hw)-beamcenteroffset.x, -beamcenteroffset.y, hw-beamcenteroffset.x, height-beamcenteroffset.y, 0, lazerMat);
-		
-		AnimatableModelInstance newlazer = new AnimatableModelInstance(lazermodel);
-		
-		//align to camera
-		
-		//attach to camera?	
-		newlazer.transState.setTo(MainExplorationView.camera.transState);
-		
-		MainExplorationView.camera.attachThis(newlazer, lazerbeamdisplacement);
-		
-		
-		
-		//give it the position and rotation of the camera
-		//Vector3 direction = MainExplorationView.camera.direction;
-		//Gdx.app.log(logstag, "direction "+direction.x+","+direction.y+","+direction.z);
-		
-		//Vector3 up = MainExplorationView.camera.up;
-		//Gdx.app.log(logstag, "up "+up.x+","+up.y+","+up.z);
-
-		
-		//(how to sycn to camera?)
-		
-		
-		//newlazer.userData = MyShaderProvider.shadertypes.conceptbeam;
-		
-		
-		
-	//	newlazer.nodes.get(0).
-		
-		//Renderable test = new Renderable();		
-		//newlazer.getRenderable(test);
-	//	test.shader = new ConceptBeamShader();
-		//	ModelManagment.myshaderprovider.testListShader(test);
-		
-		
-		if (lazer!=null){
-			MessyModelMaker.removeModelInstance(lazer); //one beam at a time for now!
-		}
-		lazer=newlazer;
-
-
-		//display it		
+		//attach lazer to render list if not there already (this command checks that itself)
 		ModelManagment.addmodel(lazer,ModelManagment.RenderOrder.infrontStage);
 
-		currenttime = 0;
 
 
+		//rechargeTime = totalCharge;
 
+		currentLazerState=LazerState.fireing;
+
+	}
+
+	private void createLazerObject(Color BeamColor) {
+		//	MessyModelMaker.createLine(fx, fy, width, cursor_on_stage.x-(width/2), cursor_on_stage.y,22,col,true,false,10); //10 makes sure the end point is wayyyyyyyy of the screen at the top to ensure the beam end never becomes visible during movement
+			
+			//ColorAttribute.createDiffuse(Color.RED),
+			Gdx.app.log(logstag, "set to gun beam ");
+			
+/*
+		    Material lazerMat = new Material(
+		    		ColorAttribute.createDiffuse(Color.RED), 
+					ColorAttribute.createSpecular(Color.WHITE),
+					new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1f), 
+					FloatAttribute.createShininess(16f));
+		    
+			*/
+
+			
+			 currentBeamMaterial = new Material("LazerMaterial", 
+					
+					               new ConceptBeamShader.ConceptBeamAttribute(0.35f,BeamColor,FireFrequency,Color.WHITE),
+								   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.99f)
+			
+			);
+					
+					
+					//ColorAttribute.createDiffuse(Color.ORANGE),
+					//new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.5f));//new ConceptBeamShader.ConceptBeamAttribute(0.25f,col,FireFrequency,Color.WHITE),
+			
+			
+		//	ModelInstance newlazer = ModelMaker.createLineBetween(fx, fy, width, cursor_on_stage.x, cursor_on_stage.y,22,col,lazerMat,1);
+			
+			//new method we just create a rectangle then rotate/set its position ourselves
+			float hw = width/2.0f;
+			//float height = Math.abs(fy  - cursor_on_stage.y);
+			float height = 50f; //Gdx.graphics.getHeight()*1.1f; //always do it a bit bigger to allow for movements
+			
+			//note we offset its creation points by the beam center offset
+			//this means the "center" of the rectangle is where the beam effect his and can be adjusted easily to match any change inthe graphic effect
+			Model lazermodel = ModelMaker.createRectangle((0-hw)-beamcenteroffset.x, -beamcenteroffset.y, hw-beamcenteroffset.x, height-beamcenteroffset.y, 0, currentBeamMaterial);
+			
+			
+			
+			AnimatableModelInstance newlazer = new AnimatableModelInstance(lazermodel);
+			
+			//align to camera
+			
+			//attach to camera?	
+			newlazer.transState.setTo(MainExplorationView.camera.transState);
+			
+			MainExplorationView.camera.attachThis(newlazer, lazerbeamdisplacement);
+			
+			
+			//give it the position and rotation of the camera
+			//Vector3 direction = MainExplorationView.camera.direction;
+			//Gdx.app.log(logstag, "direction "+direction.x+","+direction.y+","+direction.z);
+			
+			//Vector3 up = MainExplorationView.camera.up;
+			//Gdx.app.log(logstag, "up "+up.x+","+up.y+","+up.z);
+
+			
+			//(how to sycn to camera?)
+			
+			
+			//newlazer.userData = MyShaderProvider.shadertypes.conceptbeam;
+			
+			
+			
+		//	newlazer.nodes.get(0).
+			
+			//Renderable test = new Renderable();		
+			//newlazer.getRenderable(test);
+		//	test.shader = new ConceptBeamShader();
+			//	ModelManagment.myshaderprovider.testListShader(test);
+			
+			
+		//	if (lazer!=null){
+		//		MessyModelMaker.removeModelInstance(lazer); //one beam at a time for now!
+		//	}
+			lazer=newlazer;
+			
+
+			//display it		
+		//	ModelManagment.addmodel(lazer,ModelManagment.RenderOrder.infrontStage);
+			
 	}
 
 	/**
@@ -373,13 +416,13 @@ public class ConceptGun  extends WidgetGroup {
 	}
 	
 	public void update(float delta){
-		if (lazer!=null){
+		if (currentLazerState==LazerState.fireing){
 
 			
 			//work out new angle (if mouse has moved)
 
 			//update beam is mouse still down
-			if (Gdx.input.isTouched()){
+			if (Gdx.input.isTouched() && rechargeTime>0){
 			
 				//from is the fire target
 				Vector2 fromPoint = MainExplorationView.getCurrentCursorScreenPosition();   //MainExplorationView.getCurrentStageCursorPosition();// .gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
@@ -436,6 +479,8 @@ public class ConceptGun  extends WidgetGroup {
 			//	Gdx.app.log(logstag, " timeSinceLastHitCheck:"+timeSinceLastHitCheck);
 				//check for new hits every repeat of pulse
 				timeSinceLastHitCheck = timeSinceLastHitCheck + delta;
+				rechargeTime = rechargeTime-delta;
+				
 				if (timeSinceLastHitCheck>(1/FireFrequency)){
 					timeSinceLastHitCheck = timeSinceLastHitCheck - (1/FireFrequency); // (1/FireFrequency) is interval
 					Gdx.app.log(logstag, " hit check triggered! " + timeSinceLastHitCheck);					
@@ -449,15 +494,17 @@ public class ConceptGun  extends WidgetGroup {
 				//remove lazer 
 				
 				//reset
-				currenttime=0;			
+				//rechargeTime=totalCharge;			
 				MessyModelMaker.removeModelInstance(lazer);
-				lazer=null;;
+				 currentLazerState = LazerState.charging;
+			//	lazer=null;;
 				
 			}
 
 			//	Color col = currentColor;
-			currenttime = currenttime+delta;
+	
 
+			updateRechargeBar();
 			//float times = currenttime/totaltime;
 			//Gdx.app.log(logstag, " times:"+times);
 
@@ -475,25 +522,74 @@ public class ConceptGun  extends WidgetGroup {
 
 			//lazer.materials.get(3).set(new BlendingAttribute(wave)); //ColorAttribute.createDiffuse(col)
 
-			if (currenttime>totaltime){
-				currenttime=0;			
+			if (rechargeTime<0){
+				rechargeTime=0;			
 				MessyModelMaker.removeModelInstance(lazer);
-				lazer=null;
+				 currentLazerState = LazerState.charging;
+			//	lazer=null;
 				
 				//MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-5f; 
-				//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom -0.02f; 
+				//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom -0.02f; cyberman
 			}
 
 		}
+		
+		
+		if (currentLazerState==LazerState.charging || currentLazerState==LazerState.ready ){
+			//progress the charge timer
+			rechargeTime = rechargeTime+delta;
+			
+			
+			if (rechargeTime>(totalCharge/5)){
+				currentLazerState=LazerState.ready; //should be over a5th
+			}
+			
+			if (rechargeTime>totalCharge){
+
+				rechargeTime=totalCharge;
+			}
+			
+			updateRechargeBar();
+			
+			
+		}
+		
+		
+		
+		
+		
+	}
+
+	private void updateRechargeBar() {
+		
+		float percentage = (rechargeTime / totalCharge)*100;
+		
+		rechargeProgress.setPercentage(percentage);
+		
+		
 	}
 
 	public void setEnabled(boolean status) {
+		
 		if (equipedConcept!=null){
-			disabledFire = !status;
+			
+			if (!status){
+				
+				currentLazerState = LazerState.disabled;
+				
+			} else {
+				currentLazerState = LazerState.ready;
+			}
+			
+			//disabledFire = !status;
+			
+			
 		} else {
-			disabledFire = true;
+			
+			currentLazerState = LazerState.disabled;
 
 		}
+		
 	}
 
 
@@ -502,7 +598,7 @@ public class ConceptGun  extends WidgetGroup {
 	static public void animateImpactEffect(){
 		
 		//do nothing if not active
-		if (disabledFire){
+		if (currentLazerState == LazerState.disabled){
 			return;
 		}
 
@@ -537,6 +633,13 @@ public class ConceptGun  extends WidgetGroup {
 
 		return currentColors.get(p);
 
+	}
+
+	public static boolean isDisabled() {
+		if (currentLazerState == LazerState.disabled){
+			return true;
+		}
+		return false;
 	}
 
 

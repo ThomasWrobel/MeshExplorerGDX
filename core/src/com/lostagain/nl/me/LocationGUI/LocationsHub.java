@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 
 
 
+
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -37,6 +39,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -69,6 +72,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.models.BackgroundPlane;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.uti.MeshWorld;
@@ -113,7 +117,8 @@ public class LocationsHub extends Table {
 
 	Color backcolour; 
 	
-	private ModelInstance backgroundObject;
+	private BackgroundPlane backgroundObject;
+	
 
 
 	public LocationsHub(SSSNode LocationsNode) {
@@ -727,18 +732,19 @@ public class LocationsHub extends Table {
 				
 		//ensure background is positioned
 		if (backgroundObject!=null){
-
-			backgroundObject.transform.setToTranslation((int)this.getX(),(int)this.getY(),-5);
+			backgroundObject.transState.setToPosition(new Vector3((int)this.getX(),(int)this.getY(),-5));
 		}
+		
+		
 		
 	}
 
 
 	public void addBackground() {
 
-		backgroundObject = MessyModelMaker.addRectangle((int)this.getX(),(int)this.getY(),-10,(int)this.getWidth(),(int)this.getHeight(),new Material());
+		backgroundObject = BackgroundPlane.createBackgroundPlane( (int)getX(),(int)getY(),-5,(int)getWidth(),(int)getHeight(),Color.BLUE) ; //MessyModelMaker.addRectangle((int)this.getX(),(int)this.getY(),-10,(int)this.getWidth(),(int)this.getHeight(),new Material());
 			
-		
+		//(int)getX(),(int)getY(),-10,(int)getWidth(),(int)getHeight(),Color.BLUE)
 	}
 	
 	
@@ -755,15 +761,10 @@ public class LocationsHub extends Table {
 			addBackground(); 
 		}
 		
-	
-		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.1f);
+		backgroundObject.setColour(col);
 		
-		backgroundObject.materials.get(0).clear();
-		backgroundObject.materials.get(0).set(ColorAttribute.createDiffuse(col));
-		backgroundObject.materials.get(0).set(blendingAttribute2);
-
-		Gdx.app.log(logstag,"setting shader to normal:");
-		backgroundObject.userData=MyShaderProvider.shadertypes.standardlibgdx;
+		
+	
 		
         
 	}

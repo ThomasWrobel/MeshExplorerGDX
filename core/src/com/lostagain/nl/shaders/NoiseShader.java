@@ -37,7 +37,7 @@ public class NoiseShader implements Shader {
 		public Color tintcolor;
 		
 		/**
-		 * The presence of this parameter will cause the ConceptBeamShader to be used
+		 * The presence of this parameter will cause the NoiseShader to be used
 		 * @param rgbmode - if the noise is the full color
 		 * @param tintcolor - color of the tint
 		 */
@@ -159,11 +159,10 @@ public class NoiseShader implements Shader {
  		 program.setUniformf(u_time,(ctime/1000.0f)); //time range is now 0.001 - 5.000 
 
    	  context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
+ 		
    	  
-   	  
-   	  
-   	//  context.setDepthTest(GL20.GL_LEQUAL);    	  
-         context.setCullFace(GL20.GL_BACK);
+   	 // context.setDepthTest(GL20.GL_LEQUAL);    	  
+        // context.setCullFace(GL20.GL_BACK);
     }
     
     @Override

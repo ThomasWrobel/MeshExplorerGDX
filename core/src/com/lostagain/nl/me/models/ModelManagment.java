@@ -28,6 +28,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
+import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.shaders.ConceptBeamShader;
@@ -69,7 +70,14 @@ public class ModelManagment {
 	 * At this time it chooses if its a background or forground object based on its Z position
 	 * If Z is less then the stage Z (0) its behind
 	 * If its more then its 	in front**/
-	public static void addmodel(ModelInstance model, RenderOrder order) {				
+	public static void addmodel(ModelInstance model, RenderOrder order) {	
+		
+		//ignore if present already
+		if (allBackgroundInstances.contains(model, true) || allForgroundInstances.contains(model, true)){
+			Gdx.app.log(logstag,"________model already on a render list");
+			return;
+		}
+		
 
 		float Z = model.transform.getValues()[Matrix4.M23];
 		Gdx.app.log(logstag,"z = "+Z);
@@ -90,6 +98,7 @@ public class ModelManagment {
 		} else {
 			allForgroundInstances.add(model);
 		}
+		
 
 	}
 
@@ -98,7 +107,16 @@ public class ModelManagment {
 		allForgroundInstances.removeValue(model,true);
 	}
 
-
+/**
+ * tests the sort order of foreground objects
+ * @param deltatime
+ */
+	//public void testSortOrder(float deltatime){
+		
+	//	modelBatch.getRenderableSorter().sort(MainExplorationView.camera,);
+		
+		
+	//}
 
 
 	public void updateAnimatedBacks(float deltatime){

@@ -103,7 +103,7 @@ public class Creature implements hitable {
 	
 	float lastHitDistance = -1f; //no hit by default
 
-	public Creature(float x, float y, Population parentPopulation, int hitPoints, String queryToDestroy, destructOn destructionType) {
+	public Creature(Population parentPopulation, int hitPoints, String queryToDestroy, destructOn destructionType) {
 		
 		
 		//this.x=x;
@@ -279,7 +279,7 @@ public class Creature implements hitable {
 			//two ways of using a query on a creature; direct and with the gun
 			//we thus check the gun first 
 			SSSNode appliedConcept;
-			if (!ConceptGun.disabledFire){
+			if (!ConceptGun.isDisabled()){
 				appliedConcept = ConceptGun.equipedConcept;
 			} else if (STMemory.currentlyHeld!=null) {
 				appliedConcept = STMemory.currentlyHeld.itemsnode;					
@@ -344,7 +344,8 @@ public class Creature implements hitable {
 	//	float b = (float) Math.random();
 		Color col =  new Color();
 		
-		col = this.crearturesColor.mul(new Color(1.2f,1.2f,1.2f,1.0f));
+		col = crearturesColor.add(new Color(0.1f,0.1f,0.1f,1.0f));
+		this.setColor(col);
 		
 		
 	//	Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );
@@ -352,7 +353,7 @@ public class Creature implements hitable {
 		
 		Gdx.app.log(logstag,"_________creature col="+col.toString());
 				
-		setColor( col);
+		setColor(col);
 		//attribute.color.set(col) ;
 		
 		
@@ -520,11 +521,8 @@ public class Creature implements hitable {
 		
 		movementControll.setMovement(creaturemodel.transState,false,NewFaceAndMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
 		
-		//temp resume after (really shouldnt need this but currently autoresume seems broke)
+		//temp resume after (really shouldn't need this but currently autoresume seems broke)
 		
-
-		
-	
 		
 		Timer.schedule(new Task(){
 

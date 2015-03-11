@@ -30,8 +30,8 @@ public class EffectOverlay extends AnimatableModelInstance {
 		//  ColorAttribute.createDiffuse(Color.RED)
 		
 		
-		materials.get(0).set( new NoiseShader.NoiseShaderAttribute(false,Color.ORANGE),
-							  new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1f));
+		//materials.get(0).set( new NoiseShader.NoiseShaderAttribute(false,Color.ORANGE),
+		//					  new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1f));
 							//  new NoiseShader.NoiseShaderAttribute(false,Color.ORANGE));		
 		//userData = MyShaderProvider.shadertypes.noise; 
 

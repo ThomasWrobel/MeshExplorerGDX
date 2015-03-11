@@ -46,17 +46,17 @@ public class BasicInfovore extends Creature implements Animating {
 	//this will, however, make all the creatures animate in sycn which isnt so nice
 	InfovoreAnimation idealAnimation = new InfovoreAnimation();
 	
-	public BasicInfovore(Population parentPopulation, float x, float y,
+	public BasicInfovore(Population parentPopulation, float x, float y,float z,
 			int hitPoints, String queryToDestroy, destructOn destructionType){
 		
-		super(x,y,parentPopulation,hitPoints, queryToDestroy, destructionType);
+		super(parentPopulation,hitPoints, queryToDestroy, destructionType);
 		
 		//ensure infovote animation is setup
 		if (!idealAnimation.isSetup()){
 			idealAnimation.create();
 		}
 		
-		createmodel(x,y,zPlane); //-50 is the default plane they are placed onto
+		createmodel(x,y,z); //-50 is the default plane they are placed onto
 		
 		//set movement (this creature wonders randomly a square by default
 	//	movementControll.setMovement(creaturemodel.transform,false,new Jerk2D(creaturemodel,20f,30f,500f,10000f), new REPEAT());//

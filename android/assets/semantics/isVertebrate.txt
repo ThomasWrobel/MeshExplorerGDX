@@ -1,9 +1,0 @@
-cat
-fish
-rabbit
-human
-chimp
-eagle
-dog
-kangaroo
-

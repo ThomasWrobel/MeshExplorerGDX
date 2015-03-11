@@ -1,3 +1,0 @@
-"profppc\ProfPResearch1.txt"
-"profppc\ProfPResearch2.txt"
-"profppc\ProfPResearch3.txt"

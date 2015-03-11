@@ -75,7 +75,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 	@Override
 	protected Shader createShader (final Renderable renderable) {
 		
-		//new method for selection (we should slowly move the things from the switch statement to this method)
+		//New method for selection (we should slowly move the things from the switch statement to this method)
 		if (renderable.material.has(ConceptBeamShader.ConceptBeamAttribute.ID)){
 			return new ConceptBeamShader();			
 		}
@@ -84,10 +84,25 @@ public class MyShaderProvider extends DefaultShaderProvider {
 			return new NoiseShader(renderable);			
 		}
 		
-		//pick shader based on renderable?
-		shadertypes shaderenum = (shadertypes) renderable.userData;
-	
 		
+		if (renderable.material.has(PrettyNoiseShader.PrettyNoiseShaderAttribute.ID)){
+			return new PrettyNoiseShader();			
+		}
+		
+		if (renderable.material.has(DistanceFieldShader.DistanceFieldAttribute.ID)){
+			return new DistanceFieldShader();			
+		}
+				
+		if (renderable.material.has(PrettyBackground.PrettyBackgroundAttribute.ID)){
+			return new PrettyBackground();		
+		}
+		//------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------
+		
+		
+		//pick shader based on renderable? (old method, being replaced with the above)
+		shadertypes shaderenum = (shadertypes) renderable.userData;
+			
 		if (shaderenum==null){
 				return super.createShader(renderable);
 		}
@@ -95,11 +110,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 			
 			
 		switch (shaderenum) {
-		
-		case prettynoise:
-		{			
-			return new PrettyNoiseShader();			
-		}
+				
 		case invert:
 		{
 	    	  String vert = Gdx.files.internal("shaders/invert.vertex.glsl").readString();
@@ -107,16 +118,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 	          
 	          
 			return new DefaultShader(renderable, new DefaultShader.Config(vert, frag)); // new InvertShader(renderable);
-		}
-	
-		case distancefield:
-		{
-			return new DistanceFieldShader();
-		}
-		case subtlegrid:
-		{
-			return new PrettyBackground();
-		}
+		}	
 		case distancefieldfordataobjects:
 		{
 			return new DistanceFieldShaderForDataObjects();

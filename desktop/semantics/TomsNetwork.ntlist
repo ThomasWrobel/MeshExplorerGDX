@@ -38,6 +38,7 @@ bigInfovorPopulation me:killedon "Color=yellow".
 bigInfovorPopulation me:hitPoints 7.
 bigInfovorPopulation me:fromRadius 10.
 bigInfovorPopulation me:toRadius 80.
+bigInfovorPopulation me:atHeight -25.
 bigInfovorPopulation http://dbpedia.org/ontology/Colour #FF3300.
 bigInfovorPopulation http://dbpedia.org/ontology/Colour #FF5522.
 
@@ -56,6 +57,7 @@ LinguisticsStore me:connectedTo ProfPPResearch.
 BobsOutpost http://dbpedia.org/ontology/Colour Green.
 thecatspc http://dbpedia.org/ontology/Colour Orange.
 alicespc http://dbpedia.org/ontology/Colour Cyan.
+LinguisticsStore  http://dbpedia.org/ontology/Colour #1122AA.
 http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost http://dbpedia.org/ontology/Colour Red.
 
 http://darkflame.co.uk/GreenFruitEngine2/examples/testDWW.ntlist#test rdfs:subClassOf me:Computer.
