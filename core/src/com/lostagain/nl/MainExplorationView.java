@@ -99,12 +99,7 @@ public class MainExplorationView implements Screen {
 	public static Stage guiStage;
 
 	
-	
-	public static Float CurrentZoom = 1f;
-	
 
-	static Float LookAtX = 0f;
-	static Float LookAtY = 0f;
 
 
 
@@ -112,7 +107,6 @@ public class MainExplorationView implements Screen {
 	static boolean isAtHome=true;
 
 	static Texture customCursor = null;
-
 	static Texture customCursorTest = null;
 
 	Texture dropImage;
@@ -121,11 +115,20 @@ public class MainExplorationView implements Screen {
 	Sound dropSound;
 	Music rainMusic;
 	
+	
+	//Current camera settings
+	public static MECamera camera = new MECamera();
+	
 	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),1000f); //note we start high up and zoom in at the start as a little intro
 	public static Vector3 zoomToAtStartPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),444f); //note we start high up and zoom in at the start as a little intro
+	
+	public static Float CurrentZoom = 1f;	
 
-	public static MECamera camera = new MECamera();
-
+	static Float LookAtX = 0f;
+	static Float LookAtY = 0f;
+	/** disables the users controll over the movement (ie, dragging) **/
+	static boolean movementControllDisabled = false;
+	
 	/** I dont know really how to use this correctly yet :-/ **/
 	public static RenderContext rcontext;
 	
@@ -136,10 +139,10 @@ public class MainExplorationView implements Screen {
 
 	public static GUIBar usersGUI;
 
-	static SpiffyVector3Tween currentCameraTween;
+//	static SpiffyVector3Tween currentCameraTween;
 	
-	static  Timer cameraTimer = new Timer();
-	static  Task cameraTweenTask;
+	//static  Timer cameraTimer = new Timer();
+//	static  Task cameraTweenTask;
 
 	static boolean dragging = false;
 	static  boolean coasting = false;
@@ -224,9 +227,6 @@ public class MainExplorationView implements Screen {
 	
 	//controlls the 3d background
 	public static  ModelManagment background = new ModelManagment();
-
-
-
 
 
 	public static  LinkedList<Location> LastLocation = new LinkedList<Location>();
@@ -322,26 +322,6 @@ public class MainExplorationView implements Screen {
 		
 		
 		
-		//Trying to make head nor tail of shaders p1
-		/*
-		  ModelBuilder modelBuilder = new ModelBuilder();
-	       Model model = modelBuilder.createSphere(2f, 2f, 2f, 20, 20, 
-	          new Material(),
-	          Usage.Position | Usage.Normal | Usage.TextureCoordinates);
-	     
-	        NodePart blockPart = model.nodes.get(0).parts.get(0);
-	          
-	        Renderable renderable = new Renderable();
-	        blockPart.setRenderable(renderable);
-	        renderable.environment = null;
-	        renderable.worldTransform.idt();
-	          
-	        rcontext = new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.WEIGHTED, 1));
-	        String vert = Gdx.files.internal("shaders/test.vertex.glsl").readString();//"shaders/distancefield.vert"
-	        String frag = Gdx.files.internal("shaders/test.fragment.glsl").readString();
-	        testdefaultShader = new DefaultShader(renderable, new DefaultShader.Config(vert, frag));
-	        testdefaultShader.init();
-	        */
 		
 
 		//to flip the y co-ordinate 
@@ -700,29 +680,26 @@ public class MainExplorationView implements Screen {
 
 		//  game.batch.setProjectionMatrix(camera.combined);
 
-		// process user input
-		//  if (Gdx.input.isTouched()) {
-
-
-		//  Vector3 touchPos = new Vector3();
-		//  touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-		//  camera.unproject(touchPos);
-		//  }
-		
 		if (Gdx.input.isTouched()) {
 			
 			//test if we clicked a 3d model
-			if (newtouch ){
-				
+			if (newtouch ){				
 				//trigger concept gun
-				usersGUI.ConceptGun.fireAt(Gdx.input.getX(), Gdx.input.getY());				
-			
-					
+				usersGUI.ConceptGun.fireAt(Gdx.input.getX(), Gdx.input.getY());		
 			}
 			
 			
 			
-			if (!dragging && !cancelnextdragclick && !touchedAModel && STMemory.currentlyHeld == null){
+			//before starting a new drag we have to do a lot of checks to make sure drags are allowed right now
+			//this includes checking we arnt already dragging
+			//checking no pending event has canceled the next drag (like if the user is moving a scrollable window)
+			//checking they arnt "dragging" a concept object rather then the landscape (currentlyHeld)
+			//and finnally checking if they are allowed to drag at all (ie, maybe the gun is in use and its disabled normal movement)
+			if (!dragging
+				&& !cancelnextdragclick 
+				&& !touchedAModel 
+				&& STMemory.currentlyHeld == null
+				&& !movementControllDisabled){
 				dragging = true;
 				dragstart = TimeUtils.millis();
 				
@@ -735,7 +712,7 @@ public class MainExplorationView implements Screen {
 				startdragx_exview = currentPos.x;
 				startdragy_exview = currentPos.y;
 				
-			} else if (!cancelnextdragclick && !touchedAModel) {
+			} else if (!cancelnextdragclick && !touchedAModel && !movementControllDisabled) {
 				
 				 drag_dis_x = Gdx.input.getX()-startdragxscreen;
 				 drag_dis_y = Gdx.input.getY()-startdragyscreen;
@@ -748,7 +725,7 @@ public class MainExplorationView implements Screen {
 
 			newtouch = false;
 
-		} else if (dragging == true){
+		} else if (dragging == true && !movementControllDisabled){
 			Gdx.app.log(logstag,"setting drag to false click");
 			//if no longer touching stop dragging
 			dragging = false;
@@ -767,7 +744,7 @@ public class MainExplorationView implements Screen {
 //			// displacement per unit of time;
 			
 			
-			if (!coasting){
+			if (!coasting && !movementControllDisabled){
 				coasting = true;
 				//if we are not coasting
 				MotionDisX = ((double) drag_dis_x / (double) period) * 50;
@@ -966,16 +943,7 @@ public class MainExplorationView implements Screen {
 		camera.viewportWidth = width;
 		camera.viewportHeight = height;
 		
-		/*
-		if ( currentmode == cammode.ortha){
-			camera = new OrthographicCamera(width, width);
-
-			((OrthographicCamera)camera).setToOrtho(false, width, width);
-
-		} else {
-			camera = new MECamera(60,width,height); // new OrthographicCamera();
-		}
-		*/
+		
 		//update sprite batch for new resolution 
 		Matrix4 viewMatrix = new Matrix4();
 	    viewMatrix.setToOrtho2D(0, 0,width, height);
@@ -1201,5 +1169,11 @@ public class MainExplorationView implements Screen {
 	//	 Gdx.app.log(logstag,"_____________:yc "+yc+"="+vec.y);
 		
 		return vec;
+	}
+
+	
+	public static void disableMovementControl(boolean state) {
+		movementControllDisabled = state;
+		
 	}
 }

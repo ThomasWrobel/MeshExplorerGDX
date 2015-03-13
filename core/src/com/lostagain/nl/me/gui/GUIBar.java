@@ -29,7 +29,6 @@ import com.lostagain.nl.me.objects.DataObject;
 
 public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 
-	static Logger Log = Logger.getLogger("ME.GUIBar");
 	final static String logstag = "ME.GUIBar";
 
 	InterfaceButton goback =     new InterfaceButton("<< Back",true);
@@ -88,7 +87,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 		LabelStyle back = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));
 
 		Color ColorM = new Color(Color.DARK_GRAY);
-		ColorM.a=0.5f;
+		ColorM.a=0.8f;
 		back.background = DefaultStyles.colors.newDrawable("white", ColorM);
 
 
@@ -100,23 +99,23 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) 		 		
 			{
-				Log.info("myCGun clicked _____");
 
 				Gdx.app.log(logstag, "myCGun clicked");
-				ConceptGun.setVisible(!ConceptGun.isVisible());				
-				ConceptGun.setEnabled(ConceptGun.isVisible());
-
-				if (ConceptGun.isVisible()){
-					myCGun.setText(CGunOpen);
-					myCGun.setDownStyle();
+				
+				//toggle concept gun
+				if (!ConceptGun.isVisible()){
+					setConceptGunOpen(true);
 				} else {
-					myCGun.setText(CGunClosed);
-					myCGun.setUpStyle();
+					setConceptGunOpen(false);
 				}
-
+				
+				
+		
 				return false;
 
 			}
+
+		
 
 
 		});
@@ -253,6 +252,34 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 		//refreshlinks();
 
 		//super.validate();
+	}
+
+	/**
+	 * Opens the concept gun and disables controlled movement over the mesh
+	 * @param state
+	 */
+	protected void setConceptGunOpen(boolean state) {
+		
+		if (state){
+			ConceptGun.setVisible(true);				
+			ConceptGun.setEnabled(true);
+
+			myCGun.setText(CGunOpen);
+			myCGun.setDownStyle();
+			
+			MainExplorationView.disableMovementControl(true);
+			
+		} else {
+			ConceptGun.setVisible(false);				
+			ConceptGun.setEnabled(false);
+			
+			myCGun.setText(CGunClosed);
+			myCGun.setUpStyle();
+		
+			MainExplorationView.disableMovementControl(false);
+			
+		}
+			
 	}
 
 	protected void setOnlyButtonDown(InterfaceButton thisone) {

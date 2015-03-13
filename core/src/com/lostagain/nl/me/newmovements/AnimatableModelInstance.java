@@ -19,6 +19,8 @@ public class AnimatableModelInstance extends ModelInstance {
     public final PosRotScale transState = new PosRotScale();
     
     //This is only here to mask the superclasss one. (or at least help prevent it from accidently being used, as it still can with a cast)
+    //If this is used in any way there is a problem with the code!
+    //check for the yellow squiggle under it in eclipse, if its missing theres likely a problem!
     private Matrix4 transform = new Matrix4();
     
     // this is just an example constructor, make sure to implement the constructor you need
@@ -55,6 +57,12 @@ public class AnimatableModelInstance extends ModelInstance {
 	public void setToscale(Vector3 scale) {		
 		transState.scale.set(scale);
 		sycnTransform();
+	}
+
+	/** try to avoid using this, use the transState to update/change things then sycn to reflect them in the instance.
+	 * This is just here when you need to get the transform, dont change it with this **/
+	public Matrix4 getMatrixTransform() {		
+		return super.transform;
 	}
     
 }

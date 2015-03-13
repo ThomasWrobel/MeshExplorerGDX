@@ -344,8 +344,7 @@ public class Creature implements hitable {
 	//	float b = (float) Math.random();
 		Color col =  new Color();
 		
-		col = crearturesColor.add(new Color(0.1f,0.1f,0.1f,1.0f));
-		this.setColor(col);
+		col = crearturesColor.mul(new Color(1.1f,1.1f,1.1f,1.0f));
 		
 		
 	//	Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );

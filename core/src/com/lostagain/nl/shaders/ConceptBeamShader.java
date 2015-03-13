@@ -191,21 +191,7 @@ public class ConceptBeamShader implements Shader {
     	if (instance.material.has(ConceptBeamAttribute.ID)){
     		return true;
     	}
-    /*
-	shadertypes shaderenum = (shadertypes) instance.userData;
-	if (shaderenum==null){
-		return false;
-	}
-	//Gdx.app.log(logstag, "testing if concept beam can render:"+shaderenum.toString());
-	
-    	if (shaderenum==shadertypes.conceptbeam){
-    		return true;
-    	} else {
-    		return false;
-    	}
-    	
-    }
-    */
+
     	return false;
     }
 }

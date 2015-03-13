@@ -23,24 +23,9 @@ public class MyShaderProvider extends DefaultShaderProvider {
 	public final DefaultShader.Config config;
 	final static String logstag = "ME.MyShaderProvider";
 	
-	
-	//attribute types stored in shader types themselves
-
-	
-	
-	
-	
-	
 	//known shaders
-	static public enum shadertypes {
-		prettynoise,
-		subtlegrid,
-		invert,
-		standardlibgdx, 
-		noise,
-		distancefield,
-		distancefieldfordataobjects,
-		conceptbeam
+	static public enum shadertypes {		
+		distancefieldfordataobjects
 	}
 
 	public MyShaderProvider (final DefaultShader.Config config) {
@@ -78,24 +63,25 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		//New method for selection (we should slowly move the things from the switch statement to this method)
 		if (renderable.material.has(ConceptBeamShader.ConceptBeamAttribute.ID)){
 			return new ConceptBeamShader();			
-		}
-		
+		}		
 		if (renderable.material.has(NoiseShader.NoiseShaderAttribute.ID)){
 			return new NoiseShader(renderable);			
-		}
-		
-		
+		}		
 		if (renderable.material.has(PrettyNoiseShader.PrettyNoiseShaderAttribute.ID)){
 			return new PrettyNoiseShader();			
-		}
-		
+		}		
 		if (renderable.material.has(DistanceFieldShader.DistanceFieldAttribute.ID)){
 			return new DistanceFieldShader();			
-		}
-				
+		}				
 		if (renderable.material.has(PrettyBackground.PrettyBackgroundAttribute.ID)){
 			return new PrettyBackground();		
+		}		
+		if (renderable.material.has(InvertShader.InvertAttribute.ID)){
+			return new InvertShader(renderable);		
 		}
+		if (renderable.material.has(TextureNoiseShader.TextureNoiseAttribute.ID)){
+			return new TextureNoiseShader(renderable);		
+		}	
 		//------------------------------------------------------------------------------------------------------
 		//------------------------------------------------------------------------------------------------------
 		
@@ -104,21 +90,13 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		shadertypes shaderenum = (shadertypes) renderable.userData;
 			
 		if (shaderenum==null){
-				return super.createShader(renderable);
+			return super.createShader(renderable);
 		}
 		Gdx.app.log(logstag, "shaderenum="+shaderenum.toString());
 			
 			
 		switch (shaderenum) {
-				
-		case invert:
-		{
-	    	  String vert = Gdx.files.internal("shaders/invert.vertex.glsl").readString();
-	          String frag = Gdx.files.internal("shaders/invert.fragment.glsl").readString();
-	          
-	          
-			return new DefaultShader(renderable, new DefaultShader.Config(vert, frag)); // new InvertShader(renderable);
-		}	
+							
 		case distancefieldfordataobjects:
 		{
 			return new DistanceFieldShaderForDataObjects();

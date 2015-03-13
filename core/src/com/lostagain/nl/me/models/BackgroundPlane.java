@@ -19,6 +19,7 @@ import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.MyShaderProvider;
+import com.lostagain.nl.shaders.NoiseShader;
 
 /**
  * A colored plane that blocks the clicks hitting stuff under it
@@ -30,42 +31,61 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 
 	final static String logstag = "ME.BackgroundPlane";
 	BoundingBox collisionBox = new BoundingBox();
-	
+
 	float lastHitDistance = -1f; //no hit by default
-	
+
 	/**
-	 * Creates a plane at the specified co-ordinates with the specified color
+	 * Creates a plane at the specified center co-ordinates with the specified color
 	 */
 	public static BackgroundPlane createBackgroundPlane(int x,int y,int z,int sizeX, int sizeY, Color MColor)
-	
+
 	{				
 		//make the material (flat, with color specified)
 		//This will be manipulatable latter so as to set noise on/off
 
-        Material mat = new Material
-        		(
-        		ColorAttribute.createDiffuse(MColor), 
-				new BlendingAttribute(1f)
-        		);
+		Material mat = new Material
+				(
+						ColorAttribute.createDiffuse(MColor), 
+						new BlendingAttribute(1f)
+						);
 
-				
+
 		Model model = ModelMaker.createRectangle((-sizeX/2), (-sizeY/2), (sizeX/2), (sizeY/2), z, mat);
-				
-		return new BackgroundPlane(model,x+(sizeX/2),+(sizeY/2),z);
+
+		return new BackgroundPlane(model,x,y,z);
 	}
-	
+
 	private BackgroundPlane(Model model,int x,int y,int z) {
-		
+
 		super(model);				
 		super.setToPosition(new Vector3(x,y,z));
-		
+
 		//calculate its bounding box
-		super.calculateBoundingBox(collisionBox);
+		recalculateBoundingBox();
 		
 		ModelManagment.addmodel(this, RenderOrder.behindStage);
+		ModelManagment.addHitable(this);
+
+	}
+	
+	@Override	
+	public void setToPosition(Vector3 vector3) {		
+		super.setToPosition(vector3);
 		
+
+		Gdx.app.log(logstag,"transform now="+super.getMatrixTransform());
+		//update the bounding boxes position
+		recalculateBoundingBox();
 	}
 
+	private void recalculateBoundingBox() {
+		super.calculateBoundingBox(collisionBox);
+		collisionBox.mul(super.getMatrixTransform());
+
+		Gdx.app.log(logstag,"collision box="+super.getMatrixTransform());
+		Gdx.app.log(logstag,"collision box="+collisionBox);
+	}
+	
 	@Override
 	public Vector3 getCenter() {
 		return super.transState.position.cpy();
@@ -94,6 +114,8 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 
 	@Override
 	public void setLastHitsRange(float range) {
+
+		Gdx.app.log(logstag,"setting hittable hit range to:"+range);
 		lastHitDistance = range;
 
 	}
@@ -110,21 +132,37 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 
 	@Override
 	public boolean rayHits(Ray ray) {
-		
-		return Intersector.intersectRayBoundsFast(ray, collisionBox);
+
+		Gdx.app.log(logstag,"testing intersection against c:"+collisionBox);
+
+		Boolean hit = Intersector.intersectRayBoundsFast(ray, collisionBox);
+		Gdx.app.log(logstag,"hit:"+hit);
+		return hit;
+	}
+
+	public void setToNoiseShader() {	
+
+		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.6f);
+		NoiseShader.NoiseShaderAttribute noiseAttribute = new NoiseShader.NoiseShaderAttribute(false, Color.WHITE);
+
+		super.materials.get(0).clear();
+		super.materials.get(0).set(blendingAttribute2);
+		super.materials.get(0).set(noiseAttribute);
+
+
 	}
 
 	public void setColour(Color col) {
 
 		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f);
-		
+
 		super.materials.get(0).clear();
 		super.materials.get(0).set(ColorAttribute.createDiffuse(col));
 		super.materials.get(0).set(blendingAttribute2);
 
-		Gdx.app.log(logstag,"setting shader to normal:");
-		super.userData=MyShaderProvider.shadertypes.standardlibgdx;
-		
+		//Gdx.app.log(logstag,"setting shader to normal:");
+		//super.userData=MyShaderProvider.shadertypes.standardlibgdx;
+
 	}
 
 }

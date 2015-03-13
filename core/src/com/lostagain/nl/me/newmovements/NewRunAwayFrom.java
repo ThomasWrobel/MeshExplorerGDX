@@ -8,10 +8,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
-public class RunAwayFrom  {
+//untested!
+public class NewRunAwayFrom  {
 
 
-	final static String logstag = "ME.RunAwayFrom";
+	final static String logstag = "ME.NewRunAwayFrom";
 	
 	
 	/**
@@ -23,40 +24,36 @@ public class RunAwayFrom  {
 	 * @return
 	 */
 	
-	static public Movement[] create(ModelInstance originObject, ModelInstance runawayfrom, int duration) {
-		
-		//make the component movements
-		Vector3 posT = new Vector3();
-		runawayfrom.transform.getTranslation(posT);		
-				
+	static public NewMovement[] create(AnimatableModelInstance originObject, AnimatableModelInstance runawayfrom, int duration) {
+						
 		//return the array		
-		return create(originObject, posT.x, posT.y,  duration);
+		return create(originObject, runawayfrom.transState.position.x, runawayfrom.transState.position.y,  duration);
 	}
 
 
-	public static Movement[] create(ModelInstance originObject, float eX,
+	public static NewMovement[] create(AnimatableModelInstance originObject, float eX,
 			float eY, int i) {
 		
 		
 		//make the component movements
 		
 		//face towards quickly
-		RotateLeft facemovement = FaceTowards.create(originObject, eX,eY, 150);
+		NewRotateLeft facemovement = NewFaceTowards.create(originObject, eX,eY, 150);
 		
 		//back away slowly
-		Forward backward = new Forward(-70, 3000);
+		NewForward backward = new NewForward(-70, 3000);
 		
 		//turn again quickly
-		RotateLeft turnaround = new RotateLeft(180,150);
+		NewRotateLeft turnaround = new NewRotateLeft(180,150);
 		
 		//run off
-		Forward run = new Forward(380, 400);
+		NewForward run = new NewForward(380, 400);
 				
 		//turn again quickly
-		RotateLeft turnback = new RotateLeft(180,1000);
+		NewRotateLeft turnback = new NewRotateLeft(180,1000);
 				
 		//make array
-		Movement movements[] = {facemovement,backward,turnaround,run,turnback};
+		NewMovement movements[] = {facemovement,backward,turnaround,run,turnback};
 		
 		//return the array		
 		return movements;

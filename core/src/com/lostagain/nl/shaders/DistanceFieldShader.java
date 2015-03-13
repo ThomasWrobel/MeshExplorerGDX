@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 import com.lostagain.nl.shaders.NoiseShader.NoiseShaderAttribute;
+import com.lostagain.nl.shaders.PrettyBackground.PrettyBackgroundAttribute;
 
 /**
  * Basic normal-colourish shader.
@@ -185,18 +186,15 @@ public class DistanceFieldShader implements Shader {
     
     @Override
     public boolean canRender (Renderable instance) {
-    	
-    	shadertypes shaderenum = (shadertypes) instance.userData;
-    	if (shaderenum==null){
-    		return false;
-    	}
-    //	Gdx.app.log(logstag, "testing if distance field can render:"+shaderenum.toString());
-    	
-    	if (shaderenum==shadertypes.distancefield){
+
+    	if (instance.material.has(DistanceFieldAttribute.ID)){
     		return true;
-    	} else {
-    		return false;
     	}
+    	
+    //	Gdx.app.log(logstag, "testing if noiseshader can render:"+shaderenum.toString());
+    	return false;
+  
+    	
     }
     
     

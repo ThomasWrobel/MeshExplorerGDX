@@ -78,12 +78,9 @@ import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.uti.MeshWorld;
 
 public class LocationsHub extends Table {
-
-
-	//static Logger Log = Logger.getLogger("LocationsHub");
-
 	final static String logstag = "ME.LocationsHub";
-	public final static int  sizeX = 450;
+	
+	public final static int sizeX = 450;
 	public final static int sizeY = 400;
 
 	ArrayList<LocationScreen> AllPages = new ArrayList<LocationScreen>(); 
@@ -93,6 +90,7 @@ public class LocationsHub extends Table {
 
 	//this location
 	LocationsHub thisLocation = this;
+	
 	//Locations name and URI cropped to fit the window
 	String displayLocation = "";
 	String displayURI = "";
@@ -139,22 +137,6 @@ public class LocationsHub extends Table {
 
 			//load the security, if any  
 			repairPage = getSecurity(LocationsNode);
-
-
-			/*
-
-			//we check if its got security associated with it
-			//we could optimise to skip this check if  we already know its secured
-			//incoming links will know that already
-			ArrayList<SSSNode> allSecuredPCs = SSSNodesWithCommonProperty.getAllNodesWithPredicate(StaticSSSNodes.SecuredBy);
-
-			//if so, then lock it.
-			if (allSecuredPCs.contains(locationsNode)){
-				locked = true;
-			} else {
-				locked = false;
-			}
-			 */
 
 		}
 		
@@ -619,7 +601,7 @@ public class LocationsHub extends Table {
 
 					//remove duplicates by using an HashSet
 					// add elements to al, including duplicates
-					HashSet hs = new HashSet();
+					HashSet<SSSNode> hs = new HashSet<SSSNode>();
 					hs.addAll(contents);
 					contents.clear();
 					contents.addAll(hs);
@@ -654,7 +636,6 @@ public class LocationsHub extends Table {
 
 		//String allNodes = SSSNode.getAllKnownNodes().toString();
 
-		//Log.info("all nodes"+allNodes.toString());
 
 
 		Gdx.app.log(logstag,"-------------------------------X--------------------------------===================----------------");
@@ -695,7 +676,6 @@ public class LocationsHub extends Table {
 
 		QueryEngine.processQuery(realQuery, false, null, callback);
 
-		//VisibleMachines.getAllNodesInSet(callback);
 
 
 	}
@@ -732,7 +712,12 @@ public class LocationsHub extends Table {
 				
 		//ensure background is positioned
 		if (backgroundObject!=null){
-			backgroundObject.transState.setToPosition(new Vector3((int)this.getX(),(int)this.getY(),-5));
+			//we need to position by center so we adjust the co-ordinates by half its size
+			int x = (int) (this.getX() +(LocationsHub.sizeX/2));
+			int y = (int) (this.getY() +(LocationsHub.sizeY/2));
+			
+			backgroundObject.setToPosition(new Vector3(x,y,-5));
+			
 		}
 		
 		
@@ -744,7 +729,6 @@ public class LocationsHub extends Table {
 
 		backgroundObject = BackgroundPlane.createBackgroundPlane( (int)getX(),(int)getY(),-5,(int)getWidth(),(int)getHeight(),Color.BLUE) ; //MessyModelMaker.addRectangle((int)this.getX(),(int)this.getY(),-10,(int)this.getWidth(),(int)this.getHeight(),new Material());
 			
-		//(int)getX(),(int)getY(),-10,(int)getWidth(),(int)getHeight(),Color.BLUE)
 	}
 	
 	
@@ -771,26 +755,15 @@ public class LocationsHub extends Table {
 	
 	
 	public void setClosedBackground() {
-		Gdx.app.log(logstag,"setClosedBackground:");
+	//	Gdx.app.log(logstag,"setClosedBackground:");
 		if (backgroundObject==null){
 			addBackground(); 
 		}
-		
+		backgroundObject.setToNoiseShader();
 		//
 		//Material mat = BackgroundManager.createNoiseMaterial();	
 
-		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.2f);
 
-	  //  Texture texture = new Texture(BackgroundManager.createNoiseImage(300,300));
-	    
-		backgroundObject.materials.get(0).clear();
-		backgroundObject.materials.get(0).set(ColorAttribute.createDiffuse(Color.WHITE));
-		backgroundObject.materials.get(0).set(ColorAttribute.createSpecular(Color.WHITE));
-		backgroundObject.materials.get(0).set(FloatAttribute.createShininess(16f));
-		//backgroundObject.materials.get(0).set(TextureAttribute.createDiffuse(texture));
-		backgroundObject.materials.get(0).set(blendingAttribute2);
-		
-		backgroundObject.userData=MyShaderProvider.shadertypes.noise;
 		
 		//BackgroundManager.addNoiseRectangle((int)this.getX(),(int)this.getY(),(int)this.getWidth(),(int)this.getHeight());	
 		

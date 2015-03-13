@@ -3,16 +3,10 @@ package com.lostagain.nl.me.models;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -22,13 +16,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
-import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.shaders.ConceptBeamShader;
@@ -186,7 +177,7 @@ public class ModelManagment {
 
 
 		ModelInstance instance = ModelMaker.createRectangleAt(0, 0, 30, 200, 200, Color.BLACK, testmaterial2); // new ModelInstance(model1); 
-		instance.userData = MyShaderProvider.shadertypes.conceptbeam;
+		
 		Renderable renderableWithAttribute = new Renderable();
 		instance.getRenderable(renderableWithAttribute);
 
@@ -456,10 +447,6 @@ public class ModelManagment {
 			if (closestBlockerTouched==null || instance.getLastHitsRange()<closestBlockerTouched.getLastHitsRange()){
 
 				instance.fireTouchDown();
-
-
-
-
 
 			}
 

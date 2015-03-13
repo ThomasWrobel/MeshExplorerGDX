@@ -571,6 +571,8 @@ public class ConceptGun  extends WidgetGroup {
 
 	public void setEnabled(boolean status) {
 		
+		
+		
 		if (equipedConcept!=null){
 			
 			if (!status){
@@ -579,10 +581,8 @@ public class ConceptGun  extends WidgetGroup {
 				
 			} else {
 				currentLazerState = LazerState.ready;
+				
 			}
-			
-			//disabledFire = !status;
-			
 			
 		} else {
 			

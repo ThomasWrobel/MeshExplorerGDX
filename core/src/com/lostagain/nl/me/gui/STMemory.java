@@ -65,7 +65,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		
 		Gdx.app.log(logstag,"_________TempMemory_____");
 		Color ColorM = new Color(Color.DARK_GRAY);
-		ColorM.a=0.5f;
+		ColorM.a=0.8f;
 		
 		super.setBackground(DefaultStyles.colors.newDrawable("white", ColorM));
 

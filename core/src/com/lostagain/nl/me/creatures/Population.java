@@ -197,6 +197,7 @@ public class Population {
 		this.drops = (ArrayList<SSSNode>) source.drops.clone();
 		this.fromRadius = source.fromRadius;
 		this.toRadius =  source.toRadius;
+		this.atHeight = source.atHeight;
 		this.name =  source.name;
 		this.num =  source.num;
 		this.hitPoints =  source.hitPoints;

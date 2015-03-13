@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.shaders.ConceptBeamShader.ConceptBeamAttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
-import com.lostagain.nl.shaders.PrettyNoiseShader.PrettyNoiseShaderAttribute;
 
 /**
  * Basic normal-colourish shader.
@@ -25,16 +24,18 @@ import com.lostagain.nl.shaders.PrettyNoiseShader.PrettyNoiseShaderAttribute;
  * @author Tom
  *
  */
-public class NoiseShader implements Shader {
+public class TextureNoiseShader implements Shader {
 	
-	final static String logstag = "ME.NoiseShader";
+	final static String logstag = "ME.TextureNoiseShader";
 	
 	
-	public static class NoiseShaderAttribute extends Attribute {
-		public final static String Alias = "NoiseShaderAttribute";
+	public static class TextureNoiseAttribute extends Attribute {
+		public final static String Alias = "TextureNoiseAttribute";
 		public final static long ID = register(Alias);
 
+		public boolean eatAwayMode = false;
 		public boolean rgbmode = false;
+		
 		public Color tintcolor;
 		
 		/**
@@ -42,9 +43,10 @@ public class NoiseShader implements Shader {
 		 * @param rgbmode - if the noise is the full color
 		 * @param tintcolor - color of the tint
 		 */
-		public NoiseShaderAttribute (final boolean rgbmode,final Color tintcolor) {
+		public TextureNoiseAttribute (final boolean rgbmode,final boolean eatAwayMode,final Color tintcolor) {
 			
 			super(ID);
+			this.eatAwayMode=eatAwayMode;
 			this.rgbmode = rgbmode;
 			this.tintcolor = tintcolor;
 			
@@ -52,14 +54,16 @@ public class NoiseShader implements Shader {
 
 		@Override
 		public Attribute copy () {
-			return new NoiseShaderAttribute(rgbmode,tintcolor);
+			return new TextureNoiseAttribute(rgbmode,eatAwayMode,tintcolor);
 		}
 
 		@Override
 		protected boolean equals (Attribute other) {
 			if (
-				(((NoiseShaderAttribute)other).rgbmode == rgbmode) &&
-				(((NoiseShaderAttribute)other).tintcolor == tintcolor) 
+				(((TextureNoiseAttribute)other).rgbmode == rgbmode) &&
+				(((TextureNoiseAttribute)other).eatAwayMode == eatAwayMode) &&
+				(((TextureNoiseAttribute)other).tintcolor == tintcolor) 
+				
 				)
 			
 			{
@@ -85,7 +89,7 @@ public class NoiseShader implements Shader {
 	  
 	  String prefix = "";
 	  
-    public NoiseShader(Renderable renderable) {
+    public TextureNoiseShader(Renderable renderable) {
     	
     	prefix = createPrefix(renderable);
     	
@@ -98,11 +102,15 @@ public class NoiseShader implements Shader {
 	private String createPrefix(Renderable renderable) {
 		
 		//we get the noise shader types settings
-   	    NoiseShaderAttribute beamStyle = (NoiseShaderAttribute)renderable.material.get(NoiseShaderAttribute.ID);   	 
+		TextureNoiseAttribute beamStyle = (TextureNoiseAttribute)renderable.material.get(TextureNoiseAttribute.ID);   	 
    	 
 		//if we are using rgb mode we define that flag
-		if (beamStyle.rgbmode){
+		if (beamStyle.rgbmode){			
 			prefix = prefix + "#define rgbmodeFlag \n";
+		}
+		//if we eat away the texture define here
+		if (beamStyle.eatAwayMode){
+			prefix = prefix + "#define eatAwayMode \n";
 		}
 		
 		return prefix;
@@ -111,8 +119,8 @@ public class NoiseShader implements Shader {
 	@Override
     public void init () {
     	
-    	  String vert = Gdx.files.internal("shaders/noise.vertex.glsl").readString();
-          String frag = Gdx.files.internal("shaders/noise.fragment.glsl").readString();
+    	  String vert = Gdx.files.internal("shaders/texturenoise.vert.glsl").readString();
+          String frag = Gdx.files.internal("shaders/texturenoise.frag.glsl").readString();
        
         		  
           program = new ShaderProgram(prefix + vert, prefix + frag);
@@ -218,7 +226,7 @@ public class NoiseShader implements Shader {
     @Override
     public boolean canRender (Renderable instance) {
 
-    	if (instance.material.has(NoiseShaderAttribute.ID)){
+    	if (instance.material.has(TextureNoiseAttribute.ID)){
     		return true;
     	}
     	

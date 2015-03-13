@@ -4,15 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 import com.lostagain.nl.shaders.NoiseShader.NoiseShaderAttribute;
+import com.lostagain.nl.shaders.PrettyNoiseShader.PrettyNoiseShaderAttribute;
 
 /**
  * Basic normal-colourish shader.
@@ -21,19 +24,11 @@ import com.lostagain.nl.shaders.NoiseShader.NoiseShaderAttribute;
  * @author Tom
  *
  */
-public class PrettyNoiseShader implements Shader {
-	 ShaderProgram program;
-	 Camera camera;
-	 RenderContext context;
+public class templateShader extends DefaultShader {
+
+	 final static String logstag = "ME.InvertShader";
 	 
-	   int u_projViewTrans;
-	   int u_worldTrans;
-	    int u_time;
-	    
-	   private float time;
-	   
-	   
-		public static class PrettyNoiseShaderAttribute extends Attribute {
+	 public static class  templateAttribute extends Attribute {
 			public final static String Alias = "PrettyNoiseShaderAttribute";
 			public final static long ID = register(Alias);
 
@@ -45,7 +40,7 @@ public class PrettyNoiseShader implements Shader {
 			 * @param rgbmode - if the noise is the full color
 			 * @param tintcolor - color of the tint
 			 */
-			public PrettyNoiseShaderAttribute (final boolean rgbmode,final Color tintcolor) {
+			public  templateAttribute (final boolean rgbmode,final Color tintcolor) {
 				
 				super(ID);
 				this.rgbmode = rgbmode;
@@ -55,14 +50,14 @@ public class PrettyNoiseShader implements Shader {
 
 			@Override
 			public Attribute copy () {
-				return new NoiseShaderAttribute(rgbmode,tintcolor);
+				return new  templateAttribute(rgbmode,tintcolor);
 			}
 
 			@Override
 			protected boolean equals (Attribute other) {
 				if (
-					(((PrettyNoiseShaderAttribute)other).rgbmode == rgbmode) &&
-					(((PrettyNoiseShaderAttribute)other).tintcolor == tintcolor) 
+					((( templateAttribute)other).rgbmode == rgbmode) &&
+					((( templateAttribute)other).tintcolor == tintcolor) 
 					)
 				
 				{
@@ -72,13 +67,27 @@ public class PrettyNoiseShader implements Shader {
 				return false;
 			}
 		}	
-		
-	   
+	 
+	 
+	 
+	 public templateShader(Renderable renderable) {
+		super(renderable);
+		// TODO Auto-generated constructor stub
+	}
+
+	ShaderProgram program;
+	 Camera camera;
+	 RenderContext context;
+	 
+	   int u_projViewTrans;
+	    int u_worldTrans;
+	    int u_sampler2D;
+	  
     @Override
     public void init () {
     	
-    	  String vert = Gdx.files.internal("shaders/prettynoise.vertex.glsl").readString();
-          String frag = Gdx.files.internal("shaders/prettynoise.fragment.glsl").readString();
+    	  String vert = Gdx.files.internal("shaders/defaulttest.vertex.glsl").readString();
+          String frag = Gdx.files.internal("shaders/defaulttest.fragment.glsl").readString();
           
           program = new ShaderProgram(vert, frag);
           if (!program.isCompiled()){
@@ -87,30 +96,25 @@ public class PrettyNoiseShader implements Shader {
           
           u_projViewTrans = program.getUniformLocation("u_projViewTrans");
           u_worldTrans = program.getUniformLocation("u_worldTrans");
-          u_time = program.getUniformLocation("u_time"); 
+          u_sampler2D =   program.getUniformLocation("u_diffuseTexture");
     }
     
-    @Override
+    //@Override
     public void dispose () {
     	
     	program.dispose();
     	
     }
     
-    @Override
+   // @Override
     public void begin (Camera camera, RenderContext context) {  
     	
     	   this.camera = camera;
            this.context = context;
-           //update time
-     	  time = time+ Gdx.graphics.getDeltaTime();
-     	  
+           
     	  program.begin();
     	  //the the variable for the cameras projectino to be passed to the shader
     	  program.setUniformMatrix(u_projViewTrans, camera.combined);
-    	  program.setUniformf(u_time, time);
-    	  
-    	  
     	  
     	  context.setDepthTest(GL20.GL_LEQUAL);    	  
           context.setCullFace(GL20.GL_BACK);
@@ -118,39 +122,57 @@ public class PrettyNoiseShader implements Shader {
     	  
     }
     
-    @Override
+   // @Override
     public void render (Renderable renderable) {  
     	//set the variable for the objects world transform to be passed to the shader
     	 program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
     	 
     	 
+    	 //program.setUniformf(TexCoord, value);
+    	 
+    	 if (renderable.material.get(TextureAttribute.Diffuse)!=null){
+    		 
+    		 Texture testtexture = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;  
+    		 
+    		 program.setUniformi(u_sampler2D, context.textureBinder.bind(testtexture));
+    		 
+    		 
+    		 
+    	 }// else {
+    		// program.setUniformi(u_sampler2D, 0);
+    	 //}
+    	 
+    	 
+    	 
+    	 
+    	 //program.setUniformi(u_sampler2D, 0);
+    	
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,
     	            renderable.meshPartSize);
     }
     
-    @Override
+   // @Override
     public void end () { 
     	
     	 program.end();
     }
     
-    @Override
+   // @Override
     public int compareTo (Shader other) {
         return 0;
     }
     
-    @Override
+   // @Override
     public boolean canRender (Renderable instance) {
-
-    	if (instance.material.has(PrettyNoiseShaderAttribute.ID)){
+    	
+    	if (instance.material.has( templateAttribute.ID)){
     		return true;
     	}
     	
     //	Gdx.app.log(logstag, "testing if noiseshader can render:"+shaderenum.toString());
     	return false;
-  
     	
     }
     

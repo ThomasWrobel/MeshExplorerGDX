@@ -38,7 +38,7 @@ bigInfovorPopulation me:killedon "Color=yellow".
 bigInfovorPopulation me:hitPoints 7.
 bigInfovorPopulation me:fromRadius 10.
 bigInfovorPopulation me:toRadius 80.
-bigInfovorPopulation me:atHeight 65.
+bigInfovorPopulation me:atHeight -25.
 bigInfovorPopulation http://dbpedia.org/ontology/Colour #FF3300.
 bigInfovorPopulation http://dbpedia.org/ontology/Colour #FF5522.
 

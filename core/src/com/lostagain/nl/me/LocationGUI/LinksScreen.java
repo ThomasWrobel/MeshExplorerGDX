@@ -29,25 +29,12 @@ public class LinksScreen extends Table implements LocationScreen {
 		
 	Label title = new Label("Links:",DefaultStyles.linkstyle);
 
-	
-	/** scan updates every 0.1 seconds. Normally takes 100steps (so 0.1*100 = 10secs)
-	 * but (ScanSpeed/ number of current scans) gets subtracted per step**/
-	//int scanSpeed = 10;	
-	
-	
-	
-	//ArrayList<Link> linksBeingScanned= new ArrayList<Link>();
-	
-	//final Timer	 linkDownloader = new Timer();
-	//final Task linkDownloadTask;
 
 	ArrayList<Link> allLinks = new ArrayList<Link>();
 
 	LocationsHub parentLocationContainer;
 	
-	
-	
-//	static Boolean isDownloading = false;
+		
 
 	public LinksScreen(LocationsHub parentLocationContainer, SSSNode securedBy) {
 		super();
@@ -56,50 +43,7 @@ public class LinksScreen extends Table implements LocationScreen {
 		super.setDebug(true, true);
 		
 		//Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		/*
-		linkDownloadTask = new Task() {
-
-				@Override
-				public void run() {
-					isDownloading=true;
-					
-	   				if (linksBeingScanned.size()==0){
-	   					linkDownloadTask.cancel();
-	   					isDownloading=false;
-	   					return;
-	   				}
-	   				
-					Log.info("updating bars");					
-	   				int SPEEDSTEP = (scanSpeed / linksBeingScanned.size())+1; 
-	   										
-	   				Iterator<Link> ObjectFilesToUpdate = linksBeingScanned.iterator();
-	   					   				
-	   				while (ObjectFilesToUpdate.hasNext()) {
-	   					
-	   					Link currentObjectFile = ObjectFilesToUpdate.next();	   
-	   					
-	   					currentObjectFile.stepForwardDownloadingAmount(SPEEDSTEP);
-	   					
-	   					if (currentObjectFile.currentMode!=LinkMode.Scanning){
-	   						ObjectFilesToUpdate.remove();
-	   						currentObjectFile.validate();
-	   					}
-	   					
-	   				}
-	   				
-
-	   				if (linksBeingScanned.size()==0){
-	   					linkDownloadTask.cancel();
-	   					isDownloading=false;
-	   					return;
-	   				}
-	   				
-					
-				}
-	   			
-	   		};
-	   	 */	
-		
+				
 	//	super.add(title);
 		
 		
@@ -137,30 +81,7 @@ public class LinksScreen extends Table implements LocationScreen {
 	}
 	
 	
-	//No longer needed. Scanmanager does it all
-	/*
-	public void startScanningLink(final Link link){
-		Log.info("startScanningLink");
-		
-		link.setStandardLinkScanningAmount(0);
-	
-		boolean wasadded = linksBeingScanned.add(link);
-		
-		
-		
-		if (!isDownloading && wasadded){
-			
-			Log.info("starting scanner");			
-			if (!linkDownloadTask.isScheduled()){
 
-				Log.info("scheduleTask");		
-				linkDownloader.scheduleTask(linkDownloadTask, 0.1f, 0.1f);
-			}
-			linkDownloader.start();
-			
-		}
-		
-	}*/
 
 
 	public void removeAllContents() {

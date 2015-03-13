@@ -14,6 +14,7 @@ import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.MyShaderProvider;
+import com.lostagain.nl.shaders.PrettyBackground;
 
 public class CameraBackground extends AnimatableModelInstance {
 
@@ -31,8 +32,8 @@ public class CameraBackground extends AnimatableModelInstance {
 		//CameraOverlay = MessyModelMaker.addNoiseRectangle(0,0,300,300,true);
 			
 		materials.get(0).set( new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,1f));		
+		materials.get(0).set( new PrettyBackground.PrettyBackgroundAttribute());		
 		
-		userData = MyShaderProvider.shadertypes.subtlegrid; 
 
 		ModelManagment.addmodel(this,ModelManagment.RenderOrder.behindStage);
 		

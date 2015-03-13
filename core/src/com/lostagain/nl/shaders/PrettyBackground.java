@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.domain.MEDomain;
+import com.lostagain.nl.shaders.InvertShader.InvertAttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 import com.lostagain.nl.shaders.NoiseShader.NoiseShaderAttribute;
 import com.lostagain.nl.shaders.PrettyNoiseShader.PrettyNoiseShaderAttribute;
@@ -159,13 +160,15 @@ public class PrettyBackground implements Shader {
     
     @Override
     public boolean canRender (Renderable instance) {
-	shadertypes shaderenum = (shadertypes) instance.userData;
-    	
-    	if (shaderenum==shadertypes.subtlegrid){
+
+    	if (instance.material.has(PrettyBackgroundAttribute.ID)){
     		return true;
-    	} else {
-    		return false;
     	}
+    	
+    //	Gdx.app.log(logstag, "testing if noiseshader can render:"+shaderenum.toString());
+    	return false;
+  
+    	
     }
     
     

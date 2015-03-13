@@ -29,13 +29,7 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 
 	Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 	
-	//int DownloadSpeed = 10;	//will become players connection speed
-	
-	//ArrayList<ObjectFile> objectsBeingDownloaded = new ArrayList<ObjectFile>();
-	
-	//final Timer	 objectDownloader = new Timer();
-	//final Task objectDownloadTask;
-	
+
 	private ArrayList<SSSNode> allContentsNodes = new  ArrayList<SSSNode>();
 	
 	static Boolean isRunning = false;
@@ -85,48 +79,7 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
         
         
 		this.contentsTitle = contentsTitle;
-/*
-		
-		objectDownloadTask = new Task(){
 
-				@Override
-				public void run() {
-					isRunning=true;
-					
-					if (objectsBeingDownloaded.size()==0){
-	   					objectDownloader.stop();
-	   					isRunning=false;
-	   					return;
-	   				}
-					
-	   				int SPEEDSTEP = (DownloadSpeed / objectsBeingDownloaded.size())+1; 
-	   										
-	   				Iterator<ObjectFile> ObjectFilesToUpdate = objectsBeingDownloaded.iterator();
-	   				
-	   				while (ObjectFilesToUpdate.hasNext()) {
-	   					
-	   					ObjectFile currentObjectFile = ObjectFilesToUpdate.next();	   										
-	   					currentObjectFile.stepForwardDownloadingAmount(SPEEDSTEP);
-	   					
-	   					if (currentObjectFile.currentMode!=ObjectFileState.Analysing){
-	   						ObjectFilesToUpdate.remove();
-	   						currentObjectFile.validate();
-	   					}
-	   					
-	   				}
-	   				
-	   				
-	   				if (objectsBeingDownloaded.size()==0){
-	   					objectDownloader.stop();
-	   					isRunning=false;
-	   				}
-					
-				}
-	   			
-	   		};
-	   		
-	   	 
-		*/
 		Label title = new Label(contentsTitle,skin);
 		//title.setX(150);
 	//	title.setY(50);
@@ -148,31 +101,7 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 		scrollTable.validate();
 	}
 	
-	//No longer needed. Scanmanager does it all
-	/*
-	public void startScanningObjectFile(final ObjectFile ObjectFile){
-
-		ObjectFile.setScanningAmount(0);
 	
-		objectsBeingDownloaded.add(ObjectFile);
-		
-
-		if (!isRunning){
-			
-			Log.info("starting scanner");			
-			if (!objectDownloadTask.isScheduled()){
-
-				Log.info("scheduleTask");		
-				objectDownloader.scheduleTask(objectDownloadTask, 0.1f, 0.1f);
-			}
-
-			Log.info("objectDownloadTask.isScheduled for "+objectDownloadTask.getExecuteTimeMillis());	
-			objectDownloader.start();
-			
-		}
-		
-		
-	}*/
 	
 	public void addObjectFile(ObjectFile ObjectFile){
 		
@@ -219,7 +148,6 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 
 	public void setLocked(boolean b) {
 		locked=b;
-		// TODO Auto-generated method stub
 		
 	}
 	
