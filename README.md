@@ -12,8 +12,8 @@ As such "MeshExplore" is a game where you explore a secret network - a odd secon
 Anyone can add nodes to this network (IRL) simply by adding a text file or two to their domain, and getting another persons domain in the game to link to them.
 (People wishing me to link their constributions up can contact me direct and I'll add their node connecting to one of the initial points in the game).
 
-The gameplay will try to take advantage of basic transitional semantic knowledge for puzzles and interaction, allthough
-graphically and action wise it will be very low-key. Think "uplink" style gameplay.
+The gameplay will try to take advantage of basic transitional semantic knowledge for puzzles and interaction. Graphically it will be simple and overhead + cool shaders!
+The game will also feature action in the form of a "concept gun", letting you blast mysterious infovour creatures eating the nearby data. The concept gun shots a concept (which is really a semantic nodes property) different creatures could respond to different concepts. Much like cyberman are vulernable to gold. Bullets and lazers? bah. We will have cheese beams, metal beams, fish beams.....beams of anything!
 
 I also welcome any help and contributions to the project!
 If your interesting in help develop a distributed hacking/exploration game, let me know.
