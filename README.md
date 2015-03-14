@@ -22,16 +22,21 @@ Currently working;
 
 * Location nodes and links between them.
 * GUI to let you pick up and use data items. (inventory has layout problems atm)
-* Nodes can be closed and need specific data to uplock
+* Nodes can be closed and need specific data to unlock
 * Nodes can contain data
 * Nodes have email like files explaining plot points and such.
 * Nodes can be encrpyted with a language
-* Nodes can contain ability files  - currently only 1 to decrypt languages
+* Nodes can contain ability files  
+* - currently 3 abilitys implemented;
+  - language ability that lets you read a location thats encypted
+  - a "concept gun" ability that lets you shot things we a concept ray gun (the games main gimick)
+  - inventory
+* Concept gun can be used to shot creatures if they are vulerable to the concept (deduced by a query match that the creatures definition specifies)
 * ...(probably more, I dont update this file too often...)
 
 
 Partial implemented
-* creature populations that inhabit locations.
+* creature populations that inhabit locations. They move and can be destroyed, but their look needs to be improved
 
 
 
