@@ -18,6 +18,7 @@ to data.
 - learn creatures adapt and each population will only be vulnerable to each type of data once
 - learn computers arnt locked, they are corrupted. Prof didnt lock his machine
 
+Main game ideas;
 
 - Concept gun (can be equiped with different objects that determain beams propertys)
   * objects get used up slower then directly giving them (due to guns rating ratio)
@@ -40,21 +41,82 @@ to data.
 	 
 	 
 	 
-	 Location tools;
+Location tools;
+
 	 (these are seperate single use locations. They are locked like others, but the metaphor for unlocking is "needing research data"
 	 to complete something)
+	
+	 - gain mutator device? (but only after dealing with a few populations in other ways)
+	
 	 
-	 - Concept anylser - displays details of concept
-	 - Creature anayliser (How to detect what creature to anylise?)
+	 - Research hub: Dump *any* concept here to start research. After its done the results will appear 
+	 in one of the following sub locations;
 	 
- 
+	 - Concepts anylsed - displays details of any concept not recognised as anything else below
+	 
+	 - Abilities anylised - displayes details of unlocked abilities.
+	 
+	 - Creatures anaylised (How to detect what creature to anylise?)
+	  (once aynalised if the creature is a new unique type it goes on the family tree, which acts as a database of creatures.
+	   Subtypes found get recorded on the same node description of the tree)
+	  
+	 - Genology Tree (creatures types have a parent species which is used to datermain there position on this gene tree. 
+	 				  The gene tree doesnt do anything, but clicking on any species gives full details of a species, and
+	 				  anaylising a species for the first time gives a small boast to damage against them, and maybe other stuff
+	 				  depending) [possible #/# listing of subtypes found for each species?
+	 
+	 - Timeline entry (Lore/plot - as knowledge is gained you build a timeline of events up that tell the story of how this world formed and whats
+	 			 going on)
+	 
+ 	 - Ecnylopedia entry - acts as a help system, as well as extra lore. Occasionally opening a page might unlock something or a boast?.
+ 	 				 Encylopedia entries dont need researching, they are automatically on the research tree.
   
+  	 - People profile pages - little summeries of people you may meet
+  	 
+  	 
+ --------------------------------------------------------------------------------------------------------------------
+  The goal will both unlockables and boasts is too provide many different rewards for doing stuff, and many types of collectables
+  for people to get.
+  Upgrades should ALWAYS have a noticable effect. No +1 stat out of 100. Stat boasts always should make a noticable difference
+  and there shouldn't be many in total per catagory.
+  -----------------------------------------------------------------------------------------------------------------------
 
-- gain mutator device? (but only after dealing with a few populations in other ways)
+Unlockables (lets you do new things);
+
+- Free movement mode (unlocked almost straight away after the tutorial) 
+- Your own stat page (single unlock near the start, shows all your current stats/upgrades)
+- Language packs (let you read text of non-Ascii locations)
+
+- Creature stats/info (see above)
+- Enclyopedia entries (see above)
+- Timeline points (see above)
+- People profile entries (brief summeries of various people you meet)
+- Music tracks (overrides default track, can be enabled/disabled)
 
 
+- Color customiser (just lets you R/G/B your own location, and UI interface. Pointless)
+- Game Icon changer (another pointless thing, lets you switch the games launch icon. Might not be practical...but cool if possible)
+
+- Location revealer?? (ping like device that reveals hidden/cloaked unlinked locations?)
+- Flipside compatible zoom? (lets your camera zoom around to see the other side of locations...some of which contain hidden stuff. Have to be carefull concept gun puzzles arnt broken when allowing this)
+- Concept bombs (gun add-on, very very slow recharge, drops a concept down which expodes a few seconds latter)
 
 
+Upgrades/Boast (expands/changes existing things):
+ 
+- More download slots at once
+- Faster downloads
+- Gun that holds more charge.
+- Gun that recharges faster.
+- Gun that takes two concept slots
+- Concept bomb recharge quicker.
+- Bigger temp inventory (carry more concepts)
+- All creatures can have a  boast to do more damage against them
+- Creature attraction radius of dropped things increase.
+- Research speed boast
+- More simultanious researchs allowed (much like scans)
+ 
+//--------------------------------------
 Creature types;
 
 * Vulnerable just to clicks

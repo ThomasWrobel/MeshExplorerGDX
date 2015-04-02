@@ -59,11 +59,13 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.LocationGUI.Link;
 import com.lostagain.nl.me.LocationGUI.Location;
 import com.lostagain.nl.me.LocationGUI.LocationsHub;
+import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.creatures.BasicInfovore;
 import com.lostagain.nl.me.creatures.Population;
 import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.GUIBar;
+import com.lostagain.nl.me.gui.InfoPopUp;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.ScanManager;
@@ -116,6 +118,9 @@ public class MainExplorationView implements Screen {
 	Music rainMusic;
 	
 	
+	//debug camera
+	public static DebugCamera debugCamera = new DebugCamera();
+	
 	//Current camera settings
 	public static MECamera camera = new MECamera();
 	
@@ -138,7 +143,10 @@ public class MainExplorationView implements Screen {
 	int dropsGathered;
 
 	public static GUIBar usersGUI;
-
+	
+	
+	public static InfoPopUp infoPopUp = new InfoPopUp();
+	
 //	static SpiffyVector3Tween currentCameraTween;
 	
 	//static  Timer cameraTimer = new Timer();
@@ -251,76 +259,12 @@ public class MainExplorationView implements Screen {
 		guiStage.addActor(usersGUI);
 	
 		usersGUI.validate();
-	//	guiStage.addActor(usersGUI.STMemoryPop); //temp should be part of gui
-		//guiStage.addActor(usersGUI.ConceptGun); //temp should be part of gui
-	//	usersGUI.ConceptGun.validate();
-/*
-		cameraTweenTask = new Task() {
-			@Override
-			public void run() {
 
-				//currently this sets the co-ordinates directly.
-				//to make this smoother we should retrieve the co-ordinate difference
-				//and multiply by delta in the draw loop
-				//This should give smoother look over non-stable framerates
-				//Additionally; The difference in x/y should change to slow down the camera near
-				//the end of its movement.
-				//Maybe difference * sin for a smooth speed up/slow down curve?
-				//double newX=currentCameraTweenX.next();   				   				
-				//double newY=currentCameraTweenY.next();
-				
-				Vector3 newpos = currentCameraTween.next();
-
-				LookAtX = currentPos.x; //one step lag?
-				LookAtY = currentPos.y;
- 
-				
-				//currentPos.x=(float) newX;
-				//currentPos.y=(float) newY;
-				currentPos = newpos;
-				
-						
-				//if (currentCameraTweenX.hasNext()){
-				
-				if (currentCameraTween.hasNext()){
-					//reschedule
-					if (!cameraTweenTask.isScheduled()){
-						cameraTimer.scheduleTask(this, 0.1f);
-					}
-
-				} else {
-
-					//newX=currentCameraTweenX.endPoint();  				   				
-					//newY=currentCameraTweenY.endPoint();  
-					newpos = currentCameraTween.endPoint();
-					
-					Gdx.app.log(logstag,"camera at end setting to:"+newpos);   	 
-
-					//currentPos.x=(float) newX;
-					//currentPos.y=(float) newY;
-					currentPos = newpos;
-					
-					LookAtX = currentPos.x; 
-					LookAtY = currentPos.y;
-					
-					//targetLocation
-					 if (MainExplorationView.LastLocation.size()==0 || currentTargetLocation!=MainExplorationView.LastLocation.getLast()){
-						 MainExplorationView.LastLocation.add(currentTargetLocation);
-					 }
-
-				}
-
-
-
-			}
-
-		};
-*/
 		camera.setToPosition(MainExplorationView.currentPos);
-
+		debugCamera.setToPosition(MainExplorationView.currentPos);
+		
 		Gdx.app.log(logstag,"creating textures");
-		
-		
+			
 		
 		
 
@@ -342,29 +286,11 @@ public class MainExplorationView implements Screen {
 		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("data\\rain.mp3"));
 		rainMusic.setLooping(true);
 
-		// create the camera and the SpriteBatch
-		/*
-		if ( currentmode == cammode.ortha){
-			camera = new OrthographicCamera();
+	
 
-			((OrthographicCamera)camera).setToOrtho(false, 640,480);
-
-		} else {
-			camera = new PerspectiveCamera(60, 640,480); // new OrthographicCamera();
-		}
-		// camera.setToOrtho(false, 1600, 960);
-		camera.near=0.5f;
-		camera.far=1900.0f;
-		*/
-		
-		//camera.translate(10, 25);
-		// camera.direction.set(-1, 0, 0);
-
-
-
-		//create background
+		//create test shader
 		Gdx.app.log(logstag,"creating distance field shader");
-		  String vert = Gdx.files.internal("shaders/distancefieldvert_spritebatch.glsl").readString();
+		 String vert = Gdx.files.internal("shaders/distancefieldvert_spritebatch.glsl").readString();
         String frag = Gdx.files.internal("shaders/distancefieldfrag.glsl").readString();
         
         //String prefix = createPrefix(renderable, this.get);
@@ -410,7 +336,8 @@ public class MainExplorationView implements Screen {
 
 
 		//camera.setTargetPosition(MainExplorationView.zoomToAtStartPos);
-
+		infoPopUp.displayMessage("Welcome To The Mesh");
+		
 		centerViewOn( PlayersData.homeLoc,444f);
 
 		//test shader
@@ -511,23 +438,6 @@ public class MainExplorationView implements Screen {
 		
 		
 		
-		//asign new tweens
-		//currentCameraTweenX = SpiffyTweenConstructor.Create(CurrentX.doubleValue(),newX, 25);
-		//currentCameraTweenY = SpiffyTweenConstructor.Create(CurrentY.doubleValue(),newY, 25);
-		
-		//currentCameraTween = new SpiffyVector3Tween(currentPos,dest, 25);
-		//Vector3 test1 = new Vector3(0,0,0);
-		//Vector3 est2  = new Vector3(10,10,10);
-		//SpiffyVector3Tween testtwe = new SpiffyVector3Tween(test1,est2, 25);
-		//Gdx.app.log(logstag,"end = "+testtwe.endPoint().x);
-		
-		//currentTargetLocation = locationcontainer;
-		////ensure camera animator is running
-		//if (!cameraTweenTask.isScheduled()){
-		//	Gdx.app.log(logstag,"triggering timer");
-		//	cameraTimer.scheduleTask(cameraTweenTask, 0.1f);
-
-		//}
 
 		
 		//add the requested location to the  array list, but only if its different from
@@ -536,7 +446,6 @@ public class MainExplorationView implements Screen {
 		try {
 			lastlocstored = LastLocation.getLast();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -626,6 +535,9 @@ public class MainExplorationView implements Screen {
 
 		camera.update();
 
+		if (debugCamera.active){
+			debugCamera.update();
+		}
 		
 		
 		
@@ -643,9 +555,12 @@ public class MainExplorationView implements Screen {
 		//update any scans and their  bars
 		ScanManager.update(delta);
 		
+		if (debugCamera.active){
+			background.modelBatch.begin( debugCamera);
+		} else {
+			background.modelBatch.begin( camera);
+		}
 		
-		background.modelBatch.begin( camera);
-
 		//rcontext.begin();
 		//testdefaultShader.begin(camera, rcontext);		
 		background.modelBatch.render(ModelManagment.allBackgroundInstances);
@@ -659,17 +574,23 @@ public class MainExplorationView implements Screen {
 		//testshader.setUniformi("u_texture", 0);
 		//ModelManagment.allModelInstances.get(0).model.meshes.get(0).render(testshader,  GL20.GL_TRIANGLES);
 		//testshader.end();
+		if (debugCamera.active){
+			gameStage.getViewport().setCamera(debugCamera);
+		} else {
+			gameStage.getViewport().setCamera(camera);
+		}
 		
-		gameStage.getViewport().setCamera(camera);
-
 		gameStage.act(delta); //Gdx.graphics.getDeltaTime()
 		gameStage.draw();
 	
 		//background.modelBatch.getRenderContext().begin();
 		//background.modelBatch.getRenderContext().setBlending(true, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		//background.modelBatch.getRenderContext().setCullFace(GL20.GL_FRONT);
-		
-		background.modelBatch.begin( camera);
+		if (debugCamera.active){
+			background.modelBatch.begin( debugCamera);
+		} else {
+			background.modelBatch.begin( camera);
+		}
 		//rcontext.begin();
 		//testdefaultShader.begin(camera, rcontext);		
 		background.modelBatch.render(ModelManagment.allForgroundInstances);
@@ -848,7 +769,7 @@ public class MainExplorationView implements Screen {
 		if (Gdx.input.isKeyPressed(Keys.UP))
 		{
 			
-			camera.setTargetPosition(currentPos);
+		//	camera.setTargetPosition(currentPos);
 			currentPos.y = currentPos.y+(200* Gdx.graphics.getDeltaTime());
 		}
 
@@ -881,7 +802,14 @@ public class MainExplorationView implements Screen {
 				
 			}*/
 		}
+		
+		if (Gdx.input.isKeyPressed(Keys.DEL))
+		{        	
+			debugCamera.setActive(!debugCamera.active);
 
+		}
+		
+		
 		if (!Gdx.input.isButtonPressed(Buttons.LEFT) && LeftButtonDown){
 			
 			//Old_Inventory.dropHeldItem();
@@ -899,22 +827,23 @@ public class MainExplorationView implements Screen {
 		guiStage.draw();
 
 
-		// begin a new batch (for interface text and the cursor)
+		// begin a new batch (for interface text and the cursor)		
 		
+		ME.interfaceSpriteBatch.begin();
 		
-		ME.batch.begin();
-		
-          
 
   		//gameStage.getBatch().setShader(program);
   		//ME.batch.setShader(program);
+		
+		//update displayed info for messages being popped up.
+		infoPopUp.update(delta);
   		
 		if (customCursor!=null){
 
 			float xc = Gdx.input.getX();
 			float yc = -Gdx.input.getY()+gameStage.getHeight();
 
-			ME.batch.draw(customCursor, (xc-(customCursor.getWidth()/2)), (yc-(customCursor.getHeight()/2)));
+			ME.interfaceSpriteBatch.draw(customCursor, (xc-(customCursor.getWidth()/2)), (yc-(customCursor.getHeight()/2)));
 
 	//		Gdx.app.log(logstag,"customCursor.."+xc+","+yc+" height="+ (customCursor.getHeight()/2));
 			
@@ -922,11 +851,11 @@ public class MainExplorationView implements Screen {
 		}
 
 		//    game.font.draw(game.batch, "Drops Collected:: " + dropsGathered, 0, 480);
-		ME.font.draw( ME.batch, "X:: " + currentPos.x+" Y:: " + currentPos.y+"...."+dragging+"(x="+drag_dis_x+",y="+drag_dis_y+")", 10,45);
-		ME.font.draw( ME.batch, "Z:: " + currentPos.z, 10, 25);
+		ME.font.draw( ME.interfaceSpriteBatch, "X:: " + currentPos.x+" Y:: " + currentPos.y+"...."+dragging+"(x="+drag_dis_x+",y="+drag_dis_y+")", 10,45);
+		ME.font.draw( ME.interfaceSpriteBatch, "Z:: " + currentPos.z, 10, 25);
 
 		//    game.batch.draw(bucketImage, bucket.x, bucket.y);
-		ME.batch.end();
+		ME.interfaceSpriteBatch.end();
 
 	}
 
@@ -947,7 +876,7 @@ public class MainExplorationView implements Screen {
 		//update sprite batch for new resolution 
 		Matrix4 viewMatrix = new Matrix4();
 	    viewMatrix.setToOrtho2D(0, 0,width, height);
-	    ME.batch.setProjectionMatrix(viewMatrix);
+	    ME.interfaceSpriteBatch.setProjectionMatrix(viewMatrix);
 		
 
 		//camera = new PerspectiveCamera(60,width,height); //new OrthographicCamera(width, height);
@@ -1045,20 +974,7 @@ public class MainExplorationView implements Screen {
 
 
 	}
-/*
-	public static void toggleDragOnOff(){
-		
-			cancelnextdragclick=!cancelnextdragclick;
-				
-	}
-	
-	
-	public static void enableDrag(){
-		
-		cancelnextdragclick = false;
-		
-		
-	}*/
+
 	
 	public static void disableDrag(){
 		
@@ -1069,7 +985,9 @@ public class MainExplorationView implements Screen {
 	}
 
 	public static void gotoHomeLoc() {
-
+		
+		infoPopUp.displayMessage("Heading Home..");
+		
 		centerViewOn( PlayersData.homeLoc);
 
 	}
@@ -1117,6 +1035,9 @@ public class MainExplorationView implements Screen {
 	public static void addnewdrop(DataObject newdrop, float x, float y) {
 
 		 Gdx.app.log(logstag,"_____________:dropping ");
+		 
+		 infoPopUp.displayMessage("Concept Node dropping:"+newdrop.itemsnode.getPLabel());
+		 
 		 
 		//Image dropimage = new Image(newdrop);		
 		newdrop.setPosition((int)x - (newdrop.getWidth()/2),(int)y- (newdrop.getHeight()/2));

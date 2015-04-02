@@ -246,6 +246,8 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			carryingObjects.add(dataobject);
 			super.add(dataobject);
 			super.row();
+			MainExplorationView.usersGUI.mySTMemory.setDownForABit();
+			
 			return true;
 		} else {
 			Gdx.app.log(logstag,"inventory full");

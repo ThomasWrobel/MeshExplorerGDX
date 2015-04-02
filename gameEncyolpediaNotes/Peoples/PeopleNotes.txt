@@ -1,0 +1,15 @@
+Simple descriptions of various people, information taken from the description property of the persons node
+The people descriptions give the full name too, which isnt always known before research is done on them.
+
+People;
+
+Prof P Pickles PHD.
+-
+Alice A Alison
+
+Bob
+
+
+
+
+

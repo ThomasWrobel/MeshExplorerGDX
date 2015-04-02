@@ -19,8 +19,8 @@ import com.lostagain.nl.shaders.PrettyBackground;
 public class CameraBackground extends AnimatableModelInstance {
 
 	//public static ModelInstance CameraOverlay = null;
-	static int w = 3000;
-	static int h = 3000;
+	static int w = 4000;
+	static int h = 4000;
 	
 
     static Material defaultMat = new Material( new DepthTestAttribute(0, false),ColorAttribute.createDiffuse(Color.MAROON));

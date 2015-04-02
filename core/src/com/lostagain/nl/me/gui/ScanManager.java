@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
+import com.lostagain.nl.MainExplorationView;
 
 /**
  * 
@@ -81,6 +82,8 @@ public class ScanManager {
 			return false;
 		}
 		
+		
+		
 		//create a new scan object
 		Scan newScan = new Scan(widgetBeingScanned);
 		
@@ -145,6 +148,7 @@ public class ScanManager {
 	 */
 	private static void fireAllScansCompleteMessage() {
 		Gdx.app.log(logstag, " All Scans Complete  ");
+		MainExplorationView.infoPopUp.displayMessage("All Scans Complete");
 	}
 
 	/**
@@ -153,7 +157,7 @@ public class ScanManager {
 	private static void fireScanCompleteMessage() {
 		
 		Gdx.app.log(logstag, " Scans Complete  ");
-		
+		MainExplorationView.infoPopUp.displayMessage("Scans Complete");
 	}
 
 	/**
@@ -162,6 +166,11 @@ public class ScanManager {
 	private static void fireNewScanStartedMessage() {
 
 		Gdx.app.log(logstag, " New Scan Started total scans =  "+activeScans.size());
+		
+		MainExplorationView.infoPopUp.displayMessage("New Scan Started");
+		MainExplorationView.infoPopUp.displayMessage("Total scans = "+activeScans.size());
+		
+		
 	}
 
 	/**
@@ -169,7 +178,9 @@ public class ScanManager {
 	 */
 	private static void fireToManyActiveScansWarning() {
 		Gdx.app.log(logstag, " To Many Simultanious Scans To Start Another ("+activeScans.size()+" of "+maxSimultaniousScans+")");
-				
+		
+		MainExplorationView.infoPopUp.displayMessage(" To Many Simultanious Scans To Start Another");
+		MainExplorationView.infoPopUp.displayMessage("("+activeScans.size()+" of "+maxSimultaniousScans+")");
 	}
 	
 	

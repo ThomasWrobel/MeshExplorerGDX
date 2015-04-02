@@ -62,7 +62,7 @@ public class ME extends Game {
 	static ME game;
     static public Inventory playersInventory;   
 
-	static public SpriteBatch batch;
+	static public SpriteBatch interfaceSpriteBatch;
     public static BitmapFont font;  
     static MainMenuScreen menu;
     
@@ -77,7 +77,7 @@ public class ME extends Game {
     	font = new BitmapFont();//Gdx.files.internal("data/dfield.fnt"), new TextureRegion(texture), false);
     	
     //	font = new BitmapFont();
-    	batch = new SpriteBatch();
+    	interfaceSpriteBatch = new SpriteBatch();
 
 
     	

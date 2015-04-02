@@ -1,0 +1,19 @@
+Rough description;
+
+The researcher is a sophisticated tool that breaks down, looks for patturns, and makes deducations about any concept node
+you give it.
+The researcher tools technical name is Proffessor Pickles. 
+
+To use the research tool, simply dump a node onto the research square and hit start research.
+The research will start to be proccessed till its done.
+If you have the capcity too, you can start another bit of research at the same time and it will appear below.
+
+Once done, a new node will be added under the correct catagory which you can click on for details
+
+Implementation;
+
+One drop target with some labeled progress bars under it.
+The option for more simultanious research gets unlocked if you find more skilled people to help.
+Like scanning, multiple people on one task is quicker then spreading them out.
+
+

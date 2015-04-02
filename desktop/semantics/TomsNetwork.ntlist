@@ -16,6 +16,7 @@ http://darkflame.co.uk/semantics/darksnet.ntlist#DarkflamesFarOutpost rdfs:subCl
 
 BobsOutpost me:populatedBy smallInfovorPopulation.
 alicespc me:populatedBy smallInfovorPopulation.
+MysteriousGateway me:populatedBy tinyInfovorPopulation.
 
 smallInfovorPopulation rdfs:subClassOf me:population.
 smallInfovorPopulation me:quantity 10.
@@ -23,7 +24,7 @@ smallInfovorPopulation me:anydrop Human.
 smallInfovorPopulation me:exactdrop Apple.
 smallInfovorPopulation me:anydrop Fish.
 smallInfovorPopulation me:killedon "fruit".
-smallInfovorPopulation me:hitPoints 10.
+smallInfovorPopulation me:hitPoints 7.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #003300.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #005522.
 smallInfovorPopulation http://dbpedia.org/ontology/Colour #11BB00.
@@ -35,7 +36,7 @@ smallInfovorPopulation http://dbpedia.org/ontology/Colour Blue.
 bigInfovorPopulation rdfs:subClassOf me:population.
 bigInfovorPopulation me:quantity 80.
 bigInfovorPopulation me:killedon "Color=yellow".
-bigInfovorPopulation me:hitPoints 7.
+bigInfovorPopulation me:hitPoints 5.
 bigInfovorPopulation me:fromRadius 10.
 bigInfovorPopulation me:toRadius 80.
 bigInfovorPopulation me:atHeight 65.
@@ -43,6 +44,18 @@ bigInfovorPopulation http://dbpedia.org/ontology/Colour #FF3300.
 bigInfovorPopulation http://dbpedia.org/ontology/Colour #FF5522.
 
 
+tinyInfovorPopulation rdfs:subClassOf me:population.
+tinyInfovorPopulation me:quantity 4.
+tinyInfovorPopulation me:killedon "Color=yellow".
+tinyInfovorPopulation me:hitPoints 3.
+tinyInfovorPopulation me:fromRadius 10.
+tinyInfovorPopulation me:toRadius 30.
+tinyInfovorPopulation me:atHeight -35.
+tinyInfovorPopulation me:exactdrop word_end.
+tinyInfovorPopulation me:exactdrop word_of.
+tinyInfovorPopulation me:exactdrop word_the.
+tinyInfovorPopulation me:exactdrop word_game.
+tinyInfovorPopulation http://dbpedia.org/ontology/Colour #3333EE.
 
 profpp me:connectedTo BobsOutpost.
 profpp me:connectedTo alicespc. 
@@ -53,7 +66,8 @@ thecatspc me:connectedTo alicespc.
 BobsOutpost me:connectedTo me:everyone.
 MysteriousGateway me:connectedTo profpp. 
 LinguisticsStore me:connectedTo ProfPPResearch. 
-
+MysteriousGateway me:connectedTo me:everyone.
+ 
 BobsOutpost http://dbpedia.org/ontology/Colour Green.
 thecatspc http://dbpedia.org/ontology/Colour Orange.
 alicespc http://dbpedia.org/ontology/Colour Cyan.
@@ -75,6 +89,10 @@ thecatspc me:SecuredBy VertFirewall.
 VertFirewall rdfs:subClassOf  me:Security.
 VertFirewall me:queryPass "Alive Chordate".	
 
+MysteriousGateway me:SecuredBy endGateway.
+endGateway rdfs:subClassOf  me:Security.
+endGateway me:queryPass "me:word_end","me:word_of","<node:the>","word_game".	
+
 
 "Home of the worlds first cyptro-encryptologiest. Me." me:DescriptionOf alicespc.
 
@@ -91,6 +109,7 @@ bobspcmessages.txt me:ison BobsOutpost.
 
 bobspccontents.txt rdfs:subClassOf me:software.
 bobspccontents.txt me:ison BobsOutpost.
+
 
 "My hub of new frontier research" me:DescriptionOf profpp.
 
@@ -125,6 +144,14 @@ LinguisticsStore me:populatedBy bigInfovorPopulation.
 isApple.txt rdfs:subClassOf Apple.
 isFruit.txt rdfs:subClassOf Fruit.
 isAlive.txt rdfs:subClassOf Alive. 
+
+isDeterminer.txt rdfs:subClassOf Determiner.
+isNoun.txt rdfs:subClassOf Noun.
+isPreposition.txt rdfs:subClassOf Preposition.
+
+isDeterminer.txt rdfs:subClassOf me:software.
+isNoun.txt rdfs:subClassOf me:software.
+isPreposition.txt rdfs:subClassOf me:software.
 
 Chordate rdfs:subClassOf Alive. 
 isChordates.txt rdfs:subClassOf Chordate.

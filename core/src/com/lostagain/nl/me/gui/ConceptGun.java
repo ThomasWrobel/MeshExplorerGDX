@@ -227,6 +227,9 @@ public class ConceptGun  extends WidgetGroup {
 	/** updates the ray style based on the drop (ie, its nodes color= property if any)**/
 	private void updateRayStyle(DataObject drop) {
 
+		MainExplorationView.infoPopUp.displayMessage(" Concept Ammo Loaded:"+drop.itemsnode.getPLabel());
+		
+		
 		//get all objects property
 		SSSNode node = drop.itemsnode;
 

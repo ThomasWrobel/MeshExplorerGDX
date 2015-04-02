@@ -47,11 +47,6 @@ public class Creature implements hitable {
 	
 	final static int zPlane = 70; //the horizontal plane the creatures exist on. should be used for all z values in positions.
 	
-	//current location
-	//float x = 0;
-	//float y = 0;
-	//float z = 0;
-	//
 	/**
 	 * the starting location of the creature 
 	 */
@@ -192,12 +187,18 @@ public class Creature implements hitable {
 	public void setColor(Color newcol){
 
 		ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
-
 		attribute.color.set(newcol);
+		
 		crearturesColor = newcol;
 		
 	}
 
+	public void setHitColor(Color newcol){
+
+		
+		hitColor = newcol;
+		
+	}
 
 	@Override
 	public void fireTouchDown() {
@@ -342,17 +343,29 @@ public class Creature implements hitable {
 	//	float r = (float) Math.random();
 	//	float g = (float) Math.random();
 	//	float b = (float) Math.random();
-		Color col =  new Color();
-		
+		Color col =  new Color();		
+
+		Gdx.app.log(logstag,"_________creature before col="+col.toString());
 		col = crearturesColor.mul(new Color(1.1f,1.1f,1.1f,1.0f));
+	//	Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );		
+		
+				
+		setColor(col);
+
+		Gdx.app.log(logstag,"_________creature after col="+crearturesColor.toString());
+		
+		Color newhitcol =  new Color();		
+		newhitcol = hitColor.mul(new Color(1.1f,1.1f,1.1f,1.0f));
 		
 		
-	//	Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );
-		
+	//	Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );		
 		
 		Gdx.app.log(logstag,"_________creature col="+col.toString());
 				
-		setColor(col);
+		setHitColor(newhitcol);
+		
+		
+		
 		//attribute.color.set(col) ;
 		
 		

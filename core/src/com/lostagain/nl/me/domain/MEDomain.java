@@ -38,9 +38,6 @@ public class MEDomain {
 	
 	String  DomainsDataBaseURL = "";
 
-
-
-
 	Rectangle coversArea;//= new Rectangle(0,0,50,50); //defines the area this domain covers
 	
 	ColourMap domainsColourMap;
