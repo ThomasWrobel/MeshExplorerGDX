@@ -54,9 +54,11 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera {
         sycnTransform();
     }
 
-    /** should be called after ANY set of change to its transState before it will be reflected in the model visualy
+    /** 
+     * Should be called after ANY set of change to its transState before it will be reflected in the model visually
      * This can be heavily optimized by not calling the super.update at all, but rather combining it into this function
-     * Note the overlay with the way the direction and up is set**/
+     * Note the overlay with the way the direction and up is set
+     * **/
     public void sycnTransform() {
     
     	super.position.set(transState.position);

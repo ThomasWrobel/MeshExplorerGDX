@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewMoveTo;
 import com.lostagain.nl.me.newmovements.NewMovementController;
@@ -26,7 +27,11 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
 /**
  * Home to all game camera control functions
  * 
- * Eventually all camera movement should be handled here, as well as changes to the overlay effect to corispond with enviroment
+ * Eventually all camera movement should be handled here, as well as changes to the overlay effect to correspond with environment
+ * 
+ * 
+ * TODO: Make camera visible somehow when in debug mode
+ * Probably need to use a cube with sycned position
  * 
  * 
  * @author Tom
@@ -37,7 +42,11 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	
 	public static EffectOverlay mainOverlay= new EffectOverlay();
 	public static CameraBackground background= new CameraBackground();
-	AnimatableModelInstance testattachment;
+	
+	public static CameraVisualiser cameraVisualiserCube = new CameraVisualiser(); //sphere for now just to test
+	
+	
+	//AnimatableModelInstance testattachment;
 	
 	Matrix4 startingLocation = new Matrix4();
 
@@ -68,7 +77,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		setupDummyCam();
         addDefaultCameraAttachments();
 		
-		
+        
 		//---------
 		
 		//setToPosition(MainExplorationView.currentPos);
@@ -83,6 +92,13 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		//overlay and background
 		super.attachThis(mainOverlay, new PosRotScale(0f, 0f, -5f));
 		super.attachThis(background, new PosRotScale(0f, 0f, -600f));
+		
+		//add the default visualizer to help show where the camera is
+		ModelManagment.addmodel(cameraVisualiserCube,ModelManagment.RenderOrder.infrontStage);		
+		
+		PosRotScale camVisPlacement = new PosRotScale(0f,0f,0f);
+		camVisPlacement.setToRotation(1, 0, 0, 180); //rotate it so one axis points forward
+		super.attachThis(cameraVisualiserCube, camVisPlacement);
 		
 		
 		/// X/Y/Z marker to help debug
@@ -113,7 +129,9 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	 */
 	public void removeAllDefaultAttachments(){
 						
-		ModelManagment.removeModel(testattachment);
+		ModelManagment.removeModel(mainOverlay);
+		ModelManagment.removeModel(background);
+		ModelManagment.removeModel(cameraVisualiserCube);
 		
 	}
 

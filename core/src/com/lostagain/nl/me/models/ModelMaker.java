@@ -97,11 +97,8 @@ public class ModelMaker {
 		newtest4.set(corner4, testnorm, Color.WHITE, new Vector2(1f,0f));
 		
 		meshBuilder.rect(newtest1, newtest2, newtest3, newtest4);
-	 
 		
-
 		Model model = modelBuilder.end();
-		
 		
 
 		return model;
@@ -141,7 +138,12 @@ public class ModelMaker {
 		return newline;
 	}
 
-	static public ModelInstance createSphere(float radius){
+	static public ModelInstance createSphere(float radius){		
+		return new ModelInstance(createSphereModel(radius));
+		
+	}
+	
+	public static Model createSphereModel(float radius) {
 		
 		ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -151,15 +153,13 @@ public class ModelMaker {
 				new BlendingAttribute(1f), 
 				FloatAttribute.createShininess(16f));
 
-		modelBuilder.begin();
+		//modelBuilder.begin();
 		Model model =  modelBuilder.createSphere(radius, radius, radius, 20, 20,
 						blob,Usage.Position | Usage.Normal | Usage.TextureCoordinates );
-	
 		
-		return new ModelInstance(model);
 		
+		return model;
 	}
-
 	/**
 	 * This object is intended to be a centerpiece of the co-ordinate system.
 	 * Useful for debugging, but should not be removed totally as ModelManagement demands a single defaultshaded objected created before everything
@@ -174,7 +174,13 @@ public class ModelMaker {
 		//note; maybe these things could be pre-created and stored rather then a new one each time?
 		Model model =  modelBuilder.createXYZCoordinates(125f, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		
+		
+		
+		
 		return new ModelInstance(model);
 	}
+
+
+
 	
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
 import com.lostagain.nl.MainExplorationView;
 
@@ -179,8 +180,8 @@ public class ScanManager {
 	private static void fireToManyActiveScansWarning() {
 		Gdx.app.log(logstag, " To Many Simultanious Scans To Start Another ("+activeScans.size()+" of "+maxSimultaniousScans+")");
 		
-		MainExplorationView.infoPopUp.displayMessage(" To Many Simultanious Scans To Start Another");
-		MainExplorationView.infoPopUp.displayMessage("("+activeScans.size()+" of "+maxSimultaniousScans+")");
+		MainExplorationView.infoPopUp.displayMessage(" To Many Simultanious Scans To Start Another",Color.RED);
+		MainExplorationView.infoPopUp.displayMessage("("+activeScans.size()+" of "+maxSimultaniousScans+")",Color.RED);
 	}
 	
 	

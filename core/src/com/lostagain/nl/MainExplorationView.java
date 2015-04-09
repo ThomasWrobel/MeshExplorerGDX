@@ -748,6 +748,74 @@ public class MainExplorationView implements Screen {
 				currentPos.y = (float) (currentPos.y+(MotionDisY*delta));
 			}
 		}
+		
+		//if not on debug handle the movements
+		if (!debugCamera.active){
+			handleStandardCameraInputs();
+		} else {
+			debugCamera.handleInput();
+		}
+		
+		if (Gdx.input.isKeyPressed(Keys.Q))
+		{        	
+			debugCamera.setActive(!debugCamera.active);
+			
+			infoPopUp.displayMessage("DEBUG CAMERA:"+debugCamera.active,Color.RED);
+			
+			
+
+		}
+			
+		if (!Gdx.input.isButtonPressed(Buttons.LEFT) && LeftButtonDown){
+			
+			//Old_Inventory.dropHeldItem();
+			LeftButtonDown=false;
+		}
+		
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)){	
+			
+			LeftButtonDown=true;
+		}
+
+		//now update the gui
+
+		guiStage.act(Gdx.graphics.getDeltaTime());
+		guiStage.draw();
+
+
+		// begin a new batch (for interface text and the cursor)		
+		
+		ME.interfaceSpriteBatch.begin();
+		
+
+  		//gameStage.getBatch().setShader(program);
+  		//ME.batch.setShader(program);
+		
+		//update displayed info for messages being popped up.
+		infoPopUp.update(delta);
+  		
+		if (customCursor!=null){
+
+			float xc = Gdx.input.getX();
+			float yc = -Gdx.input.getY()+gameStage.getHeight();
+
+			ME.interfaceSpriteBatch.draw(customCursor, (xc-(customCursor.getWidth()/2)), (yc-(customCursor.getHeight()/2)));
+
+	//		Gdx.app.log(logstag,"customCursor.."+xc+","+yc+" height="+ (customCursor.getHeight()/2));
+			
+			
+		}
+
+		//    game.font.draw(game.batch, "Drops Collected:: " + dropsGathered, 0, 480);
+		ME.font.draw( ME.interfaceSpriteBatch, "X:: " + currentPos.x+" Y:: " + currentPos.y+"...."+dragging+"(x="+drag_dis_x+",y="+drag_dis_y+")", 10,45);
+		ME.font.draw( ME.interfaceSpriteBatch, "Z:: " + currentPos.z, 10, 25);
+
+		//    game.batch.draw(bucketImage, bucket.x, bucket.y);
+		ME.interfaceSpriteBatch.end();
+
+	}
+
+	private void handleStandardCameraInputs() {
 		if (Gdx.input.isKeyPressed(Keys.P))
 		{
 			camera.rotate(new Vector3(0, 1,0),3);       	
@@ -803,60 +871,7 @@ public class MainExplorationView implements Screen {
 			}*/
 		}
 		
-		if (Gdx.input.isKeyPressed(Keys.DEL))
-		{        	
-			debugCamera.setActive(!debugCamera.active);
-
-		}
-		
-		
-		if (!Gdx.input.isButtonPressed(Buttons.LEFT) && LeftButtonDown){
-			
-			//Old_Inventory.dropHeldItem();
-			LeftButtonDown=false;
-		}
-		
-		if (Gdx.input.isButtonPressed(Buttons.LEFT)){	
-			
-			LeftButtonDown=true;
-		}
-
-		//now update the gui
-
-		guiStage.act(Gdx.graphics.getDeltaTime());
-		guiStage.draw();
-
-
-		// begin a new batch (for interface text and the cursor)		
-		
-		ME.interfaceSpriteBatch.begin();
-		
-
-  		//gameStage.getBatch().setShader(program);
-  		//ME.batch.setShader(program);
-		
-		//update displayed info for messages being popped up.
-		infoPopUp.update(delta);
-  		
-		if (customCursor!=null){
-
-			float xc = Gdx.input.getX();
-			float yc = -Gdx.input.getY()+gameStage.getHeight();
-
-			ME.interfaceSpriteBatch.draw(customCursor, (xc-(customCursor.getWidth()/2)), (yc-(customCursor.getHeight()/2)));
-
-	//		Gdx.app.log(logstag,"customCursor.."+xc+","+yc+" height="+ (customCursor.getHeight()/2));
-			
-			
-		}
-
-		//    game.font.draw(game.batch, "Drops Collected:: " + dropsGathered, 0, 480);
-		ME.font.draw( ME.interfaceSpriteBatch, "X:: " + currentPos.x+" Y:: " + currentPos.y+"...."+dragging+"(x="+drag_dis_x+",y="+drag_dis_y+")", 10,45);
-		ME.font.draw( ME.interfaceSpriteBatch, "Z:: " + currentPos.z, 10, 25);
-
-		//    game.batch.draw(bucketImage, bucket.x, bucket.y);
-		ME.interfaceSpriteBatch.end();
-
+	
 	}
 
 	@Override
@@ -865,9 +880,7 @@ public class MainExplorationView implements Screen {
 
 		Gdx.app.log(logstag,"resizeing to.."+width+","+height);
 		
-		camera.removeAllDefaultAttachments();//clean up first
-		//camera = new MECamera(60,width,height);
-		
+		//ensure params are reset
 		camera.fieldOfView = 60;
 		camera.viewportWidth = width;
 		camera.viewportHeight = height;

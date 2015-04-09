@@ -303,8 +303,12 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 
 
 	public void setSTMemVisible(boolean visible){
+		
+		MainExplorationView.infoPopUp.displayMessage("Gained STMemory Ability!",Color.GREEN);
+		
 
 		Gdx.app.log(logstag,"setSTMemVisible set to:"+visible);
+		
 		if (mySTMemory.isVisible!=true){
 			mySTMemory.isVisible=visible;
 			needsRepopulating = true;
@@ -316,7 +320,10 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 
 	public void setmyCGunVisible(boolean visible){
 
+		MainExplorationView.infoPopUp.displayMessage("Gained ConceptGun Ability!",Color.GREEN);
+		
 		Gdx.app.log(logstag,"setmyCGunVisible set to:"+visible);
+		
 		if (myCGun.isVisible!=true){
 			myCGun.isVisible=visible;
 			needsRepopulating = true;

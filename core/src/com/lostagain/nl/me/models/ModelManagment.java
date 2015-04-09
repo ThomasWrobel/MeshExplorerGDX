@@ -93,9 +93,25 @@ public class ModelManagment {
 
 	}
 
-	public static void removeModel(ModelInstance model) {
-		allBackgroundInstances.removeValue(model,true);
-		allForgroundInstances.removeValue(model,true);
+	/**
+	 * removes the model from the render lists, and returns where it was in the render order (either forground or background)
+	 * @param model
+	 * @return 
+	 */
+	public static RenderOrder removeModel(ModelInstance model) {		
+		Boolean wasInForground = allBackgroundInstances.removeValue(model,true);
+		
+		if (wasInForground){
+			return RenderOrder.behindStage;			
+		}
+		
+		Boolean wasInBackground= allForgroundInstances.removeValue(model,true);
+		
+		if (wasInBackground){
+			return RenderOrder.infrontStage;			
+		}
+		
+		return null;
 	}
 
 /**

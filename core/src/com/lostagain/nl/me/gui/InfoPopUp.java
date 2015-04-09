@@ -53,12 +53,22 @@ public class InfoPopUp {
 		}
 	}
 	
-	
+	/**
+	 * Adds a new white message to appear in the corner for a short period
+	 * 
+	 * @param message
+	 */
 	public void displayMessage(String message)
 	{
 		displayMessage(message, Color.WHITE);		
 	}
 
+	/**
+	 * Adds a new message to appear in the corner for a short period
+	 * 
+	 * @param message
+	 * @param color
+	 */
 	public void displayMessage(String message, Color color)
 	{
 		MessageObject newmessage = new MessageObject(message,color);		
@@ -129,10 +139,9 @@ public class InfoPopUp {
 			}
 
 			break;
+			
 		case hidden:
-
 			//do nothing
-
 			break;		
 		}
 
@@ -155,19 +164,20 @@ public class InfoPopUp {
 		float spacing = (ME.font.getCapHeight())+3;
 		float startHeight = totalmessages * spacing;
 		float stageWidth = MainExplorationView.guiStage.getWidth();
-		
-
-		
+				
 		int i =0;
 		for (MessageObject messageObj : currentMessagess) {
 
 			i++;
 			
 			String message = messageObj.messageText;
+			Color c = messageObj.messageColor;
+			
+			ME.font.setColor(c.r, c.g,c.b, opacity);
 			
 			float stringWidth = ME.font.getBounds(message).width;
 			
-			ME.font.draw( ME.interfaceSpriteBatch,message,stageWidth-stringWidth-10, 45+(startHeight-(i*spacing)));
+			ME.font.draw( ME.interfaceSpriteBatch,message,stageWidth-stringWidth-10, 15+(startHeight-(i*spacing)));
 
 		}		
 

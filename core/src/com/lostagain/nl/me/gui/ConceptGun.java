@@ -65,7 +65,7 @@ public class ConceptGun  extends WidgetGroup {
 	static int MaxComplexityLevel = 2; //will be used to determine how complex the equipped class can be
 	static float FireFrequency = 2.5f;//means the gun will actually hit targets at this frequency per sec regardless of visual effect (you should ensure your visuals are sycned to this)
 	//size
-	static int width = 3;
+	static int width = 50; //3
 	
 	public static SSSNode equipedConcept = null; //the currently equipped concept. Think of it as ammo
 
@@ -347,7 +347,7 @@ public class ConceptGun  extends WidgetGroup {
 			//new method we just create a rectangle then rotate/set its position ourselves
 			float hw = width/2.0f;
 			//float height = Math.abs(fy  - cursor_on_stage.y);
-			float height = 50f; //Gdx.graphics.getHeight()*1.1f; //always do it a bit bigger to allow for movements
+			float height = 300f;//50f; //Gdx.graphics.getHeight()*1.1f; //always do it a bit bigger to allow for movements
 			
 			//note we offset its creation points by the beam center offset
 			//this means the "center" of the rectangle is where the beam effect his and can be adjusted easily to match any change inthe graphic effect
@@ -435,15 +435,17 @@ public class ConceptGun  extends WidgetGroup {
 				//setup fake camera to work this out (note; really stupid but I struggled with the maths)
 				Ray ray = MainExplorationView.camera.getRelativePickRay(fromPoint.x,fromPoint.y);
 								
+				float displaceFromCameraZ = -150f; //-10f
+				
 				//we need a plane at the distance of the lazer
-				Plane testplane = new Plane(new Vector3(0f, 0f,-1f),-10f);//MainExplorationView.camera.direction.rotate(new Vector3(0f, 0f,1f),90),-50f);
+				Plane testplane = new Plane(new Vector3(0f, 0f,-1f),displaceFromCameraZ);//MainExplorationView.camera.direction.rotate(new Vector3(0f, 0f,1f),90),-50f);
 			
 				Vector3 intersection = new Vector3();
 				Intersector.intersectRayPlane(ray, testplane, intersection);
 				//Gdx.app.log(logstag,"_intersection "+foundinc+" = "+intersection.toString());
 				
 			
-				lazerbeamdisplacement.setToPosition(new Vector3(intersection.x,intersection.y,-10));
+				lazerbeamdisplacement.setToPosition(new Vector3(intersection.x,intersection.y,	displaceFromCameraZ));
 				
 				//set rotation				
 				fromPoint.sub(tooPoint);

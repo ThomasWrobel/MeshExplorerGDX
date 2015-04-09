@@ -34,7 +34,7 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
 public class DebugCamera extends AnimatablePerspectiveCamera {
 	final static String logstag = "ME.DebugCamera";
 
-	AnimatableModelInstance testattachment;
+	//AnimatableModelInstance testattachment;
 
 	Matrix4 startingLocation = new Matrix4();
 
@@ -149,15 +149,15 @@ public class DebugCamera extends AnimatablePerspectiveCamera {
 		{
 			this.rotate(new Vector3(0, 1,0),3);       	
 		}
+		
 		if (Gdx.input.isKeyPressed(Keys.L))
 		{
 			this.rotate(new Vector3(0, 1,0),-3);       	
 		}
+		
 		if (Gdx.input.isKeyPressed(Keys.LEFT))
 		{
-			transState.position.x = transState.position.x-(200* Gdx.graphics.getDeltaTime());    
-			
-			
+			transState.position.x = transState.position.x-(200* Gdx.graphics.getDeltaTime());  
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.RIGHT))
@@ -166,8 +166,7 @@ public class DebugCamera extends AnimatablePerspectiveCamera {
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.UP))
-		{
-			
+		{			
 		//	camera.setTargetPosition(currentPos);
 			transState.position.y = transState.position.y+(200* Gdx.graphics.getDeltaTime());
 		}
@@ -179,7 +178,7 @@ public class DebugCamera extends AnimatablePerspectiveCamera {
 		if (Gdx.input.isKeyPressed(Keys.Z))
 		{
 			transState.position.z = transState.position.z+(150* Gdx.graphics.getDeltaTime()); 
-/*
+			/*
 			if ( currentmode == cammode.ortha){
 			//	CurrentZoom = CurrentZoom +(2* Gdx.graphics.getDeltaTime()); 
 
@@ -201,6 +200,8 @@ public class DebugCamera extends AnimatablePerspectiveCamera {
 				
 			}*/
 		}
+
+	//	MainExplorationView.infoPopUp.displayMessage("DEBUG CAMERAupdated");
 		
 		this.sycnTransform();
 	}
