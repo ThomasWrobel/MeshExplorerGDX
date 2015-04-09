@@ -34,8 +34,6 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
 public class DebugCamera extends AnimatablePerspectiveCamera {
 	final static String logstag = "ME.DebugCamera";
 
-	//AnimatableModelInstance testattachment;
-
 	Matrix4 startingLocation = new Matrix4();
 
 	static int defaultFieldOfView = 60;
@@ -49,6 +47,13 @@ public class DebugCamera extends AnimatablePerspectiveCamera {
 	
 	public void setActive(boolean active) {
 		this.active = active;
+		
+		//hide or show the main cameras visualizer based on if this DebugCamera is active or not
+		if (active){
+			MainExplorationView.camera.showCameraVisualizer();
+		} else {
+			MainExplorationView.camera.hideCameraVisualizer();
+		}
 	}
 
 
@@ -189,7 +194,7 @@ public class DebugCamera extends AnimatablePerspectiveCamera {
 			}*/
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.A) && transState.position.z>0.5)
+		if (Gdx.input.isKeyPressed(Keys.A) && transState.position.z>-0.5)
 		{        	
 			transState.position.z = transState.position.z-(150* Gdx.graphics.getDeltaTime());
 /*

@@ -43,10 +43,10 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	public static EffectOverlay mainOverlay= new EffectOverlay();
 	public static CameraBackground background= new CameraBackground();
 	
-	public static CameraVisualiser cameraVisualiserCube = new CameraVisualiser(); //sphere for now just to test
+	public static CameraVisualiser cameraVisualiserCube = new CameraVisualiser(); 
 	
 	
-	//AnimatableModelInstance testattachment;
+	//AnimatableModelInstance test attachment;
 	
 	Matrix4 startingLocation = new Matrix4();
 
@@ -73,16 +73,9 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		far=1900.0f;
 		movement = new NewMovementController(new PosRotScale(this.view));
 		
-
 		setupDummyCam();
         addDefaultCameraAttachments();
 		
-        
-		//---------
-		
-		//setToPosition(MainExplorationView.currentPos);
-		
-	//	setTargetPosition(MainExplorationView.zoomToAtStartPos);
 	}
 
 
@@ -91,7 +84,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		
 		//overlay and background
 		super.attachThis(mainOverlay, new PosRotScale(0f, 0f, -5f));
-		super.attachThis(background, new PosRotScale(0f, 0f, -600f));
+		super.attachThis(background, new PosRotScale(0f, 0f, -80f)); //note; thanks to draw order shenanigans, the background will be drawn behind everything regardless of distance.
 		
 		//add the default visualizer to help show where the camera is
 		ModelManagment.addmodel(cameraVisualiserCube,ModelManagment.RenderOrder.infrontStage);		
@@ -99,6 +92,10 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		PosRotScale camVisPlacement = new PosRotScale(0f,0f,0f);
 		camVisPlacement.setToRotation(1, 0, 0, 180); //rotate it so one axis points forward
 		super.attachThis(cameraVisualiserCube, camVisPlacement);
+				
+		//hide visualizer by default
+		hideCameraVisualizer();
+		
 		
 		
 		/// X/Y/Z marker to help debug
@@ -271,5 +268,14 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	 */
 	public Ray getRelativePickRay(float x, float y) {
 		return dummycam.getPickRay(x,y);
+	}
+	
+	
+	public void hideCameraVisualizer(){
+		cameraVisualiserCube.hide();
+	}
+	
+	public void showCameraVisualizer(){
+		cameraVisualiserCube.show();
 	}
 }

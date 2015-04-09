@@ -23,6 +23,7 @@ import com.lostagain.nl.me.creatures.Population.destructOn;
 import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.STMemory;
+import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
@@ -38,11 +39,10 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.me.objects.DataObject;
 import com.lostagain.nl.uti.Uti;
 
-public class Creature implements hitable {
-
-
+public class Creature implements hitable , Animating {
 	private static String logstag="ME.Creature";
 	
+	/** The modelInstance that defines this creature **/
 	AnimatableModelInstance creaturemodel;
 	
 	final static int zPlane = 70; //the horizontal plane the creatures exist on. should be used for all z values in positions.
@@ -87,9 +87,7 @@ public class Creature implements hitable {
 	
 	//base color
 	Color crearturesColor = Color.WHITE;
-		
-
-		
+			
 	//lighter color for when clicked on
 	Color hitColor = Color.GREEN.cpy().add(.5f, .5f, .5f, 1f);
 	
@@ -97,20 +95,49 @@ public class Creature implements hitable {
 	int hitradius = 30;
 	
 	float lastHitDistance = -1f; //no hit by default
+	
+	//----------------------------------------------------------------------------------------------------------
+	//Below defines the settings for handling frame based animations (ie, related to image changes not movement)
+	//
+	/** 
+	 * Defines various animations that can be performed on this creatures image. 
+	 * Currently only damage taken is used.
+	 * Also defines the durations of each in the brackets. 
+	 **/
+	enum CreatureAnimationType {
+		none(-1),
+		damageTaken(200), //currently goes to white instantly and fades back to the creatures normal color over 200frames
+		beingDestroyed(100),
+		appearing(50);
+		
+		private final float duration; // in float
+		
+		CreatureAnimationType (float duration) {
+	        this.duration = duration;
+	    }
+		/** The total duration this animation should take **/
+	    public float duration() { return duration; }
+	    
+	}
+	
+	/** The currently playing sprite animation, none by default. (Note; This is no the movement, only frame changes) **/
+	CreatureAnimationType currentlyPlayingAnimation = CreatureAnimationType.none;
+	
+	/** The time we are into the currently playing animation, messured in seconds ***/
+	float currentAnimationTime = 0.0f;
+	//
+	//-----------------------------------------------------------------------------------------------------------
+	
 
 	public Creature(Population parentPopulation, int hitPoints, String queryToDestroy, destructOn destructionType) {
 		
-		
 		//this.x=x;
 		//this.y=y;
-		this.parentpolution=parentPopulation;
-		
-
+		this.parentpolution=parentPopulation;		
 		this.destructionType = destructionType;
 		this.numOfHitsLeft = hitPoints;
 		this.queryToDestroy = queryToDestroy;
-		
-		
+				
 	}
 
 
@@ -332,7 +359,10 @@ public class Creature implements hitable {
 		}
 	}
 	
-	/** runs the animation of this creature getting damaged **/
+	/** Runs the standard animation of this creature getting damaged.
+	 * Can be overridden by subtypes for different effects.
+	 * 
+	 *  This effect will grow the creature and make it glow white for a short period **/
 	protected void damaged() {
 
 		Gdx.app.log(logstag,"_________creature damaged");
@@ -400,7 +430,15 @@ public class Creature implements hitable {
 			
 			
 		}, (durationOfEnlargement+250)/1000); //the movement should start again shortly after the enlargement ends. We devide by 1000 as Timer.schedule needs the time in seconds, not ms 
+				
 		
+		//new trigger animation (which currently is just a tint transition)
+		currentlyPlayingAnimation = CreatureAnimationType.damageTaken;		
+		//reset the time into the current animation (all animations start from 0)
+		currentAnimationTime = 0f;					 
+		//add to animation list which updates frames based on delta
+		//the updateAnimationFrame function will remove it from this list when the animation is finished.
+		//(that is, when currentAnimationTime = the animations duration defined in its enum)
 		
 		
 	}
@@ -497,22 +535,57 @@ public class Creature implements hitable {
 		
 		if (movementControll!=null && movementControll.isMoving()){
 			
-			
-			
-			creaturemodel.setTransform(movementControll.getUpdate(delta));
-			
+			creaturemodel.setTransform(movementControll.getUpdate(delta));			
 			
 			//Matrix4 displacementFromOrigin = movementControll.getUpdate(delta).cpy();		
 			//creaturemodel.transform =  displacementFromOrigin;//.mul(currerntScale); // displacementFromOrigin;// .scl(currerntScale); //origin.cpy().mul(displacementFromOrigin);
-		
-			//Gdx.app.log(logstag, "_______________current size="+creaturemodel.transform .getScaleX()+","+creaturemodel.transform .getScaleY()+","+creaturemodel.transform .getScaleZ()+")");
+		    //Gdx.app.log(logstag, "_______________current size="+creaturemodel.transform .getScaleX()+","+creaturemodel.transform .getScaleY()+","+creaturemodel.transform .getScaleZ()+")");
 			
-		}
-		
+		}		
 		
 	}
 
 
+
+	/**
+	 * Updates the current animation frame, which in this case means color by default
+	 * 
+	 * @param delta - The time in seconds since the last render. 
+	 */
+	public void updateAnimationFrame(float delta){
+			
+		//add the The time in seconds since the last render to the current animation time
+		currentAnimationTime = currentAnimationTime + delta;
+		
+		switch (currentlyPlayingAnimation){
+		
+		case appearing:
+			break;
+		case beingDestroyed:
+			break;
+			
+		case damageTaken:
+			//the animation change that happens while damage is taken
+			
+			
+			
+			break;
+		case none:
+			break;
+		default:
+			break;
+		
+		}
+		
+		//If we are at the end of the frame animation we remove from the animated object sets
+		//and set the animation playing to none
+		if (currentAnimationTime>currentlyPlayingAnimation.duration()){
+			currentAnimationTime=0.0f; //reset time ready for next animation
+			currentlyPlayingAnimation=CreatureAnimationType.none; //set animation playing to none
+			ModelManagment.removeAnimating(this);//remove it from the animation list (which is what triggers this updateanimationFrame function			
+		}
+		
+	}
 
 
 	public void addDrop(SSSNode drop) {

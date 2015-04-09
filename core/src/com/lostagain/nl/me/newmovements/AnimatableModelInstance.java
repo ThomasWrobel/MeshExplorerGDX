@@ -85,15 +85,21 @@ public class AnimatableModelInstance extends ModelInstance {
 		currentRenderPlacement = ModelManagment.removeModel(this);	
 		
 		//we also hide things positioned relatively to this
-		//(not yet implemented)
+		for (AnimatableModelInstance object : attachlist.keySet()) {
+			object.hide();
+		}
 	}
 
 	/** shows it by adding it to the render lists.
 	 * This only works if it was previously hidden. It should currently be added manually once first so it knows its render order setting
 	 * This might change in future **/
 	public void show(){		
-		ModelManagment.addmodel(this,currentRenderPlacement);		
+		ModelManagment.addmodel(this,currentRenderPlacement);
 		
+		//we also show things positioned relatively to this
+		for (AnimatableModelInstance object : attachlist.keySet()) {
+			object.show();
+		}
 	}
 	
 	

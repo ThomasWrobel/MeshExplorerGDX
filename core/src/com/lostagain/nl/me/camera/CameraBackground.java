@@ -19,19 +19,19 @@ import com.lostagain.nl.shaders.PrettyBackground;
 public class CameraBackground extends AnimatableModelInstance {
 
 	//public static ModelInstance CameraOverlay = null;
-	static int w = 4000;
-	static int h = 4000;
+	static int w = 1000;
+	static int h = 1000;
 	
 
     static Material defaultMat = new Material( new DepthTestAttribute(0, false),ColorAttribute.createDiffuse(Color.MAROON));
     
     
 	public CameraBackground() {		
-		super(MessyModelMaker.createRectangle(0-(w/2), 0-(w/2), 0+(w/2),0+(h/2), -910, Color.BLACK, defaultMat));
+		super(MessyModelMaker.createRectangle(0-(w/2), 0-(w/2), 0+(w/2),0+(h/2), 0, Color.BLACK, defaultMat)); //z was -910
 			
 		//CameraOverlay = MessyModelMaker.addNoiseRectangle(0,0,300,300,true);
 			
-		materials.get(0).set( new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,1f));		
+	//	materials.get(0).set( new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,1f));		
 		materials.get(0).set( new PrettyBackground.PrettyBackgroundAttribute());		
 		
 
