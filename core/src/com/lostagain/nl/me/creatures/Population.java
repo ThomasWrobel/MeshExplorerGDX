@@ -237,8 +237,12 @@ public class Population {
 			
 			//create based on type						
 			BasicInfovore newcreature = new BasicInfovore(this,x, y,atHeight, hitPoints,queryToDestroy,destructionType);
-					
-			newcreature.setColor(randomColorFromPop());
+				
+			Color creaturesBaseColor = randomColorFromPop();
+			
+			//we set both the creatures normal color setting and its current color setting to this
+			newcreature.setNormalColor(creaturesBaseColor);	
+			newcreature.setColor(creaturesBaseColor);
 			
 			
 			populationsCreatures.add(newcreature);
@@ -276,16 +280,17 @@ public class Population {
 
 	
 	/**
-	 * defaults to green
+	 * Defaults to green right now
 	 * @return
 	 */
 	private Color randomColorFromPop() {
+		
 		if (populationsColors.size()==0){
 			return Color.GREEN;	
-		}
-		
+		}		
 		
 		int p = (int) (Math.random()*populationsColors.size());
+		
 		
 		
 		return populationsColors.get(p);

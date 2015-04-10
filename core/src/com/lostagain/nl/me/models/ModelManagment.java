@@ -19,7 +19,8 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Array; //NOTE: This is like an arraylist but better optimized for libgdx stuff
+import com.badlogic.gdx.utils.ObjectSet; //NOTE: This is like a hashset but apparently is better optimized for libgdx stuff
 import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.shaders.ConceptBeamShader;
@@ -45,8 +46,8 @@ public class ModelManagment {
 	public static Array<hitable> hitables = new Array<hitable>();
 	public static Array<hitable> mousedownOn = new Array<hitable>();
 
-	/**all model with texture animations **/
-	public static Array<Animating> animatingobjects = new Array<Animating>();
+	/**All model with texture animations **/
+	public static ObjectSet<Animating> animatingobjects = new ObjectSet<Animating>();
 
 	/**all models currently moving **/
 	public static Array<Creature> movingObjects = new Array<Creature>();
@@ -516,8 +517,8 @@ public class ModelManagment {
 	public static void removeAnimating(Animating model) 
 	{
 
-		animatingobjects.removeValue(model,true);
-
+		//animatingobjects.removeValue(model,true);
+		animatingobjects.remove(model);
 	}
 
 	public static void untouchAll() {

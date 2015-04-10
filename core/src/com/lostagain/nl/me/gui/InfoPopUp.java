@@ -177,7 +177,7 @@ public class InfoPopUp {
 			
 			float stringWidth = ME.font.getBounds(message).width;
 			
-			ME.font.draw( ME.interfaceSpriteBatch,message,stageWidth-stringWidth-10, 15+(startHeight-(i*spacing)));
+			ME.font.draw( ME.interfaceSpriteBatch,message,stageWidth-stringWidth-10, 25+(startHeight-(i*spacing)));
 
 		}		
 

@@ -116,8 +116,12 @@ public class BasicInfovore extends Creature implements Animating {
 
 	//if too slow this method could be exchanged with one in population
 	//that grabs a common frame for all the population then sets all its creatures too it
+	@Override
 	public void updateAnimationFrame(float deltatime){
+		super.updateAnimationFrame(deltatime);
 		
+		//update image (not used at moment, we dont have a good creature frame animation)
+		/*
 		TextureRegion currentimage = idealAnimation.getKeyFrame(deltatime);
 		TextureAttribute attribute = creaturemodel.materials.get(0).get(TextureAttribute.class, TextureAttribute.Diffuse);
 			
@@ -125,7 +129,7 @@ public class BasicInfovore extends Creature implements Animating {
 				attribute.set(currentimage);		
 			} 
 					
-		
+		*/
 	}
 
 	static private Model createRectangle(float x1,float y1,float x2,float y2,float z,Color MColor,Material mat ) {

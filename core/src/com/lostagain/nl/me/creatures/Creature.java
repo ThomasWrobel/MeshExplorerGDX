@@ -86,10 +86,13 @@ public class Creature implements hitable , Animating {
 	String queryToDestroy; 
 	
 	//base color
-	Color crearturesColor = Color.WHITE;
+	Color creaturesNormalColor = Color.WHITE;
+	
+	//current color
+	Color creaturesCurrentColor = creaturesNormalColor.cpy();
 			
 	//lighter color for when clicked on
-	Color hitColor = Color.GREEN.cpy().add(.5f, .5f, .5f, 1f);
+	Color hitColor = Color.WHITE; //Color.GREEN.cpy().add(.5f, .5f, .5f, 1f);
 	
 	//should be changed based on the size of the creature
 	int hitradius = 30;
@@ -105,12 +108,12 @@ public class Creature implements hitable , Animating {
 	 * Also defines the durations of each in the brackets. 
 	 **/
 	enum CreatureAnimationType {
-		none(-1),
-		damageTaken(200), //currently goes to white instantly and fades back to the creatures normal color over 200frames
-		beingDestroyed(100),
-		appearing(50);
+		none(-1.00f),
+		damageTaken(2.600f), //currently goes to white instantly and fades back to the creatures normal color over 200frames
+		beingDestroyed(0.100f),
+		appearing(0.500f);
 		
-		private final float duration; // in float
+		private final float duration; // in seconds
 		
 		CreatureAnimationType (float duration) {
 	        this.duration = duration;
@@ -211,13 +214,23 @@ public class Creature implements hitable , Animating {
 		startCreaturesStandardMovement();	
 	}
 
+	/** sets the normal color of the creature when no effects or changes are applied.
+	 * The creature will typically revert back to this color after changes.**/
+	public void setNormalColor(Color newcol){
+		
+		creaturesNormalColor = newcol;
+		
+	}
+	
+	/** set current color, ie taking into account effects like damage or health**/
 	public void setColor(Color newcol){
 
 		ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
 		attribute.color.set(newcol);
 		
-		crearturesColor = newcol;
-		
+		creaturesCurrentColor = newcol;
+
+		Gdx.app.log(logstag, " crearturesColor ="+creaturesCurrentColor.toString());
 	}
 
 	public void setHitColor(Color newcol){
@@ -230,9 +243,9 @@ public class Creature implements hitable , Animating {
 	@Override
 	public void fireTouchDown() {
 		
-		ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
+		//ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
 		
-		attribute.color.set(hitColor);
+		//attribute.color.set(hitColor);
 		
 
 		hit();
@@ -246,9 +259,9 @@ public class Creature implements hitable , Animating {
 		
 		//really this check shouldn't be needed but it seems this fires sometimes while its being destroyed, not sure why?
 		if (creaturemodel!=null){
-			ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
+			//ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);
 		
-			attribute.color.set( crearturesColor);
+			//attribute.color.set( crearturesColor);
 		}
 		
 		
@@ -367,22 +380,24 @@ public class Creature implements hitable , Animating {
 
 		Gdx.app.log(logstag,"_________creature damaged");
 		
-		final ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);		
+	//	final ColorAttribute attribute = creaturemodel.materials.get(0).get(ColorAttribute.class, ColorAttribute.Diffuse);		
 		
+
+		/*
+		float r = (float) Math.random();
+		float g = (float) Math.random();
+		float b = (float) Math.random();
 		
-	//	float r = (float) Math.random();
-	//	float g = (float) Math.random();
-	//	float b = (float) Math.random();
 		Color col =  new Color();		
 
 		Gdx.app.log(logstag,"_________creature before col="+col.toString());
-		col = crearturesColor.mul(new Color(1.1f,1.1f,1.1f,1.0f));
-	//	Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );		
+	//	col = crearturesColor.mul(new Color(1.1f,1.1f,1.1f,1.0f));
+		Color.rgba8888ToColor(col, Color.rgba8888(r, g, b,1.0f) );		
 		
 				
 		setColor(col);
-
 		Gdx.app.log(logstag,"_________creature after col="+crearturesColor.toString());
+		
 		
 		Color newhitcol =  new Color();		
 		newhitcol = hitColor.mul(new Color(1.1f,1.1f,1.1f,1.0f));
@@ -393,7 +408,7 @@ public class Creature implements hitable , Animating {
 		Gdx.app.log(logstag,"_________creature col="+col.toString());
 				
 		setHitColor(newhitcol);
-		
+		*/
 		
 		
 		//attribute.color.set(col) ;
@@ -424,13 +439,16 @@ public class Creature implements hitable , Animating {
 				
 				//after enlarging we restart the creatures standard movement.
 				Creature.this.startCreaturesStandardMovement();
-				attribute.color.set( crearturesColor );
+			//	attribute.color.set( crearturesColor );
 								
 			}
 			
 			
 		}, (durationOfEnlargement+250)/1000); //the movement should start again shortly after the enlargement ends. We devide by 1000 as Timer.schedule needs the time in seconds, not ms 
 				
+		
+		
+		
 		
 		//new trigger animation (which currently is just a tint transition)
 		currentlyPlayingAnimation = CreatureAnimationType.damageTaken;		
@@ -439,8 +457,8 @@ public class Creature implements hitable , Animating {
 		//add to animation list which updates frames based on delta
 		//the updateAnimationFrame function will remove it from this list when the animation is finished.
 		//(that is, when currentAnimationTime = the animations duration defined in its enum)
-		
-		
+		ModelManagment.addAnimating(this);
+				
 	}
 
 
@@ -549,7 +567,7 @@ public class Creature implements hitable , Animating {
 
 	/**
 	 * Updates the current animation frame, which in this case means color by default
-	 * 
+	 * NOTE: if calling this by super bare in mind it will remove itself from the animation list once its duration has past
 	 * @param delta - The time in seconds since the last render. 
 	 */
 	public void updateAnimationFrame(float delta){
@@ -557,21 +575,38 @@ public class Creature implements hitable , Animating {
 		//add the The time in seconds since the last render to the current animation time
 		currentAnimationTime = currentAnimationTime + delta;
 		
+		//work out alpha (currenttime divided by total time)
+		//This means alpha 0 = start of animation and alpha 1 = end of animation
+		float alpha = currentAnimationTime / currentlyPlayingAnimation.duration();
+
+		Gdx.app.log(logstag, "alpha="+alpha+" currentAnimation:"+currentlyPlayingAnimation.name());
+		
 		switch (currentlyPlayingAnimation){
 		
 		case appearing:
 			break;
+			
 		case beingDestroyed:
 			break;
 			
 		case damageTaken:
-			//the animation change that happens while damage is taken
 			
+			//the animation change that happens while damage is taken
+			//it basically starts the hit color and returns to its normal colour
+			//Gdx.app.log(logstag, "(between :"+creaturesNormalColor.toString()+" and "+hitColor.toString()+")");
+			
+			Color trans = hitColor.cpy();
+			trans.lerp(creaturesNormalColor, alpha);
+			this.setColor(trans);
+
+			//Gdx.app.log(logstag, "newcol="+trans.toString()+"");
 			
 			
 			break;
+			
 		case none:
 			break;
+			
 		default:
 			break;
 		
