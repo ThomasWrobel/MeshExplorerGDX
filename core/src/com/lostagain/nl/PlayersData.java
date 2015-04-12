@@ -11,8 +11,8 @@ import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
-import com.lostagain.nl.me.LocationGUI.Location;
-import com.lostagain.nl.me.LocationGUI.LocationsHub;
+import com.lostagain.nl.me.locationFeatures.Location;
+import com.lostagain.nl.me.locationFeatures.LocationsHub;
 
 public class PlayersData {
 
@@ -48,10 +48,15 @@ public class PlayersData {
 	public static int homelocationY=0;//500
 	public static int homelocationZ=0;//cant be anything else
 
+	
+	
+	
 	/** mains a list of all the nodes of visited locations **/
-	private static ArrayList<SSSNode> hasVisitedArray = new  ArrayList<SSSNode>();
+	private static HashSet<SSSNode> hasVisitedArray = new  HashSet<SSSNode>();
 
 	
+	/** mains a list of all the nodes of knowen/scanned locations (but not necessarily open) **/
+	private static HashSet<SSSNode> locationScanned = new  HashSet<SSSNode>();
 	
 	
 
@@ -135,19 +140,27 @@ public class PlayersData {
 
 
 	
-	public static boolean hasVisited(SSSNode locationsNode) {
-		
-		return hasVisitedArray.contains(locationsNode);
-		
+	public static boolean hasVisited(SSSNode locationsNode) {		
+		return hasVisitedArray.contains(locationsNode);		
 	} 	
 	
 
 	public static void addToVisitedLocations(SSSNode locationsNode) {
 		hasVisitedArray.add(locationsNode);
-		return; 
-		
+		return; 		
 	}
-
+	
+	/** Determines if the player has already scanned this link or not **/
+	public static boolean hasScanned(SSSNode locationsNode) {		
+		return locationScanned.contains(locationsNode);		
+	} 	
+	
+    /** Adds the node to the list of scanned locations. 
+     * This prevents the need for the player to ever rescan links they have already **/
+	public static void addToScannedLocations(SSSNode locationsNode) {
+		locationScanned.add(locationsNode);
+		return; 		
+	}
 
 	public static void knownsLanguage(SSSNode language,final Runnable firesIfTrue,final Runnable firesIfFalse) {
 		

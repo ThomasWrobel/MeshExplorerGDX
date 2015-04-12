@@ -14,7 +14,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.StaticSSSNodes;
-import com.lostagain.nl.me.LocationGUI.Location;
+import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.objects.DataObject;
 
 /** represents a population of a particular type in a particular area**/

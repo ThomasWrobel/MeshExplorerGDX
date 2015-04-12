@@ -34,6 +34,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
+import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.camera.MECamera;
@@ -409,7 +410,7 @@ public class ConceptGun  extends WidgetGroup {
 		//Gdx.app.log(logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
 		//Ray ray = MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
 		
-		Ray ray = MainExplorationView.getCurrentStageCursorRay();
+		Ray ray = ME.getCurrentStageCursorRay();
 		MainExplorationView.touchedAModel = ModelManagment.testForHits(ray,true);
 		
 		if (MainExplorationView.touchedAModel){
@@ -428,7 +429,7 @@ public class ConceptGun  extends WidgetGroup {
 			if (Gdx.input.isTouched() && rechargeTime>0){
 			
 				//from is the fire target
-				Vector2 fromPoint = MainExplorationView.getCurrentCursorScreenPosition();   //MainExplorationView.getCurrentStageCursorPosition();// .gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
+				Vector2 fromPoint = ME.getCurrentCursorScreenPosition();   //MainExplorationView.getCurrentStageCursorPosition();// .gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
 				//too is the gun mussel (yeah, backwards a bit I know)
 				Vector2 tooPoint  = firePoint.cpy(); ///MainExplorationView.gameStage.screenToStageCoordinates(firePoint.cpy());
 				
@@ -453,8 +454,6 @@ public class ConceptGun  extends WidgetGroup {
 				float newAng = 180-(fromPoint.angle()+90);	
 				lazerbeamdisplacement.setToRotation(0, 0, 1, newAng);
 			
-				
-				
 				
 				
 				MainExplorationView.camera.updateAtachment(lazer,lazerbeamdisplacement);

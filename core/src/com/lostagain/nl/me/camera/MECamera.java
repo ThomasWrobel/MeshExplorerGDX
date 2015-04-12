@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
@@ -29,10 +30,7 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
  * 
  * Eventually all camera movement should be handled here, as well as changes to the overlay effect to correspond with environment
  * 
- * 
- * TODO: Make camera visible somehow when in debug mode
- * Probably need to use a cube with sycned position
- * 
+ *  * 
  * 
  * @author Tom
  *
@@ -45,6 +43,8 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	
 	public static CameraVisualiser cameraVisualiserCube = new CameraVisualiser(); 
 	
+	//temp
+	public static CameraVisualiser angleTest = new CameraVisualiser(); 
 	
 	//AnimatableModelInstance test attachment;
 	
@@ -54,7 +54,8 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	static int defaultViewportWidth = 640;
 	static int defaultViewportHeight = 480;
 
-	public static float standardCameraHeightAboveLocations=444;
+	//standard camera height is now taken from screen size
+	//public static float standardCameraHeightAboveLocations=444;
 	
 	
 	
@@ -96,7 +97,9 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		//hide visualizer by default
 		hideCameraVisualizer();
 		
-		
+		//
+		ModelManagment.addmodel(angleTest,ModelManagment.RenderOrder.infrontStage);		
+		super.attachThis(angleTest, new PosRotScale(0f,0f,0f));
 		
 		/// X/Y/Z marker to help debug
      //   Material mat = new Material(
@@ -191,8 +194,12 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		}
 
 		
+		
 		//mainOverlay.transform.setTranslation(transState.position);
-		float heightbasedopacity = (transState.position.z-380.0f)/1000.0f; //(600 - 1000)/1000 		
+		
+		//We update the opacity of the effect overlay based on height relative to the standard height
+		float standardHeight = ScreenUtils.getSuitableDefaultCameraHeight()-50; //the -50 ensures it has a little noise even at standard height
+		float heightbasedopacity = (transState.position.z-(standardHeight))/1000.0f; //	380.0f
 		MECamera.mainOverlay.setEffectOpacity(heightbasedopacity);
 		
 		//mainOverlay.transform.setTranslation(transState.position);
@@ -241,10 +248,10 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	}
 
 
-	public void updateAtachment(AnimatableModelInstance lazer,
-			PosRotScale lazerbeamdisplacement) {
+	public void updateAtachment(AnimatableModelInstance object,
+			PosRotScale objectdisplacement) {
 
-		super.updateAtachment(lazer, lazerbeamdisplacement);
+		super.updateAtachment(object, objectdisplacement);
 		
 	}
 

@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.LocationGUI;
+package com.lostagain.nl.me.locationFeatures;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.DefaultStyles;
-import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
+import com.lostagain.nl.me.locationFeatures.ObjectFile.ObjectFileState;
 
 public class ContentsScreen  extends Container<ScrollPane>  implements LocationScreen {
 	static Logger Log = Logger.getLogger("ContentsScreen");

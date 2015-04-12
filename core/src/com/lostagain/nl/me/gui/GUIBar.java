@@ -22,7 +22,7 @@ import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
-import com.lostagain.nl.me.LocationGUI.InterfaceButton;
+import com.lostagain.nl.me.locationFeatures.InterfaceButton;
 import com.lostagain.nl.me.objects.DataObject;
 
 
@@ -140,7 +140,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			@Override
 			public void clicked(InputEvent ev, float x , float y){
 
-				MainExplorationView.gotoHomeLoc();	
+				ME.gotoHomeLoc();	
 				PlayersData.homeLoc.locationsHub.gotoSecplace();
 
 				setOnlyButtonDown(myHome);
@@ -225,7 +225,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			@Override
 			public void clicked(InputEvent ev, float x , float y){
 				goback.setDownForABit();
-				MainExplorationView.gotoLastLocation();
+				ME.gotoLastLocation();
 			}
 
 		});
@@ -267,7 +267,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			myCGun.setText(CGunOpen);
 			myCGun.setDownStyle();
 			
-			MainExplorationView.disableMovementControl(true);
+			ME.disableMovementControl(true);
 			
 		} else {
 			ConceptGun.setVisible(false);				
@@ -276,7 +276,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			myCGun.setText(CGunClosed);
 			myCGun.setUpStyle();
 		
-			MainExplorationView.disableMovementControl(false);
+			ME.disableMovementControl(false);
 			
 		}
 			

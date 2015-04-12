@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.LocationGUI;
+package com.lostagain.nl.me.locationFeatures;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,8 +19,8 @@ import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
-import com.lostagain.nl.me.LocationGUI.Link.LinkMode;
-import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
+import com.lostagain.nl.me.locationFeatures.Link.LinkMode;
+import com.lostagain.nl.me.locationFeatures.ObjectFile.ObjectFileState;
 
 public class LinksScreen extends Table implements LocationScreen {
 
@@ -69,12 +69,11 @@ public class LinksScreen extends Table implements LocationScreen {
 		
 	}
 
-	public void recheckLinkLines(){
+	public void recheckLinksAndLines(){
 		
 		for (Link linktocheck : allLinks) {
 			
-			linktocheck.refreshBasedOnMode();
-			
+			linktocheck.recheckAndRefresh();
 			
 		}
 		

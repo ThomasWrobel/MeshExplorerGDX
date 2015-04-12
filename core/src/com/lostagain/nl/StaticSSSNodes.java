@@ -15,7 +15,7 @@ public class StaticSSSNodes {
 	public static final SSSNode DescriptionOf =  SSSNode.createSSSNode(ME.INTERNALNS+"DescriptionOf", ME.INTERNALNS);
 		
 	public static final SSSNode Security =  SSSNode.createSSSNode(ME.INTERNALNS+"Security", ME.INTERNALNS);
-	public static final SSSNode visibleTo =  SSSNode.createSSSNode(ME.INTERNALNS+"visibleTo", ME.INTERNALNS);	
+	//public static final SSSNode visibleTo =  SSSNode.createSSSNode(ME.INTERNALNS+"visibleTo", ME.INTERNALNS);	
 	public static final SSSNode queryPass =  SSSNode.createSSSNode(ME.INTERNALNS+"queryPass", ME.INTERNALNS);
 	public static final SSSNode clueText =  SSSNode.createSSSNode(ME.INTERNALNS+"clueText", ME.INTERNALNS);
 	

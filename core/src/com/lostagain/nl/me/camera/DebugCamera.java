@@ -40,8 +40,6 @@ public class DebugCamera extends AnimatablePerspectiveCamera {
 	static int defaultViewportWidth = 640;
 	static int defaultViewportHeight = 480;
 
-	public static float standardCameraHeightAboveLocations=444;
-
 
 	public boolean active=false;
 	
@@ -50,7 +48,7 @@ public class DebugCamera extends AnimatablePerspectiveCamera {
 		
 		//hide or show the main cameras visualizer based on if this DebugCamera is active or not
 		if (active){
-			MainExplorationView.camera.showCameraVisualizer();
+			//MainExplorationView.camera.showCameraVisualizer();
 		} else {
 			MainExplorationView.camera.hideCameraVisualizer();
 		}

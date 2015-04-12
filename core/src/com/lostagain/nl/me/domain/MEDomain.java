@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.lostagain.nl.me.LocationGUI.Location;
+import com.lostagain.nl.me.locationFeatures.Location;
 
 /**<br>
  * Defines a single domain in the game.<br>

@@ -2,6 +2,7 @@ package com.lostagain.nl.me.newmovements;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
@@ -18,6 +19,7 @@ import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
  *
  */
 public class AnimatableModelInstance extends ModelInstance {
+	final static String logstag = "ME.AnimatableModelInstance";
 	
 	//Use this instead of the models matrix
     public final PosRotScale transState = new PosRotScale();
@@ -64,8 +66,8 @@ public class AnimatableModelInstance extends ModelInstance {
 		sycnTransform();
 	}
 	/*** Convince to quickly set the rotation. If doing a more complex change make a PosRotScale and call setTransform **/
-	public void setToRotation(Quaternion vector3) {		
-		transState.rotation.set(vector3);
+	public void setToRotation(Quaternion angle) {		
+		transState.rotation.set(angle);
 		sycnTransform();
 	}
 	/*** Convince to quickly set the scale. If doing a more complex change make a PosRotScale and call setTransform **/
@@ -145,6 +147,91 @@ public class AnimatableModelInstance extends ModelInstance {
 				PosRotScale displacement) {
 			
 			attachlist.put(object, displacement);
+			
+		}
+		
+		
+		/** Sets this model to lookat the target models vector3 location (currently doesnt work) **/
+		public void lookAt(AnimatableModelInstance target){
+			
+			Quaternion angle = getAngleTo(target);			
+			setToRotation(angle);
+			
+			
+		}
+		
+		/** 
+		 * Experimental method to find the axis-angle between two AnimatableModelInstances 
+		 * (currently doesn't work)
+		 * @return Quaternion of angle 
+		 * **/
+		public Quaternion getAngleTo(AnimatableModelInstance target) {
+						
+			Vector3 thisPoint = this.transState.position.cpy();
+			Vector3 targetPoint = target.transState.position.cpy();
+		//	thisPoint.nor();
+			//targetPoint.nor();
+			
+			//get difference (which is the same as target relative to 0,0,0 if thispoint was 0,0,0)
+			//targetPoint.sub(thisPoint);
+			
+			targetPoint.nor();
+			thisPoint.nor();
+			//Gdx.app.log(logstag, "from= "+thisPoint.len()+" to="+targetPoint.len());
+			
+			Quaternion result = new Quaternion();
+			//result.setFromAxisRad(targetPoint, 0);
+			
+			result.setFromCross(targetPoint,thisPoint);
+		
+				
+			/*
+			
+			//Normalize them
+			thisPoint.nor();
+			targetPoint.nor();
+
+			Gdx.app.log(logstag, "from= "+thisPoint+" to="+targetPoint);
+			
+			float theirDotProduct = thisPoint.dot(targetPoint);	
+			
+			float angle = (float) Math.acos(theirDotProduct);
+			
+			Vector3 theirCrossProduct = thisPoint.crs(targetPoint); 
+			Vector3 axis = theirCrossProduct.nor();
+			
+			Gdx.app.log(logstag, "axis= "+axis+" angle="+angle+" dp was("+theirDotProduct+")");
+			
+			
+			//now make a Quaternion from it and return
+			Quaternion result = new Quaternion();
+			result.setFromAxisRad(axis, angle);
+			*/
+			
+			
+			
+			return result;
+			
+			//based on advice below;
+			/**
+			 * the angle is given by acos of the dot product of the two (normalized) vectors: v1•v2 = |v1||v2| cos(angle)
+the axis is given by the cross product of the two vectors, the length of this axis is given by |v1 x v2| = |v1||v2| sin(angle).
+as explained here
+
+this is taken from this discussion.
+
+So, if v1 and v2 are normalised so that |v1|=|v2|=1, then,
+
+angle = acos(v1•v2)
+
+axis = norm(v1 x v2)
+
+If the vectors are parallel (angle = 0 or 180 degrees) 
+then the length of v1 x v2 will be zero because sin(0)=sin(180)=0. 
+In the zero case the axis does not matter and can be anything because there is no rotation round it. 
+In the 180 degree case the axis can be anything at 90 degrees to the vectors so there is a whole range of possible axies.
+			 */
+			
 			
 		}
 	

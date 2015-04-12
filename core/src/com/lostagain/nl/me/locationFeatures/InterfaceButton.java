@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.LocationGUI;
+package com.lostagain.nl.me.locationFeatures;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;

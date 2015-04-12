@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.lostagain.nl.DefaultStyles;
+import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.objects.DataObject;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
@@ -325,11 +326,11 @@ public class DataObjectSlot  extends WidgetGroup implements DataObjectDropTarget
 			Gdx.app.log(logstag, "************************dropping old_stored "+old_stored.itemsnode.getPLabel());
 			
 			 //get cursor location
-			 Vector2 cursor = MainExplorationView.getCurrentStageCursorPosition();
+			 Vector2 cursor = ME.getCurrentStageCursorPosition();
 			 
 			 //drop the item on the ground
 			 Gdx.app.log(logstag, "************************dropping old_stored at "+cursor.x+","+ cursor.y+30);
-			 MainExplorationView.addnewdrop(old_stored, cursor.x, cursor.y-90);
+			 ME.addnewdrop(old_stored, cursor.x, cursor.y-90);
 			 
 			 
 			//Old_Inventory.setCurrentlyHeld(old_stored);

@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.LocationGUI;
+package com.lostagain.nl.me.locationFeatures;
 
 import java.util.ArrayList;
 
@@ -281,7 +281,7 @@ public class LocationsHub extends Table {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		 		//Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
 				// Log.info("clicked "+thisLocation.LocationsNode.getPLabel());			
-				 MainExplorationView.disableDrag();
+				 ME.disableDrag();
 				 
 		 		return false;
 		 	}
@@ -291,7 +291,7 @@ public class LocationsHub extends Table {
 		contentsPage.addListener(new InputListener() {
 		 	@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		 		MainExplorationView.disableDrag();				 
+		 		ME.disableDrag();				 
 		 		return false;
 		 	}
 		 });
@@ -423,7 +423,7 @@ public class LocationsHub extends Table {
 		{
 
 			Gdx.app.log(logstag,"rechecking link lines");
-			linksPage.recheckLinkLines();
+			linksPage.recheckLinksAndLines();
 		}
 	}
 

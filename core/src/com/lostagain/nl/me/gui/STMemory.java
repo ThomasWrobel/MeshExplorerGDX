@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
+import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.objects.DataObject;
@@ -228,10 +229,10 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		 
 		 
 		 //get cursor location
-		 Vector2 cursor = MainExplorationView.getCurrentStageCursorPosition();
+		 Vector2 cursor = ME.getCurrentStageCursorPosition();
 		 
 		 //drop the item on the ground
-		 MainExplorationView.addnewdrop(item, cursor.x, cursor.y);
+		 ME.addnewdrop(item, cursor.x, cursor.y);
 		 
 		 
 		 

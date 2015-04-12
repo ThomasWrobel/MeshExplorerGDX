@@ -1,6 +1,7 @@
-package com.lostagain.nl.me.LocationGUI;
+package com.lostagain.nl.me.locationFeatures;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -63,7 +64,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 	}
 
 	LinkMode currentMode =  LinkMode.Unknown;
-	boolean ComputerOpen;
+//	boolean ComputerOpen;
 	SSSNode linksToThisPC;
 
 	private double TOTAL_LOAD_UNITS=1;
@@ -75,23 +76,55 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 	int RealScanAmount =0;
 	private static long scanStartTime=0l;
 
-	public Link(String name,final String location,LinksScreen parent, boolean ComputerOpen) {
+	/*
+	public Link(String name,final String location,LinksScreen parent, boolean ComputerScanned) {
 
 		//super(AxisLayout.horizontal().gap(5));
 		//super(new AbsoluteLayout());
 		
-		setup(name, location, parent, ComputerOpen);	
+		setup(name, location, parent, ComputerScanned);	
 		
 		
 		//super.add(gotoLinkButton);
 
 
+	}*/
+	
+	public Link(SSSNode sssNode, LinksScreen parent) {
+		
+		
+		linksToThisPC=sssNode;
+		
+		//check if computer is known
+		Boolean isScanned = updateMode();
+		
+		setup(sssNode.getPLabel(),sssNode.getPURI(),parent, isScanned);	
+		
 	}
 
-	private void setup(String name, final String location, LinksScreen parent,
-			boolean ComputerOpen) {
+	/** rechecks the current state of this Link from the players database
+	 * Is it already scanned? is the location it links too open?
+	 * Updates "currentMode" variable  to reflect change **/
+	private Boolean updateMode() {
+		Boolean isScanned = PlayersData.hasScanned(linksToThisPC);
+		if (isScanned){
+			currentMode=LinkMode.Closed; //closed by default, as its already scanned
+		}
 
-		this.ComputerOpen=ComputerOpen;
+		//check if already known & open/unlocked
+		Boolean unlocked = PlayersData.isLinkUnlockedByPlayer(linksToThisPC);
+		if (unlocked){
+			currentMode=LinkMode.Open;
+			//ComputerOpen = true;
+		}
+		return isScanned;
+	}
+	
+	private void setup(String name, final String location, LinksScreen parent,
+			boolean DestinationScannedAlready) {
+
+		//this.ComputerOpen=DestinationScannedAlready;
+		
 		currentParent = parent; //should be changed if viewed from elsewhere
 			
 		super.setFillParent(true);
@@ -153,11 +186,11 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 					case Closed:
 						//as we already know its locked, we could probably
 						//put a flag here to stop a re-check later?
-						MainExplorationView.gotoLocation(linksToThisPC);
+						ME.gotoLocation(linksToThisPC);
 						break;
 					case Open:
 						//but probably not here - a locked pc deserves a double checked no?
-						MainExplorationView.gotoLocation(linksToThisPC);
+						ME.gotoLocation(linksToThisPC);
 						break;
 					case Scanning:
 						break;
@@ -178,25 +211,14 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 
 		Gdx.app.log(logstag,":"+linksToThisPC.toString());
 		
-		if (ComputerOpen){
+		//if its already scanned we refresh based on mode
+		if (DestinationScannedAlready){
 			refreshBasedOnMode();
 		}	
 		
 	}
 
-	public Link(SSSNode sssNode, LinksScreen parent) {
-		
-		
-		linksToThisPC=sssNode;
-		
 
-		//check if already known to be open
-		Boolean unlocked = PlayersData.isLinkUnlockedByPlayer(linksToThisPC);
-		
-		
-		setup(sssNode.getPLabel(),sssNode.getPURI(),parent, unlocked);	
-		
-	}
 
 	private void requestScan(){
 		
@@ -350,9 +372,12 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 	}
 
 	private void scanComplete() {
-		ComputerOpen = true;
+		//ComputerOpen = true;
 		
-		//pre-prepare location
+		//add to scanned list so it wont be needed to be scanned again
+		PlayersData.addToScannedLocations(linksToThisPC);
+		
+		//pre-prepare location ?
 		//LocationContainer newlocation =  LocationContainer.getLocation(linksToThisPC);
 		
 		//detect if its secured by anything 
@@ -362,18 +387,17 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 			
 			ArrayList<SSSNode> allSecuredPCs = SSSNodesWithCommonProperty.getAllCurrentNodesWithPredicate(StaticSSSNodes.SecuredBy);
 
-			Gdx.app.log(logstag,"-------------------------------allSecuredPCs="+allSecuredPCs.size());
-			Gdx.app.log(logstag,"-------------------------------allSecuredPCs="+allSecuredPCs.toString());
+			//Gdx.app.log(logstag,"-------------------------------allSecuredPCs="+allSecuredPCs.size());
+			//Gdx.app.log(logstag,"-------------------------------allSecuredPCs="+allSecuredPCs.toString());
 			
 			
-			if (allSecuredPCs.contains(linksToThisPC)){
-				
-				ComputerOpen = false;
-
-				Gdx.app.log(logstag,"-------------------------------ComputerOpen="+ComputerOpen);
+			if (allSecuredPCs.contains(linksToThisPC)){				
+				//ComputerOpen = false;
+				currentMode = LinkMode.Closed;				
 				
 			} else {
-
+				
+				currentMode = LinkMode.Open;
 				//add too unlocked list
 				PlayersData.addUnlockedLink(linksToThisPC);
 				
@@ -381,21 +405,76 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 						
 		}
 
+		//refresh link appearance based on current LinkMode
+		refreshBasedOnMode();
+		
+		//do the same for other matching links in game (so scanning one copy opens all pointing to the same place)
+		if (currentMode == LinkMode.Closed || currentMode == LinkMode.Open){
+			
+			
+			
+			
+			//find other hubs with links to linksToThisPC
+			
+			//first we get the hubs specifically connected to linksToThisPC		
+			//ie connectedTo MysteriousGateway
+			SSSNodesWithCommonProperty hubsLinkingToSame =  SSSNodesWithCommonProperty.getSetFor(StaticSSSNodes.CONNECTEDTO, linksToThisPC); 
+					
+			//we should also add hubs connected to everyone
+			//me:connectedto=me:everyone
+			//because these hubs will obviously point to linksToThisPC too
+			SSSNodesWithCommonProperty hubsLinkingToEveryone =  SSSNodesWithCommonProperty.getSetFor(StaticSSSNodes.CONNECTEDTO, StaticSSSNodes.EVERYONE); 
+			
+			//combine the sets into a newone (note; we dont want to change the above sets!)
+			HashSet<SSSNode> hubsLinkingToSamePlace = new HashSet<SSSNode>();
+			hubsLinkingToSamePlace.addAll(hubsLinkingToSame);
+			hubsLinkingToSamePlace.addAll(hubsLinkingToEveryone);
+					
+			
+			if (hubsLinkingToSamePlace.isEmpty()){
+				Gdx.app.log(logstag,"Error with hubs connected to query, no results found but there should be at least one");
+			}
+			
+			
+			Gdx.app.log(logstag,"Hubs linking to "+linksToThisPC+":"+hubsLinkingToSamePlace+" ");	
+			//trigger refresh on their links page (slightly inefficient as it checks all the links on that machine, rather then just the
+			//one that changed)
+			//SSSNodesWithCommonProperty can be iterated over directly as its ultimately just a a set of nodes
+			for (SSSNode hubsAlsoWithLinksSSSNode : hubsLinkingToSamePlace) {
 
-		if (!ComputerOpen){
-			currentMode = LinkMode.Closed;
-		} else {
-			currentMode = LinkMode.Open;
+				//note should exclude self from link refresh
+				if (hubsAlsoWithLinksSSSNode==linksToThisPC){
+					continue;
+				}
+				
+				Gdx.app.log(logstag,"(Getting hub for SSSNode:"+hubsAlsoWithLinksSSSNode+" ");				
+				LocationsHub hubWithLink = Location.getExistingHub(hubsAlsoWithLinksSSSNode);
+				
+				if(hubWithLink==null){
+					//if none found to update we return
+					Gdx.app.log(logstag,"(no existing hubs found to update)");										
+					continue;					
+				} else {
+					Gdx.app.log(logstag,"(updating links on hub :"+hubWithLink.LocationsNode+" ");		
+				}
+				
+				//now tell that page to rechecks all its links and lines
+				hubWithLink.linksPage.recheckLinksAndLines();
+				
+			}
+			
 		}
 		
 		
-		refreshBasedOnMode();
+		
 		
 		
 	}
 
 	void reCheckLinkLine() {
 		boolean loaded = true;
+		
+		Gdx.app.log(logstag,"Checking Link Line:");
 		
 		if (realURLLink){
 			
@@ -406,8 +485,10 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 		
 		if (Linksline==null && loaded ){
 							
+
+			Gdx.app.log(logstag,"Checking Link Line 2:");
 			
-			Location newlocation =  Location.getLocationHub(linksToThisPC);
+			Location newlocation =  Location.getLocation(linksToThisPC);
 			
 		
 			LocationsHub from = currentParent.parentLocationContainer;
@@ -416,7 +497,11 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 			//only refresh if the To and From are attached
 			if (MainExplorationView.gameStage.getActors().contains(from, true) && MainExplorationView.gameStage.getActors().contains(to, true))			
 			{
+
+				Gdx.app.log(logstag,"Adding new connecting line");
 				Linksline = MessyModelMaker.addConnectingLine(from,to);
+			} else {
+				Gdx.app.log(logstag,"location not attached canr make link line");
 			}
 		
 		}
@@ -443,7 +528,17 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 		
 	}
 	
-	
+	/** checks if the lines state has changed due to database changes (eg, the location being scanned elsewhere)
+	 * It then refreshs the mode if its changed **/
+	public void recheckAndRefresh() {
+		
+		LinkMode oldmode = currentMode;
+		updateMode();
+		if (currentMode!=oldmode){
+			refreshBasedOnMode(); 
+		}
+		
+	}
 	
 	public void refreshBasedOnMode() {
 		
@@ -477,7 +572,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 		
 		if (currentMode == LinkMode.Closed || currentMode == LinkMode.Open){
 
-			Gdx.app.log(logstag,"rechecking link lines");
+			Gdx.app.log(logstag,"rechecking link lines for link to:"+linksToThisPC);
 			reCheckLinkLine();
 		}
 		
@@ -488,18 +583,18 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 	
 	@Override
 	public void setTotalProgressUnits(int i) {
-		// TODO Auto-generated method stub
-		TOTAL_LOAD_UNITS = i;
 		
+		TOTAL_LOAD_UNITS = i;		
 		updateSemanticScan();
 		
 	}
 
 	@Override
-	public void addToTotalProgressUnits(int i) {
+	public void addToTotalProgressUnits(int i) {	
 		
 		TOTAL_LOAD_UNITS = TOTAL_LOAD_UNITS + i;
 		updateSemanticScan();
+		
 	}
 
 	private void updateSemanticScan() {

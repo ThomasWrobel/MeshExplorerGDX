@@ -483,7 +483,7 @@ public class DataObject extends Image
 		//float sx = screenCoOrdinates.x;
 		//float sy = -screenCoOrdinates.y+MainExplorationView.gameStage.getHeight();
 		 
-	    Vector2 screenCoOrdinates = MainExplorationView.getCurrentCursorScreenPosition();
+	    Vector2 screenCoOrdinates = ME.getCurrentCursorScreenPosition();
 		float sx = screenCoOrdinates.x;
 		float sy =  MainExplorationView.gameStage.getHeight()-screenCoOrdinates.y;
 		
@@ -552,7 +552,7 @@ public class DataObject extends Image
 		pickup();
 		
 		
-		MainExplorationView.disableDrag();
+		ME.disableDrag();
 	}
 	
 	 

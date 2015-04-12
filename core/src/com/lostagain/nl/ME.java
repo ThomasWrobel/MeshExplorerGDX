@@ -1,45 +1,38 @@
 package com.lostagain.nl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.darkflame.client.SuperSimpleSemantics;
-import com.darkflame.client.interfaces.SSSGenericFileManager;
-import com.darkflame.client.query.Query;
-import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSIndex;
 import com.darkflame.client.semantic.SSSNode;
-import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
-import com.lostagain.nl.me.LocationGUI.LocationsHub;
-import com.lostagain.nl.me.LocationGUI.LocationScreen;
+import com.lostagain.nl.me.creatures.Population;
 import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.me.gui.Inventory;
+import com.lostagain.nl.me.gui.ScreenUtils;
+import com.lostagain.nl.me.locationFeatures.Location;
+import com.lostagain.nl.me.objects.DataObject;
 import com.lostagain.nl.uti.FileManager;
-import com.lostagain.nl.uti.SpiffyGenericTween;
-import com.lostagain.nl.uti.SpiffyTweenConstructor;
 
 /**
  * Mesh Explorer. An open source, distributed game of deduction and exploration.
  * Powered by SuperSimpleSemantics
  * 
  * Home class will manage game setup and provide convenience shortcuts for major game
- * classes and variables.
+ * classes and variables. (in particularly moving from location to location)
+ * 
  * It also will maintain a list of all the domain objects (MEDomain) that are currently loaded, creating
  * new ones when a new domain is opened for the first time (this happens at the same time as loading its index)
  * 
@@ -67,9 +60,10 @@ public class ME extends Game {
     static MainMenuScreen menu;
     
 	 
-    public void create() {
+    @Override
+	public void create() {
     	
-    	game=this;
+    	game = this;
     	
     	
     	//when we  figure out how to use bitmap fonts in ui elements, we use the following
@@ -300,15 +294,251 @@ public class ME extends Game {
     	
 	}
 
+	@Override
 	public void render() {
         super.render(); //important!
         
     }
 
-    public void dispose() {
+    @Override
+	public void dispose() {
      //   batch.dispose();
      //   font.dispose();
     }
+
+    
+    
+public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo){
+	
+		Gdx.app.log(MainExplorationView.logstag,"moving to z: "+newZ);
+		//CurrentX=locationcontainer.getCenterX();  //getX()+(locationcontainer.getWidth()/2);
+		//CurrentY=locationcontainer.getCenterY(); //getY()+(locationcontainer.getHeight()/2);
+	
+		float newX = locationcontainer.getHubsX(Align.center);
+		float newY = locationcontainer.getHubsY(Align.center);
+		
+		
+		
+		Vector3 dest = new Vector3(newX,newY,newZ);
+		
+	
+	
+		Gdx.app.log(MainExplorationView.logstag,"moving to: "+dest);
+		
+		MainExplorationView.camera.setTargetPosition(dest); //new system replaces a lot below
+		
+		
+		
+	
+		
+		//add the requested location to the  array list, but only if its different from
+				//the last location.
+		Location lastlocstored =null;;
+		try {
+			lastlocstored = MainExplorationView.LastLocation.getLast();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (lastlocstored!=null && addLocationToUndo){
+			
+			if (locationcontainer!=lastlocstored){
+				
+				Gdx.app.log(MainExplorationView.logstag,"adding="+locationcontainer.locationsnode.toString());
+	
+				MainExplorationView.LastLocation.add(locationcontainer);
+				
+				for (Location test : MainExplorationView.LastLocation) {
+					
+					Gdx.app.log(MainExplorationView.logstag,"LastLocation="+test.locationsnode.getPLabel());
+					
+				}
+				
+			}
+			
+		} else {
+			
+			for (Location test : MainExplorationView.LastLocation) {
+				
+				Gdx.app.log(MainExplorationView.logstag,"LastLocation="+test.locationsnode.getPLabel());
+				
+			}
+			MainExplorationView.LastLocation.add(locationcontainer);
+			
+		}
+		
+		
+	}
+
+public static void centerViewOn(Location locationcontainer, boolean addLocationToUndo){
+	
+		MainExplorationView.coasting = false;
+		MainExplorationView.dragging = false;		
+		ME.centerViewOn(locationcontainer, MainExplorationView.currentPos.z,addLocationToUndo); //set position in all dimensions but z which we keep the same
+	}
+
+public static void centerViewOn(Location currentlyOpenLocation2, float newZ){		
+		
+		MainExplorationView.coasting = false;
+		MainExplorationView.dragging = false;		
+		ME.centerViewOn(currentlyOpenLocation2, newZ,true); //set position in all dimensions but z which we specify
+				
+	}
+
+public static void centerViewOn(Location locationcontainer){		
+		
+		MainExplorationView.coasting = false;
+		MainExplorationView.dragging = false;		
+	
+		float newZ = locationcontainer.getHubsZ() +  ScreenUtils.getSuitableDefaultCameraHeight(); //MECamera.standardCameraHeightAboveLocations;
+		ME.centerViewOn(locationcontainer, newZ,true); //set position in all dimensions but z which we use ths standard value for
+				
+	}
+
+
+
+
+public static Ray getCurrentStageCursorRay() {
+		
+	Vector2 currentCursor = getCurrentCursorScreenPosition();
+		
+		Gdx.app.log(MainExplorationView.logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
+		return MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
+	}
+
+public static void gotoLocation(SSSNode linksToThisPC) {
+	
+	
+	
+		//flag if the user is home
+		if (linksToThisPC.equals(PlayersData.computersuri)){
+			MainExplorationView.isAtHome = true;
+		} else {
+			MainExplorationView.isAtHome = false;		  
+		}
+	
+		//get the node screen.
+		//This will automatically check if it already exists
+		//else it will create a new one
+		Location screen = Location.getLocation(linksToThisPC);
+		
+	
+	
+		MainExplorationView.currentlyOpenLocation = screen;
+		ME.centerViewOn(MainExplorationView.currentlyOpenLocation);
+	
+	
+	
+	}
+
+public static Vector2 getCurrentStageCursorPosition() {
+	
+		float xc = Gdx.input.getX();
+		float yc = Gdx.input.getY();//-gameStage.getHeight();
+		
+		Vector2 vec = new Vector2(xc,yc);
+		 MainExplorationView.gameStage.screenToStageCoordinates(vec);
+		
+	//	 Gdx.app.log(logstag,"_____________:yc "+yc+"="+vec.y);
+		
+		return vec;
+	}
+
+public static Vector2 getCurrentCursorScreenPosition() {
+	
+		float xc = Gdx.input.getX();
+		float yc = Gdx.input.getY();//-gameStage.getHeight();
+		
+		Vector2 vec = new Vector2(xc,yc);
+		
+	//	 Gdx.app.log(logstag,"_____________:yc "+yc+"="+vec.y);
+		
+		return vec;
+	}
+
+public static void disableMovementControl(boolean state) {
+		MainExplorationView.movementControllDisabled = state;
+		
+	}
+
+public static void disableDrag(){
+		
+		MainExplorationView.dragging = false;
+		MainExplorationView.cancelnextdragclick = true;
+		
+	}
+
+public static void addnewdrop(DataObject newdrop, float x, float y) {
+	
+		 Gdx.app.log(MainExplorationView.logstag,"_____________:dropping ");
+		 
+		 MainExplorationView.infoPopUp.displayMessage("Concept Node dropping:"+newdrop.itemsnode.getPLabel());
+		 
+		 
+		//Image dropimage = new Image(newdrop);		
+		newdrop.setPosition((int)x - (newdrop.getWidth()/2),(int)y- (newdrop.getHeight()/2));
+		
+		double deg = (Math.random()*30)-15; 		
+		newdrop.setRotation((float) deg);
+		
+		//ensure its clickable (else how will you pick it up?)
+		
+		newdrop.setTouchable(Touchable.enabled);
+			
+		
+		MainExplorationView.gameStage.addActor(newdrop);
+		
+		//now we test for reactions to the drop
+		Population.testForReactionsToNewDrop(newdrop,x,y);
+		
+		
+	}
+
+public static void gotoLastLocation() {
+	
+		Gdx.app.log(MainExplorationView.logstag,"goto to last location");
+		
+		for (Location test : MainExplorationView.LastLocation) {			
+			Gdx.app.log(MainExplorationView.logstag,"LastLocations="+test.locationsnode.getPLabel());			
+		}
+		
+		if (MainExplorationView.LastLocation.size()==0){
+			return;
+		}
+		
+	
+		//remove current location (which should be the last added)
+		MainExplorationView.LastLocation.removeLast();			
+		
+		if (MainExplorationView.LastLocation.size()==0){
+				return;
+		}
+		
+		
+		//goto the last one if theres one
+		Location requested = MainExplorationView.LastLocation.getLast(); //gwt can't use peeklast
+		
+	
+		if (requested!=null){
+			
+			Gdx.app.log(MainExplorationView.logstag,"last location is:"+requested.locationsnode.getPLabel());		
+			MainExplorationView.LastLocation.removeLast();			
+			ME.centerViewOn( requested,false );
+			
+		} else {
+	
+			Gdx.app.log(MainExplorationView.logstag,"no last location");
+			
+		}
+	}
+
+public static void gotoHomeLoc() {
+		
+		MainExplorationView.infoPopUp.displayMessage("Heading Home..");
+		
+		ME.centerViewOn( PlayersData.homeLoc);
+	
+	}
 
 /**
  * checks for unloaded databasess this uri could be part of and starts loading if needed

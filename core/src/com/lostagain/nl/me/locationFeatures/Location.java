@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.LocationGUI;
+package com.lostagain.nl.me.locationFeatures;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +60,7 @@ public class Location {
 	// Hub
 	// Population creation (for each possible population)
 	
-	private static final HashMap<SSSNode,LocationsHub> AllLocationContainers = new HashMap<SSSNode,LocationsHub>();
+	private static final HashMap<SSSNode,LocationsHub> AllLocationHubs = new HashMap<SSSNode,LocationsHub>();
 	private static final HashMap<SSSNode,Location>     AllLocations = new HashMap<SSSNode,Location>();
 
 	
@@ -193,7 +193,8 @@ public class Location {
 	}
 	
 	
-	public static Location getLocationHub(SSSNode linksToThisPC) {
+	/** gets a location, generating one if required **/
+	public static Location getLocation(SSSNode linksToThisPC) {
 		
 				
 		if (AllLocations.containsKey(linksToThisPC)){
@@ -208,13 +209,19 @@ public class Location {
 
 	}
 	
+	/** gets an existing locationhub that is at this location sssnode. Note; hubs and locations share a common SSSNode
+	 * identifying them.
+	 * The hub is merely the "center" of the location. **/
+	public static LocationsHub getExistingHub(SSSNode hubsNode) {		
+		return AllLocationHubs.get(hubsNode);
+	}
 	
 	public void createNewHubAt(int X,int Y){
 
 		Gdx.app.log(logstag, "creating hub");
 		
 		locationsHub = new LocationsHub(locationsnode);
-		AllLocationContainers.put(locationsnode,locationsHub);
+		AllLocationHubs.put(locationsnode,locationsHub);
 		
 		MainExplorationView.addnewlocationHub(locationsHub,X, Y);
 	}
@@ -283,7 +290,7 @@ public class Location {
 		int CONWIDTH = 500;
 		
 		//loop over all locations, displace X if its overlaps
-		for (LocationsHub con : AllLocationContainers.values()) {
+		for (LocationsHub con : AllLocationHubs.values()) {
 
 			float miny = con.getY();
 			float maxy = con.getY() + con.getHeight();
@@ -333,7 +340,7 @@ public class Location {
 			Gdx.app.log(logstag, "getting unused location. Testing:"+x);
 
 			//loop over all locations, displace X if its overlaps
-			for (LocationsHub con : AllLocationContainers.values()) {
+			for (LocationsHub con : AllLocationHubs.values()) {
 
 				float miny = con.getY();
 				float maxy = con.getY() + con.getHeight();

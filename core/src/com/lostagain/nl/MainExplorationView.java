@@ -1,9 +1,6 @@
 package com.lostagain.nl;
 
-import java.awt.Button;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -12,76 +9,33 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.model.NodePart;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.GWTish.Label;
-import com.lostagain.nl.me.LocationGUI.Link;
-import com.lostagain.nl.me.LocationGUI.Location;
-import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
-import com.lostagain.nl.me.creatures.BasicInfovore;
-import com.lostagain.nl.me.creatures.Population;
-import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.GUIBar;
 import com.lostagain.nl.me.gui.InfoPopUp;
-import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.ScanManager;
+import com.lostagain.nl.me.gui.ScreenUtils;
+import com.lostagain.nl.me.locationFeatures.Location;
+import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
-import com.lostagain.nl.me.objects.DataObject;
-import com.lostagain.nl.shaders.DistanceFieldShader;
-import com.lostagain.nl.uti.SpiffyGenericTween;
-import com.lostagain.nl.uti.SpiffyTweenConstructor;
-import com.lostagain.nl.uti.SpiffyVector2Tween;
-import com.lostagain.nl.uti.SpiffyVector3Tween;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 
 /** The main exploration view, which lets them see LocationURIs 
  * **/
@@ -125,13 +79,14 @@ public class MainExplorationView implements Screen {
 	public static MECamera camera = new MECamera();
 	
 	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),1000f); //note we start high up and zoom in at the start as a little intro
-	public static Vector3 zoomToAtStartPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),444f); //note we start high up and zoom in at the start as a little intro
+	//public static Vector3 zoomToAtStartPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),444f); //note we start high up and zoom in at the start as a little intro
 	
 	public static Float CurrentZoom = 1f;	
 
 	static Float LookAtX = 0f;
 	static Float LookAtY = 0f;
-	/** disables the users controll over the movement (ie, dragging) **/
+	
+	/** disables the users control over the movement (ie, dragging) **/
 	static boolean movementControllDisabled = false;
 	
 	/** I dont know really how to use this correctly yet :-/ **/
@@ -243,7 +198,8 @@ public class MainExplorationView implements Screen {
 	// public Environment environment;
 
 
-
+	/** Sets up the stage,gui and camera for first time. 
+	 * Currently still has a lot of testing code that should be removed **/
 	public MainExplorationView(final ME gam) {
 
 		this.game = gam;
@@ -262,6 +218,8 @@ public class MainExplorationView implements Screen {
 
 		camera.setToPosition(MainExplorationView.currentPos);
 		debugCamera.setToPosition(MainExplorationView.currentPos);
+		
+		
 		
 		Gdx.app.log(logstag,"creating textures");
 			
@@ -315,7 +273,7 @@ public class MainExplorationView implements Screen {
 		multiplexer.addProcessor(gameStage);
 		Gdx.input.setInputProcessor(multiplexer);
 		
-		gameStage.getViewport().setCamera((PerspectiveCamera)camera);//because we use a special camera class we cast first to ensure all the supervariables will be used 
+		gameStage.getViewport().setCamera(camera);//because we use a special camera class we cast first to ensure all the supervariables will be used 
 		// stage.getCamera().translate(0, 250, 0);
 
 		gameStage.getCamera().update();
@@ -331,14 +289,6 @@ public class MainExplorationView implements Screen {
 	//	addnewlocation( PlayersData.homeLoc.locationsHub,200,500);
 
 
-		Gdx.app.log(logstag,"centering on starting location");
-		
-
-
-		//camera.setTargetPosition(MainExplorationView.zoomToAtStartPos);
-		infoPopUp.displayMessage("Welcome To The Mesh");
-		
-		centerViewOn( PlayersData.homeLoc,444f);
 
 		//test shader
 		// String vert = Gdx.files.internal("data/test.vertex.glsl").readString();
@@ -354,15 +304,24 @@ public class MainExplorationView implements Screen {
 		testlabinstance.transform.mul(newmatrix);
 		
 		// environment = new Environment();
-	   //     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-	     //   environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+	    //     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+	    //   environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
 		MessyModelMaker.addToBackground(testlabinstance);
 
 		
 		//gameStage.setDebugAll(true);
+		
+		//------------------------
 
-
+		//update screen parameters (these give the game slightly different views/apperence for different screen resolutions
+		ScreenUtils.setup(gameStage.getWidth(), gameStage.getHeight());	
+		
+		//finally start the game for the player by moving the camera and displayinght welcome message
+		Gdx.app.log(logstag,"centering on starting location & displaying welcome message");
+		
+		infoPopUp.displayMessage("Welcome To The Mesh");		
+		ME.centerViewOn( PlayersData.homeLoc,ScreenUtils.getSuitableDefaultCameraHeight());
 
 	}
 
@@ -393,91 +352,6 @@ public class MainExplorationView implements Screen {
 
 	}
 
-
-	public static void centerViewOn(Location locationcontainer){		
-		
-		coasting = false;
-		dragging = false;		
-
-		float newZ = locationcontainer.getHubsZ() + MECamera.standardCameraHeightAboveLocations;
-		centerViewOn(locationcontainer, newZ,true); //set position in all dimensions but z which we use ths standard value for
-				
-	}
-	public static void centerViewOn(Location currentlyOpenLocation2, float newZ){		
-		
-		coasting = false;
-		dragging = false;		
-		centerViewOn(currentlyOpenLocation2, newZ,true); //set position in all dimensions but z which we specify
-				
-	}
-	public static void centerViewOn(Location locationcontainer, boolean addLocationToUndo){
-
-		coasting = false;
-		dragging = false;		
-		centerViewOn(locationcontainer, currentPos.z,addLocationToUndo); //set position in all dimensions but z which we keep the same
-	}
-
-	public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo){
-
-		Gdx.app.log(logstag,"moving to z: "+newZ);
-		//CurrentX=locationcontainer.getCenterX();  //getX()+(locationcontainer.getWidth()/2);
-		//CurrentY=locationcontainer.getCenterY(); //getY()+(locationcontainer.getHeight()/2);
-
-		float newX = locationcontainer.getHubsX(Align.center);
-		float newY = locationcontainer.getHubsY(Align.center);
-		
-		
-		
-		Vector3 dest = new Vector3(newX,newY,newZ);
-		
-
-
-		Gdx.app.log(logstag,"moving to: "+dest);
-		
-		camera.setTargetPosition(dest); //new system replaces a lot below
-		
-		
-		
-
-		
-		//add the requested location to the  array list, but only if its different from
-				//the last location.
-		Location lastlocstored =null;;
-		try {
-			lastlocstored = LastLocation.getLast();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		if (lastlocstored!=null && addLocationToUndo){
- 			
-			if (locationcontainer!=lastlocstored){
-				
-				Gdx.app.log(logstag,"adding="+locationcontainer.locationsnode.toString());
-
-				LastLocation.add(locationcontainer);
-				
-				for (Location test : LastLocation) {
-					
-					Gdx.app.log(logstag,"LastLocation="+test.locationsnode.getPLabel());
-					
-				}
-				
-			}
-			
-		} else {
-			
-			for (Location test : LastLocation) {
-				
-				Gdx.app.log(logstag,"LastLocation="+test.locationsnode.getPLabel());
-				
-			}
-			LastLocation.add(locationcontainer);
-			
-		}
-		
-		
-	}
 
 	@Override
 	public void render(float delta) {
@@ -875,10 +749,12 @@ public class MainExplorationView implements Screen {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		
+	public void resize(int width, int height) {		
 
-		Gdx.app.log(logstag,"resizeing to.."+width+","+height);
+		Gdx.app.log(logstag,"resizeing to..."+width+","+height);
+		
+		//update screen params
+		ScreenUtils.setup(width, height);
 		
 		//ensure params are reset
 		camera.fieldOfView = 60;
@@ -898,7 +774,7 @@ public class MainExplorationView implements Screen {
 	    ((PerspectiveCamera)camera).far=1900.0f;
 	    ((PerspectiveCamera)camera).update();
 		
-		gameStage.getViewport().setCamera((PerspectiveCamera)camera);
+		gameStage.getViewport().setCamera(camera);
 		gameStage.getViewport().setScreenSize(width, height);
 		gameStage.getViewport().setWorldSize(width, height);
 		gameStage.getViewport().update(width, height, true);  
@@ -920,11 +796,11 @@ public class MainExplorationView implements Screen {
 		usersGUI.invalidateHierarchy();
 		usersGUI.validate();
 		
-		Gdx.app.log(logstag,"height="+guiStage.getHeight());
-		Gdx.app.log(logstag,"w="+guiStage.getWidth());
+		Gdx.app.log(logstag,"stage height="+guiStage.getHeight());
+		Gdx.app.log(logstag,"stage width="+guiStage.getWidth());
 
 		Gdx.app.log(logstag,"gameStage height="+gameStage.getHeight());
-		Gdx.app.log(logstag,"gameStage w="+gameStage.getWidth());
+		Gdx.app.log(logstag,"gameStage width="+gameStage.getWidth());
 
 
 
@@ -960,154 +836,5 @@ public class MainExplorationView implements Screen {
 
 		background.dispose();
 
-	}
-
-
-	public static void gotoLocation(SSSNode linksToThisPC) {
-
-
-
-		//flag if the user is home
-		if (linksToThisPC.equals(PlayersData.computersuri)){
-			isAtHome = true;
-		} else {
-			isAtHome = false;		  
-		}
-
-		//get the node screen.
-		//This will automatically check if it already exists
-		//else it will create a new one
-		Location screen = Location.getLocationHub(linksToThisPC);
-		
-
-
-		currentlyOpenLocation = screen;
-		centerViewOn(currentlyOpenLocation);
-
-
-
-	}
-
-	
-	public static void disableDrag(){
-		
-		dragging = false;
-		cancelnextdragclick = true;
-		
-		
-	}
-
-	public static void gotoHomeLoc() {
-		
-		infoPopUp.displayMessage("Heading Home..");
-		
-		centerViewOn( PlayersData.homeLoc);
-
-	}
-
-	public static void gotoLastLocation() {
-
-		Gdx.app.log(logstag,"goto to last location");
-		
-		for (Location test : LastLocation) {
-			
-			Gdx.app.log(logstag,"LastLocations="+test.locationsnode.getPLabel());
-			
-		}
-		
-		if (LastLocation.size()==0){
-			return;
-		}
-		
-
-		//remove current location (which should be the last added)
-		LastLocation.removeLast();			
-		
-		if (LastLocation.size()==0){
-				return;
-		}
-		
-		
-		//goto the last one if theres one
-		Location requested = LastLocation.getLast(); //gwt can't use peeklast
-		
-
-		if (requested!=null){
-			
-			Gdx.app.log(logstag,"last location is:"+requested.locationsnode.getPLabel());		
-			LastLocation.removeLast();			
-			centerViewOn( requested,false );
-			
-		} else {
-
-			Gdx.app.log(logstag,"no last location");
-			
-		}
-	}
-
-	public static void addnewdrop(DataObject newdrop, float x, float y) {
-
-		 Gdx.app.log(logstag,"_____________:dropping ");
-		 
-		 infoPopUp.displayMessage("Concept Node dropping:"+newdrop.itemsnode.getPLabel());
-		 
-		 
-		//Image dropimage = new Image(newdrop);		
-		newdrop.setPosition((int)x - (newdrop.getWidth()/2),(int)y- (newdrop.getHeight()/2));
-		
-		double deg = (Math.random()*30)-15; 		
-		newdrop.setRotation((float) deg);
-		
-		//ensure its clickable (else how will you pick it up?)
-		
-		newdrop.setTouchable(Touchable.enabled);
-			
-		
-		gameStage.addActor(newdrop);
-		
-		//now we test for reactions to the drop
-		Population.testForReactionsToNewDrop(newdrop,x,y);
-		
-		
-	}
-
-	
-	public static Ray getCurrentStageCursorRay() {
-		
-	Vector2 currentCursor = getCurrentCursorScreenPosition();
-		
-		Gdx.app.log(logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
-		return MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
-	}
-	
-	public static Vector2 getCurrentStageCursorPosition() {
-
-		float xc = Gdx.input.getX();
-		float yc = Gdx.input.getY();//-gameStage.getHeight();
-		
-		Vector2 vec = new Vector2(xc,yc);
-		 gameStage.screenToStageCoordinates(vec);
-		
-	//	 Gdx.app.log(logstag,"_____________:yc "+yc+"="+vec.y);
-		
-		return vec;
-	}
-
-	public static Vector2 getCurrentCursorScreenPosition() {
-
-		float xc = Gdx.input.getX();
-		float yc = Gdx.input.getY();//-gameStage.getHeight();
-		
-		Vector2 vec = new Vector2(xc,yc);
-		
-	//	 Gdx.app.log(logstag,"_____________:yc "+yc+"="+vec.y);
-		
-		return vec;
-	}
-
-	
-	public static void disableMovementControl(boolean state) {
-		movementControllDisabled = state;
-		
 	}
 }

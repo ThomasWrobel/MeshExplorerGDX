@@ -24,7 +24,7 @@ public class ScanManager {
 	
 	/** speed total (divided by number of active scans to determine speed) 
 	 * This value might change as the player unlocks ability's ***/
-	static float maxSpeed = 50f; //should be tweaked for finnal game. Developers probably need this faster for testing!
+	static float maxSpeed = 50f; //should be tweaked for final game. Developers probably need this faster for testing!
 		
 	/** the current active scans **/
 	static ArrayList<Scan> activeScans = new ArrayList<Scan>();

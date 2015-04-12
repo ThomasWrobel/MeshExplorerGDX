@@ -17,12 +17,11 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME;
-import com.lostagain.nl.MainExplorationView;
-import com.lostagain.nl.me.LocationGUI.LocationsHub;
 import com.lostagain.nl.me.creatures.Population.destructOn;
 import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.STMemory;
+import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
@@ -109,8 +108,8 @@ public class Creature implements hitable , Animating {
 	 **/
 	enum CreatureAnimationType {
 		none(-1.00f),
-		damageTaken(2.600f), //currently goes to white instantly and fades back to the creatures normal color over 200frames
-		beingDestroyed(0.100f),
+		damageTaken(2.600f), //currently goes to white instantly and fades back to the creatures normal color over 2.6 seconds
+		beingDestroyed(0.200f),
 		appearing(0.500f);
 		
 		private final float duration; // in seconds
@@ -310,7 +309,7 @@ public class Creature implements hitable , Animating {
 			numOfHitsLeft--;
 			
 			if (numOfHitsLeft<1){
-				this.destroy();
+				Creature.this.startDieing();
 				
 			}
 		}
@@ -343,8 +342,8 @@ public class Creature implements hitable , Animating {
 						numOfHitsLeft--;
 						Gdx.app.log(logstag, " creature numOfHitsLeft  "+numOfHitsLeft);
 						if (numOfHitsLeft<1){
-							//fire the destroy command on this creature
-							Creature.this.destroy();
+							//fire the start dieing command on this creature
+							Creature.this.startDieing();
 					
 						} else {
 							Creature.this.damaged();
@@ -372,6 +371,26 @@ public class Creature implements hitable , Animating {
 		}
 	}
 	
+	protected void startDieing() {
+		
+		currentState = CreatureState.dieing;
+		//starts the sequence for the death animation
+		//once finished destroy() should be triggered
+		currentlyPlayingAnimation = CreatureAnimationType.beingDestroyed;
+		
+		
+		//reset the time into the current animation (all animations start from 0)
+		currentAnimationTime = 0f;					 
+		//add to animation list which updates frames based on delta
+		//the updateAnimationFrame function will remove it from this list when the animation is finished.
+		//(that is, when currentAnimationTime = the animations duration defined in its enum)
+		ModelManagment.addAnimating(this);
+		
+		
+	}
+
+
+
 	/** Runs the standard animation of this creature getting damaged.
 	 * Can be overridden by subtypes for different effects.
 	 * 
@@ -486,7 +505,9 @@ public class Creature implements hitable , Animating {
 	}
 
 
-
+	/** The final actions that happen after a creature is destroyed.
+	 * This should be triggered after all destroying animations have finished. (no animations should be triggered from this function)
+	 * It triggers the drops, sets its state to dead, and removes it from the render lists and hitable lists **/
 	protected void destroy() {
 		
 		//create drops, if any	(has to be done before the model is destroyed)
@@ -541,7 +562,7 @@ public class Creature implements hitable , Animating {
 			float y = (float) (this.getCenter().y+ (-20+Math.random()*40));
 			
 						
-			MainExplorationView.addnewdrop(newdrop,x, y);			
+			ME.addnewdrop(newdrop,x, y);			
 			
 		}
 		
@@ -587,23 +608,27 @@ public class Creature implements hitable , Animating {
 			break;
 			
 		case beingDestroyed:
+		{
+			//as this should happen straight after a hit its a fade from white to transparent
+			Color trans = hitColor.cpy();
+			trans.lerp(Color.CLEAR, alpha);
+			this.setColor(trans);
+			
 			break;
-			
+		}
 		case damageTaken:
-			
+		{
 			//the animation change that happens while damage is taken
 			//it basically starts the hit color and returns to its normal colour
-			//Gdx.app.log(logstag, "(between :"+creaturesNormalColor.toString()+" and "+hitColor.toString()+")");
-			
+			//Gdx.app.log(logstag, "(between :"+creaturesNormalColor.toString()+" and "+hitColor.toString()+")");			
 			Color trans = hitColor.cpy();
 			trans.lerp(creaturesNormalColor, alpha);
 			this.setColor(trans);
 
-			//Gdx.app.log(logstag, "newcol="+trans.toString()+"");
-			
+			//Gdx.app.log(logstag, "newcol="+trans.toString()+"");			
 			
 			break;
-			
+		}
 		case none:
 			break;
 			
@@ -615,6 +640,12 @@ public class Creature implements hitable , Animating {
 		//If we are at the end of the frame animation we remove from the animated object sets
 		//and set the animation playing to none
 		if (currentAnimationTime>currentlyPlayingAnimation.duration()){
+			
+			//if the creature was beingDestroyed, we fire destroy() now
+			if (currentlyPlayingAnimation == CreatureAnimationType.beingDestroyed){
+				destroy();
+			}
+			
 			currentAnimationTime=0.0f; //reset time ready for next animation
 			currentlyPlayingAnimation=CreatureAnimationType.none; //set animation playing to none
 			ModelManagment.removeAnimating(this);//remove it from the animation list (which is what triggers this updateanimationFrame function			

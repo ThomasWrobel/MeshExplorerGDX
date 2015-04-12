@@ -6,7 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -21,8 +23,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array; //NOTE: This is like an arraylist but better optimized for libgdx stuff
 import com.badlogic.gdx.utils.ObjectSet; //NOTE: This is like a hashset but apparently is better optimized for libgdx stuff
+import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.domain.MEDomain;
+import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.ConceptBeamShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
 
@@ -56,6 +61,10 @@ public class ModelManagment {
 	static public enum RenderOrder {
 		behindStage,infrontStage,zdecides
 	}
+	
+	//test objects
+	static AnimatableModelInstance lookAtTester;
+	
 
 
 	/** adds the model to the render list.
@@ -207,7 +216,6 @@ public class ModelManagment {
 
 
 
-
 		//--------------			
 		Pixmap colourMapAsPixMap = MEDomain.getHomeDomain().getDomainsColourMap().getPixMap(200, 200);
 		//Pixmap colourMapAsPixMap = MessyModelMaker.createNoiseImage(200, 200);
@@ -228,6 +236,13 @@ public class ModelManagment {
 		ModelInstance colortest = ModelMaker.createRectangleAt(0, -900, 130, 200, 200, Color.BLACK, testmaterial3); 
 		ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
 
+		
+		addTestModels();
+		
+		
+		
+		
+		
 
 		//A lot of earlier code used for creating and debugging objects and shaders is below
 		//While its not critical, please leave for now as its a good reference for cutting and pasting tests
@@ -327,6 +342,25 @@ public class ModelManagment {
 		//  environment = new Environment();
 		//  environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 		// environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+	}
+
+	private void addTestModels() {
+
+		Material blue = new Material
+				(
+						ColorAttribute.createSpecular(Color.WHITE),
+						new BlendingAttribute(1f), 
+						FloatAttribute.createShininess(16f),
+						ColorAttribute.createDiffuse(Color.BLUE)
+						);
+		
+		Model lookAtTesterm =  modelBuilder.createXYZCoordinates(295f, blue, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		lookAtTester = new AnimatableModelInstance(lookAtTesterm);
+		lookAtTester.setToPosition(new Vector3 (500,500,0));
+		
+		
+		ModelManagment.addmodel(lookAtTester,RenderOrder.infrontStage);
+
 	}
 
 	/**
@@ -557,6 +591,11 @@ public class ModelManagment {
 			instance.updatePosition(deltatime);			
 
 		}
+		
+		//temp (testing lookat by linking to camera
+		//should point from camera updated each frame		
+		MECamera.angleTest.lookAt(lookAtTester);
+		
 
 	}
 

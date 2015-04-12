@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.LocationGUI;
+package com.lostagain.nl.me.locationFeatures;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,10 +26,10 @@ import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
-import com.lostagain.nl.me.LocationGUI.ObjectFile.ObjectFileState;
 import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.STMemory;
+import com.lostagain.nl.me.locationFeatures.ObjectFile.ObjectFileState;
 import com.lostagain.nl.me.objects.DataObject;
 
 /**
