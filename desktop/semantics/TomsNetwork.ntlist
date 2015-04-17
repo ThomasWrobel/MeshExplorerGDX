@@ -91,7 +91,7 @@ VertFirewall me:queryPass "Alive Chordate".
 
 MysteriousGateway me:SecuredBy endGateway.
 endGateway rdfs:subClassOf  me:Security.
-endGateway me:queryPass "me:word_end","me:word_of","<node:the>","word_game".	
+endGateway me:queryPass "Noun","Preposition","Determiner","Noun".	
 
 
 "Home of the worlds first cyptro-encryptologiest. Me." me:DescriptionOf alicespc.
@@ -148,10 +148,6 @@ isAlive.txt rdfs:subClassOf Alive.
 isDeterminer.txt rdfs:subClassOf Determiner.
 isNoun.txt rdfs:subClassOf Noun.
 isPreposition.txt rdfs:subClassOf Preposition.
-
-isDeterminer.txt rdfs:subClassOf me:software.
-isNoun.txt rdfs:subClassOf me:software.
-isPreposition.txt rdfs:subClassOf me:software.
 
 Chordate rdfs:subClassOf Alive. 
 isChordates.txt rdfs:subClassOf Chordate.

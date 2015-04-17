@@ -12,7 +12,10 @@ import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 
 /**
- * In order to more easily handle animations on objects we make them all extend this, and use this ones functions for all updates
+ * In order to more easily handle animations on objects we make them all extend this, and use this ones functions for all updates.
+ * 
+ * Aside from easily animating position,rotation and scale, this class also adds "lookat" abilities, positioning objects relative, 
+ * and showing/hiding them by automatically adding/removing them from the render list in model management
  * 
  * 
  * @author Tom on the excellent and helpful advice of Xoppa
@@ -157,82 +160,48 @@ public class AnimatableModelInstance extends ModelInstance {
 			Quaternion angle = getAngleTo(target);			
 			setToRotation(angle);
 			
-			
 		}
 		
 		/** 
-		 * Experimental method to find the axis-angle between two AnimatableModelInstances 
-		 * (currently doesn't work)
+		 * Method to find the axis-angle between this AnimatableModelInstances and another relative to the xAxis (1,0,0)
+		 * 
 		 * @return Quaternion of angle 
 		 * **/
 		public Quaternion getAngleTo(AnimatableModelInstance target) {
+			return  getAngleTo(target, new Vector3(1,0,0));
+		}
+		
+		/** 
+		 * Method to find the axis-angle between this AnimatableModelInstances and another relative to the xAxis.
+		 * 
+		 * @return Quaternion of angle 
+		 * **/
+		
+		public Quaternion getAngleTo(AnimatableModelInstance target, Vector3 Axis) {
 						
 			Vector3 thisPoint = this.transState.position.cpy();
 			Vector3 targetPoint = target.transState.position.cpy();
-		//	thisPoint.nor();
-			//targetPoint.nor();
 			
-			//get difference (which is the same as target relative to 0,0,0 if thispoint was 0,0,0)
-			//targetPoint.sub(thisPoint);
-			
+			//get difference (which is the same as target relative to 0,0,0 if this point was 0,0,0)
+			targetPoint.sub(thisPoint);			
 			targetPoint.nor();
-			thisPoint.nor();
-			//Gdx.app.log(logstag, "from= "+thisPoint.len()+" to="+targetPoint.len());
 			
-			Quaternion result = new Quaternion();
-			//result.setFromAxisRad(targetPoint, 0);
-			
-			result.setFromCross(targetPoint,thisPoint);
-		
-				
-			/*
-			
-			//Normalize them
-			thisPoint.nor();
-			targetPoint.nor();
+			//test if they are in the same the same place, if so just return default angle
+			if (targetPoint.len() < 0.01f) 
+			{
+			    return new Quaternion();
+			}
 
-			Gdx.app.log(logstag, "from= "+thisPoint+" to="+targetPoint);
+			//else we use this difference and find its angle relative to the Axis
+			//Vector3 xAxis = new Vector3(1,0,0);
+									
+			Quaternion result = new Quaternion();		
 			
-			float theirDotProduct = thisPoint.dot(targetPoint);	
-			
-			float angle = (float) Math.acos(theirDotProduct);
-			
-			Vector3 theirCrossProduct = thisPoint.crs(targetPoint); 
-			Vector3 axis = theirCrossProduct.nor();
-			
-			Gdx.app.log(logstag, "axis= "+axis+" angle="+angle+" dp was("+theirDotProduct+")");
-			
-			
-			//now make a Quaternion from it and return
-			Quaternion result = new Quaternion();
-			result.setFromAxisRad(axis, angle);
-			*/
-			
-			
+			result.setFromCross(Axis,targetPoint);
+					
 			
 			return result;
-			
-			//based on advice below;
-			/**
-			 * the angle is given by acos of the dot product of the two (normalized) vectors: v1•v2 = |v1||v2| cos(angle)
-the axis is given by the cross product of the two vectors, the length of this axis is given by |v1 x v2| = |v1||v2| sin(angle).
-as explained here
-
-this is taken from this discussion.
-
-So, if v1 and v2 are normalised so that |v1|=|v2|=1, then,
-
-angle = acos(v1•v2)
-
-axis = norm(v1 x v2)
-
-If the vectors are parallel (angle = 0 or 180 degrees) 
-then the length of v1 x v2 will be zero because sin(0)=sin(180)=0. 
-In the zero case the axis does not matter and can be anything because there is no rotation round it. 
-In the 180 degree case the axis can be anything at 90 degrees to the vectors so there is a whole range of possible axies.
-			 */
-			
-			
+						
 		}
 	
 }

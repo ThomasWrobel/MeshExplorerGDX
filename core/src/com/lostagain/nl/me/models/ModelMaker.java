@@ -42,7 +42,7 @@ public class ModelMaker {
 		return newmodel;
 	}
 	/**
-	 * Creates a rectangle at the co-ordinates.
+	 * Creates a model rectangle. At points x1/y1 to x2/y2 at height z.
 	 * If material is null it uses a default one
 	 * 
 	 * @param x1

@@ -1,7 +1,5 @@
 package com.lostagain.nl;
 
-import java.util.LinkedList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -41,7 +39,6 @@ import com.lostagain.nl.me.models.ModelManagment;
  * **/
 public class MainExplorationView implements Screen {
 
-
 	final static String logstag = "ME.MainExplorationView";
 
 	private static boolean LeftButtonDown = false;
@@ -58,9 +55,6 @@ public class MainExplorationView implements Screen {
 
 
 
-
-	/** Used to tell if the player is at their home pc **/
-	static boolean isAtHome=true;
 
 	static Texture customCursor = null;
 	static Texture customCursorTest = null;
@@ -188,12 +182,11 @@ public class MainExplorationView implements Screen {
 			"ME.MainExplorationView: _-released touch-_\r\n" + 
 			"ME.MainExplorationView: __com.badlogic.gdx.scenes.scene2d.ui.Label");
 	
-	//controlls the 3d background
+	//Controls the 3d background
 	public static  ModelManagment background = new ModelManagment();
 
 
-	public static  LinkedList<Location> LastLocation = new LinkedList<Location>();
-	static Location currentTargetLocation;
+	
 	
 	// public Environment environment;
 

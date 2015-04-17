@@ -5,22 +5,15 @@ import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
-import com.darkflame.client.semantic.SSSIndex;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
@@ -427,9 +420,12 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 			
 			//combine the sets into a newone (note; we dont want to change the above sets!)
 			HashSet<SSSNode> hubsLinkingToSamePlace = new HashSet<SSSNode>();
-			hubsLinkingToSamePlace.addAll(hubsLinkingToSame);
-			hubsLinkingToSamePlace.addAll(hubsLinkingToEveryone);
-					
+			if(hubsLinkingToSame!=null){
+				hubsLinkingToSamePlace.addAll(hubsLinkingToSame);
+			}
+			if(hubsLinkingToEveryone!=null){
+				hubsLinkingToSamePlace.addAll(hubsLinkingToEveryone);
+			}
 			
 			if (hubsLinkingToSamePlace.isEmpty()){
 				Gdx.app.log(logstag,"Error with hubs connected to query, no results found but there should be at least one");

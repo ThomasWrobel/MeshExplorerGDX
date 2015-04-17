@@ -25,8 +25,9 @@ import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.me.locationFeatures.ObjectFile.ObjectFileState;
 
 public class ContentsScreen  extends Container<ScrollPane>  implements LocationScreen {
-	static Logger Log = Logger.getLogger("ContentsScreen");
-
+	//static Logger Log = Logger.getLogger("ContentsScreen");
+	final static String logstag = "ME.ContentsScreen";
+	
 	Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 	
 
@@ -92,7 +93,6 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 	
 	@Override
 	public void layout(){
-		Log.info("validate contents__");
 		super.layout();
 		
 		//scroller.validate();

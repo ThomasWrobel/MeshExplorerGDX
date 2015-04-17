@@ -1,6 +1,7 @@
 package com.lostagain.nl;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,14 +44,10 @@ import com.lostagain.nl.uti.FileManager;
 public class ME extends Game {
 
 	final static String logstag = "ME";
-	
-//	static Logger Log = Logger.getLogger("ME");
-	
+		
 	//semantics
 	public final static String INTERNALNS = "http://darkflame.co.uk/meshexplorer#";	
 	
-
-
     //global game stuff
 	static ME game;
     static public Inventory playersInventory;   
@@ -58,10 +55,49 @@ public class ME extends Game {
 	static public SpriteBatch interfaceSpriteBatch;
     public static BitmapFont font;  
     static MainMenuScreen menu;
-    
+
+	/** Used to tell if the player is at their home pc **/
+	static boolean isAtHome=true;
+
+	public static  LinkedList<Location> LastLocation = new LinkedList<Location>();
+
+	static Location currentTargetLocation;
+	
+	/** GameMode control's mode and params for each.
+	 * Some global tweaks to the gameplay can be made here.
+	 * For now its just speed of scans, which varies based on the currentgame mode**/
+	public enum GameMode {		
+		/** production mode turns debug logs off **/
+		Production(20),
+		/** logs on, normal scan speed **/
+		Normal(20),
+		/** logs on, speeds up scans (speed controlled in ScanManager)**/
+		Developer(60);
+		
+		int ScanSpeed;		
+		GameMode(int ScanSpeed){
+			this.ScanSpeed=ScanSpeed;
+		}
+		
+		public int getScanSpeed() {
+			return ScanSpeed;
+		}
+		
+	}
+	
+    public static final GameMode currentMode = GameMode.Developer;
 	 
     @Override
 	public void create() {
+    	
+    	//set up logging setting based on game mode
+    	if (currentMode == GameMode.Production ){
+    		Gdx.app.setLogLevel(Application.LOG_NONE);
+    	} else {
+    		Gdx.app.setLogLevel(Application.LOG_INFO);
+    	}
+    	
+    	Gdx.app.log(logstag, "loading game..");
     	
     	game = this;
     	
@@ -73,13 +109,6 @@ public class ME extends Game {
     //	font = new BitmapFont();
     	interfaceSpriteBatch = new SpriteBatch();
 
-
-    	
-  		
-  		
-    	Gdx.app.setLogLevel(Application.LOG_INFO);
-    	Gdx.app.log(logstag, "loading..");
-    	
     	//create styles
     	DefaultStyles.setupStyles();
 
@@ -110,18 +139,32 @@ public class ME extends Game {
      * locations,puzzles and..well..everything **/
     public void setupSemanticsAndHomeDomain()
     {
-  	  //turn some logs off
-    //Log.setLevel(Level.OFF);
+    	//all off for production
+    	if (currentMode == GameMode.Production ){
+      	  Logger.getLogger("sss").setLevel(Level.OFF);
+      	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
+      	  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.OFF);
+      	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
+      	  Logger.getLogger("sss.SSSNode").setLevel(Level.OFF);
+      	  Logger.getLogger("sss.QueryEngine").setLevel(Level.OFF);
+      	  Logger.getLogger("sss.JavaFileManager").setLevel(Level.OFF);    		  
+          Logger.getLogger("sss.SSSIndex").setLevel(Level.OFF);
+      	  
+    	} else {
+    	
+    		//turn just some logs off
+    		//Log.setLevel(Level.OFF);
     	  Logger.getLogger("sss");
     	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
-    	//  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.WARNING);
+    	  //  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
     	  Logger.getLogger("sss.SSSNode").setLevel(Level.WARNING);
     	  Logger.getLogger("sss.QueryEngine").setLevel(Level.OFF);
     	  Logger.getLogger("sss.JavaFileManager").setLevel(Level.OFF);    		  
-    //	  Logger.getLogger("sss.SSSIndex").setLevel(Level.OFF);
+    	  //	  Logger.getLogger("sss.SSSIndex").setLevel(Level.OFF);
     	  
-    		  
+    	}
+    	
     	  SuperSimpleSemantics.setFileManager(new FileManager());	  
     	  
     	  SuperSimpleSemantics.setAutoloadLabels(true);
@@ -335,7 +378,7 @@ public static void centerViewOn(Location locationcontainer, float newZ, boolean 
 				//the last location.
 		Location lastlocstored =null;;
 		try {
-			lastlocstored = MainExplorationView.LastLocation.getLast();
+			lastlocstored = ME.LastLocation.getLast();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -346,9 +389,9 @@ public static void centerViewOn(Location locationcontainer, float newZ, boolean 
 				
 				Gdx.app.log(MainExplorationView.logstag,"adding="+locationcontainer.locationsnode.toString());
 	
-				MainExplorationView.LastLocation.add(locationcontainer);
+				ME.LastLocation.add(locationcontainer);
 				
-				for (Location test : MainExplorationView.LastLocation) {
+				for (Location test : ME.LastLocation) {
 					
 					Gdx.app.log(MainExplorationView.logstag,"LastLocation="+test.locationsnode.getPLabel());
 					
@@ -358,12 +401,12 @@ public static void centerViewOn(Location locationcontainer, float newZ, boolean 
 			
 		} else {
 			
-			for (Location test : MainExplorationView.LastLocation) {
+			for (Location test : ME.LastLocation) {
 				
 				Gdx.app.log(MainExplorationView.logstag,"LastLocation="+test.locationsnode.getPLabel());
 				
 			}
-			MainExplorationView.LastLocation.add(locationcontainer);
+			ME.LastLocation.add(locationcontainer);
 			
 		}
 		
@@ -412,9 +455,9 @@ public static void gotoLocation(SSSNode linksToThisPC) {
 	
 		//flag if the user is home
 		if (linksToThisPC.equals(PlayersData.computersuri)){
-			MainExplorationView.isAtHome = true;
+			ME.isAtHome = true;
 		} else {
-			MainExplorationView.isAtHome = false;		  
+			ME.isAtHome = false;		  
 		}
 	
 		//get the node screen.
@@ -498,31 +541,31 @@ public static void gotoLastLocation() {
 	
 		Gdx.app.log(MainExplorationView.logstag,"goto to last location");
 		
-		for (Location test : MainExplorationView.LastLocation) {			
+		for (Location test : ME.LastLocation) {			
 			Gdx.app.log(MainExplorationView.logstag,"LastLocations="+test.locationsnode.getPLabel());			
 		}
 		
-		if (MainExplorationView.LastLocation.size()==0){
+		if (ME.LastLocation.size()==0){
 			return;
 		}
 		
 	
 		//remove current location (which should be the last added)
-		MainExplorationView.LastLocation.removeLast();			
+		ME.LastLocation.removeLast();			
 		
-		if (MainExplorationView.LastLocation.size()==0){
+		if (ME.LastLocation.size()==0){
 				return;
 		}
 		
 		
 		//goto the last one if theres one
-		Location requested = MainExplorationView.LastLocation.getLast(); //gwt can't use peeklast
+		Location requested = ME.LastLocation.getLast(); //gwt can't use peeklast
 		
 	
 		if (requested!=null){
 			
 			Gdx.app.log(MainExplorationView.logstag,"last location is:"+requested.locationsnode.getPLabel());		
-			MainExplorationView.LastLocation.removeLast();			
+			ME.LastLocation.removeLast();			
 			ME.centerViewOn( requested,false );
 			
 		} else {
