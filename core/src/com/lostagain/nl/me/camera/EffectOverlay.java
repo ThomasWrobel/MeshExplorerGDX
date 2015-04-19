@@ -22,9 +22,9 @@ public class EffectOverlay extends AnimatableModelInstance {
 	
 	
 	public EffectOverlay() {		
-		super(MessyModelMaker.createRectangle(0-(w/2), 0-(w/2), 0+(w/2),0+(h/2), -110, Color.BLACK, MessyModelMaker.createNoiseMaterial()));
+		super(MessyModelMaker.createRectangle(0-(w/2), 0-(w/2), 0+(w/2),0+(h/2), 0, Color.BLACK, MessyModelMaker.createNoiseMaterial()));
 			
-
+//was z -110
 		
        // new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.5f),
 		//  ColorAttribute.createDiffuse(Color.RED)

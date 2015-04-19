@@ -594,7 +594,7 @@ public class ModelManagment {
 		
 		//temp (testing lookat by linking to camera
 		//should point from camera updated each frame		
-		MECamera.angleTest.lookAt(lookAtTester);
+	//	MECamera.angleTest.lookAt(lookAtTester);
 		
 
 	}

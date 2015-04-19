@@ -5,14 +5,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.darkflame.client.query.Query;
 import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
+import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
+import com.lostagain.nl.me.objects.DataObject;
 
 public class PlayersData {
 
@@ -80,9 +83,9 @@ public class PlayersData {
 
 	public static void setup() {
 		
-		Gdx.app.log(logstag,"home location uri="+homemessage.PURI);
+		Gdx.app.log(logstag,"Home location uri="+homemessage.PURI);
 		
-		
+	
 		//This perhaps should be turned into a NTList to keep the players starting information external
 		// would make editing easier
 		
@@ -123,11 +126,19 @@ public class PlayersData {
 		
 		
 		//hasLanguage.add(StaticSSSNodes.stdascii);
-		
-		
-
 		//playerslocationcontents.addNodeToThisSet(StaticSSSNodes.asciidecoder, "local");
 		//playerslocationcontents.addNodeToThisSet(StaticSSSNodes.scram1decoder, "local");
+		
+		
+		
+		
+		
+		//developers get some stuff automatically
+		//wont work till inventory can add stuff like the gun automatically on first load
+		if (ME.currentMode == GameMode.Developer ){
+			//playerslocationcontents.add(StaticSSSNodes.ConceptGun1);
+    	} 
+		
 		
 		
 	}

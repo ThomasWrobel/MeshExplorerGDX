@@ -120,9 +120,10 @@ public class ME extends Game {
     	//we clear the semantics before adding the player data (because that contains semantics
     	SuperSimpleSemantics.clearAllIndexsAndNodes();
 
-    	//create starting computer
+    	//create starting computer and default player settings
 	  	PlayersData.setup();
-    	
+    	//----------------------------------------------------
+	  	
     	Gdx.app.log(logstag,"_____________"); //stops after this in html version
      //   
     	menu= new MainMenuScreen(game);

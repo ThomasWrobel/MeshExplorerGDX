@@ -14,7 +14,7 @@ import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 /**
  * In order to more easily handle animations on objects we make them all extend this, and use this ones functions for all updates.
  * 
- * Aside from easily animating position,rotation and scale, this class also adds "lookat" abilities, positioning objects relative, 
+ * Aside from easily animating position,rotation and scale, this class also adds "lookAt" abilities, positioning objects relative, 
  * and showing/hiding them by automatically adding/removing them from the render list in model management
  * 
  * 
@@ -154,12 +154,16 @@ public class AnimatableModelInstance extends ModelInstance {
 		}
 		
 		
-		/** Sets this model to lookat the target models vector3 location (currently doesnt work) **/
-		public void lookAt(AnimatableModelInstance target){
-			
+		/** Sets this model to "lookat" the target models vector3 location by aligning this models xAxis(1,0,0) to point at the target **/
+		public void lookAt(AnimatableModelInstance target){			
 			Quaternion angle = getAngleTo(target);			
-			setToRotation(angle);
-			
+			setToRotation(angle);			
+		}
+		
+		/** Sets this model to lookat the target models vector3 location **/
+		public void lookAt(AnimatableModelInstance target, Vector3 Axis){			
+			Quaternion angle = getAngleTo(target,Axis);			
+			setToRotation(angle);			
 		}
 		
 		/** 

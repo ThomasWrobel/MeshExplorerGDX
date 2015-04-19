@@ -43,8 +43,13 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	
 	public static CameraVisualiser cameraVisualiserCube = new CameraVisualiser(); 
 	
+	/** point the lazer shots from **/
+	public static  AnimatableModelInstance FirePoint = new AnimatableModelInstance(ModelMaker.createSphereModel(10));
+	
+	
+	
 	//temp
-	public static CameraVisualiser angleTest = new CameraVisualiser(); 
+	//public static CameraVisualiser angleTest = new CameraVisualiser(); 
 	
 	//AnimatableModelInstance test attachment;
 	
@@ -80,11 +85,11 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	}
 
 
-	//just a test for now
+	/** Just a test for now **/
 	private void addDefaultCameraAttachments() {
 		
 		//overlay and background
-		super.attachThis(mainOverlay, new PosRotScale(0f, 0f, -5f));
+		super.attachThis(mainOverlay, new PosRotScale(0f, 0f, -115f));
 		super.attachThis(background, new PosRotScale(0f, 0f, -80f)); //note; thanks to draw order shenanigans, the background will be drawn behind everything regardless of distance.
 		
 		//add the default visualizer to help show where the camera is
@@ -97,9 +102,16 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		//hide visualizer by default
 		hideCameraVisualizer();
 		
+		//fire point in future should be setup by the concept gun
+		super.attachThis(FirePoint, new PosRotScale(0f, 100f, -115f));
+		ModelManagment.addmodel(FirePoint,ModelManagment.RenderOrder.infrontStage);
+		
+		
+		
+		
 		//
-		ModelManagment.addmodel(angleTest,ModelManagment.RenderOrder.infrontStage);		
-		super.attachThis(angleTest, new PosRotScale(0f,0f,0f));
+		//ModelManagment.addmodel(angleTest,ModelManagment.RenderOrder.infrontStage);		
+		//super.attachThis(angleTest, new PosRotScale(0f,0f,0f));
 		
 		/// X/Y/Z marker to help debug
      //   Material mat = new Material(

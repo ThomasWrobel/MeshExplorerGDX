@@ -39,6 +39,7 @@ import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
+import com.lostagain.nl.me.models.ConceptBeam;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
@@ -52,7 +53,7 @@ import com.lostagain.nl.shaders.MyShaderProvider;
  * 
  * It allows you to apply a "concept" to a creature in the game. 
  * This is represented by shooting it with a beam. The creature then responds or not based on if the concept 
- * forfills its criteria.
+ * for fills its criteria.
  * eg. Lactos intolerant enemy's get damaged by cheese,milk,yogaurt beams
  * Cyberman would be damaged by gold beams
  * etc.
@@ -63,11 +64,12 @@ public class ConceptGun  extends WidgetGroup {
 	final static String logstag = "ME.ConceptGun";
 
 	//guns current stats
-	static int MaxComplexityLevel = 2; //will be used to determine how complex the equipped class can be
-	static float FireFrequency = 2.5f;//means the gun will actually hit targets at this frequency per sec regardless of visual effect (you should ensure your visuals are sycned to this)
+	public static int MaxComplexityLevel = 2; //will be used to determine how complex the equipped class can be
+	public static float FireFrequency = 2.5f;//means the gun will actually hit targets at this frequency per sec regardless of visual effect (you should ensure your visuals are sycned to this)
+	
 	//size
 	static int width = 50; //3
-	
+
 	public static SSSNode equipedConcept = null; //the currently equipped concept. Think of it as ammo
 
 	//private static float firePointX = 0;
@@ -99,8 +101,6 @@ public class ConceptGun  extends WidgetGroup {
 	
 	
 
-	//ammo dependent styles
-	private ArrayList<Color> currentColors = new ArrayList<Color>();
 
 	//impact effect
 
@@ -108,8 +108,11 @@ public class ConceptGun  extends WidgetGroup {
 	static Task impactEffectTask;
 	
 	
-	//other
-	AnimatableModelInstance lazer;
+	//current 2d lazer (not used anymore)
+	//AnimatableModelInstance lazer;
+	
+	/*new wip 3d lazer beam model*/
+	ConceptBeam lazer3d;
 	
 	private float timeSinceLastHitCheck = 0f;
 	
@@ -219,8 +222,8 @@ public class ConceptGun  extends WidgetGroup {
 		
 
 		//generate lazer mesh and texture		
-		createLazerObject(randomColorFromConcept());
-
+		//createLazerObject(randomColorFromConcept());
+		createLazerObject(Color.RED);
 		
 		this.invalidate();
 	}
@@ -230,8 +233,13 @@ public class ConceptGun  extends WidgetGroup {
 
 		MainExplorationView.infoPopUp.displayMessage(" Concept Ammo Loaded:"+drop.itemsnode.getPLabel());
 		
+		//update beam;
+		lazer3d.updateBeam(drop.itemsnode, FireFrequency);
+		
+		
 		
 		//get all objects property
+		/*
 		SSSNode node = drop.itemsnode;
 
 		currentColors = DefaultStyles.getColorsFromNode(node); //we only use the first color
@@ -240,20 +248,20 @@ public class ConceptGun  extends WidgetGroup {
 			currentColors = new ArrayList<Color>();
 			currentColors.add(Color.RED); //red by default
 		}
-
+		 */
 	}
 
 
 
 	@Override
 	public void layout(){
-		Gdx.app.log(logstag, "concept needslayout ");
+		Gdx.app.log(logstag, "concept needslayout");
 		this.setWidth(MainExplorationView.guiStage.getWidth());
 
 		//this.setWidth(300);
 		this.setHeight(height);	
 
-		//temp commwent out
+		//temp comment out
 		this.setPosition(this.getParent().getWidth(),this.getParent().getHeight()-height);		//MainExplorationView.guiStage.getHeight()
 
 
@@ -288,7 +296,7 @@ public class ConceptGun  extends WidgetGroup {
 		Gdx.app.log(logstag, " createBeamEffect targeting:"+x+","+y);
 
 		//from
-		Vector2 sc = MainExplorationView.gameStage.screenToStageCoordinates(firePoint.cpy());
+		//Vector2 sc = MainExplorationView.gameStage.screenToStageCoordinates(firePoint.cpy());
 		
 
 		Vector2 cp = new Vector2(x,y);						
@@ -296,22 +304,33 @@ public class ConceptGun  extends WidgetGroup {
 		Gdx.app.log(logstag, " createBeamEffect targeting stage:"+cursor_on_stage.x+","+cursor_on_stage.y);
 		
 		//color
-		Color BeamColor = new Color(randomColorFromConcept());
-
+		//Color BeamColor = new Color(randomColorFromConcept());
+	//	Color BeamColor = Color.RED;
+		
 		//col.a  = 1 - (500 / 1000) ^ 2;
 		
 		//set color
-		lazer.materials.get(0).set(new ConceptBeamShader.ConceptBeamAttribute(0.35f,BeamColor,FireFrequency,Color.WHITE));
+		//lazer.materials.get(0).set(new ConceptBeamShader.ConceptBeamAttribute(0.35f,BeamColor,FireFrequency,Color.WHITE));
 		
+	
 		
 		//attach lazer to render list if not there already (this command checks that itself)
-		ModelManagment.addmodel(lazer,ModelManagment.RenderOrder.infrontStage);
-
-
+		//ModelManagment.addmodel(lazer,ModelManagment.RenderOrder.infrontStage);
 
 		//rechargeTime = totalCharge;
+		currentLazerState=LazerState.fireing;		
+		
+		
+		
+		
+		//--------------
+		//update its position and look at.
+		lazer3d.setToPosition(new Vector3(cursor_on_stage.x,cursor_on_stage.y,0));
+		lazer3d.lookAt(MECamera.FirePoint,new Vector3(0,1,0)); //at the moment its the visualizer cube, in future we need a gun shotty shotty point.
 
-		currentLazerState=LazerState.fireing;
+		//Tell the beam its been fired
+		lazer3d.beamFired(FireFrequency);
+		//--------------
 
 	}
 
@@ -392,12 +411,24 @@ public class ConceptGun  extends WidgetGroup {
 		//	if (lazer!=null){
 		//		MessyModelMaker.removeModelInstance(lazer); //one beam at a time for now!
 		//	}
-			lazer=newlazer;
+		//	lazer=newlazer;
 			
 
 			//display it		
 		//	ModelManagment.addmodel(lazer,ModelManagment.RenderOrder.infrontStage);
 			
+			//Create the new 3d lazer model and fix it to the camera
+			//this model is created at a fixed width and a length arbitrarily long.
+			//Its positioned at the point of impact and made to point back at the camera.
+			//This ensures its always accurate as to where its hitting, as well as ensuring it doesn't go past its impact point
+			
+			//Model newlazermodel = ModelMaker.createRectangle(-hw,0,hw,700f,0, currentBeamMaterial);			
+			//lazer3d = new AnimatableModelInstance(newlazermodel);
+			
+			lazer3d = new ConceptBeam();
+			ModelManagment.addmodel(lazer3d,ModelManagment.RenderOrder.infrontStage);
+			//hide by default
+			lazer3d.hide();
 	}
 
 	/**
@@ -427,7 +458,9 @@ public class ConceptGun  extends WidgetGroup {
 
 			//update beam is mouse still down
 			if (Gdx.input.isTouched() && rechargeTime>0){
-			
+				
+				
+			/*
 				//from is the fire target
 				Vector2 fromPoint = ME.getCurrentCursorScreenPosition();   //MainExplorationView.getCurrentStageCursorPosition();// .gameStage.screenToStageCoordinates(new Vector2(Gdx.input.getX(),Gdx.input.getY()));
 				//too is the gun mussel (yeah, backwards a bit I know)
@@ -457,6 +490,18 @@ public class ConceptGun  extends WidgetGroup {
 				
 				
 				MainExplorationView.camera.updateAtachment(lazer,lazerbeamdisplacement);
+				*/
+				
+				
+				
+				///Update the new 3d lazer;
+				Vector2 fromPointStage = ME.getCurrentStageCursorPosition(); 
+				lazer3d.setToPosition(new Vector3(fromPointStage.x,fromPointStage.y,0));
+				lazer3d.lookAt(MECamera.FirePoint,new Vector3(0,1,0)); //at the moment its the visualizer cube, in future we need a gun shotty shotty point.
+					
+				
+				
+				
 				
 				//currenscreentargetX = fromPoint.x; //update cursor pos
 			//	currenscreentargetY = fromPoint.y;
@@ -499,7 +544,10 @@ public class ConceptGun  extends WidgetGroup {
 				
 				//reset
 				//rechargeTime=totalCharge;			
-				MessyModelMaker.removeModelInstance(lazer);
+			//	MessyModelMaker.removeModelInstance(lazer);
+				
+				lazer3d.hide();
+				
 				 currentLazerState = LazerState.charging;
 			//	lazer=null;;
 				
@@ -528,7 +576,9 @@ public class ConceptGun  extends WidgetGroup {
 
 			if (rechargeTime<0){
 				rechargeTime=0;			
-				MessyModelMaker.removeModelInstance(lazer);
+			//	MessyModelMaker.removeModelInstance(lazer);
+
+				lazer3d.hide();
 				 currentLazerState = LazerState.charging;
 			//	lazer=null;
 				
@@ -622,22 +672,6 @@ public class ConceptGun  extends WidgetGroup {
 		*/
 	}
 
-	/**
-	 * defaults to red
-	 * @return
-	 */
-	private Color randomColorFromConcept() {
-		if (currentColors.size()==0){
-			return Color.RED;	
-		}
-
-
-		int p = (int) (Math.random()*currentColors.size());
-
-
-		return currentColors.get(p);
-
-	}
 
 	public static boolean isDisabled() {
 		if (currentLazerState == LazerState.disabled){

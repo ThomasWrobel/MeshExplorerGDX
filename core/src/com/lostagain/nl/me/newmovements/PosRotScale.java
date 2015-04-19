@@ -150,9 +150,7 @@ public class PosRotScale {
 	 */
 	public PosRotScale setToRotation(float i, float j, float k, float angleInDeg) {
 		rotation.set(new Vector3(i,j,k), angleInDeg);
-
-		Gdx.app.log(logstag, " setting rot to angle :"+rotation.getAngle());	
-		
+		//Gdx.app.log(logstag, " setting rot to angle :"+rotation.getAngle());		
 		
 		return this;
 	}
