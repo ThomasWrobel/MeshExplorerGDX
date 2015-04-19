@@ -64,6 +64,9 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		if (renderable.material.has(ConceptBeamShader.ConceptBeamAttribute.ID)){
 			return new ConceptBeamShader();			
 		}		
+		if (renderable.material.has(ConceptBeamImpactShader.ConceptBeamImpactAttribute.ID)){
+			return new ConceptBeamImpactShader();			
+		}	
 		if (renderable.material.has(NoiseShader.NoiseShaderAttribute.ID)){
 			return new NoiseShader(renderable);			
 		}		

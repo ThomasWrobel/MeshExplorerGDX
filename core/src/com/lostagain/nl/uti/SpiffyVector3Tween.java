@@ -1,6 +1,5 @@
 package com.lostagain.nl.uti;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 
 

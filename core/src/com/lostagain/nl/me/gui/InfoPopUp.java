@@ -2,7 +2,6 @@ package com.lostagain.nl.me.gui;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;

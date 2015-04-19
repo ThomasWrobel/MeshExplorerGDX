@@ -1,12 +1,5 @@
 package com.lostagain.nl.me.newmovements;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-//import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 //untested!
 public class NewRunAwayFrom  {
@@ -16,7 +9,7 @@ public class NewRunAwayFrom  {
 	
 	
 	/**
-	 *  Will quickly fade an object, then back away a bit. Then, finnally, turn quickly and run off.
+	 *  Will quickly fade an object, then back away a bit. Then, finally, turn quickly and run off.
 	 *  
 	 * @param originObject
 	 * @param runawayfrom

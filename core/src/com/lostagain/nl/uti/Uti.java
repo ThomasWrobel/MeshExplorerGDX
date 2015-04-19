@@ -2,7 +2,6 @@ package com.lostagain.nl.uti;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.darkflame.client.query.Query;
 import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.SSSNode;

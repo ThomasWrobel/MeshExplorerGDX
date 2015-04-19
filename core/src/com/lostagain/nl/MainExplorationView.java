@@ -674,8 +674,7 @@ public class MainExplorationView implements Screen {
 		}
 
 		//    game.font.draw(game.batch, "Drops Collected:: " + dropsGathered, 0, 480);
-		ME.font.draw( ME.interfaceSpriteBatch, "X:: " + currentPos.x+" Y:: " + currentPos.y+"...."+dragging+"(x="+drag_dis_x+",y="+drag_dis_y+")", 10,45);
-		ME.font.draw( ME.interfaceSpriteBatch, "Z:: " + currentPos.z, 10, 25);
+		ME.font.draw( ME.interfaceSpriteBatch, "x:: " + currentPos.x+" y:: " + currentPos.y+" z::"+ currentPos.z, 10,25);
 
 		//    game.batch.draw(bucketImage, bucket.x, bucket.y);
 		ME.interfaceSpriteBatch.end();

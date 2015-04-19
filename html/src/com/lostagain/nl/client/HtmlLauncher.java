@@ -2,12 +2,9 @@ package com.lostagain.nl.client;
 
 import java.util.logging.Logger;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.google.gwt.core.client.GWT;
 import com.lostagain.nl.ME;
 
 public class HtmlLauncher extends GwtApplication {

@@ -63,8 +63,8 @@ void main()
     
   }
   
-  //fade end
-  if (x>0.90){
+  //fade extream end
+  if (x>0.98){ //used to be 90
   	
   	 float intensity =  x-0.90; // 0 to 0.1
   	 intensity = intensity * 10; // 0 to 1;
@@ -80,7 +80,7 @@ void main()
    // -1 = 0 = 1 
   // 
   //we only want the extream end so we get the distance from a target point
-  float targetx = 0.96;
+  float targetx = 1.00; //used to be 0.96
   float distarget = abs(targetx-x);
   //invert so neares tthe target is strongest
   float abx = 1-distarget;

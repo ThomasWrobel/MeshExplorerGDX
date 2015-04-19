@@ -36,26 +36,26 @@ public class ModelManagment {
 	private static String logstag="ME.ModelManagment";
 
 	/** All the 3d models that appear BEHIND the sprite ones **/
-	public static Array<ModelInstance> allBackgroundInstances = new Array<ModelInstance>();
+	public static ObjectSet<ModelInstance> allBackgroundInstances = new ObjectSet<ModelInstance>();
 
 	/** All the 3d models that appear INFRONT of the sprite ones **/
-	public static Array<ModelInstance> allForgroundInstances = new Array<ModelInstance>();
+	public static ObjectSet<ModelInstance> allForgroundInstances = new ObjectSet<ModelInstance>();
 
 	public static MyShaderProvider myshaderprovider = new MyShaderProvider();
 	ModelBuilder modelBuilder = new ModelBuilder();
 
 
 	public ModelBatch modelBatch;
-	//Using Array here as its a GDX thing rather then ArrayList...not sure what difference it makes
+
 	/**all hitable models **/
-	public static Array<hitable> hitables = new Array<hitable>();
-	public static Array<hitable> mousedownOn = new Array<hitable>();
+	public static Array<hitable> hitables = new Array<hitable>(); //should be changed to a set to stop duplicates
+	public static ObjectSet<hitable> mousedownOn = new ObjectSet<hitable>();
 
 	/**All model with texture animations **/
 	public static ObjectSet<Animating> animatingobjects = new ObjectSet<Animating>();
 
 	/**all models currently moving **/
-	public static Array<Creature> movingObjects = new Array<Creature>();
+	public static ObjectSet<Creature> movingObjects = new ObjectSet<Creature>();
 
 
 	static public enum RenderOrder {
@@ -66,15 +66,34 @@ public class ModelManagment {
 	static AnimatableModelInstance lookAtTester;
 	
 
-
-	/** adds the model to the render list.
-	 * At this time it chooses if its a background or forground object based on its Z position
-	 * If Z is less then the stage Z (0) its behind
-	 * If its more then its 	in front**/
+	/** Adds the model to the render list.
+	 * RenderOrder determines if its rendered in front or behind the spritestage.
+	 * 
+	 * You can also  it chooses if its a background or foreground object based on its Z position
+	 * If Z is less then the stage Z 5 its behind
+	 * If its more then 5its in front
+	  If adding a AnimatableModelInstance we also check all its attachments are added too **/
+	public static void addmodel(AnimatableModelInstance model, RenderOrder order) {	
+		
+		addmodel((ModelInstance)model,order); //note we cast so as to call the non-AnimatableModelInstance specific method below
+		
+		for (AnimatableModelInstance attachedModel : model.getAttachments()) {			
+			addmodel(attachedModel,order);
+		}
+		
+	}
+	
+	
+	/** Adds the model to the render list.
+	 * RenderOrder determines if its rendered in front or behind the spritestage.
+	 * 
+	 * You can also  it chooses if its a background or foreground object based on its Z position
+	 * If Z is less then the stage Z 5 its behind
+	 * If its more then 5its in front**/
 	public static void addmodel(ModelInstance model, RenderOrder order) {	
 		
 		//ignore if present already
-		if (allBackgroundInstances.contains(model, true) || allForgroundInstances.contains(model, true)){
+		if (allBackgroundInstances.contains(model) || allForgroundInstances.contains(model)){
 			Gdx.app.log(logstag,"________model already on a render list");
 			return;
 		}
@@ -99,8 +118,7 @@ public class ModelManagment {
 		} else {
 			allForgroundInstances.add(model);
 		}
-		
-
+				
 	}
 
 	/**
@@ -109,13 +127,13 @@ public class ModelManagment {
 	 * @return 
 	 */
 	public static RenderOrder removeModel(ModelInstance model) {		
-		Boolean wasInForground = allBackgroundInstances.removeValue(model,true);
+		Boolean wasInForground = allBackgroundInstances.remove(model);
 		
 		if (wasInForground){
 			return RenderOrder.behindStage;			
 		}
 		
-		Boolean wasInBackground= allForgroundInstances.removeValue(model,true);
+		Boolean wasInBackground= allForgroundInstances.remove(model);
 		
 		if (wasInBackground){
 			return RenderOrder.infrontStage;			
@@ -540,7 +558,7 @@ public class ModelManagment {
 	public static void removeMoving(Creature model) 
 	{
 
-		movingObjects.removeValue(model,true);
+		movingObjects.remove(model);
 
 	}
 	public static void addAnimating(Animating model) {
