@@ -34,6 +34,7 @@ import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.hitable;
 
 /** The main exploration view, which lets them see LocationURIs 
  * **/
@@ -121,7 +122,8 @@ public class MainExplorationView implements Screen {
     
     boolean newtouch=true; //if a touch event has just started
     
-	public static boolean touchedAModel = false;
+	public static hitable touchedAModel = null;
+	
 	
     
  
@@ -485,7 +487,7 @@ public class MainExplorationView implements Screen {
 			//and finnally checking if they are allowed to drag at all (ie, maybe the gun is in use and its disabled normal movement)
 			if (!dragging
 				&& !cancelnextdragclick 
-				&& !touchedAModel 
+				&& (touchedAModel==null) 
 				&& STMemory.currentlyHeld == null
 				&& !movementControllDisabled){
 				dragging = true;
@@ -500,7 +502,7 @@ public class MainExplorationView implements Screen {
 				startdragx_exview = currentPos.x;
 				startdragy_exview = currentPos.y;
 				
-			} else if (!cancelnextdragclick && !touchedAModel && !movementControllDisabled) {
+			} else if (!cancelnextdragclick && (touchedAModel==null) && !movementControllDisabled) {
 				
 				 drag_dis_x = Gdx.input.getX()-startdragxscreen;
 				 drag_dis_y = Gdx.input.getY()-startdragyscreen;
@@ -563,9 +565,9 @@ public class MainExplorationView implements Screen {
 			cancelnextdragclick = false;
 		}
 		
-		if (touchedAModel && !Gdx.input.isTouched()){
+		if ((touchedAModel!=null) && !Gdx.input.isTouched()){
 			Gdx.app.log(logstag,"_-released touch on a model-_");
-			touchedAModel=false;
+			touchedAModel=null;
 			ModelManagment.untouchAll();
 		}
 		

@@ -3,6 +3,7 @@ package com.lostagain.nl.me.gui;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 
@@ -38,6 +39,9 @@ public class InfoPopUp {
 
 	CurrentState state = CurrentState.hidden;
 	
+
+	/**manages the texts layout**/
+	GlyphLayout textLayout = new GlyphLayout();
 	
 	/** A message object determines the look of a single message in the stack **/
 	class MessageObject {
@@ -172,11 +176,13 @@ public class InfoPopUp {
 			String message = messageObj.messageText;
 			Color c = messageObj.messageColor;
 			
-			ME.font.setColor(c.r, c.g,c.b, opacity);
+			ME.font.setColor(c.r, c.g, c.b, opacity);
 			
-			float stringWidth = ME.font.getBounds(message).width;
+			textLayout.setText(ME.font,message);
 			
-			ME.font.draw( ME.interfaceSpriteBatch,message,stageWidth-stringWidth-10, 25+(startHeight-(i*spacing)));
+			float stringWidth = textLayout.width;//ME.font.getBounds(message).width;
+			
+			ME.font.draw( ME.interfaceSpriteBatch,textLayout,stageWidth-stringWidth-10, 25+(startHeight-(i*spacing)));
 
 		}		
 

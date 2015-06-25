@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.lostagain.nl.shaders.ConceptBeamShader.ConceptBeamAttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 import com.lostagain.nl.shaders.NoiseShader.NoiseShaderAttribute;
 import com.lostagain.nl.shaders.PrettyBackground.PrettyBackgroundAttribute;
@@ -81,6 +82,21 @@ public class DistanceFieldShader implements Shader {
 					
 				}
 				return false;
+			}
+			
+
+			@Override
+			public int compareTo(Attribute o) {
+				
+			   //Ensuring attribute we are comparing too is the same type, if not we truth
+			   if (type != o.type) return type < o.type ? -1 : 1; //if not the same type and less then we return -1 else we return 1
+				 			 
+			   //if they are the same type we continue	
+			   double otherwidth = ((DistanceFieldAttribute)o).width; //just picking width here arbitarily. Theres no real reason for these to be rendered in a different order relative to eachother
+			   //so the order can be pretty arbitarily.
+			        
+			    return width == otherwidth ? 0 : (width < otherwidth ? -1 : 1);
+			        
 			}
 		}	
 	    

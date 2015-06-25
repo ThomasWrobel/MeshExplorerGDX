@@ -1,17 +1,7 @@
 package com.lostagain.nl.me.camera;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -19,7 +9,6 @@ import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
-import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewMoveTo;
 import com.lostagain.nl.me.newmovements.NewMovementController;
@@ -177,22 +166,10 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		if (movement.currentMovement!=null){
 			PosRotScale newlocation = movement.getUpdate(delta);
 			
-			super.setTransform(newlocation);
+			super.setTransform(newlocation);			
 			
-			//transState.setTo(newlocation);;
-			
-			
-			
-			//this.setTransform(newlocation);
-			//super.transState.position = newlocation.position;
-			
-			
-			//super.position.set(transState.position.cpy());
-		
-			//newlocation.getTranslation(transState.position);
-			
-		
 			MainExplorationView.currentPos.set(transState.position);
+			
 		} else {
 			
 			//if we arnt running an animation we just directly update
@@ -210,12 +187,16 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		//mainOverlay.transform.setTranslation(transState.position);
 		
 		//We update the opacity of the effect overlay based on height relative to the standard height
-		float standardHeight = ScreenUtils.getSuitableDefaultCameraHeight()-50; //the -50 ensures it has a little noise even at standard height
-		float heightbasedopacity = (transState.position.z-(standardHeight))/1000.0f; //	380.0f
-		MECamera.mainOverlay.setEffectOpacity(heightbasedopacity);
+		//float standardHeight = ScreenUtils.getSuitableDefaultCameraHeight()-50; //the -50 ensures it has a little noise even at standard height
+		//float heightbasedopacity = (transState.position.z-(standardHeight))/1000.0f; //	380.0f
+		//MECamera.mainOverlay.setEffectOpacity(heightbasedopacity);
 		
-		//mainOverlay.transform.setTranslation(transState.position);
-	//	background.transform.setTranslation(transState.position).mul(new Matrix4().setToTranslation(0, 0, -600));
+		//we will in future also update based on proximity 
+		//to sources of corruption (ie, infovour creatures)
+		//We can do this by getting the distance to a location, then checking its population density
+		//the population density determines noise when directly over it
+		//this falls off proportionately with distance
+		
 		
 	}
 

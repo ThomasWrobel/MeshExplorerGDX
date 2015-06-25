@@ -55,7 +55,7 @@ public class PrettyNoiseShader implements Shader {
 
 			@Override
 			public Attribute copy () {
-				return new NoiseShaderAttribute(rgbmode,tintcolor);
+				return new NoiseShaderAttribute(rgbmode,tintcolor,false);
 			}
 
 			@Override
@@ -70,6 +70,12 @@ public class PrettyNoiseShader implements Shader {
 					
 				}
 				return false;
+			}
+
+			@Override
+			public int compareTo(Attribute o) {
+				// TODO Auto-generated method stub
+				return 0;
 			}
 		}	
 		

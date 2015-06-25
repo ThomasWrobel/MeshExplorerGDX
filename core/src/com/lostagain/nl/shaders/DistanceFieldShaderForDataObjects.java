@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.lostagain.nl.shaders.ConceptBeamShader.ConceptBeamAttribute;
+import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 
 /**
@@ -71,6 +72,20 @@ public class DistanceFieldShaderForDataObjects implements Shader {
 				
 			}
 			return false;
+		}
+		
+		@Override
+		public int compareTo(Attribute o) {
+			
+		   //Ensuring attribute we are comparing too is the same type, if not we truth
+		   if (type != o.type) return type < o.type ? -1 : 1; //if not the same type and less then we return -1 else we return 1
+			 			 
+		   //if they are the same type we continue	
+		   double otherSmooth = ((DistanceFieldttribute)o).smoothing; //just picking width here arbitarily. Theres no real reason for these to be rendered in a different order relative to eachother
+		   //so the order can be pretty arbitarily.
+		        
+		    return smoothing == otherSmooth ? 0 : (smoothing < otherSmooth ? -1 : 1);
+		        
 		}
 	}	
 	

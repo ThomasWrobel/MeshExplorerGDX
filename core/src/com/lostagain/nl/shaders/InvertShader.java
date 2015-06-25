@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.lostagain.nl.shaders.ConceptBeamShader.ConceptBeamAttribute;
+import com.lostagain.nl.shaders.DistanceFieldShaderForDataObjects.DistanceFieldttribute;
 import com.lostagain.nl.shaders.TextureNoiseShader.TextureNoiseAttribute;
 
 public class InvertShader extends DefaultShader {
@@ -33,6 +34,13 @@ public class InvertShader extends DefaultShader {
 			@Override
 			protected boolean equals (Attribute other) {				
 				return true;
+			}
+			@Override
+			public int compareTo(Attribute o) {
+				
+			        
+			    return 1;
+			        
 			}
 		}	
 		

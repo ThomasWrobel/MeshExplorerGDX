@@ -27,7 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -43,6 +43,7 @@ import com.lostagain.nl.me.models.ConceptBeam;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.me.objects.DataObject;
@@ -432,21 +433,26 @@ public class ConceptGun  extends WidgetGroup {
 	}
 
 	/**
-	 * if the gun is firing this tests for hits under its target
+	 * If the gun is firing this tests for hits under its target and returns the nearest
+	 * returns the nearest object it hit.
+	 * @return 
 	 */
-	public void testForHits(){
+	public hitable testForHits(boolean processHits){
 
+		
 		//Vector2 currentCursor = MainExplorationView.getCurrentCursorScreenPosition();
 		
 		//Gdx.app.log(logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
 		//Ray ray = MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
 		
 		Ray ray = ME.getCurrentStageCursorRay();
-		MainExplorationView.touchedAModel = ModelManagment.testForHits(ray,true);
+		MainExplorationView.touchedAModel = ModelManagment.testForHits(ray,true,processHits);
 		
-		if (MainExplorationView.touchedAModel){
+		if (MainExplorationView.touchedAModel!=null){
 			Gdx.app.log(logstag,"_-(hit at least one thing)-_");
 		}
+		
+		return MainExplorationView.touchedAModel;
 		
 	}
 	
@@ -494,11 +500,6 @@ public class ConceptGun  extends WidgetGroup {
 				
 				
 				
-				///Update the new 3d lazer;
-				Vector2 fromPointStage = ME.getCurrentStageCursorPosition(); 
-				lazer3d.setToPosition(new Vector3(fromPointStage.x,fromPointStage.y,0));
-				lazer3d.lookAt(MECamera.FirePoint,new Vector3(0,1,0)); //at the moment its the visualizer cube, in future we need a gun shotty shotty point.
-					
 				
 				
 				
@@ -530,13 +531,24 @@ public class ConceptGun  extends WidgetGroup {
 				timeSinceLastHitCheck = timeSinceLastHitCheck + delta;
 				rechargeTime = rechargeTime-delta;
 				
+				float defaultZ = 0;
 				if (timeSinceLastHitCheck>(1/FireFrequency)){
 					timeSinceLastHitCheck = timeSinceLastHitCheck - (1/FireFrequency); // (1/FireFrequency) is interval
 					Gdx.app.log(logstag, " hit check triggered! " + timeSinceLastHitCheck);					
-					testForHits();
+					hitable collision= testForHits(true);
+					
+					if (collision!=null){						
+						defaultZ = collision.getTransform().position.z;
+					}
+					
 				}
 				
-				
+
+				///Update the new 3d lazer;
+				Vector2 fromPointStage = ME.getCurrentStageCursorPosition(); 
+				lazer3d.setToPosition(new Vector3(fromPointStage.x,fromPointStage.y,defaultZ));
+				lazer3d.lookAt(MECamera.FirePoint,new Vector3(0,1,0)); //at the moment its the visualizer cube, in future we need a gun shotty shotty point.
+					
 				
 
 			} else {

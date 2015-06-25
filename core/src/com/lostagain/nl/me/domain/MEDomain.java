@@ -2,6 +2,7 @@ package com.lostagain.nl.me.domain;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
@@ -140,5 +141,7 @@ public class MEDomain {
 		currentDomain = domain;
 		
 	}
+
+
 
 }

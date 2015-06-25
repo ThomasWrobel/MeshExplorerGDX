@@ -1,13 +1,8 @@
 package com.lostagain.nl.me.camera;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
@@ -156,10 +151,10 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera {
 		}
 	}
 
-	public void updateAtachment(AnimatableModelInstance lazer,
+	public void updateAtachment(AnimatableModelInstance object,
 			PosRotScale lazerbeamdisplacement) {
 		
-		attachlist.put(lazer, lazerbeamdisplacement);
+		attachlist.put(object, lazerbeamdisplacement);
 		
 	}
 	

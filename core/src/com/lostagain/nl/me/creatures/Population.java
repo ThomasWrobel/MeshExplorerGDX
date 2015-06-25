@@ -3,13 +3,14 @@ package com.lostagain.nl.me.creatures;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Align;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
@@ -361,8 +362,8 @@ public class Population {
 		
 		
 		//first get nearby locations
-		ArrayList<Location> nearbylocations = Location.LocationsWithinRange(new Vector2(x,y), 500);
-		
+		Set<Location> nearbylocations = Location.LocationsWithinRange(dropsPositionAsVector, 500);
+				
 		//then loop over them finding creatures near the drop point
 		//we dont test all locations as its wastefull to test things far away
 		ArrayList<Creature> allNearbyCreatures = new ArrayList<Creature>();

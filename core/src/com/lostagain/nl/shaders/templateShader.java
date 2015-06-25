@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.lostagain.nl.shaders.DistanceFieldShaderForDataObjects.DistanceFieldttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 import com.lostagain.nl.shaders.NoiseShader.NoiseShaderAttribute;
 import com.lostagain.nl.shaders.PrettyNoiseShader.PrettyNoiseShaderAttribute;
@@ -65,6 +66,21 @@ public class templateShader extends DefaultShader {
 					
 				}
 				return false;
+			}
+			
+			//compare should be implemented to determain the order of rendering within the same type of shader
+			//this is done based on a attribute within the shader - it can be any value to test
+			@Override
+			public int compareTo(Attribute o) {
+				
+			   //Ensuring attribute we are comparing too is the same type, if not we truth
+			   if (type != o.type) return type < o.type ? -1 : 1; //if not the same type and less then we return -1 else we return 1
+				 			 
+			   //if they are the same type we continue	
+			   //double otherValue= ((templateAttribute)o).value; //any value here
+			        
+			   // return smoothing == otherSmooth ? 0 : (smoothing < otherSmooth ? -1 : 1);
+			        return 0;
 			}
 		}	
 	 

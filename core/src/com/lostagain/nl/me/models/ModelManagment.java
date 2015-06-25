@@ -399,9 +399,12 @@ public class ModelManagment {
 	 * 
 	 * @param ray
 	 * @param hitsPenetrate  - if the hits penetrate it means everything under the cursor will count as hit, not just the top.
-	 * @return
+	 * @param processHits - if the hits should be processed, or if we are just looking for the nearest collision (this can be optimised a lot)
+	 * 
+	 * @return the nearest hitable
+	 * 
 	 */
-	public static boolean testForHits(Ray ray,boolean hitsPenetrate) {
+	public static hitable testForHits(Ray ray,boolean hitsPenetrate,boolean processHits) {
 
 		Gdx.app.log(logstag,"_-testing hit in :"+hitables.size+" models");
 		Gdx.app.log(logstag,"_-testing ray at :"+ray.origin.x+","+ray.origin.y);
@@ -494,16 +497,19 @@ public class ModelManagment {
 		if (!hitsPenetrate && closestNonBlockerTouched!=null){
 
 			if (closestBlockerTouched==null){
-				closestNonBlockerTouched.fireTouchDown();
+				if (processHits){
+					closestNonBlockerTouched.fireTouchDown();
+				}
 				//	mousedownOn.add(closestBlockerTouched); //hmm....not sure if we should use this anymore
-				return true;
+				return closestNonBlockerTouched;
 			}
 
 			if (closestBlockerTouched.getLastHitsRange()<closestNonBlockerTouched.getLastHitsRange()){
-
-				closestNonBlockerTouched.fireTouchDown();
+				if (processHits){
+					closestNonBlockerTouched.fireTouchDown();
+				}
 				//	mousedownOn.add(closestBlockerTouched); //hmm....not sure if we should use this anymore
-				return true;
+				return closestNonBlockerTouched;
 			}
 		}
 
@@ -511,12 +517,11 @@ public class ModelManagment {
 
 		for (hitable instance : everyThingUnderCursor) {
 
-
-
 			if (closestBlockerTouched==null || instance.getLastHitsRange()<closestBlockerTouched.getLastHitsRange()){
 
-				instance.fireTouchDown();
-
+				if (processHits){
+					instance.fireTouchDown();
+				}
 			}
 
 
@@ -535,7 +540,10 @@ public class ModelManagment {
 
 		//   	return true;
 		//   }
-		return false;
+		if (closestBlockerTouched!=null){
+			return closestBlockerTouched;
+		}
+		return null;
 	}
 
 	public static void addHitable(hitable model) {

@@ -143,7 +143,7 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 	public void setToNoiseShader() {	
 
 		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.6f);
-		NoiseShader.NoiseShaderAttribute noiseAttribute = new NoiseShader.NoiseShaderAttribute(false, Color.WHITE);
+		NoiseShader.NoiseShaderAttribute noiseAttribute = new NoiseShader.NoiseShaderAttribute(false, Color.WHITE,false);
 
 		super.materials.get(0).clear();
 		super.materials.get(0).set(blendingAttribute2);

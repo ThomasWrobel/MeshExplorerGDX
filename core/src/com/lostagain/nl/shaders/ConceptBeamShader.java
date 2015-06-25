@@ -88,6 +88,21 @@ public class ConceptBeamShader implements Shader {
 				}
 				return false;
 			}
+
+			@Override
+			public int compareTo(Attribute o) {
+				
+			   //Ensuring attribute we are comparing too is the same type, if not we truth
+			   if (type != o.type) return type < o.type ? -1 : 1; //if not the same type and less then we return -1 else we return 1
+				 			 
+			   //if they are the same type we continue	
+			   double otherwidth = ((ConceptBeamAttribute)o).width; //just picking width here arbitarily. Theres no real reason for conceptbeams to be rendered in a different order relative to eachother
+			   //so the order can be pretty arbitarily - theres only going to be one beam on the screen at a time anyway.
+			   
+			        
+			    return width == otherwidth ? 0 : (width < otherwidth ? -1 : 1);
+			        
+			}
 		}	
 	   
 	   
@@ -140,16 +155,15 @@ public class ConceptBeamShader implements Shader {
     	//  glEnable(GL_BLEND);
     	 // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     	 
-    	  context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
+    	 // context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
+    	  
+    	  
     	  
     	  //lower for additive
-    	//  context.setBlending(true,GL20.GL_ONE ,GL20.GL_ONE);
-    	  
-    	//  context.setDepthTest(GL20.GL_DEPTH_TEST);    	
-
-//    	  context.setDepthTest(GL20.GL_DEPTH_BUFFER_BIT);    	
-    	  
-          //context.setCullFace(GL20.GL_BACK);
+    	  context.setBlending(true,GL20.GL_ONE ,GL20.GL_ONE);    	  
+    	  context.setDepthTest(GL20.GL_DEPTH_TEST);    	
+    	  context.setDepthTest(GL20.GL_DEPTH_BUFFER_BIT);    	    	  
+          context.setCullFace(GL20.GL_BACK);
           
     	  
     }

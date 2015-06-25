@@ -72,6 +72,12 @@ public class TextureNoiseShader implements Shader {
 			}
 			return false;
 		}
+
+		@Override
+		public int compareTo(Attribute o) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	}	
 	
 	

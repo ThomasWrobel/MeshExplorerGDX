@@ -1,6 +1,7 @@
 package com.lostagain.nl.me.locationFeatures;
 
 
+import java.awt.font.TextLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,6 +9,7 @@ import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -19,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Align;
 import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackError;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackRunnable;
@@ -42,6 +44,8 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 	 final ScrollPane scroller;
 	 
 	public int numOfEmails=0;
+
+
 	
 	public EmailScreen(LocationsHub parentLocationContainer, SSSNode securedBy) {
 		
@@ -285,7 +289,10 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 
 	 protected static class Message extends Label 
 	 {
-		 
+
+			/**manages the texts layout**/
+			GlyphLayout textLayout = new GlyphLayout();
+			
 		 public String getSourcefilename() {
 			return sourcefilename;
 		}
@@ -310,9 +317,10 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 
 					Gdx.app.log(logstag,"testing if we have ________________"+language);
 					
-				 LabelStyle labstyle = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));
+				LabelStyle labstyle = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));
+				
 			 	labstyle.font = DefaultStyles.scramabledFont;
-			 	labstyle.font.setScale(0.3f);
+			 	labstyle.font.getData().setScale(0.3f);
 			 	
 			 	//save the default style (means if it changes this wont need to be be)
 			 	final LabelStyle defaultStyle = super.getStyle();

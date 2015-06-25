@@ -22,7 +22,7 @@ public class EffectOverlay extends AnimatableModelInstance {
 	
 	
 	public EffectOverlay() {		
-		super(MessyModelMaker.createRectangle(0-(w/2), 0-(w/2), 0+(w/2),0+(h/2), 0, Color.BLACK, MessyModelMaker.createNoiseMaterial()));
+		super(MessyModelMaker.createRectangle(0-(w/2), 0-(w/2), 0+(w/2),0+(h/2), 0, Color.BLACK, MessyModelMaker.getNoiseMaterial(true)));
 			
 //was z -110
 		

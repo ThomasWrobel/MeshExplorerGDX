@@ -20,7 +20,7 @@ import com.lostagain.nl.shaders.PrettyNoiseShader.PrettyNoiseShaderAttribute;
 
 /**
  * creates a PrettyBackground shader - currently using one from shadertoy (will replace)
- * It only works in hte background behind everyone else.
+ * It only works in the background behind everyone else.
  * 
  * @author Tom
  *
@@ -71,6 +71,12 @@ public class PrettyBackground implements Shader {
 					
 				}
 				return false;
+			}
+
+			@Override
+			public int compareTo(Attribute o) {
+				// TODO Auto-generated method stub
+				return 0;
 			}
 		}	
 	   

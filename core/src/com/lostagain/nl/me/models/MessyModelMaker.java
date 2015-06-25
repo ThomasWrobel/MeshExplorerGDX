@@ -35,7 +35,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.shaders.MyShaderProvider;
@@ -86,11 +86,11 @@ public class MessyModelMaker {
 	public static ModelInstance addNoiseRectangle(int x, int y, int w, int h,boolean centerAlignOrigin) {
 		
 
-		Material mat = createNoiseMaterial();
+		Material mat = getNoiseMaterial(false);
 		ModelInstance newmodel;
 		if (centerAlignOrigin){
 			
-		 newmodel  = new ModelInstance(createRectangle(x-(w/2), y-(w/2), x+(w/2),y+(h/2), -110, Color.BLACK,mat));
+			newmodel  = new ModelInstance(createRectangle(x-(w/2), y-(w/2), x+(w/2),y+(h/2), -110, Color.BLACK,mat));
 		
 		} else {
 			newmodel  = new ModelInstance(createRectangle(x, y, x+w,y+h, -110, Color.BLACK,mat));
@@ -564,12 +564,15 @@ public class MessyModelMaker {
         return createRectangle( x1, y1, x2, y2, z, MColor, mat );
         
 	}*/
+	public static Material getNoiseMaterial() {
+		return getNoiseMaterial(false);
+	}
 
-	public static Material createNoiseMaterial() {
+	public static Material getNoiseMaterial(boolean alphaFromLocation) {
 		
 		  Material mat =
 				  new Material(
-				  new NoiseShader.NoiseShaderAttribute(false,Color.ORANGE),
+				  new NoiseShader.NoiseShaderAttribute(false,Color.ORANGE,alphaFromLocation),
 				  new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.99f)
 				  );
 		

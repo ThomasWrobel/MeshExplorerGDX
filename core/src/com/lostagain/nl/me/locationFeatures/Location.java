@@ -3,11 +3,12 @@ package com.lostagain.nl.me.locationFeatures;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Align;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.MainExplorationView;
@@ -391,7 +392,7 @@ public class Location {
 	}
 	
 	/**
-	 * returns current number of creatures/100 (used for visual corruption effects)
+	 * returns current number of creatures (used for visual corruption effects)
 	 * @return
 	 */
 	public float getInfectionAmount(){
@@ -410,20 +411,21 @@ public class Location {
 	/**
 	 * returns the locations near a certain point
 	 * 
-	 * @param point
+	 * @param position
 	 * @param radius
 	 */
-	public static ArrayList<Location> LocationsWithinRange(Vector2 point, float radius){
-		
-		ArrayList<Location> locationsWithinRange = new ArrayList<Location>();
+	public static Set<Location> LocationsWithinRange(Vector3 position, float radius){
+				
+		Set<Location> locationsWithinRange = new HashSet<Location>();
 		
 		for (Location loc : AllLocations.values()) {
 			
 			float LocX = loc.getHubsX(Align.center);
 			float LocY = loc.getHubsY(Align.center);
-			Vector2 locationsPosition = new Vector2(LocX,LocY);
+			float LocZ = 0;
+			Vector3 locationsPosition = new Vector3(LocX,LocY,LocZ);
 			
-			float distanceTo = point.dst(locationsPosition);
+			float distanceTo = position.dst(locationsPosition);
 			
 			if (distanceTo<radius){
 				locationsWithinRange.add(loc);
@@ -432,6 +434,49 @@ public class Location {
 		}
 
 		return locationsWithinRange;
+	}
+	
+	
+	
+	/**
+	 * Returns the corruption level near a certain point
+	 * 
+	 * @param position
+	 * @param radius
+	 * 
+	 **/
+	public static float getCorruptionAt(Vector3 position, float radius){
+						
+		//start corruption at zero
+		float corruptionTotal = 0;
+		
+		//per creature
+		final float corruptionPerCreature = 0.02f;
+		
+		for (Location loc : AllLocations.values()) {
+			
+			float LocX = loc.getHubsX(Align.center);
+			float LocY = loc.getHubsY(Align.center);
+			float LocZ = 0;
+			Vector3 locationsPosition = new Vector3(LocX,LocY,LocZ);
+			
+			float distanceTo = position.dst(locationsPosition);
+			
+			if (distanceTo<radius){
+				
+				float creatures = loc.getInfectionAmount(); //get total creatures at location			
+				float corruptionOfLocation = creatures * corruptionPerCreature;
+				float scaleDownByDistance = (corruptionOfLocation*(1-(distanceTo/radius)));
+				corruptionTotal=corruptionTotal+scaleDownByDistance;
+								
+			}
+			
+		}
+		
+		
+		
+		
+		return corruptionTotal;
 	}
 	
 }

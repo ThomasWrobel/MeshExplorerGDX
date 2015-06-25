@@ -17,8 +17,8 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'MeshExplorerV2'
-        gdxVersion = '1.5.3'
-        roboVMVersion = '1.0.0-beta-03'
+        gdxVersion = '1.6.3'
+        roboVMVersion = '1.4.0'
     }
 
     repositories {
