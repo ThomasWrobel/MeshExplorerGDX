@@ -102,7 +102,7 @@ alicespccontents.txt me:ison alicespc.
 alicesemailindex.txt rdfs:subClassOf me:messages.
 alicesemailindex.txt me:ison alicespc.
  
-"I'm Bob.This is me outpost. -ProfP gave it to me to help his research. " me:DescriptionOf BobsOutpost.
+"I'm Bob.This is my outpost. -ProfP gave it to me to help his research. " me:DescriptionOf BobsOutpost.
                                                                       
 bobspcmessages.txt rdfs:subClassOf me:messages.
 bobspcmessages.txt me:ison BobsOutpost.

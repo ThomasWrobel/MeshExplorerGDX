@@ -44,7 +44,7 @@ public class BasicInfovore extends Creature implements Animating {
 	//Note; If too intensive we can make this static
 	//then change the animation update so its updated once per population TYPE not for each 
 	//creature individually.
-	//this will, however, make all the creatures animate in sycn which isnt so nice
+	//this will, however, make all the creatures animate in sync which isnt so nice
 	InfovoreAnimation idealAnimation = new InfovoreAnimation();
 	
 	public BasicInfovore(Population parentPopulation, float x, float y,float z,
@@ -77,7 +77,8 @@ public class BasicInfovore extends Creature implements Animating {
 		
 		// just a cube for now
 			
-		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.9f);
+		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.5f); //0.5 is the opacity used to be 0.9
+		
 		DepthTestAttribute depthsetting = new DepthTestAttribute(GL20.GL_EQUAL);
 		
 				//.createBox(15f, 15f, 15f, 
@@ -85,7 +86,7 @@ public class BasicInfovore extends Creature implements Animating {
 			//	Usage.Position | Usage.Normal);
 		
 		//
-		FileHandle imageFileHandle = Gdx.files.internal("data/directiontester.png"); 
+		FileHandle imageFileHandle = Gdx.files.internal("data/genericinfovour.png"); 
 		Texture blobtexture = new Texture(imageFileHandle);
 		
         mat.set(TextureAttribute.createDiffuse(blobtexture)); //idealAnimation.getKeyFrame(0)));

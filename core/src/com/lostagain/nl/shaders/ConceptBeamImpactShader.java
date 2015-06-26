@@ -101,11 +101,11 @@ public class ConceptBeamImpactShader implements Shader {
 	@Override
 	public void init () {
 
-		Gdx.app.log(logstag, "init concept beam");
+		Gdx.app.log(logstag, "init concept beam impact");
 
 
-		String vert = Gdx.files.internal("shaders/conceptBeamvert.glsl").readString(); //vertex is same as Cobcept beam, only frag is different
-		String frag = Gdx.files.internal("shaders/conceptBeamImpactfrag.glsl").readString();
+		String vert = Gdx.files.internal("shaders/conceptbeamvert.glsl").readString(); //vertex is same as Cobcept beam, only frag is different
+		String frag = Gdx.files.internal("shaders/conceptbeamImpactfrag.glsl").readString();
 
 		program = new ShaderProgram(vert, frag);
 		if (!program.isCompiled()){

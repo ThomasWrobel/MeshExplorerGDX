@@ -1,4 +1,5 @@
 precision highp float;
+
 uniform float u_time;
 uniform vec2 resolution;
 varying vec2 fPosition;
@@ -13,8 +14,8 @@ varying float shotFrequency;
 void main()
 {
   
-  float x = 1-fPosition.x; //flip horizontally
-  float y = 1-fPosition.y; //fliped vertically
+  float x = 1.0-fPosition.x; //flip horizontally
+  float y = 1.0-fPosition.y; //fliped vertically
     
   //normalise values to -1 to 1, libgdx seems to use 0-1 by default
   y = (y*2.0)-1.0;
@@ -67,7 +68,7 @@ void main()
   if (x>0.98){ //used to be 90
   	
   	 float intensity =  x-0.90; // 0 to 0.1
-  	 intensity = intensity * 10; // 0 to 1;
+  	 intensity = intensity * 10.0; // 0 to 1;
   	
   	col = mix(col,back,intensity);
   	
@@ -83,14 +84,14 @@ void main()
   float targetx = 1.00; //used to be 0.96
   float distarget = abs(targetx-x);
   //invert so neares tthe target is strongest
-  float abx = 1-distarget;
+  float abx = 1.0-distarget;
   
  // float abx=1.1-abs(x-0.9); //0 to 1 based on distance from center 
   if (x<0.0){
     abx = 0.0;
   }
   
-  float eppx=pow(abx,50);//
+  float eppx=pow(abx,50.0);//
   float xgrad =(eppx)*tsin;
   if (xgrad<0.0)
   {

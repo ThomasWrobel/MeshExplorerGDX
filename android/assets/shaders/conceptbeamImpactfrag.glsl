@@ -13,8 +13,8 @@ varying float shotFrequency;
 void main()
 {
   
-  float x = 1-fPosition.x; //flip horizontally
-  float y = 1-fPosition.y; //fliped vertically
+  float x = 1.0-fPosition.x; //flip horizontally
+  float y = 1.0-fPosition.y; //fliped vertically
     
   //normalise values to -1 to 1, libgdx seems to use 0-1 by default
   y = (y*2.0)-1.0;

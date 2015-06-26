@@ -727,7 +727,7 @@ public class LocationsHub extends Table {
 
 	public void addBackground() {
 
-		backgroundObject = BackgroundPlane.createBackgroundPlane( (int)getX(),(int)getY(),-5,(int)getWidth(),(int)getHeight(),Color.BLUE) ; //MessyModelMaker.addRectangle((int)this.getX(),(int)this.getY(),-10,(int)this.getWidth(),(int)this.getHeight(),new Material());
+		backgroundObject = BackgroundPlane.createBackgroundPlane( (int)getX(),(int)getY(),-1,(int)getWidth(),(int)getHeight(),Color.BLUE) ; //MessyModelMaker.addRectangle((int)this.getX(),(int)this.getY(),-10,(int)this.getWidth(),(int)this.getHeight(),new Material());
 			
 	}
 	

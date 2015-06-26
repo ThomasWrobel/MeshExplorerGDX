@@ -15,7 +15,7 @@ public class ScreenUtils {
 	 * The # refers to the other params which is the font size used for that screen size, default cam height etc **/
 	enum StageVerticalSize
 	{
-		tiny(320,15,444),small(600,15,444),medium(1100,20,700),large(2000,20,850),insane(4000,30,900),OMGTOLARGETOCOMPREHENDITMUSTBETHEFUTURE(10000,50,1100);
+		tiny(320,15,410),small(600,15,410),medium(1100,20,700),large(2000,20,850),insane(4000,30,900),OMGTOLARGETOCOMPREHENDITMUSTBETHEFUTURE(10000,50,1100);
 		
 		private int  MaxYRes;		
 		private int  GUISpriteFontSize;

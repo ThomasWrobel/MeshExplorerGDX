@@ -55,8 +55,8 @@ return p.x*p.x - p.y; // that's our function. We want derivative from it.
 
 //These things are to get around the fwidth function being missing on some GPUs
 float current = myFunc(vTexCoord);
-float dfdx = myFunc(vTexCoord + pixel_step.x) - current;
-float dfdy = myFunc(vTexCoord + pixel_step.y) - current;
+float dfdx    = myFunc(vTexCoord + pixel_step.x) - current; //myfunction is given the next co-ordinate in x? (current vTexCoord + the change in the co-ordinate)
+float dfdy    = myFunc(vTexCoord + pixel_step.y) - current; //same for y
   
 
  
@@ -96,9 +96,10 @@ void main() {
  	// fwidth helps keep outlines a constant width irrespective of scaling
     // GLSL's fwidth = abs(dFdx(uv)) + abs(dFdy(uv))
     
-    float width = fwidth(dist);
+   // float width = fwidth(dist); //<---------------correct formula (works fine desktop)
        	 	
-   // float width = abs(dFdx(dist)) + abs(dFdy(dist));           
+   //float width = abs(dFdx(dist)) + abs(dFdy(dist));  //<-----------(was attempt at replacement for web, does not work)          
+       	float width = 1.0;
        	 	
  	 	 	// supersampled version
 
@@ -108,7 +109,11 @@ void main() {
     // ------- (comment this block out to get your original behavior)
     // Supersample, 4 extra points
     float dscale = 0.354; // half of 1/sqrt2; you can play with this
-    vec2 duv = dscale * (dFdx(vTexCoord) + dFdy(vTexCoord));
+    
+   // vec2 duv = dscale * (dFdx(vTexCoord) + dFdy(vTexCoord)); //<---------------correct formula (works fine desktop)
+   
+    vec2 duv = vec2(dscale * 1.0,dscale * 1.0); //<-------------web replacement for now
+    
     vec4 box = vec4(vTexCoord-duv, vTexCoord+duv);
 
     float asum = samp( box.xy, width )

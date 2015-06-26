@@ -85,7 +85,7 @@ public class ME extends Game {
 		
 	}
 	
-    public static final GameMode currentMode = GameMode.Developer;
+    public static final GameMode currentMode = GameMode.Production;
 	 
     @Override
 	public void create() {
@@ -124,7 +124,7 @@ public class ME extends Game {
 	  	PlayersData.setup();
     	//----------------------------------------------------
 	  	
-    	Gdx.app.log(logstag,"_____________"); //stops after this in html version
+    	Gdx.app.log(logstag,"_____________"); 
      //   
     	menu= new MainMenuScreen(game);
     	game.setScreen(menu);
@@ -350,9 +350,11 @@ public class ME extends Game {
      //   font.dispose();
     }
 
+    public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo){
+    	centerViewOn(locationcontainer,  newZ,  addLocationToUndo,4000);
+    }
     
-    
-public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo){
+public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo,int speed){
 	
 		Gdx.app.log(MainExplorationView.logstag,"moving to z: "+newZ);
 		//CurrentX=locationcontainer.getCenterX();  //getX()+(locationcontainer.getWidth()/2);
@@ -369,7 +371,7 @@ public static void centerViewOn(Location locationcontainer, float newZ, boolean 
 	
 		Gdx.app.log(MainExplorationView.logstag,"moving to: "+dest);
 		
-		MainExplorationView.camera.setTargetPosition(dest); //new system replaces a lot below
+		MainExplorationView.camera.setTargetPosition(dest,speed); //new system replaces a lot below
 		
 		
 		
@@ -428,6 +430,15 @@ public static void centerViewOn(Location currentlyOpenLocation2, float newZ){
 		ME.centerViewOn(currentlyOpenLocation2, newZ,true); //set position in all dimensions but z which we specify
 				
 	}
+
+public static void centerViewOn(Location currentlyOpenLocation2, float newZ,int durationms){		
+	
+	MainExplorationView.coasting = false;
+	MainExplorationView.dragging = false;		
+	ME.centerViewOn(currentlyOpenLocation2, newZ,true,durationms); //set position in all dimensions but z which we specify
+			
+}
+
 
 public static void centerViewOn(Location locationcontainer){		
 		

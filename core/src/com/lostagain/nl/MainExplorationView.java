@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
@@ -73,7 +74,7 @@ public class MainExplorationView implements Screen {
 	//Current camera settings
 	public static MECamera camera = new MECamera();
 	
-	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),1000f); //note we start high up and zoom in at the start as a little intro
+	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),2000f); //note we start high up and zoom in at the start as a little intro
 	//public static Vector3 zoomToAtStartPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),444f); //note we start high up and zoom in at the start as a little intro
 	
 	public static Float CurrentZoom = 1f;	
@@ -242,22 +243,29 @@ public class MainExplorationView implements Screen {
 	
 
 		//create test shader
-		Gdx.app.log(logstag,"creating distance field shader");
-		 String vert = Gdx.files.internal("shaders/distancefieldvert_spritebatch.glsl").readString();
+	
+		
+		String vert = Gdx.files.internal("shaders/distancefieldvert_spritebatch.glsl").readString();
         String frag = Gdx.files.internal("shaders/distancefieldfrag.glsl").readString();
         
-        //String prefix = createPrefix(renderable, this.get);
+        //Note this shader needs fixs in its glsl file - we commented out working fwdith stuff to make it work on the web
         
+        //String prefix = createPrefix(renderable, this.get);
+        /*
+    	Gdx.app.log(logstag,"creating distance field shader");
          distancefieldshader = new ShaderProgram(vert, frag);
 
-         
+     	Gdx.app.log(logstag,"created distance field shader");
+     	
         if (!distancefieldshader.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader: " + distancefieldshader.getLog());
         int u_diffuseColor =  distancefieldshader.getUniformLocation("u_diffuseColor");      
         int u_colorFlag    =  distancefieldshader.getUniformLocation("u_colorFlag");
-        
+
+     	Gdx.app.log(logstag,"setting uniforms on shader");
+     	
         distancefieldshader.setUniformf(u_diffuseColor, Color.ORANGE);
         distancefieldshader.setUniformf(u_colorFlag, 1f);
-      
+      */
 		Gdx.app.log(logstag,"creating game stage");
 
 		gameStage = new PerspectiveStage();
@@ -314,9 +322,21 @@ public class MainExplorationView implements Screen {
 		
 		//finally start the game for the player by moving the camera and displayinght welcome message
 		Gdx.app.log(logstag,"centering on starting location & displaying welcome message");
+		Color startupMessageColour = new Color(0f,0.8f,0f, 0.5f);
 		
-		infoPopUp.displayMessage("Welcome To The Mesh");		
-		ME.centerViewOn( PlayersData.homeLoc,ScreenUtils.getSuitableDefaultCameraHeight());
+		
+		infoPopUp.sheduleMessage(".", startupMessageColour, 1000);
+		infoPopUp.sheduleMessage("..", startupMessageColour, 1200);
+		infoPopUp.sheduleMessage("..", startupMessageColour, 1500);
+		infoPopUp.sheduleMessage("...Modem Emulation Starting", startupMessageColour, 1600);
+		infoPopUp.sheduleMessage(".Done", startupMessageColour, 1800);
+		infoPopUp.sheduleMessage("Mesh Explorer Boot Complete", startupMessageColour, 2100);
+		infoPopUp.sheduleMessage("..Initalising", startupMessageColour, 2200);
+		infoPopUp.sheduleMessage(".Done", startupMessageColour, 4200);
+		infoPopUp.sheduleMessage("Welcome To The Mesh", Color.WHITE, 5200);		
+		infoPopUp.sheduleMessage("Please check your messages and links to get started", Color.WHITE, 8200);
+		
+		ME.centerViewOn( PlayersData.homeLoc,ScreenUtils.getSuitableDefaultCameraHeight(),7000);
 
 	}
 
@@ -674,10 +694,12 @@ public class MainExplorationView implements Screen {
 			
 			
 		}
-
-		//    game.font.draw(game.batch, "Drops Collected:: " + dropsGathered, 0, 480);
-		ME.font.draw( ME.interfaceSpriteBatch, "x:: " + currentPos.x+" y:: " + currentPos.y+" z::"+ currentPos.z, 10,25);
-
+		
+		//if not in production we display the position
+		if (ME.currentMode != GameMode.Production){
+			ME.font.draw( ME.interfaceSpriteBatch, "x:: " + currentPos.x+" y:: " + currentPos.y+" z::"+ currentPos.z, 10,25);
+		}
+		
 		//    game.batch.draw(bucketImage, bucket.x, bucket.y);
 		ME.interfaceSpriteBatch.end();
 

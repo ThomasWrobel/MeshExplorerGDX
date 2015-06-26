@@ -79,7 +79,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		
 		//overlay and background
 		super.attachThis(mainOverlay, new PosRotScale(0f, 0f, -115f));
-		super.attachThis(background, new PosRotScale(0f, 0f, -80f)); //note; thanks to draw order shenanigans, the background will be drawn behind everything regardless of distance.
+		super.attachThis(background,  new PosRotScale(0f, 0f, -80f)); //note; thanks to draw order shenanigans, the background will be drawn behind everything regardless of distance.
 		
 		//add the default visualizer to help show where the camera is
 		ModelManagment.addmodel(cameraVisualiserCube,ModelManagment.RenderOrder.infrontStage);		
@@ -202,7 +202,11 @@ public class MECamera extends AnimatablePerspectiveCamera {
 
 	
 
+
 	public void setTargetPosition(Vector3 newposition) {
+		setTargetPosition(newposition,4000);
+	}
+	public void setTargetPosition(Vector3 newposition,int speed) {
 		
 		if (newposition==null){
 			return;
@@ -219,7 +223,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 
 		Gdx.app.log(logstag,"moving to: "+newposition);
 		
-		movement.setMovement(currentLoc, false,  NewMoveTo.create(currentLoc,newposition.x,newposition.y,newposition.z,4000));
+		movement.setMovement(currentLoc, false,  NewMoveTo.create(currentLoc,newposition.x,newposition.y,newposition.z,speed));
 		
 		
 	}

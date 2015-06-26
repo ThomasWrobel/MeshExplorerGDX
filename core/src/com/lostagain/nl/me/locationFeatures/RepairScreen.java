@@ -46,6 +46,8 @@ public class RepairScreen extends Group  implements LocationScreen {
 
 	private SSSNode neededData;
 
+	boolean locked = false;
+	
 	/** if the security is making the user pass a query, this string is the query **/
 	private String QueryPass;
 
@@ -79,7 +81,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 
 			private boolean readyForAnswer = false; //is true when everything is loaded and is ready to accept an answer
 
-			Label LocationClosedText = new Label ("DATA NODES REQUIRED : ", DefaultStyles.linkstyle);
+			Label LocationClosedText = new Label ("DATA NODES REQUIRED.", DefaultStyles.linkstyle);
 			Label SupplyData = new Label ("Supply Needed NODES : ", DefaultStyles.linkstyle);
 
 			Label RequirementsText = new Label ("Requirements : ", DefaultStyles.linkstyle);
@@ -146,18 +148,9 @@ public class RepairScreen extends Group  implements LocationScreen {
 				Gdx.app.log(logstag,"getY(Align.center):"+getY(Align.center));
 
 				int i=0;
-				
-				//the below does not work now we support multiple queries to lock a location
-				//fortunately it was never needed
-				
-				//for (ObjectRequester req : allObjectsRequested) {
-
-					// req.setPosition(getCenterX()-75, getCenterY()-50);
-
-				//	req.setPosition(25+(i*(req.getWidth()+10)),getY(Align.center));
-				//	i++;
-				//}
-
+				if (locked){
+					addAnswerDropTargets(); 
+				}
 
 			}
 			private void setAsUnlocked() {
@@ -232,7 +225,14 @@ public class RepairScreen extends Group  implements LocationScreen {
 				Gdx.app.log(logstag,"_number of querys = "+ acceptableAnswers.size());
 				Gdx.app.log(logstag,"_ans in each = "+ NumberOfObjectNeededList.toString());
 
+				float totalHeight = this.getParent().getHeight();
+
+				Gdx.app.log(logstag,"totalHeight = "+ totalHeight);
+				
 				//loop over all required sets here (a set might just be one specific element)
+				//Note;  this whole thing works by acceptable answers being saved in advance.
+				//We might want at some point to instead save the query, and dynamically check if they fit
+				//(slower check time but quicker setup time + more flexible if new data comes in later) 
 				for (ArrayList<SSSNode> currentset : acceptableAnswers) {
 					
 					int  NumberOfObjectNeeded = 1;
@@ -243,6 +243,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 					
 					Gdx.app.log(logstag,j+"_NumberOfObjectNeeded = "+NumberOfObjectNeeded);
 					i=0;
+					
 					//adds one set of required nodes
 					while(i<NumberOfObjectNeeded){
 
@@ -251,8 +252,10 @@ public class RepairScreen extends Group  implements LocationScreen {
 						allObjectsRequested.add(newObjRequester);
 
 						Gdx.app.log(logstag,"x= "+20+(i*newObjRequester.getWidth()+"_y= "+(20+(j*10))));
+						float positionFromBottom = 120+(j*(newObjRequester.getHeight()+5));
 						
-						newObjRequester.setPosition(20+(i*newObjRequester.getWidth()),20+(j*(newObjRequester.getHeight()+5)));
+						
+						newObjRequester.setPosition(20+(i*newObjRequester.getWidth()),totalHeight-positionFromBottom);
 					
 						super.addActor(newObjRequester);
 						i++;
@@ -277,7 +280,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 				Gdx.app.log(logstag,"on repair screen setAsLocked:");
 				//me:queryPass
 				//add interface elements (non-dragable)
-
+				locked = true;
 
 				// LockedText = addText("LOCATION LOCKED : ",10,super.getHeight()-10);
 
@@ -361,8 +364,9 @@ public class RepairScreen extends Group  implements LocationScreen {
 						
 						//get all the answers for this query
 						retrieveAnswersAsycn(queryAnswers,query); //get the answers for the query and put them in the "queryAnswers" arraylist created above
+						
 						//store in default clue string
-						defaultclue = defaultclue + ","+query;
+						defaultclue = defaultclue + query+",";
 						
 					} else {
 						Gdx.app.log(logstag,"warning protectionString is null!");
@@ -385,7 +389,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 
 
 
-				addAnswerDropTargets(); 
+				//addAnswerDropTargets(); 
 
 				needslayout=true;
 			}
@@ -567,10 +571,12 @@ public class RepairScreen extends Group  implements LocationScreen {
 
 
 
-			/** a box that asks for an object in order to unlock.
+			/**
+			 * A box that asks for an object in order to unlock.
 			 * Once all these are unlocked, so is the location
 			 * By default, there is only one lock per location. But
-			 * there can be upto 6 **/
+			 * there can be upto 6 
+			 * **/
 			static class ObjectRequester extends DataObjectSlot {
 
 				Boolean isAnwsered = false;

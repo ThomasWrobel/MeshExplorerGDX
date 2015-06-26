@@ -1,9 +1,12 @@
 package com.lostagain.nl.me.gui;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 
@@ -23,11 +26,13 @@ public class InfoPopUp {
 	final static float PopupDuration = 3; 
 	final static float fadeOutTime = 1.5f;
 
-
+	
+	/** messages that are scheduled to be displayed at a certain time **/
+	final static ArrayList<MessageObject> futureMessagess = new ArrayList<MessageObject>();
+	
 
 	/** how long has the messages been displayed for **/
 	static float DisplayedFor = 0; 
-
 
 
 	static float opacity = 0;
@@ -48,6 +53,8 @@ public class InfoPopUp {
 		
 		String messageText = "";
 		Color messageColor = Color.WHITE;
+		long sheduledFor = -1;
+		
 		
 		public MessageObject(String messageText, Color messageColor) {
 			super();
@@ -55,6 +62,22 @@ public class InfoPopUp {
 			this.messageColor = messageColor;
 		}
 	}
+	
+	/**
+	 * Adds a message to be displayed in the future
+	 * @param message
+	 */
+	public void sheduleMessage(String message, Color color,int delay)
+	{
+		MessageObject newmessage = new MessageObject(message,color);	
+		newmessage.sheduledFor = TimeUtils.millis()+delay;
+				
+		futureMessagess.add(newmessage);
+		
+	}
+
+	
+	
 	
 	/**
 	 * Adds a new white message to appear in the corner for a short period
@@ -74,10 +97,29 @@ public class InfoPopUp {
 	 */
 	public void displayMessage(String message, Color color)
 	{
-		MessageObject newmessage = new MessageObject(message,color);		
+		MessageObject newmessage = new MessageObject(message,color);	
+		displayMessage(newmessage );
+		
+		//currentMessagess.add(newmessage);
+		//DisplayedFor = 0;		
+		//state = CurrentState.appearing;
+	}
+	
+	/**
+	 * Adds a new message to appear in the corner for a short period
+	 * 
+	 * @param message
+	 * @param color
+	 */
+	public void displayMessage(MessageObject newmessage )
+	{	
 		currentMessagess.add(newmessage);
 		DisplayedFor = 0;		
-		state = CurrentState.appearing;
+		
+		//if we arnt already visible we set it to appearing
+		if (state != CurrentState.displayed){
+			state = CurrentState.appearing;	
+		}
 	}
 	
 	/**
@@ -86,11 +128,24 @@ public class InfoPopUp {
 	 */
 	public void update(float delta)
 	{
+
+		//check for any timed updated to be added
+		Iterator<MessageObject> fmit = futureMessagess.iterator();
+		while (fmit.hasNext()) {
+			InfoPopUp.MessageObject message = (InfoPopUp.MessageObject) fmit.next();
+			//if the current time is beyond the time its sheduled for we add it to be displayed and remove it from this list
+			if (TimeUtils.millis()>message.sheduledFor){				
+				displayMessage(message);
+				fmit.remove();
+			}
+		}	
+		
+		
 		//advance internal timer
 		if (state != CurrentState.hidden){
 			DisplayedFor=DisplayedFor+delta;
-			//	Gdx.app.log(logstag, "_____________________DisplayedFor="+DisplayedFor);
 		}
+		
 		//do action based on current status
 		switch (state) {
 		case appearing:
@@ -148,10 +203,13 @@ public class InfoPopUp {
 			break;		
 		}
 
+		
+		
+		
+		
 		//if we are not hidden, we draw the text
 		if (state != CurrentState.hidden){
 			drawCurrentText();
-
 		}
 
 	}
@@ -176,7 +234,7 @@ public class InfoPopUp {
 			String message = messageObj.messageText;
 			Color c = messageObj.messageColor;
 			
-			ME.font.setColor(c.r, c.g, c.b, opacity);
+			ME.font.setColor(c.r, c.g, c.b, c.a* opacity);
 			
 			textLayout.setText(ME.font,message);
 			

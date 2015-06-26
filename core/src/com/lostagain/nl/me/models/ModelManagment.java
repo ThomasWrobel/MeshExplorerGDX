@@ -23,6 +23,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array; //NOTE: This is like an arraylist but better optimized for libgdx stuff
 import com.badlogic.gdx.utils.ObjectSet; //NOTE: This is like a hashset but apparently is better optimized for libgdx stuff
+import com.lostagain.nl.ME;
+import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.creatures.Creature;
@@ -61,10 +63,10 @@ public class ModelManagment {
 	static public enum RenderOrder {
 		behindStage,infrontStage,zdecides
 	}
-	
+
 	//test objects
 	static AnimatableModelInstance lookAtTester;
-	
+
 
 	/** Adds the model to the render list.
 	 * RenderOrder determines if its rendered in front or behind the spritestage.
@@ -74,16 +76,16 @@ public class ModelManagment {
 	 * If its more then 5its in front
 	  If adding a AnimatableModelInstance we also check all its attachments are added too **/
 	public static void addmodel(AnimatableModelInstance model, RenderOrder order) {	
-		
+
 		addmodel((ModelInstance)model,order); //note we cast so as to call the non-AnimatableModelInstance specific method below
-		
+
 		for (AnimatableModelInstance attachedModel : model.getAttachments()) {			
 			addmodel(attachedModel,order);
 		}
-		
+
 	}
-	
-	
+
+
 	/** Adds the model to the render list.
 	 * RenderOrder determines if its rendered in front or behind the spritestage.
 	 * 
@@ -91,13 +93,13 @@ public class ModelManagment {
 	 * If Z is less then the stage Z 5 its behind
 	 * If its more then 5its in front**/
 	public static void addmodel(ModelInstance model, RenderOrder order) {	
-		
+
 		//ignore if present already
 		if (allBackgroundInstances.contains(model) || allForgroundInstances.contains(model)){
 			Gdx.app.log(logstag,"________model already on a render list");
 			return;
 		}
-		
+
 
 		float Z = model.transform.getValues()[Matrix4.M23];
 		Gdx.app.log(logstag,"z = "+Z);
@@ -118,7 +120,7 @@ public class ModelManagment {
 		} else {
 			allForgroundInstances.add(model);
 		}
-				
+
 	}
 
 	/**
@@ -128,29 +130,29 @@ public class ModelManagment {
 	 */
 	public static RenderOrder removeModel(ModelInstance model) {		
 		Boolean wasInForground = allBackgroundInstances.remove(model);
-		
+
 		if (wasInForground){
 			return RenderOrder.behindStage;			
 		}
-		
+
 		Boolean wasInBackground= allForgroundInstances.remove(model);
-		
+
 		if (wasInBackground){
 			return RenderOrder.infrontStage;			
 		}
-		
+
 		return null;
 	}
 
-/**
- * tests the sort order of foreground objects
- * @param deltatime
- */
+	/**
+	 * tests the sort order of foreground objects
+	 * @param deltatime
+	 */
 	//public void testSortOrder(float deltatime){
-		
+
 	//	modelBatch.getRenderableSorter().sort(MainExplorationView.camera,);
-		
-		
+
+
 	//}
 
 
@@ -205,9 +207,9 @@ public class ModelManagment {
 		Renderable renderableWithoutAttribute = new Renderable();
 		centermaker.getRenderable(renderableWithoutAttribute);
 
-		DefaultShader test = new DefaultShader(renderableWithoutAttribute);
+		//DefaultShader test = new DefaultShader(renderableWithoutAttribute);
 
-		Material testmaterial2 = new Material(
+		Material beamShader = new Material(
 				ColorAttribute.createDiffuse(Color.BLUE), 
 				ColorAttribute.createSpecular(Color.WHITE),
 				new BlendingAttribute(1f), 
@@ -220,16 +222,14 @@ public class ModelManagment {
 
 
 
-		ModelInstance instance = ModelMaker.createRectangleAt(0, 0, 30, 200, 200, Color.BLACK, testmaterial2); // new ModelInstance(model1); 
-		
+		ModelInstance beamtest = ModelMaker.createRectangleAt(0, 1000, 30, 200, 200, Color.BLACK, beamShader); // new ModelInstance(model1); 
+
 		Renderable renderableWithAttribute = new Renderable();
-		instance.getRenderable(renderableWithAttribute);
+		beamtest.getRenderable(renderableWithAttribute);
 
 		//	Boolean defaultCanRender = test.canRender(renderableWithAttribute);
 
-		ModelManagment.addmodel(centermaker,RenderOrder.infrontStage);
-		ModelManagment.addmodel(instance,RenderOrder.infrontStage);
-
+		
 		//	Gdx.app.log(logstag,"default created with attribute = "+defaultCanRender);
 
 
@@ -251,16 +251,24 @@ public class ModelManagment {
 
 
 
-		ModelInstance colortest = ModelMaker.createRectangleAt(0, -900, 130, 200, 200, Color.BLACK, testmaterial3); 
-		ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
+		ModelInstance colortest = ModelMaker.createRectangleAt(0, 900, 130, 200, 200, Color.BLACK, testmaterial3); 
+		
+		//ModelManagment.addmodel(centermaker,RenderOrder.infrontStage);
+		
+		if (ME.currentMode!=GameMode.Production){
+			ModelManagment.addmodel(beamtest,RenderOrder.infrontStage);
+			ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
 
-		
-		addTestModels();
-		
-		
-		
-		
-		
+			addTestModels();
+		}
+
+
+
+
+
+
+
+
 
 		//A lot of earlier code used for creating and debugging objects and shaders is below
 		//While its not critical, please leave for now as its a good reference for cutting and pasting tests
@@ -371,12 +379,12 @@ public class ModelManagment {
 						FloatAttribute.createShininess(16f),
 						ColorAttribute.createDiffuse(Color.BLUE)
 						);
-		
+
 		Model lookAtTesterm =  modelBuilder.createXYZCoordinates(295f, blue, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		lookAtTester = new AnimatableModelInstance(lookAtTesterm);
 		lookAtTester.setToPosition(new Vector3 (500,500,0));
-		
-		
+
+
 		ModelManagment.addmodel(lookAtTester,RenderOrder.infrontStage);
 
 	}
@@ -411,7 +419,7 @@ public class ModelManagment {
 
 
 		Vector3 position = new Vector3();
-		
+
 		ArrayList<hitable> everyThingUnderCursor = new ArrayList<hitable>();
 		hitable closestNonBlockerTouched = null;	    
 		hitable closestBlockerTouched = null;
@@ -429,58 +437,58 @@ public class ModelManagment {
 
 			//first check if it hits at all. We base this on the hitables internal tester
 			//this lets different hitables use different intersect types (ie, radius, boundingbox, polygon etc)
-			
-		//	if (Intersector.intersectRaySphere(ray, instance.getCenter(), instance.getRadius(), null)) {
-			
+
+			//	if (Intersector.intersectRaySphere(ray, instance.getCenter(), instance.getRadius(), null)) {
+
 			if (!instance.rayHits(ray)){
 				//if it didn't hit we can just skip to the next thing to test
 				continue;
 			}
 
-			
+
 
 			Gdx.app.log(logstag,"_hit in :"+i);
-			
-			
-				//set last hit range
-				instance.setLastHitsRange(dist2);
 
 
-				//if its a blocker we see if its higher then the last blocker
-				if (instance.isBlocker()){
-
-					//if none set just continue
-					if (closestBlockerTouched==null){
-						closestBlockerTouched=instance;
-						continue;
-					}
-					//else we test if its closer
-					if (instance.getLastHitsRange()<closestBlockerTouched.getLastHitsRange()){
-						closestBlockerTouched=instance;
-						continue;
-					}
+			//set last hit range
+			instance.setLastHitsRange(dist2);
 
 
-				} else {
+			//if its a blocker we see if its higher then the last blocker
+			if (instance.isBlocker()){
 
-					//add to every not hitable under cursor list
-					everyThingUnderCursor.add(instance);
-
-					//if its not a blocker we do the same tests for normal objects
-
-					//if none set just continue
-					if (closestNonBlockerTouched==null){
-						closestNonBlockerTouched=instance;
-						continue;
-					}
-					//else we test if its closer
-					if (instance.getLastHitsRange()<closestNonBlockerTouched.getLastHitsRange()){
-						closestNonBlockerTouched=instance;
-						continue;
-					}
-
-
+				//if none set just continue
+				if (closestBlockerTouched==null){
+					closestBlockerTouched=instance;
+					continue;
 				}
+				//else we test if its closer
+				if (instance.getLastHitsRange()<closestBlockerTouched.getLastHitsRange()){
+					closestBlockerTouched=instance;
+					continue;
+				}
+
+
+			} else {
+
+				//add to every not hitable under cursor list
+				everyThingUnderCursor.add(instance);
+
+				//if its not a blocker we do the same tests for normal objects
+
+				//if none set just continue
+				if (closestNonBlockerTouched==null){
+					closestNonBlockerTouched=instance;
+					continue;
+				}
+				//else we test if its closer
+				if (instance.getLastHitsRange()<closestNonBlockerTouched.getLastHitsRange()){
+					closestNonBlockerTouched=instance;
+					continue;
+				}
+
+
+			}
 
 
 
@@ -617,11 +625,11 @@ public class ModelManagment {
 			instance.updatePosition(deltatime);			
 
 		}
-		
+
 		//temp (testing lookat by linking to camera
 		//should point from camera updated each frame		
-	//	MECamera.angleTest.lookAt(lookAtTester);
-		
+		//	MECamera.angleTest.lookAt(lookAtTester);
+
 
 	}
 

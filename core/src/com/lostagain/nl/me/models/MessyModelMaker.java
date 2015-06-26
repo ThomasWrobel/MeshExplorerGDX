@@ -44,7 +44,6 @@ import com.lostagain.nl.shaders.NoiseShader;
 //functions in here should slowly be made tidy and moved to "modelmaker"
 public class MessyModelMaker {
 
-//;	static Logger Log = Logger.getLogger("ME.BackgroundManager");
 
 	final static String logstag = "ME.MessyModelMaker";
 
