@@ -1,0 +1,20 @@
+Rough description;
+
+The MeshExplorer is your interface, the car to let you chart new
+courses over this digital ocean.
+
+It reprograms your network interface to interpret the analoge sub-signals
+hidden under the normal internet traffic into a form your computer can understand.
+This hidden "mesh" consists of various locations and enities (<creatures?>) we dont fully understand.
+Some clearly made by other explorers (<meshplorers?>), but some stuff....who knows where it comes from?
+
+Your MeshExplorer lets you both navigate and interact with stuff around in the Mesh.
+Specifically you can interact with "Concepts" - which seem to be a key part of this new <world?domain?>.
+Concepts seem to be able to represent anything....things,ideas,colours,peoples. They can also be used.
+
+Scanning a ability concept will let the MeshExplorer gain that ability, for example.
+Other concepts seem to be used to allow access to locations.
+
+Have fun exploring.
+
+[Prof. Pickles]

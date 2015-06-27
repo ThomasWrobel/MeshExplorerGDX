@@ -99,7 +99,8 @@ void main() {
    // float width = fwidth(dist); //<---------------correct formula (works fine desktop)
        	 	
    //float width = abs(dFdx(dist)) + abs(dFdy(dist));  //<-----------(was attempt at replacement for web, does not work)          
-       	float width = 1.0;
+     
+   float width = abs(dfdx*dist) + abs(dfdx*dist);  
        	 	
  	 	 	// supersampled version
 
@@ -112,7 +113,7 @@ void main() {
     
    // vec2 duv = dscale * (dFdx(vTexCoord) + dFdy(vTexCoord)); //<---------------correct formula (works fine desktop)
    
-    vec2 duv = vec2(dscale * 1.0,dscale * 1.0); //<-------------web replacement for now
+    vec2 duv = vec2(dscale * dfdx,dscale * dfdy); //<-------------web replacement for now
     
     vec4 box = vec4(vTexCoord-duv, vTexCoord+duv);
 

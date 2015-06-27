@@ -24,23 +24,24 @@ public class NewJerk2D extends NewMovement {
 	}
 	CurrentJerkAction currentMovementPhase = CurrentJerkAction.Moving;
 	
+	
 	/**
 	 * Randomly moves the object about its start point in random directions by the min/max amount specified.
-	 * should turn to the direction it moves but that doesnt work yet
+	 * should turn to the direction it moves but that doesn't work yet
 	 * 
 	 * @param mindistance
 	 * @param maxdistance 
 	 * @param durationTotalMS
-	 */
+	 **/
 	public NewJerk2D(AnimatableModelInstance creaturemodel ,
 			          float mindistance, 
 			          float maxdistance, 
 			          float durationMSEachMove,
 			          float durationTotal) {
+		
 		//NOTE: We half the duration because we need to both turn and move - 2 actions - in the time asked for. For the sake of simplicity we make both those sub-moves take half the time
 		super( getNewPositionTarget(mindistance,maxdistance,creaturemodel.transState) , (durationMSEachMove/2), durationTotal); //matrix isn't important its not used
-		
-		
+				
 		currenttype = MovementTypes.Absolute;
 		
 		this.mindistance=mindistance;
@@ -235,11 +236,11 @@ ME.Movement: ______a current scaleX=1.4858993
 			
 			destination                         = currentDestination.copy();
 
-			Gdx.app.log(logstag, "______________________on last repeat moving back to:"+destination+"  (currently at:"+this.lastTransform);
+			//Gdx.app.log(logstag, "______________________on last repeat moving back to:"+destination+"  (currently at:"+this.lastTransform);
 			
 		} else {
 
-			Gdx.app.log(logstag, "______________________(angle currently:"+lastTransform.rotation.getAngle()+")");
+			//Gdx.app.log(logstag, "______________________(angle currently:"+lastTransform.rotation.getAngle()+")");
 	
 			
 			//else we calculate a new movement type based on the old type
@@ -262,7 +263,7 @@ ME.Movement: ______a current scaleX=1.4858993
 				currentDestination.rotation.setFromCross(Vector3.X,direction);
 				currentDestinationRotation.rotation.setFromCross(Vector3.X,direction);  //set only the rotation as changed
 				
-				Gdx.app.log(logstag, "______________________(angle now:"+currentDestinationRotation.rotation.getAngle()+")");
+				//Gdx.app.log(logstag, "______________________(angle now:"+currentDestinationRotation.rotation.getAngle()+")");
 				
 				destination = currentDestinationRotation;
 				
@@ -276,7 +277,7 @@ ME.Movement: ______a current scaleX=1.4858993
 			}
 			
 
-			Gdx.app.log(logstag, "______________________(set destination:"+currentMovementPhase.toString()+"-"+destination.rotation.getAngle()+")");
+		//	Gdx.app.log(logstag, "______________________(set destination:"+currentMovementPhase.toString()+"-"+destination.rotation.getAngle()+")");
 		}
 	
 		//break the destination down into rotation and translation (one day we might use scale too)		

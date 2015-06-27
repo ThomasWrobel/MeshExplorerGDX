@@ -53,9 +53,9 @@ public class DistanceFieldShader implements Shader {
 			public float width = 0;
 			
 			/**
-			 * The presence of this parameter will cause the NoiseShader to be used
+			 * The presence of this parameter will cause the DistanceFieldAttribute to be used
 			 * @param rgbmode - if the noise is the full color
-			 * @param tintcolor - color of the tint
+			 * @param width - ?
 			 */
 			public DistanceFieldAttribute (final boolean rgbmode,final float width) {
 				

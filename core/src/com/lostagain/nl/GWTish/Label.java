@@ -26,7 +26,8 @@ import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
 
-/** A Libgdx label that will eventually emulate most of the features of a GWT label (ish)
+/**
+ *  A Libgdx label that will eventually emulate most of the features of a GWT label (ish)
  * The most significant thing here though is we enable it to use distance mapped fonts in a 3d view **/
 public class Label {
 
@@ -36,6 +37,7 @@ public class Label {
 	
     static int TITLE_WIDTH=512;
     static int TITLE_HEIGHT=512;
+    
 	Model labelModel = null;
 	ModelInstance labelInstance = null;
 	//image
@@ -177,7 +179,7 @@ public class Label {
 									ColorAttribute.createDiffuse(Color.CYAN),
 									new DistanceFieldShader.DistanceFieldAttribute(true,5));
 		
-		labelModel = ModelMaker.createRectangle(0, 0, 400,400, 0, mat);
+		labelModel = ModelMaker.createRectangle(0, 0, TITLE_WIDTH,TITLE_HEIGHT, 0, mat); 
 
 		labelInstance = new ModelInstance(labelModel); 
 

@@ -1,0 +1,20 @@
+Rough description;
+
+The Mesh.
+
+The regular internet is composed of digital signals being routed via a TCP/IP system, letting computers find eachother by taking various 
+possible routes around the intermediate connections. It was a open standard invented by US government agency DARPA and quickly adopted. 
+The WorldWideWide was invented by TimBurnersLee a few years later - providing the http and html protocals that communicate ontop of TCP/IP,
+allowing a visual, user-friendly interface to be developed enabling people to contribute and read from the internet without technical skills
+
+The Mesh however is something else completely.
+It is not digital. It is a analogue set of signals hiding under the digital ones. Most routers and computers dismiss it as noise to be filtered out
+Junk from stary electromagnetic waves.
+However, some groups have simultaniously found its something more.
+It has a structure. Links. Data. Stuff.
+Its not just random noise, but a whole new network, allthough a very strange one.
+Aside from being analogue, not digital, it seems not to have been created by anyone. No government agency, no CERN contractor, nobody.
+Which is weird.
+
+
+[Prof. Pickles]
