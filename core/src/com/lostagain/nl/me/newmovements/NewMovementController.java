@@ -306,6 +306,7 @@ public class NewMovementController {
 			PosRotScale displacement;
 			if (currentMovement.currenttype == MovementTypes.Absolute){
 				
+				Gdx.app.log(logstag, "_____________________________________________lastTransform");
 				currentMovement.lastTransform.setTo(lastLocation);//.cpy().mul(lastNodesLocationMatrix);
 				
 				// displacement = currentMovement.onUpdateAbsolute(currentTimeWithinMovement);//,object.transform.cpy().mul(lastNodesLocationMatrix)); 

@@ -29,9 +29,9 @@ public class PosRotScale {
 	public PosRotScale(Vector3 position, Quaternion rotation, Vector3 scale) {
 		super();
 		
-		this.position = position;
-		this.rotation = rotation;
-		this.scale = scale;
+		this.position = position.cpy();
+		this.rotation = rotation.cpy();
+		this.scale = scale.cpy();
 		
 	}
 	/**

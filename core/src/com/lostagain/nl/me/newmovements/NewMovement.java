@@ -187,7 +187,8 @@ public class NewMovement {
 		
 					
 			//if we are working in absolute we lerp between current location and destination
-		PosRotScale start = lastTransform;
+			PosRotScale start = lastTransform.copy(); //copy redundant give 
+		
 			//loc
 			Vector3 startLocation = start.position.cpy();	
 			
@@ -206,15 +207,25 @@ public class NewMovement {
 			
 
 		//	Gdx.app.log(logstag,"destination.position is: "+destination.position); //Z set right but doesn't update later
+			Vector3 startAxis = new Vector3();
+			startRotation.getAxisAngle(startAxis);
 			
+			//Gdx.app.log(logstag, "______a startrotation="+startRotation.getAngle()+" axis="+startAxis);
 			
 			//rot
 			Quaternion newrotation = startRotation.slerp(destination.rotation, ratio);
 			
+			//newrotation = destination.rotation.cpy(); //temp while testing problem with rotation setting on jerk2d
+					
 			//scale
 		//	Gdx.app.log(logstag, "______a current startscale="+startScale.x);
 		//	Gdx.app.log(logstag, "______a current destscale="+destscale.x);
-		//	Gdx.app.log(logstag, "______a current lerp="+ratio);
+		//	Gdx.app.log(logstag, "______a current slerp="+ratio);
+			
+			//Gdx.app.log(logstag, "________a current dest rotation ="+destination.rotation.getAngle());	
+			//newrotation.getAxisAngle(startAxis);
+			//Gdx.app.log(logstag, "____________________a current new  rotation="+newrotation.getAngle()+" axis="+startAxis);	
+			
 			Vector3 newscale = startScale.lerp(destination.scale, ratio);
 
 		//	Gdx.app.log(logstag, "______a current scaleX="+newscale.x);
@@ -239,7 +250,7 @@ public class NewMovement {
 	 * In the case of absolute movements it needs to set the current location as the new lastLocation
 	 */
 	public void onRestart(PosRotScale newstart) {
-		lastTransform = newstart;
+		lastTransform = newstart.copy();
 		//Gdx.app.log(logstag, "_____________________________________________lastLocation scale="+lastLocation.getScaleX());
 	}
 	

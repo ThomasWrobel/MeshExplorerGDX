@@ -490,7 +490,7 @@ public class Creature implements hitable , Animating {
 		}
 				
 
-		//Gdx.app.log(logstag,"startCreaturesStandardMovement scale="+creaturemodel.transform.getScaleX()+","+creaturemodel.transform.getScaleY());
+		Gdx.app.log(logstag,"startCreaturesStandardMovement");
 		
 		//movementControll = new NewMovementController(creaturemodel.transform,new NewJerk2D(creaturemodel,30f,50f,400f,8000f), new NEWREPEAT());
 		
@@ -499,7 +499,7 @@ public class Creature implements hitable , Animating {
 		//new NewJerk2D(creaturemodel,70f,80f,2000f,8000f)
 		
 		
-		movementControll.setMovement(creaturemodel.transState,false,new NewJerk2D(creaturemodel,70f,80f,2000f,8000f), new NEWREPEAT());
+		movementControll.setMovement(creaturemodel.transState,false,new NewJerk2D(creaturemodel,70f,80f,500f,2000000f), new NEWREPEAT());
 		
 		
 	}
@@ -686,12 +686,12 @@ public class Creature implements hitable , Animating {
 				Gdx.app.log(logstag, "___resuming movement after NewMoveTo___");
 				Gdx.app.log(logstag, "___Current State is: ___"+ creaturemodel.transState.toString());
 								
-				movementControll.setMovement(creaturemodel.transState,false,new NewJerk2D(creaturemodel,70f,80f,2000f,8000f), new NEWREPEAT());
+				movementControll.setMovement(creaturemodel.transState,false,new NewJerk2D(creaturemodel,70f,80f,5000f,600000f), new NEWREPEAT());
 
 			}
 			
 			
-		}, (2000+150)/1000); //the movement should start again shortly after the enlargement ends. We devide by 1000 as Timer.schedule needs the time in seconds, not ms 
+		}, (2000+150)/1000); //the movement should start again shortly after the enlargement ends. We divide by 1000 as Timer.schedule needs the time in seconds, not ms 
 		
 		//movementControll.setMovement(creaturemodel.transform,false,NewMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
 		

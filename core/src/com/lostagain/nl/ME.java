@@ -85,7 +85,7 @@ public class ME extends Game {
 		
 	}
 	
-    public static final GameMode currentMode = GameMode.Production;
+    public static final GameMode currentMode = GameMode.Normal;
 	 
     @Override
 	public void create() {

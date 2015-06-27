@@ -86,7 +86,7 @@ public class BasicInfovore extends Creature implements Animating {
 			//	Usage.Position | Usage.Normal);
 		
 		//
-		FileHandle imageFileHandle = Gdx.files.internal("data/genericinfovour.png"); 
+		FileHandle imageFileHandle = Gdx.files.internal("data/infovours/genericinfovour.png"); 
 		Texture blobtexture = new Texture(imageFileHandle);
 		
         mat.set(TextureAttribute.createDiffuse(blobtexture)); //idealAnimation.getKeyFrame(0)));

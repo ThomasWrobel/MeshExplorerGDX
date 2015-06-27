@@ -2,31 +2,43 @@ package com.lostagain.nl.me.newmovements;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-//import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 public class NewJerk2D extends NewMovement {
 	
 	PosRotScale currentDestination = new PosRotScale();
+
+	PosRotScale currentDestinationRotation = new PosRotScale();
+	
 	
 	PosRotScale startingTransform; //origin point to jerk relative to
 	float mindistance = 0;
 	float maxdistance = 0;
 	AnimatableModelInstance modelins;
 	
-	final static String logstag = "ME.Jerk";
+	final static String logstag = "ME.NewJerk2D";
+	
+	enum CurrentJerkAction {
+		Moving,Turning
+	}
+	CurrentJerkAction currentMovementPhase = CurrentJerkAction.Moving;
+	
 	/**
 	 * Randomly moves the object about its start point in random directions by the min/max amount specified.
-	 * 
-	 * Not yet working.
+	 * should turn to the direction it moves but that doesnt work yet
 	 * 
 	 * @param mindistance
 	 * @param maxdistance 
 	 * @param durationTotalMS
 	 */
-	public NewJerk2D(AnimatableModelInstance creaturemodel ,float mindistance, float maxdistance, float durationMSEachMove,float durationTotal) {
-		super( getDest(mindistance,maxdistance,creaturemodel.transState) , durationMSEachMove, durationTotal); //matrix isn't important its not used
+	public NewJerk2D(AnimatableModelInstance creaturemodel ,
+			          float mindistance, 
+			          float maxdistance, 
+			          float durationMSEachMove,
+			          float durationTotal) {
+		//NOTE: We half the duration because we need to both turn and move - 2 actions - in the time asked for. For the sake of simplicity we make both those sub-moves take half the time
+		super( getNewPositionTarget(mindistance,maxdistance,creaturemodel.transState) , (durationMSEachMove/2), durationTotal); //matrix isn't important its not used
 		
 		
 		currenttype = MovementTypes.Absolute;
@@ -36,30 +48,38 @@ public class NewJerk2D extends NewMovement {
 		this.modelins = creaturemodel;
 		//this.startingTransform=creaturemodel.transform.cpy();
 		this.startingTransform=  creaturemodel.transState.copy(); //new PosRotScale(creaturemodel.transform);
-		this.lastTransform = startingTransform;
+		this.lastTransform = startingTransform.copy();
+		
+		Gdx.app.log(logstag, "_____________________________________________startingTransform="+startingTransform);
 		
 	}
-		
+	
+	
+	
+
+	
 	/**
-	 * returns the new position based on the total time eclipsed into this movement
-	 * @param delta
+	 * 
 	 * @return
 	 */
-	static public PosRotScale getDest(float mindistance, float maxdistance,PosRotScale origin){	
+	static public PosRotScale getNewPositionTarget(float mindistance, float maxdistance,PosRotScale origin){	
 		
 		//Start the destination state as a copy of the original
 		PosRotScale destinationState = origin.copy();
 		
 		//Pick a new location to goto within the radius of the existing one
 		Vector3 newposition = new Vector3(destinationState.position);
-		float angle = (float) (Math.random()*360);
+		
+		float angle    =  (float) (Math.random()*360);
 		float distance =  (float) (mindistance+(Math.random()*(maxdistance-mindistance)));
 		
 		//work out new X/Y 
-		newposition.x = (float) (newposition.x + (Math.cos(Math.toRadians(angle))*distance));
-		newposition.y = (float) (newposition.y + (Math.sin(Math.toRadians(angle))*distance));
+		newposition.x  =  (float) (newposition.x + (Math.cos(Math.toRadians(angle))*distance));
+		newposition.y  =  (float) (newposition.y + (Math.sin(Math.toRadians(angle))*distance));
 		
-		destinationState.rotation.set(new Vector3(0f, 0f, 1f), angle);
+		destinationState.rotation.set(new Vector3(0f, 0f, 1f), angle); 
+		
+		
 		
 		//now set the destination to this new position (keeping Z the same as this is 2D movement only
 		destinationState.setToPosition(new Vector3(newposition.x,newposition.y,destinationState.position.z));
@@ -188,10 +208,75 @@ ME.Movement: ______a current scaleX=1.4858993
 		//if we are on the last repeat, we head back to the original position
 		//this allows looping without a net displacement
 		if (onLastRepeat){
-			destination = startingTransform;				
+		//	if (totalTimePast>(durationTotalMS-durationMSEachMove)){	
+		//	destination = startingTransform;	
+
+			
+			//At the moment this gets fired twice
+			//Once on its own at the correct time
+			
+			//Then again right before onRestart
+			
+			//Seems to stop moving after that last restart. Why?
+			
+			
+			currentMovementPhase=CurrentJerkAction.Moving;
+			
+			//NOTE: This moves and turns in one action
+			//This needs fixing so it both turns and moves, however atm that will take too long as turning and moving both take duration, when they should take duration/2)
+			
+			
+			//get new destination targets
+			//currentDestinationRotation          = destination.copy();
+			currentDestination                  = startingTransform.copy();
+			//currentDestinationRotation.rotation = currentDestination.rotation.cpy(); //set only the rotation as changed
+			
+			//destination = currentDestinationRotation;
+			
+			destination                         = currentDestination.copy();
+
+			Gdx.app.log(logstag, "______________________on last repeat moving back to:"+destination+"  (currently at:"+this.lastTransform);
+			
 		} else {
-			//else we calculate a new random location
-			destination = getDest( mindistance,  maxdistance, startingTransform);
+
+			Gdx.app.log(logstag, "______________________(angle currently:"+lastTransform.rotation.getAngle()+")");
+	
+			
+			//else we calculate a new movement type based on the old type
+			if (currentMovementPhase==CurrentJerkAction.Moving){
+				
+				currentMovementPhase=CurrentJerkAction.Turning;
+				
+				//get new destination targets
+				currentDestinationRotation = lastTransform.copy();
+				
+				currentDestination = getNewPositionTarget( mindistance,  maxdistance, startingTransform);
+				
+				//float currentAngle = currentDestinationRotation.rotation.setFromCross(v1, v2)							
+				Vector3 lastPos = currentDestinationRotation.position.cpy();
+				Vector3 newPos  = currentDestination.position.cpy();
+				
+				Vector3 direction = new Vector3();
+				direction.set(newPos).sub(lastPos).nor();
+				
+				currentDestination.rotation.setFromCross(Vector3.X,direction);
+				currentDestinationRotation.rotation.setFromCross(Vector3.X,direction);  //set only the rotation as changed
+				
+				Gdx.app.log(logstag, "______________________(angle now:"+currentDestinationRotation.rotation.getAngle()+")");
+				
+				destination = currentDestinationRotation;
+				
+			} else if (currentMovementPhase==CurrentJerkAction.Turning){				
+				
+				currentMovementPhase=CurrentJerkAction.Moving;					
+
+				destination = currentDestination;
+				
+				
+			}
+			
+
+			Gdx.app.log(logstag, "______________________(set destination:"+currentMovementPhase.toString()+"-"+destination.rotation.getAngle()+")");
 		}
 	
 		//break the destination down into rotation and translation (one day we might use scale too)		
@@ -208,15 +293,16 @@ ME.Movement: ______a current scaleX=1.4858993
 				
 	}
 	
+	//NOTE: Repeat is fired straight after a restart 
 	@Override
 	public void onRestart(PosRotScale newstart){
 		super.onRestart(newstart);
 		
-		startingTransform = newstart;
-		
+		startingTransform = newstart.copy();
 
-	//	Gdx.app.log(logstag, "______________________new scale onRestart="+startingTransform.getScaleX()+","+startingTransform.getScaleY()+","+startingTransform.getScaleZ()+")");
-		
+		currentMovementPhase = CurrentJerkAction.Moving;
+
+		Gdx.app.log(logstag, "______________________new onRestart="+startingTransform.toString()+" onLastRepeat:"+onLastRepeat);
 		
 		
 		
@@ -229,7 +315,7 @@ ME.Movement: ______a current scaleX=1.4858993
 	@Override
 	public Matrix4 onUpdateAbsolute(float delta,Matrix4 startlocation){
 		
-		//if we have exceeded the time duration we create a new destinition ready for next time
+		//if we have exceeded the time duration we create a new destination ready for next time
 		if (delta>durationMS){
 			this.destination= getDest( mindistance,  maxdistance, origin);
 			

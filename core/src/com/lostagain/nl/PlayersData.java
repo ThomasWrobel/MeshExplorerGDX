@@ -58,7 +58,7 @@ public class PlayersData {
 	private static HashSet<SSSNode> hasVisitedArray = new  HashSet<SSSNode>();
 
 	
-	/** mains a list of all the nodes of knowen/scanned locations (but not necessarily open) **/
+	/** mains a list of all the nodes of known/scanned locations (but not necessarily open) **/
 	private static HashSet<SSSNode> locationScanned = new  HashSet<SSSNode>();
 	
 	
@@ -130,13 +130,17 @@ public class PlayersData {
 		//playerslocationcontents.addNodeToThisSet(StaticSSSNodes.scram1decoder, "local");
 		
 		
+	//	SSSNode testInfovours = SSSNode.createSSSNode("smallInfovorPopulation","smallInfovorPopulation",ME.INTERNALNS);
 		
 		
+		//BobsOutpost me:populatedBy smallInfovorPopulation.
+		//SSSNodesWithCommonProperty homePop = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.populatedBy, testInfovours, new SSSNode[]{computersuri});
 		
 		//developers get some stuff automatically
 		//wont work till inventory can add stuff like the gun automatically on first load
 		if (ME.currentMode == GameMode.Developer ){
 			//playerslocationcontents.add(StaticSSSNodes.ConceptGun1);
+			
     	} 
 		
 		
