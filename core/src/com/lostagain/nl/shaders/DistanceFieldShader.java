@@ -42,38 +42,92 @@ public class DistanceFieldShader implements Shader {
 	    int u_sampler2D; 
 	    
 	    int a_colorFlag;
-	    int u_diffuseColor;
+	    int u_textColour;
+	    int u_backColour;
+	    
 	    int u_pixel_step;
 	    
 		public static class DistanceFieldAttribute extends Attribute {
+			
 			public final static String Alias = "DistanceFieldAttribute";
 			public final static long ID = register(Alias);
 
-			public boolean rgbmode = false;
-			public float width = 0;
+			public Color textColour          = Color.CLEAR;
+			public float width               = 0; //cant yet work out how best to make this work in the shader
 			
+			public float outlinerInnerLimit  = 10f; //Arbitrarily big size for no outline
+			public float outlinerOuterLimit  = 10f; //Arbitrarily big size for no outline
+			public Color outlineColour       = Color.RED;
+			
+			public float glowSize            = 0.0f; //size of glow (values above 1 will look strange)
+			public Color glowColour          = Color.BLACK;
+			
+			public float shadowXDisplacement = 1.0f;
+			public float shadowYDisplacement = 1.0f;
+			public float shadowBlur          = 0.0f;
+			public Color shadowColour        = Color.CLEAR;
+			
+			
+			
+			
+			public DistanceFieldAttribute(long type, Color textColour,
+					float width, float outlinerInnerLimit,
+					float outlinerOuterLimit, Color outlineColour,
+					float glowSize, Color glowColour,
+					float shadowXDisplacement, float shadowYDisplacement,
+					float shadowBlur, Color shadowColour) {
+				super(type);
+				this.textColour = textColour;
+				this.width = width;
+				this.outlinerInnerLimit = outlinerInnerLimit;
+				this.outlinerOuterLimit = outlinerOuterLimit;
+				this.outlineColour = outlineColour;
+				this.glowSize = glowSize;
+				this.glowColour = glowColour;
+				this.shadowXDisplacement = shadowXDisplacement;
+				this.shadowYDisplacement = shadowYDisplacement;
+				this.shadowBlur = shadowBlur;
+				this.shadowColour = shadowColour;
+			}
 			/**
 			 * The presence of this parameter will cause the DistanceFieldAttribute to be used
-			 * @param rgbmode - if the noise is the full color
-			 * @param width - ?
+			 * @param textColour
+			 * @param width - no effect cant work out how to do this correctly in the shader file
 			 */
-			public DistanceFieldAttribute (final boolean rgbmode,final float width) {
+			public DistanceFieldAttribute (final Color textColour,final float width) {
 				
 				super(ID);
-				this.rgbmode = rgbmode;
+				this.textColour =  textColour;
 				this.width = width;
 				
+			}
+			/**
+			 * 
+			 * @param type
+			 * @param textColour
+			 * @param width - no effect yet. 
+			 * @param outlinerInnerLimit (0-1)
+			 * @param outlinerOuterLimit (0-1)
+			 */
+			public DistanceFieldAttribute(long type, Color textColour,
+					float width, float outlinerInnerLimit,
+					float outlinerOuterLimit) {
+				super(ID);
+				this.textColour = textColour;
+				this.width = width;
+				this.outlinerInnerLimit = outlinerInnerLimit;
+				this.outlinerOuterLimit = outlinerOuterLimit;
 			}
 
 			@Override
 			public Attribute copy () {
-				return new DistanceFieldAttribute(rgbmode,width);
+				return new DistanceFieldAttribute(textColour,width);
 			}
 
 			@Override
 			protected boolean equals (Attribute other) {
 				if (
-					(((DistanceFieldAttribute)other).rgbmode == rgbmode) &&
+					(((DistanceFieldAttribute)other).textColour == textColour) &&
 					(((DistanceFieldAttribute)other).width == width) 
 					)
 				
@@ -119,8 +173,8 @@ public class DistanceFieldShader implements Shader {
           u_sampler2D =   program.getUniformLocation("u_texture");
           
           a_colorFlag =  program.getUniformLocation("u_colorFlag");
-          u_diffuseColor =  program.getUniformLocation("u_diffuseColor");
-          
+          u_textColour =  program.getUniformLocation("u_textColor");
+          u_backColour =  program.getUniformLocation("u_backColor");
           u_pixel_step =  program.getUniformLocation("u_pixel_step");
     }
     
@@ -156,7 +210,9 @@ public class DistanceFieldShader implements Shader {
     	 float h = renderable.mesh.calculateBoundingBox().getHeight();
     	 
     	//Gdx.app.log(logstag, "element size w= "+w+",h="+h);
-    		
+
+    	 DistanceFieldAttribute textStyleData = (DistanceFieldAttribute)renderable.material.get(DistanceFieldAttribute.ID);
+    	 
     	
 		setSizeUniform(w,h);
     	 
@@ -168,15 +224,28 @@ public class DistanceFieldShader implements Shader {
     		 
     	 }
     	 
-    	 if (renderable.material.has(ColorAttribute.Diffuse)){				
+    	 //back color comes from diffuse
+		 Color backcolor = ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse)).color;
+    	 Color textColour = Color.ORANGE;
+    	 if (renderable.material.has(ColorAttribute.Diffuse)){	
+    		     		
+    		//text from attribute
+    		 textColour = textStyleData.textColour;    		 
+    		 	
     		 program.setUniformf(a_colorFlag,1);
-    		 program.setUniformf(u_diffuseColor, ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse)).color);    		 
+    		 
     	 } else {
+    		 //if not we assume default text colour
     		 program.setUniformf(a_colorFlag,0);
-    		 program.setUniformf(u_diffuseColor, Color.ORANGE);
+    		 
+    		 
     	 }
-    	 
-    	 
+
+		 program.setUniformf(u_backColour, backcolor); 
+		 program.setUniformf(u_textColour, textColour);   
+		 
+		 
+		 
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,

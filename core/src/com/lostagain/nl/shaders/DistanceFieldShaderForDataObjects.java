@@ -64,9 +64,9 @@ public class DistanceFieldShaderForDataObjects implements Shader {
 
 		@Override
 		protected boolean equals (Attribute other) {
-			if ((((ConceptBeamAttribute)other).width == smoothing) &&
-				(((ConceptBeamAttribute)other).beamcolor == fontcolour) &&
-				(((ConceptBeamAttribute)other).corecolor == backcolour) 
+			if ((((DistanceFieldttribute)other).smoothing == smoothing) &&
+				(((DistanceFieldttribute)other).fontcolour == fontcolour) &&
+				(((DistanceFieldttribute)other).backcolour == backcolour) 
 				){
 				return true;
 				
@@ -95,7 +95,7 @@ public class DistanceFieldShaderForDataObjects implements Shader {
 	 Camera camera;
 	 RenderContext context;
 	 
-	 final static String logstag = "ME.DistanceFieldShader";
+	 final static String logstag = "ME.DistanceFieldShaderForDataObjects";
 	 
 	   int u_projViewTrans;
 	    int u_worldTrans;
@@ -109,7 +109,7 @@ public class DistanceFieldShaderForDataObjects implements Shader {
     @Override
     public void init () {
     	
-    	  String vert = Gdx.files.internal("shaders/distancefieldvert_spritebatch.glsl").readString();
+    	  String vert = Gdx.files.internal("shaders/distancefieldvert.glsl").readString();
           String frag = Gdx.files.internal("shaders/distancefieldfrag.glsl").readString();
           
           //String prefix = createPrefix(renderable, this.get);

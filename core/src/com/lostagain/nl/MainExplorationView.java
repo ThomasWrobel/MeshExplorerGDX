@@ -173,7 +173,9 @@ public class MainExplorationView implements Screen {
 	
 	public static ShaderProgram distancefieldshader;
 	
-	Label testlabel = new Label("ME.ModelManagment: _-testing ray in :425.04813 models\r\n" + 
+	Label testlabel = new Label("|Test Label|");
+	
+	Label testlabel2 = new Label("ME.ModelManagment: _-testing ray in :425.04813 models\r\n" + 
 			"ME.ModelManagment: _-testing ray in :699.75104 models\r\n" + 
 			"ME.MainExplorationView: _-touch down on a model-_\r\n" + 
 			"ME.MainExplorationView: x=360,y=446\r\n" + 
@@ -184,7 +186,6 @@ public class MainExplorationView implements Screen {
 			"ME.MainExplorationView: MotionDisY:-61.6519174041298\r\n" + 
 			"ME.MainExplorationView: _-released touch-_\r\n" + 
 			"ME.MainExplorationView: __com.badlogic.gdx.scenes.scene2d.ui.Label");
-	
 	//Controls the 3d background
 	public static  ModelManagment background = new ModelManagment();
 
@@ -303,7 +304,7 @@ public class MainExplorationView implements Screen {
 
 		Matrix4 newmatrix = new Matrix4();
 		testlabinstance.transform.setToTranslation(690,900,0);
-		newmatrix.setToRotation(0, 0, 1, -90);
+		newmatrix.setToRotation(0, 0, 1, 0);
 		testlabinstance.transform.mul(newmatrix);
 		
 		// environment = new Environment();

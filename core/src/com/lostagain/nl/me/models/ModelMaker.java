@@ -85,16 +85,16 @@ public class ModelMaker {
 		
 		VertexInfo newtest1 = new VertexInfo();
 		Vector3 testnorm=new Vector3(0,1,0);
-		newtest1.set(corner1, testnorm, Color.WHITE, new Vector2(0f,0f));
+		newtest1.set(corner1, testnorm, Color.WHITE, new Vector2(0f,1f));
 
 		VertexInfo newtest2 = new VertexInfo();
-		newtest2.set(corner2, testnorm, Color.WHITE, new Vector2(0f,1f));
+		newtest2.set(corner2, testnorm, Color.WHITE, new Vector2(1f,1f));
 
 		VertexInfo newtest3 = new VertexInfo();
-		newtest3.set(corner3, testnorm, Color.WHITE, new Vector2(1f,1f));
+		newtest3.set(corner3, testnorm, Color.WHITE, new Vector2(1f,0f));
 		
 		VertexInfo newtest4 = new VertexInfo();
-		newtest4.set(corner4, testnorm, Color.WHITE, new Vector2(1f,0f));
+		newtest4.set(corner4, testnorm, Color.WHITE, new Vector2(0f,0f));
 		
 		meshBuilder.rect(newtest1, newtest2, newtest3, newtest4);
 		

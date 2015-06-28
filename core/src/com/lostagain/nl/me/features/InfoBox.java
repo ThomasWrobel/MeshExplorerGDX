@@ -47,7 +47,7 @@ public class InfoBox extends GenericMeshFeature {
 		Material mat = 	new Material(TextureAttribute.createDiffuse(texttexture),
 				new BlendingAttribute(1f),
 				ColorAttribute.createDiffuse(Color.CYAN),
-				new DistanceFieldShader.DistanceFieldAttribute(true,5));
+				new DistanceFieldShader.DistanceFieldAttribute(Color.MAGENTA,5));
 		
 		float hw = width/2;
 		float hh = height/2;

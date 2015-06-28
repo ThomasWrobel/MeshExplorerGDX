@@ -34,9 +34,12 @@ varying vec4 v_color;
 varying vec2 vTexCoord;
 //varying float v_usesDiffuseColor;
 
-varying vec4 v_diffuseColor;
+varying vec4 v_textColor;
+varying vec4 v_backColor;
 //varying vec4 v_diffuseColor;
 varying float v_colorFlag;
+ 
+
  
  
   
@@ -85,7 +88,7 @@ void main() {
 	else 
 	{
 	//	v_diffuseColor = vec4(0.0,0.0,1.0,1.0); //temp for testing
-		diffuse = v_diffuseColor;// texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
+		diffuse = v_textColor;// texture2D(u_diffuseTexture, v_diffuseUV) * u_diffuseColor;
 		//diffuse = vec4(1.0,1.0,1.0,1.0);
 	}
 
@@ -100,11 +103,13 @@ void main() {
        	 	
    //float width = abs(dFdx(dist)) + abs(dFdy(dist));  //<-----------(was attempt at replacement for web, does not work)          
      
-   float width = abs(dfdx*dist) + abs(dfdx*dist);  
+   float width = abs(dfdx*dist) + abs(dfdx*dist);  //<-----------(was attempt at replacement for web, does not work?)          
+     
        	 	
  	 	 	// supersampled version
-
-    float alpha = contour( dist, width );
+//width
+    float alpha = contour( dist, width); //note w seems too low? its very sharp
+    
     //float alpha = aastep( 0.5, dist );
 
     // ------- (comment this block out to get your original behavior)
@@ -127,25 +132,52 @@ void main() {
     alpha = (alpha + 0.5 * asum) / 3.0;
 
     // -------
-	// 
-	//diffuse.rgb = vec4(1.0,0.0,0.0,1.0).rgb;
-	//diffuse=diffuse+1;
-	//alpha = (alpha*0.5) +dist;
-	
-	
-    gl_FragColor = vec4( diffuse.rgb, alpha); //diffuse.rgb
- 	 	 	
- 	 	 	//OLD VERSION:
- 	//now we use that distance to make a new alpha
- //   float alpha = smoothstep(0.5 - smoothing, 0.5 + smoothing, distance);
     
- 	//vec4 diffuse =  v_diffuseColor; // * v_color doesnt seem to work diffuse has no effect on color
- 	
-   // gl_FragColor = vec4(v_color.rgb, alpha);
-   
-   ///gl_FragColor = vec4(diffuse.rgb,alpha);
-     
-   // gl_FragColor =    texture2D(u_diffuseTexture, vTexCoord);
+	//outline (optional)
+	//if (dist>0.05){ //outermost limit (0 is max/outer edge)
+	//	if (dist<0.2){ //inner limit
+    //		alpha=1.0;
+    //	}
+   // }
+    
+	vec4 newCol = vec4(diffuse.rgb,alpha);
+	
+    //glow (the glow replaces the normal texture, it doesnt glow over it)
+    if (dist>0.0) {
+    	if (dist<0.5){ 
+    	     //inner limit
+    	     float glowSize = 1;
+    		alpha=smoothstep(0.5-glowSize , 0.5+glowSize, dist);
+    		newCol = vec4(0.0,1.0,0.0,alpha);
+    	}
+    
+    }
+    
+    //shadow (the shadow will go under the normal texture, hence we need to create both and blend)
+    //first we only create a shadow if theres one set (detected by shadow alpha being >0)
+    
+    
+    
+    
+    
+	//mix with back colour	
+    
+	
+	//      = vec4(0.0,0.0,0.0,1.0);
+	//newCol = clamp(newCol,vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0));
+	
+	//v_backColor = vec4(1.0,1.0,1.0,1.0);
+	//v_backColor = clamp(v_backColor,vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0));
+	
+	
+	//                addColor*addColor.a + sceneColor*(1-addColor.a);
+	vec4 finalCol =  (newCol * newCol.a) + (v_backColor * (1-newCol.a));
+	//finalCol.a = vec4(0.0,0.0,0.0,1.0);
+	//finalCol = clamp(finalCol,vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0));
+	
+    gl_FragColor =  finalCol; //diffuse.rgb
+ 	 	 	
+ 	 	
     
 }
 
