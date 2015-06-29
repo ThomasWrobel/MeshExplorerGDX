@@ -15,10 +15,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.lostagain.nl.shaders.ConceptBeamShader.ConceptBeamAttribute;
-import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
-import com.lostagain.nl.shaders.NoiseShader.NoiseShaderAttribute;
-import com.lostagain.nl.shaders.PrettyBackground.PrettyBackgroundAttribute;
 
 /**
  * Basic normal-colourish shader.
@@ -47,6 +43,21 @@ public class DistanceFieldShader implements Shader {
 	    
 	    int u_pixel_step;
 	    
+	    //glow
+	    int  u_glowColor;
+	    int  u_glowSize  ; //size of glow (values above 1 will look strange)
+        		
+        //outline
+	    int  u_outColor ;
+	    int  u_outlinerInnerLimit; //Arbitrarily big size for no outline
+	    int  u_outlinerOuterLimit; //Arbitrarily big size for no outline
+
+        //shadow
+	    int  u_shadowXDisplacement;
+	    int  u_shadowYDisplacement;
+	    int  u_shadowBlur;
+	    int  u_shadowColour;
+       
 		public static class DistanceFieldAttribute extends Attribute {
 			
 			public final static String Alias = "DistanceFieldAttribute";
@@ -57,26 +68,111 @@ public class DistanceFieldShader implements Shader {
 			
 			public float outlinerInnerLimit  = 10f; //Arbitrarily big size for no outline
 			public float outlinerOuterLimit  = 10f; //Arbitrarily big size for no outline
-			public Color outlineColour       = Color.RED;
+			public Color outlineColour       = Color.CLEAR;
 			
 			public float glowSize            = 0.0f; //size of glow (values above 1 will look strange)
-			public Color glowColour          = Color.BLACK;
+			public Color glowColour          = new Color(0.0f,1.0f,0.0f,1.0f); 
 			
 			public float shadowXDisplacement = 1.0f;
 			public float shadowYDisplacement = 1.0f;
 			public float shadowBlur          = 0.0f;
 			public Color shadowColour        = Color.CLEAR;
 			
+			//enum help manage preset styles
+			public enum presetTextStyle {
+				
+				standardWithShadow ( 1,Color.BLACK,10,10,Color.CLEAR,0,Color.CLEAR, Color.BLACK,-1f,1f,0.3f),
+				standardWithRedGlow(1f,Color.BLACK,10,10,Color.CLEAR,0.7f,Color.RED,Color.BLACK,0f,0f,0f);
+				
+				private Color textColour;
+				private float width;
+				private float outlinerInnerLimit;
+				private float outlinerOuterLimit;
+				private Color outlineColour;
+				private float glowSize;
+				private Color glowColour;
+				private float shadowXDisplacement;
+				private float shadowYDisplacement;
+				private float shadowBlur;
+				private Color shadowColour;
+
+				presetTextStyle(
+						float width,
+						Color textColour,
+						float outlinerInnerLimit,
+						float outlinerOuterLimit, 
+						Color outlineColour,
+						float glowSize, 
+						Color glowColour,
+						Color shadowColour,
+						float shadowXDisplacement, 
+						float shadowYDisplacement,
+						float shadowBlur){
+					
+					
+					
+					this.textColour = textColour;
+					this.width = width;
+					this.outlinerInnerLimit = outlinerInnerLimit;
+					this.outlinerOuterLimit = outlinerOuterLimit;
+					this.outlineColour = outlineColour;
+					this.glowSize = glowSize;
+					this.glowColour = glowColour;
+
+				//Gdx.app.log(logstag, this.name()+" glowColour set to:"+this.glowColour);
+					
+					
+					this.shadowXDisplacement = shadowXDisplacement;
+					this.shadowYDisplacement = shadowYDisplacement;
+					this.shadowBlur = shadowBlur;
+					this.shadowColour = shadowColour;
+					
+					
+				}
+				
+			}
 			
+			/**
+			 * Create a distance field attribute from a preset
+			 * @param preset
+			 */
+			public DistanceFieldAttribute (presetTextStyle preset) {
+				super(ID);
+				
+				this.textColour         = preset.textColour;
+				this.width              = preset.width;
+				this.outlinerInnerLimit = preset.outlinerInnerLimit;
+				this.outlinerOuterLimit = preset.outlinerOuterLimit;
+				this.outlineColour      = preset.outlineColour;
+				this.glowSize           = preset.glowSize;
+				this.glowColour         = preset.glowColour;
+
+				//Gdx.app.log(logstag, " glowColour on this atrib set to:"+this.glowColour);
+				
+				this.shadowXDisplacement = preset.shadowXDisplacement;
+				this.shadowYDisplacement = preset.shadowYDisplacement;
+				this.shadowBlur = preset.shadowBlur;
+				this.shadowColour = preset.shadowColour;
+					
+			}
+					
 			
-			
-			public DistanceFieldAttribute(long type, Color textColour,
-					float width, float outlinerInnerLimit,
-					float outlinerOuterLimit, Color outlineColour,
-					float glowSize, Color glowColour,
-					float shadowXDisplacement, float shadowYDisplacement,
-					float shadowBlur, Color shadowColour) {
-				super(type);
+			public DistanceFieldAttribute(
+					float width,
+					Color textColour,
+					float outlinerInnerLimit,
+					float outlinerOuterLimit, 
+					Color outlineColour,
+					float glowSize, 
+					Color glowColour,
+					Color shadowColour,
+					float shadowXDisplacement, 
+					float shadowYDisplacement,
+					float shadowBlur 
+					) {
+				
+				super(ID);
+				
 				this.textColour = textColour;
 				this.width = width;
 				this.outlinerInnerLimit = outlinerInnerLimit;
@@ -121,14 +217,37 @@ public class DistanceFieldShader implements Shader {
 
 			@Override
 			public Attribute copy () {
-				return new DistanceFieldAttribute(textColour,width);
+				
+				return new DistanceFieldAttribute(width,
+						 textColour,
+						 outlinerInnerLimit,
+						 outlinerOuterLimit, 
+						 outlineColour,
+						 glowSize, 
+						 glowColour,
+						 shadowColour,
+						 shadowXDisplacement, 
+						 shadowYDisplacement,
+						 shadowBlur );
+				
 			}
 
+			
+			
 			@Override
 			protected boolean equals (Attribute other) {
 				if (
-					(((DistanceFieldAttribute)other).textColour == textColour) &&
-					(((DistanceFieldAttribute)other).width == width) 
+					(((DistanceFieldAttribute)other).width == width) &&
+					(((DistanceFieldAttribute)other).textColour == textColour)  &&
+					(((DistanceFieldAttribute)other).outlinerInnerLimit == outlinerInnerLimit) &&
+					(((DistanceFieldAttribute)other).outlinerOuterLimit == outlinerOuterLimit)  &&
+					(((DistanceFieldAttribute)other).outlineColour == outlineColour) &&
+					(((DistanceFieldAttribute)other).glowSize == glowSize)  &&
+					(((DistanceFieldAttribute)other).glowColour == glowColour) &&
+					(((DistanceFieldAttribute)other).shadowColour == shadowColour)  &&
+					(((DistanceFieldAttribute)other).shadowXDisplacement == shadowXDisplacement) &&
+					(((DistanceFieldAttribute)other).shadowYDisplacement == shadowYDisplacement)  &&
+					(((DistanceFieldAttribute)other).shadowBlur == shadowBlur) 
 					)
 				
 				{
@@ -173,9 +292,29 @@ public class DistanceFieldShader implements Shader {
           u_sampler2D =   program.getUniformLocation("u_texture");
           
           a_colorFlag =  program.getUniformLocation("u_colorFlag");
+         
+          u_pixel_step =  program.getUniformLocation("u_pixel_step");
+          
+          //text and back color
           u_textColour =  program.getUniformLocation("u_textColor");
           u_backColour =  program.getUniformLocation("u_backColor");
-          u_pixel_step =  program.getUniformLocation("u_pixel_step");
+          
+        //glow
+        u_glowColor = program.getUniformLocation("u_glowColor");
+        u_glowSize  = program.getUniformLocation("u_glowSize"); //size of glow (values above 1 will look strange)
+        		
+        //outline
+        u_outColor           = program.getUniformLocation("u_outColor");
+        u_outlinerInnerLimit = program.getUniformLocation("u_outlinerInnerLimit"); //Arbitrarily big size for no outline
+        u_outlinerOuterLimit = program.getUniformLocation("u_outlinerOuterLimit"); //Arbitrarily big size for no outline
+
+        //shadow
+       u_shadowXDisplacement = program.getUniformLocation("u_shadowXDisplacement");
+       u_shadowYDisplacement = program.getUniformLocation("u_shadowYDisplacement");
+       u_shadowBlur          = program.getUniformLocation("u_shadowBlur");
+       u_shadowColour        = program.getUniformLocation("u_shadowColour");
+          
+          
     }
     
     @Override
@@ -213,7 +352,8 @@ public class DistanceFieldShader implements Shader {
 
     	 DistanceFieldAttribute textStyleData = (DistanceFieldAttribute)renderable.material.get(DistanceFieldAttribute.ID);
     	 
-    	
+
+		//	Gdx.app.log(logstag, "glowColour:"+textStyleData.glowColour);
 		setSizeUniform(w,h);
     	 
     	 
@@ -235,15 +375,31 @@ public class DistanceFieldShader implements Shader {
     		 program.setUniformf(a_colorFlag,1);
     		 
     	 } else {
-    		 //if not we assume default text colour
+    		 //if not we assume default text color
     		 program.setUniformf(a_colorFlag,0);
     		 
     		 
     	 }
-
+    	     //text ans back color
 		 program.setUniformf(u_backColour, backcolor); 
-		 program.setUniformf(u_textColour, textColour);   
+		 program.setUniformf(u_textColour, textColour);  
 		 
+		     //glow
+		 program.setUniformf(u_glowColor,textStyleData.glowColour   );
+		 program.setUniformf(u_glowSize ,textStyleData.glowSize); //size of glow (values above 1 will look strange)
+	        		
+		//	Gdx.app.log(logstag, "glowColour:"+textStyleData.glowColour);
+			
+	        //outline
+		 program.setUniformf(u_outColor,textStyleData.outlineColour);
+		 program.setUniformf(u_outlinerInnerLimit,textStyleData.outlinerInnerLimit); 
+		 program.setUniformf(u_outlinerOuterLimit,textStyleData.outlinerOuterLimit); 
+		 
+	        //shadow
+		 program.setUniformf(u_shadowXDisplacement,textStyleData.shadowXDisplacement);
+		 program.setUniformf(u_shadowYDisplacement,textStyleData.shadowYDisplacement);
+		 program.setUniformf(u_shadowBlur,textStyleData.shadowBlur);
+		 program.setUniformf(u_shadowColour,textStyleData.shadowColour);
 		 
 		 
     	 renderable.mesh.render(program,

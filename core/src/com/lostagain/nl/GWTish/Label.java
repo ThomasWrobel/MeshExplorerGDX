@@ -26,6 +26,7 @@ import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.shaders.DistanceFieldShader;
+import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.MyShaderProvider;
 
 /**
@@ -33,7 +34,7 @@ import com.lostagain.nl.shaders.MyShaderProvider;
  * The most significant thing here though is we enable it to use distance mapped fonts in a 3d view **/
 public class Label {
 
-	String contents = "TEST";
+	String contents = "TextNotSetError";
 
 	final static String logstag = "ME.Label";
 
@@ -42,6 +43,8 @@ public class Label {
 
 	Model labelModel = null;
 	ModelInstance labelInstance = null;
+	
+	
 	//image
 	Image testImage;
 
@@ -50,6 +53,8 @@ public class Label {
 
 	//defaults
 	BitmapFont defaultFont;
+	
+	
 
 	enum SizeMode {
 		/** label is a fixed, specified size and text is scaled to fit **/
@@ -60,7 +65,9 @@ public class Label {
 
 	SizeMode labelsSizeMode = SizeMode.ExpandToFitText;
 
-
+	Texture currentTexture = null;
+	boolean modelNeedsUpdate = true;
+	
 	/**
 	 * Generates a label with the specified contents.
 	 * If no size is specified it will size both the model and the internal texture resolution
@@ -79,7 +86,6 @@ public class Label {
 		createModel();
 
 
-
 	}
 
 
@@ -88,7 +94,7 @@ public class Label {
 		
 
 		
-	    BitmapFontData data = DefaultStyles.standdardFont.getData();
+	  //  BitmapFontData data = DefaultStyles.standdardFont.getData();
 
 	    GlyphLayout layout = new GlyphLayout();	    
 
@@ -286,36 +292,32 @@ public class Label {
 
 	private void createModel() {
 
-		//Material mat = new Material(ColorAttribute.createDiffuse(Color.MAROON));
-
-		//mat.set(TextureAttribute.createDiffuse(idealAnimation.getKeyFrame(0)));
-		Texture texture;
-		if (labelsSizeMode == SizeMode.ExpandToFitText){
-
-			Gdx.app.log(logstag,"______________generating expand to fit text ");
-
-			texture = generatePixmapExpandedToFit(contents,1f); //new Texture(Gdx.files.internal("data/dfield.png"), true);
-
-
-		} else {
-			texture = generateTexture(contents,LabelWidth, LabelHeight,1f); //new Texture(Gdx.files.internal("data/dfield.png"), true);
-
+		if (currentTexture==null){
+			regenerateTexture();
 		}
 
 
-
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest
-//	new BlendingAttribute(1f),
+		currentTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest
 		
-		Material mat = 	new Material(TextureAttribute.createDiffuse(texture),			
-				ColorAttribute.createDiffuse(Color.BLUE),
-				new DistanceFieldShader.DistanceFieldAttribute(Color.RED,5));
+		
+		DistanceFieldAttribute teststyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.standardWithShadow);
+		
+		
+		Material mat = 	new Material(TextureAttribute.createDiffuse(currentTexture),			
+									 ColorAttribute.createDiffuse(Color.WHITE),
+									 teststyle);
 
-		Gdx.app.log(logstag,"______________generating rect of "+LabelWidth+","+LabelHeight);
+		
+		
+		//Gdx.app.log(logstag,"______________text glow col is: "+teststyle.glowColour);
+		//Gdx.app.log(logstag,"______________generating rect of "+LabelWidth+","+LabelHeight);
+		//
 		labelModel = ModelMaker.createRectangle(0, 0, LabelWidth,LabelHeight, 0, mat); 
 
-		labelInstance = new ModelInstance(labelModel); 
-
+		labelInstance = new ModelInstance(labelModel);
+		
+	//	DistanceFieldAttribute textStyleData = (DistanceFieldAttribute)mat.get(DistanceFieldAttribute.ID);
+	//	Gdx.app.log(logstag,"______________text glow col is2: "+textStyleData.glowColour);
 		//Matrix4 newmatrix = new Matrix4();
 		//newmatrix.setToRotation(0, 0, 1, -90);
 		//labelInstance.transform.mul(newmatrix);
@@ -323,6 +325,32 @@ public class Label {
 		//labelInstance.userData = MyShaderProvider.shadertypes.distancefield;
 
 
+	}
+	
+	/**
+	 * sets the text and regenerates the texture (does not yet auto-update any generated models from this label!)
+	 */
+	public void setText(String text){
+		this.contents=text;
+		regenerateTexture();
+		this.modelNeedsUpdate=true;
+		
+	}
+
+
+	private void regenerateTexture() {
+		if (labelsSizeMode == SizeMode.ExpandToFitText){
+
+			Gdx.app.log(logstag,"______________generating expand to fit text ");
+
+			currentTexture = generatePixmapExpandedToFit(contents,1f); //new Texture(Gdx.files.internal("data/dfield.png"), true);
+
+
+		} else {
+			currentTexture = generateTexture(contents,LabelWidth, LabelHeight,1f); //new Texture(Gdx.files.internal("data/dfield.png"), true);
+
+		}
+		modelNeedsUpdate=false;
 	}
 
 	public void firstTimeSetUp(){
@@ -336,7 +364,9 @@ public class Label {
 	}
 
 	public ModelInstance getModel() {
-
+		if (modelNeedsUpdate){
+			createModel();
+		}
 		return labelInstance;
 	}
 

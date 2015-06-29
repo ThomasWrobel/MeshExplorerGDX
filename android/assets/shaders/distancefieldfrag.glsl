@@ -32,11 +32,28 @@ varying vec2 pixel_step;
 varying vec2 v_texCoord0;
 varying vec4 v_color;
 varying vec2 vTexCoord;
-//varying float v_usesDiffuseColor;
 
 varying vec4 v_textColor;
 varying vec4 v_backColor;
-//varying vec4 v_diffuseColor;
+
+
+
+//glow
+varying vec4  v_glowColor;
+varying float v_glowSize; //size of glow (values above 1 will look strange)
+		
+//outline
+varying vec4  v_outColor;
+varying float v_outlinerInnerLimit; //Arbitrarily big size for no outline
+varying float v_outlinerOuterLimit; //Arbitrarily big size for no outline
+
+//shadow
+varying float v_shadowXDisplacement;
+varying float v_shadowYDisplacement;
+varying float v_shadowBlur;
+varying vec4  v_shadowColour;
+//--
+
 varying float v_colorFlag;
  
 
@@ -143,19 +160,46 @@ void main() {
 	vec4 newCol = vec4(diffuse.rgb,alpha);
 	
     //glow (the glow replaces the normal texture, it doesnt glow over it)
+    if (v_glowColor.a>0){
     if (dist>0.0) {
     	if (dist<0.5){ 
     	     //inner limit
-    	     float glowSize = 1;
-    		alpha=smoothstep(0.5-glowSize , 0.5+glowSize, dist);
-    		newCol = vec4(0.0,1.0,0.0,alpha);
+    	     float glowSize = v_glowSize;
+    		 alpha=smoothstep(0.5-v_glowSize, 0.5+v_glowSize, dist);
+    		
+    		 newCol   = v_glowColor;
+    		 newCol.a = alpha;
+    		    		 
     	}
     
+    }
     }
     
     //shadow (the shadow will go under the normal texture, hence we need to create both and blend)
     //first we only create a shadow if theres one set (detected by shadow alpha being >0)
-    
+    if (v_shadowColour.a>0){
+    	
+    	//now we know we have a shadow we need to do a second texture look up, this time using our offset
+    	float xo = vTexCoord.x -(v_shadowXDisplacement*pixel_step.x);//v_shadowXDisplacement;
+    	float yo = vTexCoord.y -(v_shadowYDisplacement*pixel_step.y);//;
+    	
+    	//the alpha of the incoming texture acts as the distance from inside a letter to outside
+ 		float sdist = texture2D(u_texture, vec2(xo,yo)).a;
+ 		
+    			
+    			vec4 shadowCol   = v_shadowColour;
+    			
+    			float blurSize = v_shadowBlur;
+    		    float salpha = smoothstep(0.5-blurSize, 0.5+blurSize, sdist);
+    			
+    		    shadowCol.a = salpha;
+    		    
+    		    //now blend with original (under it!)
+    		    newCol = (newCol * newCol.a) + (shadowCol * (1-newCol.a));
+    			
+    	
+    	
+    }
     
     
     
