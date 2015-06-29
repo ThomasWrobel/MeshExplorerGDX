@@ -15,16 +15,15 @@ import com.lostagain.nl.MainExplorationView;
  * Will become a class for displaying small information notices to the player.
  * Pops up things for a set time, then fades away.
  * If a new thing gets added, will display it under it and reset the timer till it fades.
- *  * 
  * **/
 public class InfoPopUp {
 
 	final static String logstag = "ME.InfoPopUp";
 
 	final static ArrayList<MessageObject> currentMessagess = new ArrayList<MessageObject>();
-	final static float fadeInTime = 0.5f;
+	final static float fadeInTime    = 0.5f;
 	final static float PopupDuration = 3; 
-	final static float fadeOutTime = 1.5f;
+	final static float fadeOutTime   = 1.5f;
 
 	
 	/** messages that are scheduled to be displayed at a certain time **/
@@ -39,7 +38,6 @@ public class InfoPopUp {
 
 	enum CurrentState {
 		hidden, appearing, displayed, fading
-
 	}
 
 	CurrentState state = CurrentState.hidden;
@@ -53,7 +51,7 @@ public class InfoPopUp {
 		
 		String messageText = "";
 		Color messageColor = Color.WHITE;
-		long sheduledFor = -1;
+		long sheduledFor   = -1;
 		
 		
 		public MessageObject(String messageText, Color messageColor) {

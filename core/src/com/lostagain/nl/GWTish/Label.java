@@ -6,47 +6,39 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.lostagain.nl.DefaultStyles;
-import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
-import com.lostagain.nl.shaders.MyShaderProvider;
 
 /**
- *  A Libgdx label that will eventually emulate most of the features of a GWT label (ish)
- * The most significant thing here though is we enable it to use distance mapped fonts in a 3d view **/
+ * A Libgdx label that will eventually emulate most of the features of a GWT label (ish. VERY ish.)
+ * 
+ * The most significant thing here though is we enable it to use distance mapped fonts in a 3d view. 
+ * This lets things look sharp at all distances.
+ * With the DistanceFieldShader we can also emulate shadows and outlines - sort of letting the label have "css styles"  **/
 public class Label {
 
 	String contents = "TextNotSetError";
 
 	final static String logstag = "ME.Label";
 
-	static int LabelWidth=512;
-	static int LabelHeight=512;
+	static int LabelNativeWidth=512;
+	static int LabelNativeHeight=512;
 
 	Model labelModel = null;
 	ModelInstance labelInstance = null;
 	
 	
-	//image
-	Image testImage;
 
 	//setup
 	Boolean setup = false;
@@ -54,7 +46,8 @@ public class Label {
 	//defaults
 	BitmapFont defaultFont;
 	
-	
+	/** default scale factor of the text **/
+	float ModelScale = 1.0f;
 
 	enum SizeMode {
 		/** label is a fixed, specified size and text is scaled to fit **/
@@ -67,6 +60,9 @@ public class Label {
 
 	Texture currentTexture = null;
 	boolean modelNeedsUpdate = true;
+
+	//Style data (mostly controlled by shader)
+	private Color LabelBackColor = Color.WHITE;
 	
 	/**
 	 * Generates a label with the specified contents.
@@ -82,9 +78,9 @@ public class Label {
 			firstTimeSetUp();
 			setup=true;
 		}
-
-		createModel();
-
+		
+		currentTexture  =null; //null tells it to regenerate
+		modelNeedsUpdate=true;
 
 	}
 
@@ -99,7 +95,8 @@ public class Label {
 	    GlyphLayout layout = new GlyphLayout();	    
 
 	    layout.setText(DefaultStyles.standdardFont, text);
-	    float currentWidth = layout.width;
+	    
+	    float currentWidth  = layout.width;
 	    float currentHeight = layout.height;
 	    
 
@@ -200,7 +197,6 @@ public class Label {
 
 			int yglyphoffset = (int) (glyph.yoffset * scaledown);
 
-			//	Gdx.app.log(logstag,"cwidth="+cwidth);
 			destX = 0+currentX+glyph.xoffset;
 			destY = 0+(yp+(yglyphoffset ));
 			//note if we are going to go of the edge, and we are on expand mode, we have to quickly get a bigger map to work in
@@ -270,8 +266,8 @@ public class Label {
 
 			textPixmap = sizeTo(textPixmap, biggestX, biggestY);
 
-			LabelWidth = biggestX;
-			LabelHeight = biggestY;
+			LabelNativeWidth  = biggestX;
+			LabelNativeHeight = biggestY;
 
 		}
 
@@ -297,14 +293,16 @@ public class Label {
 		}
 
 
-		currentTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest
+		currentTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest does not work with DistanceField shaders
 		
 		
-		DistanceFieldAttribute teststyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.standardWithShadow);
+		DistanceFieldAttribute teststyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+		
+		
 		
 		
 		Material mat = 	new Material(TextureAttribute.createDiffuse(currentTexture),			
-									 ColorAttribute.createDiffuse(Color.WHITE),
+									 ColorAttribute.createDiffuse(LabelBackColor),
 									 teststyle);
 
 		
@@ -312,7 +310,7 @@ public class Label {
 		//Gdx.app.log(logstag,"______________text glow col is: "+teststyle.glowColour);
 		//Gdx.app.log(logstag,"______________generating rect of "+LabelWidth+","+LabelHeight);
 		//
-		labelModel = ModelMaker.createRectangle(0, 0, LabelWidth,LabelHeight, 0, mat); 
+		labelModel = ModelMaker.createRectangle(0, 0, LabelNativeWidth*this.ModelScale,LabelNativeHeight*this.ModelScale, 0, mat); 
 
 		labelInstance = new ModelInstance(labelModel);
 		
@@ -328,15 +326,31 @@ public class Label {
 	}
 	
 	/**
-	 * sets the text and regenerates the texture (does not yet auto-update any generated models from this label!)
-	 */
+	 * Sets the text and regenerates the texture (does not yet auto-update any generated models from this label!)
+	 **/
 	public void setText(String text){
 		this.contents=text;
-		regenerateTexture();
-		this.modelNeedsUpdate=true;
+		
+		//regenerateTexture();
+		
+		currentTexture  =null; //null tells it to regenerate
+		modelNeedsUpdate=true;
+		
 		
 	}
-
+	/**
+	 * A scaleing factor that will enlarge of shrink the text relative to the standard font size.
+	 * NOTE: this does not scale the internal texture size. As we are using a distance field font, it should look sharp at all distances anyway.
+	 * Scaleing would not help.
+	 * @param text
+	 */
+	public void setTextScale(float scale){
+		ModelScale = scale;
+		
+		currentTexture  =null; //null tells it to regenerate
+		modelNeedsUpdate=true;
+		
+	}
 
 	private void regenerateTexture() {
 		if (labelsSizeMode == SizeMode.ExpandToFitText){
@@ -347,10 +361,10 @@ public class Label {
 
 
 		} else {
-			currentTexture = generateTexture(contents,LabelWidth, LabelHeight,1f); //new Texture(Gdx.files.internal("data/dfield.png"), true);
+			currentTexture = generateTexture(contents,LabelNativeWidth, LabelNativeHeight,1f); //new Texture(Gdx.files.internal("data/dfield.png"), true);
 
 		}
-		modelNeedsUpdate=false;
+		modelNeedsUpdate=true;
 	}
 
 	public void firstTimeSetUp(){
@@ -368,6 +382,12 @@ public class Label {
 			createModel();
 		}
 		return labelInstance;
+	}
+
+
+	public void setLabelBackColor(Color labelBackColor) {
+		LabelBackColor = labelBackColor;
+		modelNeedsUpdate=true;
 	}
 
 

@@ -116,7 +116,7 @@ void main() {
  	// fwidth helps keep outlines a constant width irrespective of scaling
     // GLSL's fwidth = abs(dFdx(uv)) + abs(dFdy(uv))
     
-   // float width = fwidth(dist); //<---------------correct formula (works fine desktop)
+  //  float width = fwidth(dist); //<---------------correct formula (works fine desktop)
        	 	
    //float width = abs(dFdx(dist)) + abs(dFdy(dist));  //<-----------(was attempt at replacement for web, does not work)          
      
@@ -125,14 +125,17 @@ void main() {
        	 	
  	 	 	// supersampled version
 //width
-    float alpha = contour( dist, width); //note w seems too low? its very sharp
-    
+	width=width+0.01; //0.01 makes edges a bit softer
+    float alpha = contour( dist,width); //width doesnt seem correct always? probably mistake with web replacement for fwidth
+  
     //float alpha = aastep( 0.5, dist );
 
     // ------- (comment this block out to get your original behavior)
+    //Supersample doesnt seem to work well right now? at least its still pixely from far away
+    
     // Supersample, 4 extra points
     float dscale = 0.354; // half of 1/sqrt2; you can play with this
-    
+   
    // vec2 duv = dscale * (dFdx(vTexCoord) + dFdy(vTexCoord)); //<---------------correct formula (works fine desktop)
    
     vec2 duv = vec2(dscale * dfdx,dscale * dfdy); //<-------------web replacement for now
@@ -150,19 +153,23 @@ void main() {
 
     // -------
     
-	//outline (optional)
-	//if (dist>0.05){ //outermost limit (0 is max/outer edge)
-	//	if (dist<0.2){ //inner limit
-    //		alpha=1.0;
-    //	}
-   // }
-    
 	vec4 newCol = vec4(diffuse.rgb,alpha);
 	
+	//outline (optional)
+	if (v_outColor.a>0.0){
+		if (dist>0.05){ //outermost limit (0 is max/outer edge)
+			if (dist<0.2){ //inner limit
+					newCol   = v_outColor;
+    				newCol.a = 1.0;
+    		}
+    	}
+    }
+    
+	
     //glow (the glow replaces the normal texture, it doesnt glow over it)
-    if (v_glowColor.a>0){
-    if (dist>0.0) {
-    	if (dist<0.5){ 
+    if (v_glowColor.a>0.0){
+    	if (dist>0.0) {
+    		if (dist<0.5){ 
     	     //inner limit
     	     float glowSize = v_glowSize;
     		 alpha=smoothstep(0.5-v_glowSize, 0.5+v_glowSize, dist);
@@ -170,18 +177,18 @@ void main() {
     		 newCol   = v_glowColor;
     		 newCol.a = alpha;
     		    		 
-    	}
+    		}
     
-    }
+   		 }
     }
     
     //shadow (the shadow will go under the normal texture, hence we need to create both and blend)
     //first we only create a shadow if theres one set (detected by shadow alpha being >0)
-    if (v_shadowColour.a>0){
+    if (v_shadowColour.a>0.0){
     	
     	//now we know we have a shadow we need to do a second texture look up, this time using our offset
-    	float xo = vTexCoord.x -(v_shadowXDisplacement*pixel_step.x);//v_shadowXDisplacement;
-    	float yo = vTexCoord.y -(v_shadowYDisplacement*pixel_step.y);//;
+    	float xo = vTexCoord.x -(v_shadowXDisplacement * pixel_step.x);//v_shadowXDisplacement;
+    	float yo = vTexCoord.y -(v_shadowYDisplacement * pixel_step.y);//;
     	
     	//the alpha of the incoming texture acts as the distance from inside a letter to outside
  		float sdist = texture2D(u_texture, vec2(xo,yo)).a;
@@ -215,9 +222,11 @@ void main() {
 	
 	
 	//                addColor*addColor.a + sceneColor*(1-addColor.a);
+	
 	vec4 finalCol =  (newCol * newCol.a) + (v_backColor * (1-newCol.a));
 	//finalCol.a = vec4(0.0,0.0,0.0,1.0);
 	//finalCol = clamp(finalCol,vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0));
+	
 	
     gl_FragColor =  finalCol; //diffuse.rgb
  	 	 	

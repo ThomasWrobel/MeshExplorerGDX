@@ -26,6 +26,8 @@ import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
+import com.lostagain.nl.me.features.InfoBox;
+import com.lostagain.nl.me.features.MeshIcon;
 import com.lostagain.nl.me.gui.GUIBar;
 import com.lostagain.nl.me.gui.InfoPopUp;
 import com.lostagain.nl.me.gui.STMemory;
@@ -246,8 +248,8 @@ public class MainExplorationView implements Screen {
 		//create test shader
 	
 		
-		String vert = Gdx.files.internal("shaders/distancefieldvert_spritebatch.glsl").readString();
-        String frag = Gdx.files.internal("shaders/distancefieldfrag.glsl").readString();
+	//	String vert = Gdx.files.internal("shaders/distancefieldvert_spritebatch.glsl").readString();
+     //   String frag = Gdx.files.internal("shaders/distancefieldfrag.glsl").readString();
         
         //Note this shader needs fixs in its glsl file - we commented out working fwdith stuff to make it work on the web
         
@@ -293,25 +295,23 @@ public class MainExplorationView implements Screen {
 	//	addnewlocation( PlayersData.homeLoc.locationsHub,200,500);
 
 
-
-		//test shader
-		// String vert = Gdx.files.internal("data/test.vertex.glsl").readString();
-		 //   String frag = Gdx.files.internal("data/test.fragment.glsl").readString();
-		 //   shader = new DefaultShader(renderable, new DefaultShader.Config(vert, frag));
-		 //   shader.init();
+		InfoBox testFeature = new InfoBox("Test Information");
+		MeshIcon iconTest = new MeshIcon(MeshIcon.IconType.Info,PlayersData.homeLoc,testFeature);
+		iconTest.setToPosition(new Vector3(120f,670f,0f));
+		ModelManagment.addmodel(iconTest,ModelManagment.RenderOrder.zdecides);
 		
+
+		testlabel.setLabelBackColor(new Color(0.3f,0.3f,1f,0.5f));
+			
 		ModelInstance testLabelInstance = testlabel.getModel();
-
-		Matrix4 newmatrix = new Matrix4();
 		testLabelInstance.transform.setToTranslation(120,470,0);
-		testLabelInstance.transform.mul(newmatrix);
+		testlabel2.setLabelBackColor(new Color(0.3f,0.3f,1f,0.5f));
 		
+		testlabel2.setTextScale(0.6f);		
 		testlabel2.setText("(file url of computer test)");
 		
 		ModelInstance testLabel2Instance = testlabel2.getModel();
-		Matrix4 newmatrix2 = new Matrix4();
 		testLabel2Instance.transform.setToTranslation(120,400,0);
-		testLabel2Instance.transform.mul(newmatrix2);
 		
 		// environment = new Environment();
 	    //     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));

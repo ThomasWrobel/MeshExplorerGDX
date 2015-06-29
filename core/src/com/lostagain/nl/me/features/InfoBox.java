@@ -13,6 +13,7 @@ import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 
 /**
+ * 
  * Will be a simple text box using a distance field shader font.
  * MeshIcons can open up to show this bit of text.
  * 

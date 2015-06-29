@@ -81,8 +81,9 @@ public class DistanceFieldShader implements Shader {
 			//enum help manage preset styles
 			public enum presetTextStyle {
 				
-				standardWithShadow ( 1,Color.BLACK,10,10,Color.CLEAR,0,Color.CLEAR, Color.BLACK,-1f,1f,0.3f),
-				standardWithRedGlow(1f,Color.BLACK,10,10,Color.CLEAR,0.7f,Color.RED,Color.BLACK,0f,0f,0f);
+				standardWithShadow ( 1,Color.BLACK ,10,10,Color.CLEAR,0   ,Color.CLEAR, Color.BLACK,-0.6f,0.6f,0.3f),
+				standardWithRedGlow(1f,Color.BLACK ,10,10,Color.CLEAR,0.7f,Color.RED  , Color.BLACK,   0f,  0f,  0f),
+				whiteWithShadow    ( 1,Color.WHITE ,10,10,Color.CLEAR,0   ,Color.CLEAR, Color.BLACK,-1f,1f,0.5f);
 				
 				private Color textColour;
 				private float width;
@@ -334,9 +335,10 @@ public class DistanceFieldShader implements Shader {
     	  //the the variable for the cameras projectino to be passed to the shader
     	  program.setUniformMatrix(u_projViewTrans, camera.combined);
     	  
-    	  context.setDepthTest(GL20.GL_LEQUAL);    	  
-          context.setCullFace(GL20.GL_BACK);
-          
+    	 // context.setDepthTest(GL20.GL_LEQUAL);    	  
+          //context.setCullFace(GL20.GL_BACK);
+
+  			context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
     }
     
     @Override

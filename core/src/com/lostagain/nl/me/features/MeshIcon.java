@@ -10,16 +10,18 @@ import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
-/** Will become a 3d icon that can be clicked to turn into a interactive meshFeature.
+/** 
+ * Will become a 3d icon that can be clicked to turn into a interactive meshFeature.
  * 
  *  Mesh icons are square, with a somewhat customizable border and background style.
  *  They have a short bit of text in the middle, maybe in future an icon representing their content type.
  *  
- *  They extend AnimatableModelInstance so we can animated them latter if we wish  **/
+ *  They extend AnimatableModelInstance so we can animated them latter if we wish 
+ * **/
 public class MeshIcon extends AnimatableModelInstance {
 
 	//generic icon stuff
-	enum IconType {
+	public enum IconType {
 		Email,
 		Software,
 		Links,
@@ -28,13 +30,14 @@ public class MeshIcon extends AnimatableModelInstance {
 		OTHER; //used as a catch all for unique features.
 	}
 	
-	static final float iconWidth = 100f; //standard width and height of all icons
+	static final float iconWidth  = 100f; //standard width and height of all icons
 	static final float iconHeight = 100f;
 	
 	
 	//this icons stuff
 	IconType thisIconsType = null;
 	Location parentLocation = null;
+	
 	GenericMeshFeature assocatiedFeature = null;
 	
 	/** 
