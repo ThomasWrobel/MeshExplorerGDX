@@ -457,7 +457,7 @@ public static Ray getCurrentStageCursorRay() {
 		
 	Vector2 currentCursor = getCurrentCursorScreenPosition();
 		
-		Gdx.app.log(MainExplorationView.logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
+		Gdx.app.log(logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
 		return MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
 	}
 

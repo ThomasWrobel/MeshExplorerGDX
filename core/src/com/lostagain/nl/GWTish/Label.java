@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.me.models.ModelMaker;
+import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 
@@ -25,7 +26,12 @@ import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
  * 
  * The most significant thing here though is we enable it to use distance mapped fonts in a 3d view. 
  * This lets things look sharp at all distances.
- * With the DistanceFieldShader we can also emulate shadows and outlines - sort of letting the label have "css styles"  **/
+ * With the DistanceFieldShader we can also emulate shadows and outlines - sort of letting the label have "css styles" 
+ * 
+ *  TODO: make this extend AnimatableModelInstance.
+ *  We need to make a lot of changes to make the label a true model though.
+ *  Specifically making the create model function static, and making the model directly change itself when
+ *  setting text or attributes, rather then recreating itself. **/
 public class Label {
 
 	String contents = "TextNotSetError";
@@ -36,7 +42,7 @@ public class Label {
 	static int LabelNativeHeight=512;
 
 	Model labelModel = null;
-	ModelInstance labelInstance = null;
+	AnimatableModelInstance labelInstance = null;
 	
 	
 
@@ -63,6 +69,9 @@ public class Label {
 
 	//Style data (mostly controlled by shader)
 	private Color LabelBackColor = Color.WHITE;
+
+	private DistanceFieldAttribute textStyle;
+	
 	
 	/**
 	 * Generates a label with the specified contents.
@@ -72,6 +81,8 @@ public class Label {
 	 * @param contents
 	 */
 	public Label (String contents){
+
+		 
 		this.contents=contents;
 
 		if (!setup){
@@ -285,8 +296,17 @@ public class Label {
 		return textPixmap;
 	}
 
+	/**
+	 * Use this to set the style of the text
+	 * @param style
+	 * @return 
+	 */
+	public void setDistanceFieldAttribute(DistanceFieldAttribute style){
+		textStyle = style;
+	}
+	
 
-	private void createModel() {
+	private Model createModel() {
 
 		if (currentTexture==null){
 			regenerateTexture();
@@ -295,15 +315,15 @@ public class Label {
 
 		currentTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest does not work with DistanceField shaders
 		
-		
-		DistanceFieldAttribute teststyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
-		
-		
+		if (textStyle==null){
+			textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+		}
+				
 		
 		
 		Material mat = 	new Material(TextureAttribute.createDiffuse(currentTexture),			
 									 ColorAttribute.createDiffuse(LabelBackColor),
-									 teststyle);
+									 textStyle);
 
 		
 		
@@ -312,7 +332,7 @@ public class Label {
 		//
 		labelModel = ModelMaker.createRectangle(0, 0, LabelNativeWidth*this.ModelScale,LabelNativeHeight*this.ModelScale, 0, mat); 
 
-		labelInstance = new ModelInstance(labelModel);
+		labelInstance = new AnimatableModelInstance(labelModel);
 		
 	//	DistanceFieldAttribute textStyleData = (DistanceFieldAttribute)mat.get(DistanceFieldAttribute.ID);
 	//	Gdx.app.log(logstag,"______________text glow col is2: "+textStyleData.glowColour);
@@ -321,7 +341,10 @@ public class Label {
 		//labelInstance.transform.mul(newmatrix);
 
 		//labelInstance.userData = MyShaderProvider.shadertypes.distancefield;
-
+		
+		modelNeedsUpdate = false;
+		
+		return labelModel;
 
 	}
 	
@@ -377,7 +400,11 @@ public class Label {
 
 	}
 
-	public ModelInstance getModel() {
+	/**
+	 * gets the current model instance, or recreates it if its changed
+	 * @return
+	 */
+	public AnimatableModelInstance getModel() {
 		if (modelNeedsUpdate){
 			createModel();
 		}

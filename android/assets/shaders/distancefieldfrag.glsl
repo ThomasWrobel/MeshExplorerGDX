@@ -200,11 +200,14 @@ void main() {
     		    float salpha = smoothstep(0.5-blurSize, 0.5+blurSize, sdist);
     			
     		    shadowCol.a = salpha;
+    		    float olda = newCol.a;
     		    
     		    //now blend with original (under it!)
     		    newCol = (newCol * newCol.a) + (shadowCol * (1-newCol.a));
+    		    
+    			//high shadow seems to have high alpha vlue?
     			
-    	
+    			newCol.a = shadowCol.a + newCol.a ;
     	
     }
     
@@ -224,6 +227,7 @@ void main() {
 	//                addColor*addColor.a + sceneColor*(1-addColor.a);
 	
 	vec4 finalCol =  (newCol * newCol.a) + (v_backColor * (1-newCol.a));
+	finalCol.a =  newCol.a + v_backColor.a;
 	//finalCol.a = vec4(0.0,0.0,0.0,1.0);
 	//finalCol = clamp(finalCol,vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0));
 	

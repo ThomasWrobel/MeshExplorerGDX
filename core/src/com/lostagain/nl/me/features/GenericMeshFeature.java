@@ -2,6 +2,8 @@ package com.lostagain.nl.me.features;
 
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.lostagain.nl.me.models.Animating;
+import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 
@@ -19,9 +21,25 @@ import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 public abstract class GenericMeshFeature extends AnimatableModelInstance implements Animating {
 	
 	private MeshIcon associatedIcon;
-
+	
+	
+	//various things to handle animation of appearing/disaspering
+	enum FeatureState {
+		appearing,disapearing,normal,hidden;
+	}
+	FeatureState currentState = FeatureState.hidden;
+	protected float Opacity = 0f;
+	float fadeDuration = 0.500f;
+	float timeIntoFade = 0.0f;
+	Runnable runAfterFadeIn = null;
+	Runnable runAfterFadeOut = null;
+	//----------------------------------------------------
+	
 	public GenericMeshFeature(Model model) {
 		super(model);
+		// all generic mesh features are hidden by default
+		super.hide();
+		
 	}
 	
 	
@@ -62,16 +80,89 @@ public abstract class GenericMeshFeature extends AnimatableModelInstance impleme
 
 		
 	}
-
-	abstract void fadeIn(float duration,Runnable runAfterFadeIn);
-	abstract void fadeOut(float duration,Runnable runAfterFadeOut);
+	
+	/** 
+	 * Called every frame to update any animations in progress
+	 * representing appearing or disappearing.
+	 * This can be as simple as setting the opacity to the alpha value.	
+	 * 
+	 * @param alpha - Alpha goes from 0-1 when state is appearing and from 1-0 when state is disappearing
+	 * @param currentState - appearing,disappearing,normal or hidden
+	 **/
+	abstract void updateApperance(float alpha,FeatureState currentState);
+	
+	//abstract void fadeIn(float duration,Runnable runAfterFadeIn);
+	//abstract void fadeOut(float duration,Runnable runAfterFadeOut);
+	
 	/** called every frame to update any fade in progress **/
-	abstract void updateFade(float delta);
+	//abstract void updateFade(float delta);
 	
 	
 	public void updateAnimationFrame(float delta){
 		updateFade(delta);
 		
+	}
+
+
+	void fadeIn(float duration, Runnable runAfterFadeIn) {
+		currentState = FeatureState.appearing;
+		Opacity = 0f;
+		ModelManagment.addmodel(this, RenderOrder.zdecides);
+		
+		ModelManagment.addAnimating(this);
+		this.runAfterFadeIn= runAfterFadeIn;
+	}
+
+
+	void fadeOut(float duration, Runnable runAfterFadeOut) {
+		currentState = FeatureState.disapearing;
+		Opacity = 1f;
+		ModelManagment.addAnimating(this);
+		this.runAfterFadeOut= runAfterFadeOut;
+	}
+
+
+	void updateFade(float delta) {
+		
+		timeIntoFade = timeIntoFade+delta;
+		float ratio = timeIntoFade/fadeDuration;	
+				
+		switch (currentState) {
+		case appearing:
+			Opacity = ratio;
+			if (ratio==1){
+				ModelManagment.removeAnimating(this);
+				currentState = FeatureState.normal;
+				runAfterFadeIn.run();
+			}
+			break;
+		case disapearing:
+			Opacity = 1-ratio;
+			if (ratio==1){
+				ModelManagment.removeAnimating(this);
+				currentState = FeatureState.hidden;
+				runAfterFadeOut.run();
+				
+			}
+			break;
+		case hidden:
+			Opacity = 0f;
+			ModelManagment.removeModel(this);
+			return;
+		case normal:
+			Opacity = 1f;
+			break;
+		
+		}
+		
+		updateApperance(Opacity,currentState);
+		
+		
+	}
+
+
+	public void setFadeDuration(float fadeDuration) {
+		this.fadeDuration = fadeDuration;
 	}
 	
 	

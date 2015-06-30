@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 
 /**
@@ -23,91 +22,53 @@ import com.lostagain.nl.shaders.DistanceFieldShader;
  * **/
 public class InfoBox extends GenericMeshFeature {
 	
-	//all generic mesh features must be able to fade in and out, so we track the opacity here
-	float Opacity = 0f;
-	float fadeDuration = 0.500f;
-	float timeIntoFade = 0.0f;
-	enum FeatureState {
-		appearing,disapearing,normal,hidden;
-	}
-	FeatureState currentState = FeatureState.hidden;
-
 	public InfoBox(String contents) {		
 		this(contents, 300, 200);
+		
 	
 	}
 	public InfoBox(String contents,int width,int height) {		
 		super(generateModel(contents,width,height));
 	
+		//slower fadein then default
+		this.setFadeDuration(3000);
+		
 	}
 
 	private static Model generateModel(String contents,int width,int height) {
 		
 		Texture texttexture = Label.generateTexture(contents, width, height, 1f);
 		
-		Material mat = 	new Material(TextureAttribute.createDiffuse(texttexture),
+		Material infoBoxsBackgroundMaterial = 	new Material("InfoBoxBackground",//TextureAttribute.createDiffuse(texttexture),
 				new BlendingAttribute(1f), //makes it addaive?
-				ColorAttribute.createDiffuse(Color.CYAN));
+				ColorAttribute.createDiffuse(Color.RED));
 				//new DistanceFieldShader.DistanceFieldAttribute(Color.MAGENTA,5));
 		
 		float hw = width/2;
 		float hh = height/2;
 		
-		Model model = ModelMaker.createRectangle(-hw, -hh, hw, hh, 0, mat);
 		
+		((BlendingAttribute)infoBoxsBackgroundMaterial.get(BlendingAttribute.Type)).opacity = 0.1f;
+		
+		Model model = ModelMaker.createRectangle(-hw, -hh, hw, hh, 0, infoBoxsBackgroundMaterial);
+
+		((BlendingAttribute)infoBoxsBackgroundMaterial.get(BlendingAttribute.Type)).opacity = 1f;
 		return model;
 	}
 	
-	
-	
-	
-	@Override
-	void fadeIn(float duration, Runnable runAfterFadeIn) {
-		currentState = FeatureState.appearing;
-		Opacity = 0f;
-		ModelManagment.addAnimating(this);
+	public void setOpacity(float opacity){
+		//get the material from the model
+		Material infoBoxsMaterial = this.getMaterial("InfoBoxBackground");
+		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
+		
+		
 	}
 	
-	@Override
-	void fadeOut(float duration, Runnable runAfterFadeOut) {
-		currentState = FeatureState.disapearing;
-		Opacity = 1f;
-		ModelManagment.addAnimating(this);
-	}
-	
-	@Override
-	void updateFade(float delta) {
-		
-		timeIntoFade = timeIntoFade+delta;
-		float ratio = timeIntoFade/fadeDuration;	
-				
-		switch (currentState) {
-		case appearing:
-			Opacity = ratio;
-			if (ratio==1){
-				ModelManagment.removeAnimating(this);
-				currentState = FeatureState.normal;
-			}
-			break;
-		case disapearing:
-			Opacity = 1-ratio;
-			if (ratio==1){
-				ModelManagment.removeAnimating(this);
-				currentState = FeatureState.hidden;
-			}
-			break;
-		case hidden:
-			Opacity = 0f;
-			break;
-		case normal:
-			Opacity = 1f;
-			break;
-		
-		}
-		
-		
-		
-		
+	/**Updates the appearance based on the current state and how far we are into it.
+	 * Typically this would be a fade, with the alpha being the fade value**/
+	void updateApperance(float alpha,FeatureState currentState){
+
+		setOpacity(Opacity);
 	}
 
 }

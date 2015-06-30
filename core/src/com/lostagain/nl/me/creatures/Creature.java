@@ -155,11 +155,11 @@ public class Creature implements hitable , Animating {
 
 
 
-	@Override
+	//@Override
 	public int getRadius() {
 		return hitradius;
 	}
-
+//
 
 
 

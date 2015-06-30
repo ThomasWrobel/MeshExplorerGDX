@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 
@@ -50,6 +51,28 @@ public class AnimatableModelInstance extends ModelInstance {
 	/** Determines if the scale is inherited **/
 	boolean inheritedScale = true;
 
+	/**
+	 * The local bounding box is the boundary of this object, not counting anything attached to it.
+	 * If its bull, it needs to be created again which any call like getWidth() will do automatically.
+	 */
+	private BoundingBox localBoundingBox;
+	
+	/**
+	 * The collision box is the bounding box multiplied by its current transform.
+	 * So, effectively, its the real boundary's the object currently has in the co-ordinate system of
+	 * where its positioned.
+	 * The collisionBox is updated every time its moved assuming its ever been requested.
+	 * collisionBox.mul(super.getMatrixTransform());
+	 **/
+	private BoundingBox collisionBox;
+	
+	/**
+	 * Determines if its added to the render list or not
+	 * @param model
+	 */
+	public boolean visible = true;
+
+	
 	// this is just an example constructor, make sure to implement the constructor you need
 	public AnimatableModelInstance (Model model) {
 		super(model);
@@ -83,6 +106,11 @@ public class AnimatableModelInstance extends ModelInstance {
 	/** should be called after ANY set of change to its transState before it will be reflected in the model visually**/
 	public void sycnTransform() {
 		super.transform.set(transState.position, transState.rotation, transState.scale);
+		
+		//now we check if theres a collision box to update
+		if (collisionBox!=null){
+			recalculateCollisionBox();
+		}
 
 		//now update all attached objects too;
 		updateAllAttachedObjects();
@@ -113,8 +141,9 @@ public class AnimatableModelInstance extends ModelInstance {
 	/** hides it by removing it from the render lists **/
 	public void hide(){		
 		currentRenderPlacement = ModelManagment.removeModel(this);	
-
-		//we also hide things positioned relatively to this
+		visible = false;
+		
+		//we also hide things positioned relatively to this. Nothing overrides this
 		for (AnimatableModelInstance object : attachlist.keySet()) {
 			object.hide();
 		}
@@ -125,21 +154,86 @@ public class AnimatableModelInstance extends ModelInstance {
 	 * This might change in future **/
 	public void show(){		
 		ModelManagment.addmodel(this,currentRenderPlacement);
-
-		//we also show things positioned relatively to this
+		visible = true;
+		
+		//we also show things positioned relatively to this unless they have visible false set
 		for (AnimatableModelInstance object : attachlist.keySet()) {
-			object.show();
+			if (object.visible){
+				object.show();
+			}
 		}
 	}
 
+	
+	public float getWidth(){
+		if (localBoundingBox==null){
+			createBoundBox();
+		}
+		return localBoundingBox.getWidth();
+	}
+	public float getHeight(){
+		if (localBoundingBox==null){
+			createBoundBox();
+		}
+		return localBoundingBox.getHeight();
+	}
+	
+	public Vector3 getCenter(){
+		if (localBoundingBox==null){
+			createBoundBox();
+		}
+		Vector3 center = new Vector3();
+		return localBoundingBox.getCenter(center);
+	}
+	
+	private void createBoundBox() {
+		localBoundingBox = new BoundingBox();
+		 super.calculateBoundingBox(localBoundingBox);
+		 	
+		
+	}
+	
 
+	private void recalculateCollisionBox() {
+		
+		//the bounding box is a prerequisite
+		if (localBoundingBox==null){
+			createBoundBox();
+		}
+		//so is an existing collisionBox
+		if (collisionBox==null){
+			collisionBox = new BoundingBox();
+		}
+		//ok, now we know we have both we set one to the other
+		collisionBox.set(localBoundingBox);
+		//Then the collision box gets multiplied by our current position so its boundarys match the real space co-ordinates
+		collisionBox.mul(getMatrixTransform());
 
+		Gdx.app.log(logstag,"collision box="+getMatrixTransform());
+		Gdx.app.log(logstag,"collision box="+collisionBox);
+	}
+	
+	public BoundingBox getLocalCollisionBox() {
+		if (collisionBox==null){
+			recalculateCollisionBox();
+		}
+		return collisionBox;
+	}
+	
+	
+	public BoundingBox getLocalBoundingBox() {
+		if (localBoundingBox==null){
+			createBoundBox();
+		}
+		return localBoundingBox;
+	}
 	/** 
 	 * Lets you stick one object to another. Its position and rotation will shift as its parent does.
 	 * You can specific a PosRotScale for its displacement from parent.
 	 * Note; This should check for inheritance loops at some point it does not at the moment
 	 * 
-	 * Note; Displacement is not copied. Changes to the given displacement will continue to effect the objects position**/
+	 * Note; Displacement is not copied. Changes to the given displacement will continue to effect the objects position 
+	 * **/
 	public void attachThis(AnimatableModelInstance objectToAttach, PosRotScale displacement){
 
 		//	Gdx.app.log(logstag,"_____________________________________adding object "); 
@@ -246,6 +340,10 @@ public class AnimatableModelInstance extends ModelInstance {
 
 	public void setInheritedScale(boolean inheritedScale) {
 		this.inheritedScale = inheritedScale;
+	}
+
+	public boolean isVisible() {
+		return visible;
 	}
 
 }

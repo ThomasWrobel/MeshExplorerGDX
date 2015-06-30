@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
@@ -26,6 +27,7 @@ import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
+import com.lostagain.nl.me.features.GenericMeshFeature;
 import com.lostagain.nl.me.features.InfoBox;
 import com.lostagain.nl.me.features.MeshIcon;
 import com.lostagain.nl.me.gui.GUIBar;
@@ -295,7 +297,7 @@ public class MainExplorationView implements Screen {
 	//	addnewlocation( PlayersData.homeLoc.locationsHub,200,500);
 
 
-		InfoBox testFeature = new InfoBox("Test Information");
+		GenericMeshFeature testFeature = new InfoBox("Test Information");
 		MeshIcon iconTest = new MeshIcon(MeshIcon.IconType.Info,PlayersData.homeLoc,testFeature);
 		iconTest.setToPosition(new Vector3(120f,670f,0f));
 		ModelManagment.addmodel(iconTest,ModelManagment.RenderOrder.zdecides);
@@ -499,10 +501,22 @@ public class MainExplorationView implements Screen {
 
 		if (Gdx.input.isTouched()) {
 			
-			//test if we clicked a 3d model
-			if (newtouch ){				
-				//trigger concept gun
-				usersGUI.ConceptGun.fireAt(Gdx.input.getX(), Gdx.input.getY());		
+			if (newtouch ){							
+				//fire gun if not disabled
+				Boolean fireEnabled = usersGUI.ConceptGun.fireAt(Gdx.input.getX(), Gdx.input.getY());		
+				//else fire normal click event (note; the gun will also trigger normal click events right now too! shot to click action!)
+				if (!fireEnabled){
+					//we only run these if the gun is disabled. This is because shotting triggers the same events ; see above
+					Ray ray = ME.getCurrentStageCursorRay();
+					
+					MainExplorationView.touchedAModel = ModelManagment.testForHits(ray,true,true);
+					
+					if (MainExplorationView.touchedAModel!=null){
+						Gdx.app.log(logstag,"_-(hit at least one thing)-_");
+					} else {
+						Gdx.app.log(logstag,"_-(hit nothing)-_");
+					}
+				}
 			}
 			
 			
@@ -583,8 +597,8 @@ public class MainExplorationView implements Screen {
 				}
 				
 			}
-			Gdx.app.log(logstag,"MotionDisX:"+MotionDisX);
-			Gdx.app.log(logstag,"MotionDisY:"+MotionDisY);
+		//	Gdx.app.log(logstag,"MotionDisX:"+MotionDisX);
+			//Gdx.app.log(logstag,"MotionDisY:"+MotionDisY);
 			
 		} else if (cancelnextdragclick) {
 
@@ -595,7 +609,7 @@ public class MainExplorationView implements Screen {
 		if ((touchedAModel!=null) && !Gdx.input.isTouched()){
 			Gdx.app.log(logstag,"_-released touch on a model-_");
 			touchedAModel=null;
-			ModelManagment.untouchAll();
+			ModelManagment.untouchAll(); //note; really this should only fire on things that were touched currently it fires on everything hitable
 		}
 		
 		if (!Gdx.input.isTouched() && !newtouch){

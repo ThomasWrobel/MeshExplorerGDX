@@ -9,7 +9,7 @@ public interface hitable {
 	
 	
 	public Vector3 getCenter();
-	public int getRadius(); //hitradius
+	//public int getRadius(); //hitradius
 	public PosRotScale getTransform();
 	public void fireTouchDown();
 	public void fireTouchUp();

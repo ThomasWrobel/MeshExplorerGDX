@@ -50,7 +50,8 @@ public class ModelManagment {
 	public ModelBatch modelBatch;
 
 	/**all hitable models **/
-	public static Array<hitable> hitables = new Array<hitable>(); //should be changed to a set to stop duplicates
+	public static ObjectSet<hitable> hitables = new ObjectSet<hitable>(); //should be changed to a set to stop duplicates
+	/** everything the mouse is currently down over **/
 	public static ObjectSet<hitable> mousedownOn = new ObjectSet<hitable>();
 
 	/**All model with texture animations **/
@@ -79,8 +80,10 @@ public class ModelManagment {
 
 		addmodel((ModelInstance)model,order); //note we cast so as to call the non-AnimatableModelInstance specific method below
 
-		for (AnimatableModelInstance attachedModel : model.getAttachments()) {			
-			addmodel(attachedModel,order);
+		for (AnimatableModelInstance attachedModel : model.getAttachments()) {	
+			if (attachedModel.isVisible()){
+				addmodel(attachedModel,order);
+			}
 		}
 
 	}
@@ -399,7 +402,7 @@ public class ModelManagment {
 	 *    - remember highest hit
 	 * 
 	 *  2. If not penetrating test highest hit against highest clickblocker
-	 *     If higher, then hit and exist.
+	 *     If higher, then hit and exit.
 	 *     
 	 *    
 	 * 3. If penetrating Loop over potential hits
@@ -423,10 +426,15 @@ public class ModelManagment {
 		ArrayList<hitable> everyThingUnderCursor = new ArrayList<hitable>();
 		hitable closestNonBlockerTouched = null;	    
 		hitable closestBlockerTouched = null;
+		
+		for (hitable instance : hitables) {
+			
+		
+		
+		
+		//for (int i = 0; i < hitables.size; ++i) {
 
-		for (int i = 0; i < hitables.size; ++i) {
-
-			final hitable instance = hitables.get(i);
+			//final hitable instance = hitables.get(i);
 
 			//instance.getTransform().getTranslation(position);
 			//position.add(instance.getCenter());
@@ -447,7 +455,7 @@ public class ModelManagment {
 
 
 
-			Gdx.app.log(logstag,"_hit in :"+i);
+			Gdx.app.log(logstag,"_hit object at distance "+dist2);
 
 
 			//set last hit range
@@ -498,7 +506,7 @@ public class ModelManagment {
 
 		}
 
-		//now we have all the things potential hit, we check for actual hits
+		//now we have all the things potential hit, we check for actual hits 
 
 		//If we arnt penetrating we just see if the highest hitable is higher then the highest blocker
 		//if so we hit it and exit
@@ -507,6 +515,7 @@ public class ModelManagment {
 			if (closestBlockerTouched==null){
 				if (processHits){
 					closestNonBlockerTouched.fireTouchDown();
+					mousedownOn.add(closestNonBlockerTouched);
 				}
 				//	mousedownOn.add(closestBlockerTouched); //hmm....not sure if we should use this anymore
 				return closestNonBlockerTouched;
@@ -515,6 +524,7 @@ public class ModelManagment {
 			if (closestBlockerTouched.getLastHitsRange()<closestNonBlockerTouched.getLastHitsRange()){
 				if (processHits){
 					closestNonBlockerTouched.fireTouchDown();
+					mousedownOn.add(closestNonBlockerTouched);
 				}
 				//	mousedownOn.add(closestBlockerTouched); //hmm....not sure if we should use this anymore
 				return closestNonBlockerTouched;
@@ -529,10 +539,18 @@ public class ModelManagment {
 
 				if (processHits){
 					instance.fireTouchDown();
+					mousedownOn.add(instance);
+					
 				}
 			}
 
-
+		}
+		
+		//and if it exists we should hit the highest blocker too
+		if (closestBlockerTouched!=null){
+			closestBlockerTouched.fireTouchDown();
+			mousedownOn.add(closestBlockerTouched);
+			
 		}
 
 		// if (highest!=null){
@@ -561,7 +579,7 @@ public class ModelManagment {
 
 	public static boolean removeHitable(hitable model) {
 
-		return hitables.removeValue(model,true);
+		return hitables.remove(model);
 
 
 

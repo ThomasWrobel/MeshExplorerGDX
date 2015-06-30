@@ -280,8 +280,10 @@ public class ConceptGun  extends WidgetGroup {
 	/**creates a screen relative beam from the interface to the point clicked
 	 * 
 	 * Note; This is just for the effect of firing, objects will react to being independent of this function as they are triggered
-	 * by their own mouse actions **/
-	public void fireAt(float x, float y){
+	 * by their own mouse actions 
+	 * 
+	 * returns true if it can fire right now**/
+	public boolean fireAt(float x, float y){
 //
 		//if (disabledFire || lazer!=null){
 			
@@ -289,7 +291,7 @@ public class ConceptGun  extends WidgetGroup {
 		//}
 		
 		if (currentLazerState != LazerState.ready){
-			return;
+			return false;
 		}
 		//MainExplorationView.currentPos.z = MainExplorationView.currentPos.z+5f; 
 		//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom +0.02f; 
@@ -332,6 +334,7 @@ public class ConceptGun  extends WidgetGroup {
 		//Tell the beam its been fired
 		lazer3d.beamFired(FireFrequency);
 		//--------------
+		return true;
 
 	}
 

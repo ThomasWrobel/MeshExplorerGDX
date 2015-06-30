@@ -77,7 +77,8 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 		//update the bounding boxes position
 		recalculateBoundingBox();
 	}
-
+//TODO: We can remove the bounding box stuff as the superclass now does it
+	
 	private void recalculateBoundingBox() {
 		super.calculateBoundingBox(collisionBox);
 		collisionBox.mul(super.getMatrixTransform());
@@ -91,11 +92,11 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 		return super.transState.position.cpy();
 	}
 
-	@Override
-	/** returns -1. Rectangles are not  known for there radius's. ***/
-	public int getRadius() {		
-		return -1;
-	}
+	//@Override
+	///** returns -1. Rectangles are not  known for their radius's. ***/
+	//public int getRadius() {		
+	//	return -1;
+	//}
 
 	@Override
 	public PosRotScale getTransform() {
