@@ -130,6 +130,13 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable {
 	/** triggers the icon to open showing its contents (assocatiedFeature) **/
 	public void open(){
 		
+		if (assocatiedFeature.currentState == FeatureState.hidden){
+			Gdx.app.log(logstag,"opening mesh feature");
+			assocatiedFeature.open();
+		} else {
+			Gdx.app.log(logstag,"mesh feature state is:"+assocatiedFeature.currentState);
+		}
+		
 	}
 	
 	/** triggers the icon to close hiding its contents (assocatiedFeature) **/
@@ -163,21 +170,14 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable {
 
 	@Override
 	public void fireTouchDown() {
-		MeshIconsLabel.getModel().hide();
 		Gdx.app.log(logstag,"_mesh icon clicked on_");
+		open();
 		
-		if (assocatiedFeature.currentState == FeatureState.hidden){
-			Gdx.app.log(logstag,"opening mesh feature");
-			assocatiedFeature.open();
-		} else {
-			Gdx.app.log(logstag,"mesh feature state is:"+assocatiedFeature.currentState);
-		}
 		
 	}
 
 	@Override
 	public void fireTouchUp() {
-		MeshIconsLabel.getModel().show();
 		Gdx.app.log(logstag,"_-fireTouchUp-_");
 	}
 

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.lostagain.nl.DefaultStyles;
@@ -321,7 +322,7 @@ public class Label {
 				
 		
 		
-		Material mat = 	new Material(TextureAttribute.createDiffuse(currentTexture),			
+		Material mat = 	new Material("LabelMaterial",TextureAttribute.createDiffuse(currentTexture),			
 									 ColorAttribute.createDiffuse(LabelBackColor),
 									 textStyle);
 
@@ -412,10 +413,29 @@ public class Label {
 	}
 
 
+	//
+	//
+	//--------------
+	//Styleing functions below.
+	//These are all subject to a lot of change
+	//Especially as we
+	//a) Try to make this Label extend ModelInstance
+	//b) Try to make it as GWT-like as possible in its api
 	public void setLabelBackColor(Color labelBackColor) {
 		LabelBackColor = labelBackColor;
 		modelNeedsUpdate=true;
 	}
 
+	public void setOpacity(float opacity){
+		//get the material from the model
+		Material infoBoxsMaterial = this.getModel().getMaterial("LabelMaterial");
+		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
+		
+		
+	}
+	
+	
+	
+	
 
 }

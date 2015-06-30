@@ -37,8 +37,9 @@ public abstract class GenericMeshFeature extends AnimatableModelInstance impleme
 	
 	public GenericMeshFeature(Model model) {
 		super(model);
-		// all generic mesh features are hidden by default
-		super.hide();
+		//generic mesh features dont inherit visibility from their MeshIcon parents
+		super.setInheritedVisibility(false);
+		
 		
 	}
 	
@@ -130,7 +131,7 @@ public abstract class GenericMeshFeature extends AnimatableModelInstance impleme
 		switch (currentState) {
 		case appearing:
 			Opacity = ratio;
-			if (ratio==1){
+			if (ratio>1){
 				ModelManagment.removeAnimating(this);
 				currentState = FeatureState.normal;
 				runAfterFadeIn.run();
@@ -138,7 +139,7 @@ public abstract class GenericMeshFeature extends AnimatableModelInstance impleme
 			break;
 		case disapearing:
 			Opacity = 1-ratio;
-			if (ratio==1){
+			if (ratio>1){
 				ModelManagment.removeAnimating(this);
 				currentState = FeatureState.hidden;
 				runAfterFadeOut.run();

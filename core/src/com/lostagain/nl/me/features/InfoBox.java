@@ -31,7 +31,7 @@ public class InfoBox extends GenericMeshFeature {
 		super(generateModel(contents,width,height));
 	
 		//slower fadein then default
-		this.setFadeDuration(3000);
+		this.setFadeDuration(3f);
 		
 	}
 

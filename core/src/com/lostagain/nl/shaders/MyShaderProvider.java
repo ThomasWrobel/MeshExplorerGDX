@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
 
 
 /**
@@ -85,6 +86,11 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		if (renderable.material.has(TextureNoiseShader.TextureNoiseAttribute.ID)){
 			return new TextureNoiseShader(renderable);		
 		}	
+		if (renderable.material.has(GlowingSquareAttribute.ID)){
+			return new GlowingSquareShader();
+		}
+		
+		
 		//------------------------------------------------------------------------------------------------------
 		//------------------------------------------------------------------------------------------------------
 		

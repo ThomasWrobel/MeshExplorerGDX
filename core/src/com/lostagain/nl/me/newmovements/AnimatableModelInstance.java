@@ -67,10 +67,11 @@ public class AnimatableModelInstance extends ModelInstance {
 	private BoundingBox collisionBox;
 	
 	/**
-	 * Determines if its added to the render list or not
-	 * @param model
+	 * Determines if we inherit visibility from parent
+	 * 	 * @param model
 	 */
-	public boolean visible = true;
+	public boolean inheritVisibility = true;
+	
 
 	
 	// this is just an example constructor, make sure to implement the constructor you need
@@ -141,11 +142,13 @@ public class AnimatableModelInstance extends ModelInstance {
 	/** hides it by removing it from the render lists **/
 	public void hide(){		
 		currentRenderPlacement = ModelManagment.removeModel(this);	
-		visible = false;
+	
 		
 		//we also hide things positioned relatively to this. Nothing overrides this
 		for (AnimatableModelInstance object : attachlist.keySet()) {
-			object.hide();
+			if (object.isInheriteingVisibility()){
+				object.hide();
+			}
 		}
 	}
 
@@ -154,11 +157,11 @@ public class AnimatableModelInstance extends ModelInstance {
 	 * This might change in future **/
 	public void show(){		
 		ModelManagment.addmodel(this,currentRenderPlacement);
-		visible = true;
+	
 		
 		//we also show things positioned relatively to this unless they have visible false set
 		for (AnimatableModelInstance object : attachlist.keySet()) {
-			if (object.visible){
+			if (object.isInheriteingVisibility()){
 				object.show();
 			}
 		}
@@ -342,8 +345,13 @@ public class AnimatableModelInstance extends ModelInstance {
 		this.inheritedScale = inheritedScale;
 	}
 
-	public boolean isVisible() {
-		return visible;
+	public void setInheritedVisibility(boolean inheritVisibility) {
+		this.inheritVisibility = inheritVisibility;
 	}
+
+	public boolean isInheriteingVisibility() {
+		return inheritVisibility;
+	}
+	
 
 }
