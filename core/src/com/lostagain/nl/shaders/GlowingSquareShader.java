@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 
 /**
@@ -31,6 +32,7 @@ public class GlowingSquareShader implements Shader {
 	   int u_worldTrans;
 	    int u_time;
 
+	    int u_pixel_step;
         
         int u_glowWidth;
         int u_glowColor;
@@ -56,7 +58,8 @@ public class GlowingSquareShader implements Shader {
 			public Color backColor;
 			public Color coreColor;
 			public Color glowColor;
-			
+
+		    
 			/**
 			 * The presence of this parameter will cause the ConceptBeamShader to be used
 			 * @param width - width of beam
@@ -116,7 +119,7 @@ public class GlowingSquareShader implements Shader {
     	
     	Gdx.app.log(logstag, "init square shader");
     	
-    	//Note; shader now made yet
+    		//Note; shader now made yet
     	  String vert = Gdx.files.internal("shaders/glowingsquarevert.glsl").readString();
           String frag = Gdx.files.internal("shaders/glowingsquarefrag.glsl").readString();
           
@@ -128,8 +131,8 @@ public class GlowingSquareShader implements Shader {
           u_projViewTrans = program.getUniformLocation("u_projViewTrans");
           u_worldTrans    = program.getUniformLocation("u_worldTrans");
           u_time          = program.getUniformLocation("u_time"); 
-          
-          //square style
+          u_pixel_step =  program.getUniformLocation("u_pixel_step");
+          	//square style
 		  u_glowWidth = program.getUniformLocation("u_glowWidth"); 
           u_backColor = program.getUniformLocation("u_backColor"); 
           u_coreColor = program.getUniformLocation("u_coreColor"); 
@@ -186,13 +189,21 @@ public class GlowingSquareShader implements Shader {
     	 program.setUniformf(u_backColor, squareStyle.backColor);//testAttr.width
     	 program.setUniformf(u_coreColor, squareStyle.coreColor);//testAttr.width
       	 program.setUniformf(u_glowColor, squareStyle.glowColor);
-      	  
+    	 float w = renderable.mesh.calculateBoundingBox().getWidth();
+    	 float h = renderable.mesh.calculateBoundingBox().getHeight();
+    	 
+		setSizeUniform(w,h);
+		
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,
     	            renderable.meshPartSize);
     }
-    
+    public void setSizeUniform(float w, float h) {
+    	
+   	 program.setUniformf(u_pixel_step,(1/w), (1/h));
+		
+	}
     @Override
     public void end () { 
     	

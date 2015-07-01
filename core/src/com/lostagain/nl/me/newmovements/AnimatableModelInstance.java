@@ -152,7 +152,8 @@ public class AnimatableModelInstance extends ModelInstance {
 		}
 	}
 
-	/** shows it by adding it to the render lists.
+	/**
+	 * Shows it by adding it to the render lists.
 	 * This only works if it was previously hidden. It should currently be added manually once first so it knows its render order setting
 	 * This might change in future **/
 	public void show(){		

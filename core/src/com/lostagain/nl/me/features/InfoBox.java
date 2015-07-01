@@ -8,13 +8,14 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 
 /**
  * 
- * Will be a simple text box using a distance field shader font.
- * MeshIcons can open up to show this bit of text.
+ * An info box will be a simple box that shows two labels, one for title and one for contents.
+ * The labels are automatically added under eachother with a set margin between the two
  * 
  * Thats it, nothing else fancy, just a bit of text aligned in the middle.
  * Designed mostly to be used at the center of locations
@@ -22,7 +23,7 @@ import com.lostagain.nl.shaders.DistanceFieldShader;
  * **/
 public class InfoBox extends GenericMeshFeature {
 	
-	public InfoBox(String contents) {		
+	public InfoBox(String title, String contents) {		
 		this(contents, 300, 200);
 		
 	
@@ -30,8 +31,6 @@ public class InfoBox extends GenericMeshFeature {
 	public InfoBox(String contents,int width,int height) {		
 		super(generateModel(contents,width,height));
 	
-		//slower fadein then default
-		this.setFadeDuration(3f);
 		
 	}
 
@@ -39,7 +38,7 @@ public class InfoBox extends GenericMeshFeature {
 		
 		Texture texttexture = Label.generateTexture(contents, width, height, 1f);
 		
-		Material infoBoxsBackgroundMaterial = 	new Material("InfoBoxBackground",//TextureAttribute.createDiffuse(texttexture),
+		Material infoBoxsBackgroundMaterial = 	new Material("InfoBoxBackground",TextureAttribute.createDiffuse(texttexture),
 				new BlendingAttribute(1f), //makes it addaive?
 				ColorAttribute.createDiffuse(Color.RED));
 				//new DistanceFieldShader.DistanceFieldAttribute(Color.MAGENTA,5));
@@ -61,14 +60,15 @@ public class InfoBox extends GenericMeshFeature {
 		Material infoBoxsMaterial = this.getMaterial("InfoBoxBackground");
 		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
 		
-		
+
+	
 	}
 	
 	/**Updates the appearance based on the current state and how far we are into it.
 	 * Typically this would be a fade, with the alpha being the fade value**/
 	void updateApperance(float alpha,FeatureState currentState){
 
-		setOpacity(Opacity);
+		setOpacity(alpha);
 	}
 
 }

@@ -297,7 +297,8 @@ public class MainExplorationView implements Screen {
 	//	addnewlocation( PlayersData.homeLoc.locationsHub,200,500);
 
 
-		GenericMeshFeature testFeature = new InfoBox("Test Information");
+		GenericMeshFeature testFeature = new InfoBox("Title","Content Text");
+		
 		MeshIcon iconTest = new MeshIcon(MeshIcon.IconType.Info,PlayersData.homeLoc,testFeature);
 		iconTest.setToPosition(new Vector3(120f,670f,0f));
 		ModelManagment.addmodel(iconTest,ModelManagment.RenderOrder.zdecides);

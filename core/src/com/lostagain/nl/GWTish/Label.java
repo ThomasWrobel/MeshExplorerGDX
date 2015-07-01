@@ -429,7 +429,17 @@ public class Label {
 	public void setOpacity(float opacity){
 		//get the material from the model
 		Material infoBoxsMaterial = this.getModel().getMaterial("LabelMaterial");
-		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
+		
+		DistanceFieldAttribute style = ((DistanceFieldAttribute)infoBoxsMaterial.get(DistanceFieldAttribute.ID));
+		
+		//Gdx.app.log(logstag,"_____________current            col:"+style.textColour);
+		//Gdx.app.log(logstag,"_____________current shadow     col:"+style.shadowColour);
+		//Gdx.app.log(logstag,"_____________current glowColour col:"+style.glowColour);
+		
+	   style.outlineColour.a = opacity;
+		  style.textColour.a = opacity;
+		  style.glowColour.a = opacity;
+		style.shadowColour.a = opacity;
 		
 		
 	}

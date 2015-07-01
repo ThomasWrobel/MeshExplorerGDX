@@ -112,13 +112,13 @@ public class DistanceFieldShader implements Shader {
 					
 					
 					
-					this.textColour = textColour;
+					this.textColour = textColour.cpy();
 					this.width = width;
 					this.outlinerInnerLimit = outlinerInnerLimit;
 					this.outlinerOuterLimit = outlinerOuterLimit;
-					this.outlineColour = outlineColour;
+					this.outlineColour = outlineColour.cpy(); //Note we copy the colours to ensure we dont maintain a referance to the original and thus open the presets up for changes
 					this.glowSize = glowSize;
-					this.glowColour = glowColour;
+					this.glowColour = glowColour.cpy();
 
 				//Gdx.app.log(logstag, this.name()+" glowColour set to:"+this.glowColour);
 					
@@ -126,7 +126,7 @@ public class DistanceFieldShader implements Shader {
 					this.shadowXDisplacement = shadowXDisplacement;
 					this.shadowYDisplacement = shadowYDisplacement;
 					this.shadowBlur = shadowBlur;
-					this.shadowColour = shadowColour;
+					this.shadowColour = shadowColour.cpy();
 					
 					
 				}
@@ -140,20 +140,20 @@ public class DistanceFieldShader implements Shader {
 			public DistanceFieldAttribute (presetTextStyle preset) {
 				super(ID);
 				
-				this.textColour         = preset.textColour;
+				this.textColour         = preset.textColour.cpy();;
 				this.width              = preset.width;
 				this.outlinerInnerLimit = preset.outlinerInnerLimit;
 				this.outlinerOuterLimit = preset.outlinerOuterLimit;
-				this.outlineColour      = preset.outlineColour;
+				this.outlineColour      = preset.outlineColour.cpy();;
 				this.glowSize           = preset.glowSize;
-				this.glowColour         = preset.glowColour;
+				this.glowColour         = preset.glowColour.cpy();;
 
 				//Gdx.app.log(logstag, " glowColour on this atrib set to:"+this.glowColour);
 				
 				this.shadowXDisplacement = preset.shadowXDisplacement;
 				this.shadowYDisplacement = preset.shadowYDisplacement;
 				this.shadowBlur = preset.shadowBlur;
-				this.shadowColour = preset.shadowColour;
+				this.shadowColour = preset.shadowColour.cpy();
 					
 			}
 					
@@ -174,17 +174,17 @@ public class DistanceFieldShader implements Shader {
 				
 				super(ID);
 				
-				this.textColour = textColour;
+				this.textColour = textColour.cpy();;
 				this.width = width;
 				this.outlinerInnerLimit = outlinerInnerLimit;
 				this.outlinerOuterLimit = outlinerOuterLimit;
-				this.outlineColour = outlineColour;
+				this.outlineColour = outlineColour.cpy();;
 				this.glowSize = glowSize;
-				this.glowColour = glowColour;
+				this.glowColour = glowColour.cpy();;
 				this.shadowXDisplacement = shadowXDisplacement;
 				this.shadowYDisplacement = shadowYDisplacement;
 				this.shadowBlur = shadowBlur;
-				this.shadowColour = shadowColour;
+				this.shadowColour = shadowColour.cpy();;
 			}
 			/**
 			 * The presence of this parameter will cause the DistanceFieldAttribute to be used
@@ -194,7 +194,7 @@ public class DistanceFieldShader implements Shader {
 			public DistanceFieldAttribute (final Color textColour,final float width) {
 				
 				super(ID);
-				this.textColour =  textColour;
+				this.textColour =  textColour.cpy();
 				this.width = width;
 				
 			}
@@ -210,7 +210,7 @@ public class DistanceFieldShader implements Shader {
 					float width, float outlinerInnerLimit,
 					float outlinerOuterLimit) {
 				super(ID);
-				this.textColour = textColour;
+				this.textColour = textColour.cpy();
 				this.width = width;
 				this.outlinerInnerLimit = outlinerInnerLimit;
 				this.outlinerOuterLimit = outlinerOuterLimit;
@@ -300,11 +300,11 @@ public class DistanceFieldShader implements Shader {
           u_textColour =  program.getUniformLocation("u_textColor");
           u_backColour =  program.getUniformLocation("u_backColor");
           
-        //glow
+          //glow
         u_glowColor = program.getUniformLocation("u_glowColor");
         u_glowSize  = program.getUniformLocation("u_glowSize"); //size of glow (values above 1 will look strange)
         		
-        //outline
+        	//outline
         u_outColor           = program.getUniformLocation("u_outColor");
         u_outlinerInnerLimit = program.getUniformLocation("u_outlinerInnerLimit"); //Arbitrarily big size for no outline
         u_outlinerOuterLimit = program.getUniformLocation("u_outlinerOuterLimit"); //Arbitrarily big size for no outline

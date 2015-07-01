@@ -153,7 +153,7 @@ void main() {
 
     // -------
     
-	vec4 newCol = vec4(diffuse.rgb,alpha);
+	vec4 newCol = vec4(diffuse.rgb,diffuse.a*alpha);
 	
 	//outline (optional)
 	if (v_outColor.a>0.0){

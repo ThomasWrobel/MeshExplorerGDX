@@ -5,116 +5,109 @@ uniform vec2 resolution;
 varying vec2 fPosition;
 varying vec3 fNormal;
 
-//styledata
-varying float width;
-varying vec4 beamcolour;
-varying vec4 corecolour;
-varying float shotFrequency;
+//style data
+varying float v_glowWidth; 
+varying vec4  v_backColor;
+varying vec4  v_coreColor;
+varying vec4  v_glowColor;
 
+// this calculated in vertex shader
+// width/height = triangle/quad width/height in px;
+//vec2 pixel_step = vec2(1/width, 1/height);  
+varying vec2 pixel_step;
+    
 void main()
 {
   
-  float x = 1.0-fPosition.x; //flip horizontally
-  float y = 1.0-fPosition.y; //fliped vertically
+  float x = fPosition.x; //flip horizontally
+  float y = fPosition.y; //fliped vertically
+    
     
   //normalise values to -1 to 1, libgdx seems to use 0-1 by default
-  y = (y*2.0)-1.0;
-  x = (x*2.0)-1.0;
+  //y = (y*2.0)-1.0;
+  //x = (x*2.0)-1.0;
   
   //params (in future make these editable at shader creation?)
   
-  vec4 back = vec4(0.0,0.0,0.0,0.0);  //background (default transparent)
-  vec4 col = back;
-  vec4 beam = beamcolour;// vec4(1.0,0.0,0.0,1.0); //beam
-  vec4 core = corecolour;//vec4(2.0,1.0,1.0,1.0);  //core (note ranges outside 0-1 can be used)
+  vec4 back = v_backColor; //background (default transparent)
+  vec4 beam = v_glowColor; //vec4(1.0,0.0,0.0,1.0); //beam
+  vec4 core = v_coreColor; //vec4(2.0,1.0,1.0,1.0);  //core (note ranges outside 0-1 can be used)
   
-  //float width =  0.25; // used to be 0.04
+  vec4 result = vec4(0.0,0.0,0.0,0.0);
   
+	float glowAlpha = 0;
+	float edgeDis = 0;
+	
+	
+    float gwy = v_glowWidth * pixel_step.y;
+  	float gwx = v_glowWidth * pixel_step.x;
+  	
+  if (y<(gwy)) {
+  	//if we are on the top or bottom our size is based on the y step
   
-   float tsin = abs(sin((shotFrequency*u_time)-x)); //shotFrequency used to be 2.0
-   
-  if (y<(width) && y>-width) 
-  {
-        
-    //red bit        
-    float intensity = (width-abs(y))*(1.0/width); //should result in 0-1 range    
+    edgeDis= y - (gwy/2);
+    edgeDis= (gwy/2)-abs(edgeDis);
     
-    col = beam*intensity;//vec4(r,g,b,a);  
+                       
+    glowAlpha = smoothstep(0, (gwy/2), edgeDis);       
+  } 
+  
+  if (y>(1-gwy)) {
+  
+  	//if we are on the top or bottom our size is based on the y step
+ 
+  	
+    edgeDis= (1-(gwy/2))-y;// - (v_glowWidth/2);
     
-    //white core   
-    float corethick = 10.0-(8.0*(tsin));
+    edgeDis= (gwy/2)-abs(edgeDis);
     
-     intensity  = (width-abs(y*corethick))*(1.0/width);
-     
-     if (intensity<0.0){
-       		intensity = 0.0;
-     }
-     
+    glowAlpha = smoothstep(0, (gwy/2), edgeDis);
+  } 
+  
+   if (x<(gwx)) {
+  
+  	//if we are on the top or bottom our size is based on the y step
+  
+  	
+    edgeDis= x - (gwx/2);
+    edgeDis= (gwx/2)-abs(edgeDis);
+    
+    glowAlpha = smoothstep(0, (gwx/2), edgeDis);
+                              
+  } 
+  
+  if (x>(1-gwx)) {
+  	
 
-    vec4 col2 = core*intensity; //vec4(r2,g2,b2,a2);
-    
-    
-    vec4 col3 = vec4(0,0,0,0);
-    
-     col = col+col2;
-    
-    
-    //col = vec4(r+r2,g+g2,b+b2,a);  
-    
-    
-  }
-  
-  //fade extream end
-  if (x>0.98){ //used to be 90
   	
-  	 float intensity =  x-0.90; // 0 to 0.1
-  	 intensity = intensity * 10.0; // 0 to 1;
-  	
-  	col = mix(col,back,intensity);
-  	
-  
-  }
-  
-  //end bit
-  //float xgrad = sin((x-0.1)*9.0)*1.0;
-  
-   // -1 = 0 = 1 
-  // 
-  //we only want the extream end so we get the distance from a target point
-  float targetx = 1.00; //used to be 0.96
-  float distarget = abs(targetx-x);
-  //invert so neares tthe target is strongest
-  float abx = 1.0-distarget;
-  
- // float abx=1.1-abs(x-0.9); //0 to 1 based on distance from center 
-  if (x<0.0){
-    abx = 0.0;
-  }
-  
-  float eppx=pow(abx,50.0);//
-  float xgrad =(eppx)*tsin;
-  if (xgrad<0.0)
-  {
-    xgrad=0.0;
-  }
-  
-  
-  // -1 = 0 = 1 
-  // 1 = 0 = 1
-  // 0 = 1 = 0
-  
-  float aby=1.0-abs(y); //1 to 0 based on distance from center
-  float epp=aby;//pow(aby,1.0);//
-  float ygrad =(epp)*tsin;
-  if (ygrad<0.0){
-    ygrad=0.0;
-  }
-  float intensityOfEnd = xgrad*ygrad;
-  vec4 col3 = core*intensityOfEnd;//vec4(xgrad*ygrad,xgrad*ygrad,xgrad*ygrad,xgrad*ygrad);
+    edgeDis= (1-(gwx/2))-x;// - (v_glowWidth/2);
     
-   col = col+(col3);
+    edgeDis= (gwx/2)-abs(edgeDis);
+    
+    glowAlpha = smoothstep(0, (gwx/2), edgeDis);
+  } 
   
-  
-  gl_FragColor =  col;
+    
+    v_glowColor.a = glowAlpha;
+  	
+  	
+  	//add a sharper core
+  	float coreAlpha = pow(glowAlpha,6.0);
+  	v_coreColor.a = coreAlpha;
+  	
+  	
+    
+    //now blend core with glow
+   // result = (v_glowColor * v_glowColor.a) + (v_coreColor * (1-v_glowColor.a));
+   // result.a = v_glowColor.a + v_coreColor.a;	
+    result = v_glowColor + v_coreColor;
+    
+    //now blend with background (under it!)
+    result = (result * result.a) + (v_backColor * (1-result.a));
+    result.a = result.a + v_backColor.a;	
+    
+    	    
+    
+  gl_FragColor =  result;
   
 }
