@@ -133,13 +133,13 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		MeshIconsLabel = new Label(name);
 		MeshIconsLabel.setLabelBackColor(Color.CLEAR);
 		
-		Vector3 labelCenter = MeshIconsLabel.getModel().getCenter();
-		AnimatableModelInstance internalModel = MeshIconsLabel.getModel();
+		Vector3 labelCenter = MeshIconsLabel.getCenter();
+		//AnimatableModelInstance internalModel = MeshIconsLabel.getModel();
 		
 		ModelManagment.addHitable(this);
 		
 		
-		super.attachThis(internalModel, new PosRotScale(-labelCenter.x,-labelCenter.y,5f));
+		super.attachThis(MeshIconsLabel, new PosRotScale(-labelCenter.x,-labelCenter.y,5f));
 		
 
 		
@@ -162,9 +162,6 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		
 		//for now, we just use a simple texture
         Material material = new Material("IconMaterial",
-        		ColorAttribute.createDiffuse(DefaultColour), 
-				new BlendingAttribute(1f), 
-				FloatAttribute.createShininess(16f),
 				new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLUE,DefaultColour,Color.WHITE));
         
 		

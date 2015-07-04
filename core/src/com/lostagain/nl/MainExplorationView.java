@@ -306,22 +306,26 @@ public class MainExplorationView implements Screen {
 
 		testlabel.setLabelBackColor(new Color(0.3f,0.3f,1f,0.5f));
 			
-		ModelInstance testLabelInstance = testlabel.getModel();
-		testLabelInstance.transform.setToTranslation(120,470,0);
+		
+		testlabel.setSizeAs(100, 100);
+		
+		
+		testlabel.setToPosition(new Vector3(120,470,0));
+		
 		testlabel2.setLabelBackColor(new Color(0.3f,0.3f,1f,0.5f));
 		
 		testlabel2.setTextScale(0.6f);		
 		testlabel2.setText("(file url of computer test)");
 		
-		ModelInstance testLabel2Instance = testlabel2.getModel();
-		testLabel2Instance.transform.setToTranslation(120,400,0);
+		testlabel2.setToPosition(new Vector3(120f,400f,0f));
+		
 		
 		// environment = new Environment();
 	    //     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 	    //   environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
-		ModelManagment.addmodel(testLabelInstance,ModelManagment.RenderOrder.zdecides);
-		ModelManagment.addmodel(testLabel2Instance,ModelManagment.RenderOrder.zdecides);
+		ModelManagment.addmodel(testlabel,ModelManagment.RenderOrder.zdecides);
+		ModelManagment.addmodel(testlabel2,ModelManagment.RenderOrder.zdecides);
 		
 		//gameStage.setDebugAll(true);
 		

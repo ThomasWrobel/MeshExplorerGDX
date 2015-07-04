@@ -100,13 +100,14 @@ void main()
     //now blend core with glow
    // result = (v_glowColor * v_glowColor.a) + (v_coreColor * (1-v_glowColor.a));
    // result.a = v_glowColor.a + v_coreColor.a;	
-    result = v_glowColor + v_coreColor;
+    result   = v_glowColor     + v_coreColor;
+    result.a = v_glowColor.a   + v_coreColor.a;
     
     //now blend with background (under it!)
     result = (result * result.a) + (v_backColor * (1-result.a));
-    result.a = result.a + v_backColor.a;	
+   // result.a = 0.5;//result.a + v_backColor.a;
     
-    	    
+    	    //NOTE: Background alpha seems lost when combined...why?
     
   gl_FragColor =  result;
   

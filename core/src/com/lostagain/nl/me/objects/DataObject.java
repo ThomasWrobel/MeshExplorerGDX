@@ -25,6 +25,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.GWTish.LabelBase.PixmapAndCursorObject;
 import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.gui.DataObjectDropTarget;
 import com.lostagain.nl.me.gui.Inventory;
@@ -397,10 +398,11 @@ public class DataObject extends Image
 				finalpixmap.setColor(0.1f, 0, 0, 0.5f);					
 				finalpixmap.drawRectangle(3, 3, TITLE_WIDTH-6, TITLE_HEIGHT-6);
 				
-			    Pixmap newtextPixmap = com.lostagain.nl.GWTish.Label.generatePixmap(dataname,TITLE_WIDTH,TITLE_HEIGHT,1f,false);//scaledown
+			    PixmapAndCursorObject newtextPixmap = com.lostagain.nl.GWTish.Label.generatePixmap(dataname,TITLE_WIDTH,TITLE_HEIGHT,1f,false);//scaledown
+			    
 			    
 			//	finalpixmap.drawPixmap(textPixmap, ImageBorder,ImageBorder);
-				finalpixmap.drawPixmap(newtextPixmap, ImageBorder,ImageBorder);
+				finalpixmap.drawPixmap(newtextPixmap.textureItself, ImageBorder,ImageBorder);
 				
 				imagesTextureWithMipMaps = new Texture(finalpixmap,true); //finalpixmap
 				textPixmap.dispose();

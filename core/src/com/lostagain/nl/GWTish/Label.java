@@ -2,10 +2,13 @@ package com.lostagain.nl.GWTish;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
@@ -33,18 +36,17 @@ import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
  *  We need to make a lot of changes to make the label a true model though.
  *  Specifically making the create model function static, and making the model directly change itself when
  *  setting text or attributes, rather then recreating itself. **/
-public class Label {
+public class Label extends LabelBase {
 
 	String contents = "TextNotSetError";
 
 	final static String logstag = "ME.Label";
 
-	static int LabelNativeWidth=512;
+	static int LabelNativeWidth =512;
 	static int LabelNativeHeight=512;
 
 	Model labelModel = null;
-	AnimatableModelInstance labelInstance = null;
-	
+
 	
 
 	//setup
@@ -69,23 +71,23 @@ public class Label {
 	boolean modelNeedsUpdate = true;
 
 	//Style data (mostly controlled by shader)
-	private Color LabelBackColor = Color.WHITE;
+	static private Color defaultBackColour = Color.WHITE;
 
-	private DistanceFieldAttribute textStyle;
 	
-	
+
 	/**
 	 * Generates a label with the specified contents.
 	 * If no size is specified it will size both the model and the internal texture resolution
 	 * based on the default font size to ensure the full word is fit
 	 * 
 	 * @param contents
-	 */
+	 **/
 	public Label (String contents){
-
+		super(generateObjectData(true, true, contents, SizeMode.ExpandToFitText));
+		
 		 
 		this.contents=contents;
-
+			
 		if (!setup){
 			firstTimeSetUp();
 			setup=true;
@@ -97,7 +99,62 @@ public class Label {
 	}
 
 
-	static public Texture generatePixmapExpandedToFit(String text, float sizeratio) {
+	/**
+	 * The object data needed on creation is just the background mesh instance and the cursor position.
+	 * This shouldn't need to be run outside the objects first creation.
+	 * After its created everything should be alterable separately without recreation
+	 * 
+	 * @return	  
+	 **/
+	private static backgroundAndCursorObject generateObjectData(boolean regenTexture,boolean regenMaterial,String contents,SizeMode labelsSizeMode ) {
+		TextureAndCursorObject textureData = null;
+		
+		
+		if (regenTexture){
+			textureData = generateTexture(labelsSizeMode, contents);
+			
+		}
+		Texture newTexture = textureData.textureItself;
+		
+		newTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest does not work with DistanceField shaders
+
+		DistanceFieldAttribute textStyle = null;
+		
+		
+		if (textStyle==null){
+			textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+		}
+				
+		
+		
+		Material mat = 	new Material("LabelMaterial",
+									 TextureAttribute.createDiffuse(newTexture),			
+									 ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
+									 textStyle);
+
+		
+		//we get the size from the generated material
+		float sizeX = newTexture.getWidth();
+		float sizeY = newTexture.getHeight();
+		
+		
+		//Gdx.app.log(logstag,"______________text glow col is: "+teststyle.glowColour);
+		//Gdx.app.log(logstag,"______________generating rect of "+LabelWidth+","+LabelHeight);
+		
+		//Note the *1 is the scale. We have scale 1 by default, duh.
+		Model newModel = ModelMaker.createRectangle(0, 0, sizeX*1,sizeY*1, 0, mat); 
+
+		
+		backgroundAndCursorObject setupData = new backgroundAndCursorObject(newModel,0,0);
+		
+		
+		return setupData;
+		
+		
+	}
+
+
+	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, float sizeratio) {
 
 		
 
@@ -114,9 +171,10 @@ public class Label {
 
 		Gdx.app.log(logstag,"______________predicted size = "+currentWidth+","+currentHeight);
 		
-		Pixmap textPixmap = generatePixmap( text, 0, 0,  sizeratio,true); //note zeros as size isnt used
+		TextureAndCursorObject textureDAta = generateTexture( text, 0, 0,  sizeratio, true); //note zeros as size isn't used
 
-		return new Texture(textPixmap,true);
+		
+		return textureDAta;
 
 	}
 
@@ -128,18 +186,26 @@ public class Label {
 
 
 
-	static public Texture generateTexture(String text,int TITLE_WIDTH,int TITLE_HEIGHT, float sizeratio) {
+	static public TextureAndCursorObject generateTextureNormal(String text,int TITLE_WIDTH,int TITLE_HEIGHT, float sizeratio) {
 
-		Pixmap textPixmap = generatePixmap( text, TITLE_WIDTH, TITLE_HEIGHT,  sizeratio,false);
-
-
-		return new Texture(textPixmap,true);
+		TextureAndCursorObject textureDAta = generateTexture( text, TITLE_WIDTH, TITLE_HEIGHT,  sizeratio,false);
+		
+		return textureDAta;
 	}
 
-	static public Pixmap generatePixmap(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit) {
+	static public TextureAndCursorObject generateTexture(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit) {
+		 
+		PixmapAndCursorObject data = generatePixmap(text, DefaultWidth, DefaultHeight, sizeratio, expandSizeToFit);
+					
+		
+		
+		return new TextureAndCursorObject(new Texture(data.textureItself),data.Cursor.x,data.Cursor.y);
+	}
+	
+	static public PixmapAndCursorObject generatePixmap(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit) {
 
 
-		String Letters=text;
+		String Letters    = text;
 		Pixmap textPixmap = new Pixmap(DefaultWidth, DefaultHeight, Format.RGBA8888);
 
 		if (!expandSizeToFit){
@@ -235,7 +301,7 @@ public class Label {
 			}
 			
 			if (hadToEnlarge){
-				textPixmap = sizeTo(textPixmap, biggestX, biggestY);
+				textPixmap = sizePixmapTo(textPixmap, biggestX, biggestY);
 			}
 			//--------------------
 			
@@ -276,19 +342,20 @@ public class Label {
 
 			Gdx.app.log(logstag,"______________final cropped size="+biggestX+","+biggestY);
 
-			textPixmap = sizeTo(textPixmap, biggestX, biggestY);
-
-			LabelNativeWidth  = biggestX;
-			LabelNativeHeight = biggestY;
+			textPixmap = sizePixmapTo(textPixmap, biggestX, biggestY);
+			
+		//	LabelNativeWidth  = biggestX;
+			//LabelNativeHeight = biggestY;
 
 		}
 
-		return textPixmap;
+		//0,0 should be current cursor position after this update
+		return new PixmapAndCursorObject(textPixmap,0,0);
 
 	}
 
 
-	private static Pixmap sizeTo(Pixmap textPixmap, int biggestX, int biggestY) {
+	private static Pixmap sizePixmapTo(Pixmap textPixmap, int biggestX, int biggestY) {
 		Pixmap croppedPixMap = new Pixmap(biggestX, biggestY, Format.RGBA8888);
 		croppedPixMap.drawPixmap(textPixmap, 0, 0);
 
@@ -302,15 +369,16 @@ public class Label {
 	 * @param style
 	 * @return 
 	 */
-	public void setDistanceFieldAttribute(DistanceFieldAttribute style){
-		textStyle = style;
-	}
+	//public void setDistanceFieldAttribute(DistanceFieldAttribute style){
+	//	textStyle = style;
+	//}
 	
-
+/*
 	private Model createModel() {
 
 		if (currentTexture==null){
-			regenerateTexture();
+			regenerateTexture(labelsSizeMode, contents);
+			
 		}
 
 
@@ -322,8 +390,9 @@ public class Label {
 				
 		
 		
-		Material mat = 	new Material("LabelMaterial",TextureAttribute.createDiffuse(currentTexture),			
-									 ColorAttribute.createDiffuse(LabelBackColor),
+		Material mat = 	new Material("LabelMaterial",
+									 TextureAttribute.createDiffuse(currentTexture),			
+									 ColorAttribute.createDiffuse(defaultBackColour),
 									 textStyle);
 
 		
@@ -348,17 +417,28 @@ public class Label {
 		return labelModel;
 
 	}
-	
+	*/
 	/**
 	 * Sets the text and regenerates the texture (does not yet auto-update any generated models from this label!)
+	 * Also doesn't remember cursor position. This is needed if we want to correctly ADD text to the texture in future, rather then recreating it all
+	 * For animated text this optimization is pretty essential
 	 **/
 	public void setText(String text){
 		this.contents=text;
 		
-		//regenerateTexture();
+		TextureAndCursorObject NewTexture = generateTexture(labelsSizeMode, contents); 
 		
-		currentTexture  =null; //null tells it to regenerate
-		modelNeedsUpdate=true;
+
+		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");		
+		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));	
+		infoBoxsMaterial.set(  TextureAttribute.createDiffuse(NewTexture.textureItself));
+		
+		float x = NewTexture.textureItself.getWidth();
+		float y = NewTexture.textureItself.getHeight();
+		
+		
+		this.setSizeAs(x, y);
+		
 		
 		
 	}
@@ -376,19 +456,25 @@ public class Label {
 		
 	}
 
-	private void regenerateTexture() {
+	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents) {
+		
+		
+		TextureAndCursorObject NewTexture;
+		
+		
 		if (labelsSizeMode == SizeMode.ExpandToFitText){
 
 			Gdx.app.log(logstag,"______________generating expand to fit text ");
 
-			currentTexture = generatePixmapExpandedToFit(contents,1f); //new Texture(Gdx.files.internal("data/dfield.png"), true);
+			NewTexture = generatePixmapExpandedToFit(contents,1f); 
 
 
 		} else {
-			currentTexture = generateTexture(contents,LabelNativeWidth, LabelNativeHeight,1f); //new Texture(Gdx.files.internal("data/dfield.png"), true);
+			NewTexture = generateTextureNormal(contents,LabelNativeWidth, LabelNativeHeight,1f); 
 
 		}
-		modelNeedsUpdate=true;
+		
+		return NewTexture;
 	}
 
 	public void firstTimeSetUp(){
@@ -401,17 +487,54 @@ public class Label {
 
 	}
 
-	/**
-	 * gets the current model instance, or recreates it if its changed
-	 * @return
-	 */
-	public AnimatableModelInstance getModel() {
-		if (modelNeedsUpdate){
-			createModel();
-		}
-		return labelInstance;
-	}
 
+
+	/**
+	 * Changes this objects rect mesh to the new specified size
+	 * The internal texture will be stretched
+	 * 
+	 * @param newWidth
+	 * @param newHeight
+	 */
+	public void setSizeAs(float newWidth,float newHeight){
+		
+		Mesh IconsMesh = labelInstance.meshes.get(0);
+		
+		final VertexAttribute posAttr = IconsMesh.getVertexAttribute(Usage.Position);
+		final int offset = posAttr.offset / 4;
+		final int numComponents = posAttr.numComponents;
+		final int numVertices = IconsMesh.getNumVertices();
+		final int vertexSize = IconsMesh.getVertexSize() / 4;
+
+		final float[] vertices = new float[numVertices * vertexSize];
+		IconsMesh.getVertices(vertices);
+		int idx = offset;
+		
+		float hw =  newWidth/2;
+		float hh = newHeight/2;
+		
+		float newSizeArray[] = new float[] { -hw,-hh,0,
+											  hw,-hh,0,
+											  hw,hh,0,
+											 -hw,hh,0 };
+				
+		//can be optimized latter by pre-calcing the size ratio and just multiply
+		for (int i = 0; i < 12; i=i+3) {
+			
+			//Gdx.app.log(logstag," new::"+comboX+","+comboY+","+comboZ);
+			
+			//currently just scale up a bit
+			vertices[idx    ] = newSizeArray[i];
+			vertices[idx + 1] = newSizeArray[i+1];
+			vertices[idx + 2] = newSizeArray[i+2];
+			
+			idx += vertexSize;
+		}
+		
+		
+		IconsMesh.setVertices(vertices);
+		
+	}
 
 	//
 	//
@@ -421,14 +544,25 @@ public class Label {
 	//Especially as we
 	//a) Try to make this Label extend ModelInstance
 	//b) Try to make it as GWT-like as possible in its api
+
+	/**
+	 * sets the back color
+	 * @param labelBackColor
+	 */
 	public void setLabelBackColor(Color labelBackColor) {
-		LabelBackColor = labelBackColor;
-		modelNeedsUpdate=true;
+	
+		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");		
+		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
+	
+		infoBoxsMaterial.set( ColorAttribute.createDiffuse(labelBackColor));
+		
 	}
 
+	
+	
 	public void setOpacity(float opacity){
 		//get the material from the model
-		Material infoBoxsMaterial = this.getModel().getMaterial("LabelMaterial");
+		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");
 		
 		DistanceFieldAttribute style = ((DistanceFieldAttribute)infoBoxsMaterial.get(DistanceFieldAttribute.ID));
 		

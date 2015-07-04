@@ -161,11 +161,9 @@ public class GlowingSquareShader implements Shader {
     	  program.setUniformf(u_time, time);
     	  
     	//  glEnable(GL_BLEND);
-    	 // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    	 
-    	  context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
-    	  
-    	  
+    	 // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);   	 
+			context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
+
     	  
     	  //lower for additive
     	 // context.setBlending(true,GL20.GL_ONE ,GL20.GL_ONE);    	  

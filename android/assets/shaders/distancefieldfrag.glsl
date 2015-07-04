@@ -172,7 +172,7 @@ void main() {
     		if (dist<0.5){ 
     	     //inner limit
     	     float glowSize = v_glowSize;
-    		 alpha=smoothstep(0.5-v_glowSize, 0.5+v_glowSize, dist);
+    		 alpha= smoothstep(0.5-v_glowSize, 0.5+v_glowSize, dist);
     		
     		 newCol   = v_glowColor;
     		 newCol.a = alpha;
@@ -205,7 +205,6 @@ void main() {
     		    //now blend with original (under it!)
     		    newCol = (newCol * newCol.a) + (shadowCol * (1-newCol.a));
     		    
-    			//high shadow seems to have high alpha vlue?
     			
     			newCol.a = shadowCol.a + newCol.a ;
     	
