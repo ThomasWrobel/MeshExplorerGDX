@@ -23,7 +23,7 @@ import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
  * @author Tom on the excellent and helpful advice of Xoppa
  *
  */
-public class AnimatableModelInstance extends ModelInstance {
+public class AnimatableModelInstance extends ModelInstance implements IsAnimatableModelInstance {
 	final static String logstag = "ME.AnimatableModelInstance";
 
 	//Use this instead of the models matrix
@@ -40,7 +40,11 @@ public class AnimatableModelInstance extends ModelInstance {
 
 	/** list of things attached to this object. These things will all move and rotate with it **/
 	HashMap<AnimatableModelInstance,PosRotScale> attachlist = new HashMap<AnimatableModelInstance,PosRotScale>();
-
+	
+	/** What THIS object is attached too, if anything **/
+	AnimatableModelInstance parentObject = null;
+	
+	
 	//how the parent object (if any) effects this one;
 	/** Determines if the position is inherited **/
 	//in future we can have x/y/z separate for more advanced behaviors
@@ -67,10 +71,21 @@ public class AnimatableModelInstance extends ModelInstance {
 	private BoundingBox collisionBox;
 	
 	/**
-	 * Determines if we inherit visibility from parent
-	 * 	 * @param model
+	 * Determines if we inherit visibility from parent.
+	 * NOTE: If inheriting both the parents visibility AND the local visibility have to be set to true for this object to render
+	 * @param model
 	 */
 	public boolean inheritVisibility = true;
+	
+	/**
+	 * Determines if we should render this icon or not.
+	 * 
+	 * NOTE: If inheriting both the parents visibility AND the local visibility have to be set to true for this object to render
+	 * Please use "isVisible()" to check for effective visibility
+	 * @param model
+	 */	
+	public boolean localVisibility = true;
+	
 	
 
 	
@@ -80,6 +95,10 @@ public class AnimatableModelInstance extends ModelInstance {
 	}
 
 	//Method used to update the transform
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#setTransform(com.lostagain.nl.me.newmovements.PosRotScale)
+	 */
+	@Override
 	public void setTransform ( PosRotScale newState) {
 
 		transState.position.set(newState.position);
@@ -91,6 +110,10 @@ public class AnimatableModelInstance extends ModelInstance {
 
 	//Method used to update the transform from a parent
 	//Works exactly like setTransform, but firsts tests if a particular type of transform should be inherited
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#inheritTransform(com.lostagain.nl.me.newmovements.PosRotScale)
+	 */
+	@Override
 	public void inheritTransform ( PosRotScale newState) {
 		if (inheritedPosition){
 			transState.position.set(newState.position);
@@ -104,7 +127,10 @@ public class AnimatableModelInstance extends ModelInstance {
 		sycnTransform();
 	}
 
-	/** should be called after ANY set of change to its transState before it will be reflected in the model visually**/
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#sycnTransform()
+	 */
+	@Override
 	public void sycnTransform() {
 		super.transform.set(transState.position, transState.rotation, transState.scale);
 		
@@ -117,64 +143,91 @@ public class AnimatableModelInstance extends ModelInstance {
 		updateAllAttachedObjects();
 	}
 
-	/*** Convince to quickly set the position. If doing a more complex change make a PosRotScale and call setTransform **/
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#setToPosition(com.badlogic.gdx.math.Vector3)
+	 */
+	@Override
 	public void setToPosition(Vector3 vector3) {		
 		transState.position.set(vector3);
 		sycnTransform();
 	}
-	/*** Convince to quickly set the rotation. If doing a more complex change make a PosRotScale and call setTransform **/
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#setToRotation(com.badlogic.gdx.math.Quaternion)
+	 */
+	@Override
 	public void setToRotation(Quaternion angle) {		
 		transState.rotation.set(angle);
 		sycnTransform();
 	}
-	/*** Convince to quickly set the scale. If doing a more complex change make a PosRotScale and call setTransform **/
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#setToscale(com.badlogic.gdx.math.Vector3)
+	 */
+	@Override
 	public void setToscale(Vector3 scale) {		
 		transState.scale.set(scale);
 		sycnTransform();
 	}
 
-	/** try to avoid using this, use the transState to update/change things then sync to reflect them in the instance.
-	 * This is just here when you need to get the transform, dont change it with this **/
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getMatrixTransform()
+	 */
+	@Override
 	public Matrix4 getMatrixTransform() {		
 		return super.transform;
 	}
-
-	/** hides it by removing it from the render lists **/
-	public void hide(){		
-		currentRenderPlacement = ModelManagment.removeModel(this);	
 	
+	public void hide(){	
+		hide(true);
+	}	
+
+	private void hide(boolean setlocalVisibility){		
+		currentRenderPlacement = ModelManagment.removeModel(this);	
+		
+		if (setlocalVisibility){
+			localVisibility = false;
+		}
 		
 		//we also hide things positioned relatively to this. Nothing overrides this
 		for (AnimatableModelInstance object : attachlist.keySet()) {
 			if (object.isInheriteingVisibility()){
-				object.hide();
+				object.hide(false);
 			}
 		}
 	}
-
-	/**
-	 * Shows it by adding it to the render lists.
-	 * This only works if it was previously hidden. It should currently be added manually once first so it knows its render order setting
-	 * This might change in future **/
-	public void show(){		
-		ModelManagment.addmodel(this,currentRenderPlacement);
 	
+	public void show(){	
+		show(true);
+	}
+	
+	private void show(boolean setlocalVisibility){		
+		ModelManagment.addmodel(this,currentRenderPlacement);
+		if (setlocalVisibility){
+			localVisibility = true;
+		}
 		
 		//we also show things positioned relatively to this unless they have visible false set
 		for (AnimatableModelInstance object : attachlist.keySet()) {
-			if (object.isInheriteingVisibility()){
-				object.show();
+			if (object.isInheriteingVisibility()  && object.isVisible() ){
+				object.show(false);
 			}
 		}
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getWidth()
+	 */
+	@Override
 	public float getWidth(){
 		if (localBoundingBox==null){
 			createBoundBox();
 		}
 		return localBoundingBox.getWidth();
 	}
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getHeight()
+	 */
+	@Override
 	public float getHeight(){
 		if (localBoundingBox==null){
 			createBoundBox();
@@ -182,6 +235,10 @@ public class AnimatableModelInstance extends ModelInstance {
 		return localBoundingBox.getHeight();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getCenter()
+	 */
+	@Override
 	public Vector3 getCenter(){
 		if (localBoundingBox==null){
 			createBoundBox();
@@ -217,6 +274,10 @@ public class AnimatableModelInstance extends ModelInstance {
 		Gdx.app.log(logstag,"collision box="+collisionBox);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getLocalCollisionBox()
+	 */
+	@Override
 	public BoundingBox getLocalCollisionBox() {
 		if (collisionBox==null){
 			recalculateCollisionBox();
@@ -225,6 +286,10 @@ public class AnimatableModelInstance extends ModelInstance {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getLocalBoundingBox()
+	 */
+	@Override
 	public BoundingBox getLocalBoundingBox() {
 		if (localBoundingBox==null){
 			createBoundBox();
@@ -241,13 +306,10 @@ public class AnimatableModelInstance extends ModelInstance {
 		}
 		
 	}
-	/** 
-	 * Lets you stick one object to another. Its position and rotation will shift as its parent does.
-	 * You can specific a PosRotScale for its displacement from parent.
-	 * Note; This should check for inheritance loops at some point it does not at the moment
-	 * 
-	 * Note; Displacement is not copied. Changes to the given displacement will continue to effect the objects position 
-	 * **/
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#attachThis(com.lostagain.nl.me.newmovements.AnimatableModelInstance, com.lostagain.nl.me.newmovements.PosRotScale)
+	 */
+	@Override
 	public void attachThis(AnimatableModelInstance objectToAttach, PosRotScale displacement){
 
 		//	Gdx.app.log(logstag,"_____________________________________adding object "); 
@@ -257,9 +319,14 @@ public class AnimatableModelInstance extends ModelInstance {
 		{
 			attachlist.put(objectToAttach, displacement);
 			
+			//associate this as the parent object
+			objectToAttach.parentObject=this;
+			
 			//give it a initial update
 			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(objectToAttach));
 			objectToAttach.inheritTransform(newposition);
+			
+			
 		} else {
 			Gdx.app.log(logstag,"_____________________________________already attached so repositioning to new displacement"); 
 			this.updateAtachment(objectToAttach, displacement);
@@ -270,11 +337,17 @@ public class AnimatableModelInstance extends ModelInstance {
 
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#removeAttachment(com.lostagain.nl.me.newmovements.AnimatableModelInstance)
+	 */
+	@Override
 	public void removeAttachment(AnimatableModelInstance objectToRemove){
 		
 		if (attachlist.containsKey(objectToRemove))
 		{
 			attachlist.remove(objectToRemove);
+			//remove this as the parent object
+			objectToRemove.parentObject=null;
 		}
 		
 		
@@ -295,6 +368,10 @@ public class AnimatableModelInstance extends ModelInstance {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#updateAtachment(com.lostagain.nl.me.newmovements.AnimatableModelInstance, com.lostagain.nl.me.newmovements.PosRotScale)
+	 */
+	@Override
 	public void updateAtachment(AnimatableModelInstance object,
 			PosRotScale displacement) {
 
@@ -303,36 +380,40 @@ public class AnimatableModelInstance extends ModelInstance {
 	}
 
 
-	/** Sets this model to "lookat" the target models vector3 location by aligning this models xAxis(1,0,0) to point at the target **/
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#lookAt(com.lostagain.nl.me.newmovements.AnimatableModelInstance)
+	 */
+	@Override
 	public void lookAt(AnimatableModelInstance target){			
 		Quaternion angle = getAngleTo(target);			
 		setToRotation(angle);			
 	}
 
-	/** Sets this model to lookat the target models vector3 location **/
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#lookAt(com.lostagain.nl.me.newmovements.AnimatableModelInstance, com.badlogic.gdx.math.Vector3)
+	 */
+	@Override
 	public void lookAt(AnimatableModelInstance target, Vector3 Axis){			
 		Quaternion angle = getAngleTo(target,Axis);			
 		setToRotation(angle);			
 	}
 
-	/** 
-	 * Method to find the axis-angle between this AnimatableModelInstances and another relative to the xAxis (1,0,0)
-	 * 
-	 * @return Quaternion of angle 
-	 * **/
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getAngleTo(com.lostagain.nl.me.newmovements.AnimatableModelInstance)
+	 */
+	@Override
 	public Quaternion getAngleTo(AnimatableModelInstance target) {
 		return  getAngleTo(target, new Vector3(1,0,0));
 	}
 
-	/** 
-	 * Method to find the axis-angle between this AnimatableModelInstances and another relative to the xAxis.
-	 * 
-	 * @return Quaternion of angle 
-	 * **/
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getAngleTo(com.lostagain.nl.me.newmovements.AnimatableModelInstance, com.badlogic.gdx.math.Vector3)
+	 */
 
+	@Override
 	public Quaternion getAngleTo(AnimatableModelInstance target, Vector3 Axis) {
 
-		Vector3 thisPoint = this.transState.position.cpy();
+		Vector3 thisPoint   = this.transState.position.cpy();
 		Vector3 targetPoint = target.transState.position.cpy();
 
 		//get difference (which is the same as target relative to 0,0,0 if this point was 0,0,0)
@@ -357,30 +438,90 @@ public class AnimatableModelInstance extends ModelInstance {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getAttachments()
+	 */
+	@Override
 	public Set<AnimatableModelInstance> getAttachments() {
 
 		return attachlist.keySet();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#setInheritedPosition(boolean)
+	 */
+	@Override
 	public void setInheritedPosition(boolean inheritedPosition) {
 		this.inheritedPosition = inheritedPosition;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#setInheritedRotation(boolean)
+	 */
+	@Override
 	public void setInheritedRotation(boolean inheritedRotation) {
 		this.inheritedRotation = inheritedRotation;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#setInheritedScale(boolean)
+	 */
+	@Override
 	public void setInheritedScale(boolean inheritedScale) {
 		this.inheritedScale = inheritedScale;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#setInheritedVisibility(boolean)
+	 */
+	/**
+	 * sets the visibility to be inherited from any parent object.
+	 */
+	@Override
 	public void setInheritedVisibility(boolean inheritVisibility) {
 		this.inheritVisibility = inheritVisibility;
+		
+		//update our visibility
+		//if our local visibility is false we just ensure we are hidden, nothing else to change
+		if (localVisibility==false){
+			this.hide(false);
+			return;
+		} else {
+		//if our local visibility is true then we base it on the parent setting
+			if (this.parentObject.isVisible()){
+				this.show(false); //NOTE the false, this is used so we dont disturb the local visibility setting
+			} else {
+				this.hide(false);
+			}
+			
+			
+		}
+		
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#isInheriteingVisibility()
+	 */
+	@Override
 	public boolean isInheriteingVisibility() {
 		return inheritVisibility;
 	}
+
+	@Override
+	public boolean isVisible() {
+		
+		//if local visibility is false, or we are not inheriting the visibility, then our localvisibility should match are visibility
+		if (parentObject==null || localVisibility==false || !inheritVisibility ){
+			return localVisibility;
+		}
+		
+		///if we are inheriting and we are not hidden then our visibility should match our parents
+		return parentObject.isVisible();
+				
+	}
+
+	
+	
 	
 
 }

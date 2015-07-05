@@ -159,8 +159,9 @@ void main() {
 	if (v_outColor.a>0.0){
 		if (dist>0.05){ //outermost limit (0 is max/outer edge)
 			if (dist<0.2){ //inner limit
+			
 					newCol   = v_outColor;
-    				newCol.a = 1.0;
+    				//newCol.a = 1.0;
     		}
     	}
     }
@@ -174,8 +175,14 @@ void main() {
     	     float glowSize = v_glowSize;
     		 alpha= smoothstep(0.5-v_glowSize, 0.5+v_glowSize, dist);
     		
-    		 newCol   = v_glowColor;
-    		 newCol.a = alpha;
+    		   float newalpha = newCol.a+(v_glowColor.a*alpha);
+    		   
+    		 //now blend glow with whats there already
+    		 newCol = (v_glowColor * alpha) + (newCol * (1-alpha));
+    		
+    		 
+    		// newCol   = v_glowColor;
+    		 newCol.a = newalpha;
     		    		 
     		}
     
@@ -199,14 +206,16 @@ void main() {
     			float blurSize = v_shadowBlur;
     		    float salpha = smoothstep(0.5-blurSize, 0.5+blurSize, sdist);
     			
-    		    shadowCol.a = salpha;
+    		    shadowCol.a =  shadowCol.a * salpha;
     		    float olda = newCol.a;
     		    
+    		   float newalpha = newCol.a+shadowCol.a;
+    		   
     		    //now blend with original (under it!)
     		    newCol = (newCol * newCol.a) + (shadowCol * (1-newCol.a));
-    		    
+    		  //  newCol.a =newalpha;
     			
-    			newCol.a = shadowCol.a + newCol.a ;
+    			//newCol.a = shadowCol.a + newCol.a ;
     	
     }
     

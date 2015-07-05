@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.LabelBase.TextureAndCursorObject;
+import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.models.ModelMaker;
+import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 /***
  * 
@@ -20,19 +22,27 @@ import com.lostagain.nl.me.models.ModelMaker;
  * Designed mostly to be used at the center of locations
  * 
  ***/
-public class InfoBox extends GenericMeshFeature {
+public class InfoBox extends VerticalPanel implements GenericMeshFeature {
+	VerticalPanel infoBoxsPanel = new VerticalPanel(); //default panel;
 	
 	public InfoBox(String title, String contents) {		
+		
 		this(contents, 300, 200);
 		
-	
 	}
-	public InfoBox(String contents,int width,int height) {		
-		super(generateModel(contents,width,height));
 	
+	public InfoBox(String contents,int width,int height) {	
+		super();
+		
+		//add default labels
+		Label testLabel = new Label(contents);
+		super.add(testLabel);
+		Label testLabel2 = new Label("test 2");
+		super.add(testLabel2);
 		
 	}
 
+	/*
 	private static Model generateModel(String contents,int width,int height) {
 		
 		TextureAndCursorObject texttexture = Label.generateTextureNormal(contents, width, height, 1f);
@@ -53,22 +63,26 @@ public class InfoBox extends GenericMeshFeature {
 
 		((BlendingAttribute)infoBoxsBackgroundMaterial.get(BlendingAttribute.Type)).opacity = 1f;
 		return model;
-	}
+	}*/
 	
-	public void setOpacity(float opacity){
-		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial("InfoBoxBackground");
-		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
-		
+	
 
 	
-	}
-	
-	/**Updates the appearance based on the current state and how far we are into it.
-	 * Typically this would be a fade, with the alpha being the fade value**/
-	void updateApperance(float alpha,FeatureState currentState){
+	/**
+	 * Updates the appearance based on the current state and how far we are into it.
+	 * Typically this would be a fade, with the alpha being the fade value
+	 * **/
+	public void updateApperance(float alpha,FeatureState currentState){
 
 		setOpacity(alpha);
 	}
+
+	@Override
+	public AnimatableModelInstance getAnimatableModelInstance() {
+		return this;
+	}
+
+
+	
 
 }

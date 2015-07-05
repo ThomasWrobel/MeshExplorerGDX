@@ -81,7 +81,7 @@ public class ModelManagment {
 		addmodel((ModelInstance)model,order); //note we cast so as to call the non-AnimatableModelInstance specific method below
 
 		for (AnimatableModelInstance attachedModel : model.getAttachments()) {	
-			if (attachedModel.isInheriteingVisibility()){
+			if (attachedModel.isInheriteingVisibility() && attachedModel.isVisible()){
 				addmodel(attachedModel,order);
 			}
 		}

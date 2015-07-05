@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -28,7 +29,6 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
-import com.lostagain.nl.me.features.GenericMeshFeature;
 import com.lostagain.nl.me.features.InfoBox;
 import com.lostagain.nl.me.features.MeshIcon;
 import com.lostagain.nl.me.gui.GUIBar;
@@ -298,9 +298,9 @@ public class MainExplorationView implements Screen {
 	//	addnewlocation( PlayersData.homeLoc.locationsHub,200,500);
 
 
-		GenericMeshFeature testFeature = new InfoBox("Title","Content Text");
+		InfoBox testFeature = new InfoBox("Title","Content Text");
 		
-		MeshIcon iconTest = new MeshIcon(MeshIcon.IconType.Info,PlayersData.homeLoc,testFeature);
+		MeshIcon iconTest   = new MeshIcon(MeshIcon.IconType.Info,PlayersData.homeLoc,testFeature);
 		iconTest.setToPosition(new Vector3(120f,670f,0f));
 		ModelManagment.addmodel(iconTest,ModelManagment.RenderOrder.zdecides);
 		
@@ -311,40 +311,43 @@ public class MainExplorationView implements Screen {
 		//testlabel.setSizeAs(100, 100);
 		
 		
-		testlabel.setToPosition(new Vector3(120,470,0));
+		testlabel.setToPosition(new Vector3(120,550,0));
 		
 		testlabel2.setLabelBackColor(new Color(0.3f,0.3f,1f,0.5f));
 		
 		testlabel2.setTextScale(0.6f);		
 		testlabel2.setText("(file url of computer test)");
 		
-		testlabel2.setToPosition(new Vector3(120f,470f,50f));
+		testlabel2.setToPosition(new Vector3(120f,470f,0f));
 		
 		
 		// environment = new Environment();
 	    //     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 	    //   environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
-		//ModelManagment.addmodel(testlabel,ModelManagment.RenderOrder.zdecides);
-		//ModelManagment.addmodel(testlabel2,ModelManagment.RenderOrder.zdecides);
+		ModelManagment.addmodel(testlabel,ModelManagment.RenderOrder.zdecides);
+		testlabel.setOpacity(0.75f);
+		
+		ModelManagment.addmodel(testlabel2,ModelManagment.RenderOrder.zdecides);
+		testlabel2.setOpacity(0.5f);
 		
 		//Now lets try making a vertical panel
-		VerticalPanel testPanel = new VerticalPanel();
+		//VerticalPanel testPanel = new VerticalPanel();
 		
-		testPanel.setToPosition(new Vector3(0f,-100f,0f));
 
-		testPanel.add(testlabel);
-		testPanel.add(testlabel2);
-		Label testlabel3 = new Label("test lab 3");
-		testPanel.add(testlabel3);
-		Label testlabel4 = new Label("test lab 4");
-		testPanel.add(testlabel4);
-		
-		testlabel2.setSizeAs(100, 100);
+		//testPanel.add(testlabel);
+		//testPanel.add(testlabel2);
+		//Label testlabel3 = new Label("test lab 3");
+		//testPanel.add(testlabel3);
+		//Label testlabel4 = new Label("test lab 4");
+		//testPanel.add(testlabel4);
 		
 		//testPanel.setSpaceing(11f);
+
+		//testPanel.setToPosition(new Vector3(300f,-300f,0f));
 		
-		ModelManagment.addmodel(testPanel,ModelManagment.RenderOrder.zdecides);
+		
+		//ModelManagment.addmodel(testPanel,ModelManagment.RenderOrder.zdecides);
 
 		
 		//gameStage.setDebugAll(true);

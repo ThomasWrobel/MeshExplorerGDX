@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -77,6 +78,8 @@ public class DistanceFieldShader implements Shader {
 			public float shadowYDisplacement = 1.0f;
 			public float shadowBlur          = 0.0f;
 			public Color shadowColour        = Color.CLEAR;
+			
+			public float Overall_Opacity_Multiplier = 1f;
 			
 			//enum help manage preset styles
 			public enum presetTextStyle {
@@ -272,6 +275,41 @@ public class DistanceFieldShader implements Shader {
 			    return width == otherwidth ? 0 : (width < otherwidth ? -1 : 1);
 			        
 			}
+
+
+			public float getOverall_Opacity_Multiplier() {
+				return Overall_Opacity_Multiplier;
+			}
+
+
+			public void setOverall_Opacity_Multiplier(float overall_Opacity_Multiplier) {
+				Overall_Opacity_Multiplier = overall_Opacity_Multiplier;
+			}
+
+			public Color getTextColour() {
+				Color effectiveTextColour = textColour.cpy();
+				effectiveTextColour.a = effectiveTextColour.a * Overall_Opacity_Multiplier;
+				return effectiveTextColour;
+			}
+			
+			public Color getOutlineColour() {
+				Color effectiveOutlineColour = outlineColour.cpy();
+				effectiveOutlineColour.a = effectiveOutlineColour.a * Overall_Opacity_Multiplier;
+				return effectiveOutlineColour;
+			}
+			public Color getGlowColour() {
+				Color effectiveGlowColour = glowColour.cpy();
+				effectiveGlowColour.a = effectiveGlowColour.a * Overall_Opacity_Multiplier;
+				return effectiveGlowColour;
+			}
+			public Color getShadowColour() {
+				Color effectiveShadowColour = shadowColour.cpy();
+				effectiveShadowColour.a = effectiveShadowColour.a * Overall_Opacity_Multiplier;
+				return effectiveShadowColour;
+			}
+			
+			
+			
 		}	
 	    
     @Override
@@ -375,7 +413,7 @@ public class DistanceFieldShader implements Shader {
     	 if (renderable.material.has(ColorAttribute.Diffuse)){	
     		     		
     		//text from attribute
-    		 textColour = textStyleData.textColour;    		 
+    		 textColour = textStyleData.getTextColour();    		 
     		 	
     		 program.setUniformf(a_colorFlag,1);
     		 
@@ -385,18 +423,20 @@ public class DistanceFieldShader implements Shader {
     		 
     		 
     	 }
+    	 
+    	 
     	     //text ans back color
 		 program.setUniformf(u_backColour, backcolor); 
 		 program.setUniformf(u_textColour, textColour);  
 		 
 		     //glow
-		 program.setUniformf(u_glowColor,textStyleData.glowColour   );
+		 program.setUniformf(u_glowColor,textStyleData.getGlowColour());
 		 program.setUniformf(u_glowSize ,textStyleData.glowSize); //size of glow (values above 1 will look strange)
 	        		
 		//	Gdx.app.log(logstag, "glowColour:"+textStyleData.glowColour);
 			
 	        //outline
-		 program.setUniformf(u_outColor,textStyleData.outlineColour);
+		 program.setUniformf(u_outColor,textStyleData.getOutlineColour());
 		 program.setUniformf(u_outlinerInnerLimit,textStyleData.outlinerInnerLimit); 
 		 program.setUniformf(u_outlinerOuterLimit,textStyleData.outlinerOuterLimit); 
 		 
@@ -404,7 +444,7 @@ public class DistanceFieldShader implements Shader {
 		 program.setUniformf(u_shadowXDisplacement,textStyleData.shadowXDisplacement);
 		 program.setUniformf(u_shadowYDisplacement,textStyleData.shadowYDisplacement);
 		 program.setUniformf(u_shadowBlur,textStyleData.shadowBlur);
-		 program.setUniformf(u_shadowColour,textStyleData.shadowColour);
+		 program.setUniformf(u_shadowColour,textStyleData.getShadowColour());
 		 
 		 
     	 renderable.mesh.render(program,

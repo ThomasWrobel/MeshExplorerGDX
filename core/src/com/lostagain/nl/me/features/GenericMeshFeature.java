@@ -1,42 +1,44 @@
 package com.lostagain.nl.me.features;
 
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
-import com.lostagain.nl.me.models.Animating;
-import com.lostagain.nl.me.models.ModelManagment;
-import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
+import com.lostagain.nl.me.newmovements.IsAnimatableModelInstance;
 
 
 
 /**
- * All interactive mesh features should expand this.
+ * All interactive mesh features should both be AnimatableModelInstance and implement this.
  * eg, a linkscreen, or a email page.
  * 
- * Features are triggered from an associated icon that can be clicked to expand into the feature, and then either manually
- * closed, or automatically closed once a certain threshold are open at once.
+ * They can be any sort of AnimatableModelInstance and this interface ensures they have a few extra functions 
+ * needed for it to work with a MeshIcon
  * 
  * @author Tom
  *
  */
-public abstract class GenericMeshFeature extends AnimatableModelInstance  {
+// SomeClass<T extends Fragment & SomeInterface>
+interface GenericMeshFeature extends IsAnimatableModelInstance {
 	
-	private MeshIcon associatedIcon;
+	//private MeshIcon associatedIcon;
 	
+	/**
+	 * All features have to both be a proper AnimatableModelInstance and return themselves with this method
+	 * @return
+	 */
+	AnimatableModelInstance getAnimatableModelInstance();
 	
-	
-	public GenericMeshFeature(Model model) {
-		super(model);
+	//public GenericMeshFeature(Model model) {
+	//	super(model);
 		//generic mesh features dont inherit visibility from their MeshIcon parents
-		super.setInheritedVisibility(false);
+	//	super.setInheritedVisibility(false);
 		
 		
-	}
+	//}
 	
 	
-	public void setAssociatedIcon(MeshIcon associatedIcon){		
-		this.associatedIcon=associatedIcon;
-	}
+	//public void setAssociatedIcon(MeshIcon associatedIcon){		
+	//	this.associatedIcon=associatedIcon;
+	//}
 	
 	/** 
 	 * Actions that run when this feature is opened (typically opened from its associated icon)
@@ -81,7 +83,7 @@ public abstract class GenericMeshFeature extends AnimatableModelInstance  {
 	 * @param alpha - Alpha goes from 0-1 when state is appearing and from 1-0 when state is disappearing
 	 * @param currentState - appearing,disappearing,normal or hidden
 	 **/
-	abstract void updateApperance(float alpha,FeatureState currentState);
+	void updateApperance(float alpha,FeatureState currentState);
 	
 	//abstract void fadeIn(float duration,Runnable runAfterFadeIn);
 	//abstract void fadeOut(float duration,Runnable runAfterFadeOut);
@@ -89,7 +91,8 @@ public abstract class GenericMeshFeature extends AnimatableModelInstance  {
 	/** called every frame to update any fade in progress **/
 	//abstract void updateFade(float delta);
 	
-	
+
+
 	
 
 

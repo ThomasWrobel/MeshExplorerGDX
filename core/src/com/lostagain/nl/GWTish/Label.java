@@ -2,6 +2,7 @@ package com.lostagain.nl.GWTish;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -519,21 +520,42 @@ public class Label extends LabelBase {
 	}
 
 	
-	
+	@Override
 	public void setOpacity(float opacity){
+		//super.setOpacity(opacity);
+		
+		//Material infoBoxsMaterial = this.getMaterial("LabelMaterial");	
+		
+		/*
+		if (infoBoxsMaterial.has(BlendingAttribute.Type)){
+			((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = 0.1f;
+		} else {
+			BlendingAttribute blend = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.1f);
+			infoBoxsMaterial.set(blend);
+			
+		}*/
+		
+		
+		
+		
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");
 		
 		DistanceFieldAttribute style = ((DistanceFieldAttribute)infoBoxsMaterial.get(DistanceFieldAttribute.ID));
+		style.setOverall_Opacity_Multiplier(opacity);
 		
 		//Gdx.app.log(logstag,"_____________current            col:"+style.textColour);
 		//Gdx.app.log(logstag,"_____________current shadow     col:"+style.shadowColour);
 		//Gdx.app.log(logstag,"_____________current glowColour col:"+style.glowColour);
-		
-	   style.outlineColour.a = opacity;
-		  style.textColour.a = opacity;
+		/*
+	   style.outlineColour.a = opacity; //this doesn't work right in shader ...hmm...we also shouldn't overwrite like this anyway
+
+		  style.textColour.a = opacity; //as they might have deliberately seperate opacitys even when fully visible
 		  style.glowColour.a = opacity;
 		style.shadowColour.a = opacity;
+		*/
+		ColorAttribute background = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
+		background.color.a = opacity;
 		
 		
 	}

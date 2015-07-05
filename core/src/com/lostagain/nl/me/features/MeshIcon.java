@@ -68,7 +68,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	}
 	FeatureState currentState = FeatureState.hidden;
 	protected float Opacity = 0f;
-	float fadeDuration = 0.500f;
+	float fadeDuration = 4.500f;
 	float timeIntoFade = 0.0f;
 	Runnable runAfterFadeIn = null;
 	Runnable runAfterFadeOut = null;
@@ -92,13 +92,26 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		thisIconsType = type;
 		this.parentLocation = parentLocation;
 		this.assocatiedFeature = assocatiedfeature;
+		
+		//associated features should be hidden by default
+		assocatiedFeature.hide();
+				
 		//set the associated feature to know this is its associated icon
-		this.assocatiedFeature.setAssociatedIcon(this);
+		//this.assocatiedFeature.setAssociatedIcon(this);
 		
 		//this icon will also position the feature so its attached at the center
-		Vector3 featureCenter = this.assocatiedFeature.getCenter();
-		super.attachThis(this.assocatiedFeature, new PosRotScale(featureCenter.x,featureCenter.y,featureCenter.z));
+		Vector3 featureCenter = this.assocatiedFeature.getCenter(); //5,5
+		
+		
+		//attach (our middle point is 0,0,0 but we don't know where the features middle point is, so we subtrack is center value
+		//from the location we are attaching it too.
+		//This means it should look centralized.
+		//ie. If it has its center at 5,5 we position it at -5,-5 so that the "center" 5,5 point is in the middle
+		super.attachThis(this.assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z));
 				
+		
+		
+		
 		//We also store the meshs vertexes after creation. This lets us animate between this and its enlarged form
 		Mesh thisMesh = model.meshes.get(0);
 		IconsDefaultVertexs = new float[thisMesh.getNumVertices() * thisMesh.getVertexSize()];
@@ -109,12 +122,18 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		//We start by getting its minimum and maximum local co-ordinates
 		Vector3 minXYZ = assocatiedFeature.getLocalBoundingBox().min;
 		Vector3 maxXYZ = assocatiedFeature.getLocalBoundingBox().max;
-		//We then use the X/Y to form a new set of co-ordinates
+		Vector3 centerXYZ = assocatiedFeature.getCenter();
+		
+		//We then use the X/Y to form a new set of co-ordinates, normalised around the center point of the associatedfeature
+		float ox = centerXYZ.x;
+		float oy = centerXYZ.y;
+		
+	
 		IconsEnlargedVertexs = new float[] { 
-											 minXYZ.x,minXYZ.y,0,
-											 maxXYZ.x,minXYZ.y,0,
-											 maxXYZ.x,maxXYZ.y,0,
-											 minXYZ.x,maxXYZ.y,0,
+											 minXYZ.x-ox,minXYZ.y-oy,0,
+											 maxXYZ.x-ox,minXYZ.y-oy,0,
+											 maxXYZ.x-ox,maxXYZ.y-oy,0,
+											 minXYZ.x-ox,maxXYZ.y-oy,0,
 										
 										    };
 		

@@ -2,14 +2,18 @@ package com.lostagain.nl.GWTish;
 
 import java.util.HashSet;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector2;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
+import com.lostagain.nl.shaders.GlowingSquareShader;
 
 /**
  * This will approximate a similar function as GWTs Widget class does
@@ -20,6 +24,9 @@ public class Widget extends AnimatableModelInstance {
 
 	final static String logstag = "GWTish.Widget";
 	
+	static Material DefaultWhiteBackground = new Material("Background",
+			   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.99f),
+			   new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLACK,Color.WHITE,Color.BLACK));
 	
 	//Handlers
 	/**
@@ -43,11 +50,23 @@ public class Widget extends AnimatableModelInstance {
 		super(object);
 	}
 	
-	public Widget(float sizeX,float sizeY,Material mat) {
-		super(generateBackground(10,10,mat,MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
+	public Widget(float sizeX,float sizeY) {
+		super(generateBackground(10,10,DefaultWhiteBackground.copy(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
 		
 	}
-
+	
+	/**
+	 * Sets the opacity of the background
+	 * @param opacity
+	 */
+	public void setOpacity(float opacity){
+		
+		//get the material from the model
+		Material infoBoxsMaterial = this.getMaterial("Background");
+		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
+		
+	
+	}
 	/**
 	 * makes a arbitery sized background that will be expanded as widgets are added
 	 * @return
