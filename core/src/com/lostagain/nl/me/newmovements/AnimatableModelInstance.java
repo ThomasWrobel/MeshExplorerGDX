@@ -260,13 +260,27 @@ public class AnimatableModelInstance extends ModelInstance {
 			//give it a initial update
 			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(objectToAttach));
 			objectToAttach.inheritTransform(newposition);
+		} else {
+			Gdx.app.log(logstag,"_____________________________________already attached so repositioning to new displacement"); 
+			this.updateAtachment(objectToAttach, displacement);
+			
 		}
-
 
 		//	Gdx.app.log(logstag,"_____________________________________total objects now: "+attachlist.size()); 
 
-
 	}
+	
+	public void removeAttachment(AnimatableModelInstance objectToRemove){
+		
+		if (attachlist.containsKey(objectToRemove))
+		{
+			attachlist.remove(objectToRemove);
+		}
+		
+		
+	}
+	
+	
 
 	protected void updateAllAttachedObjects(){
 

@@ -325,15 +325,25 @@ public class MainExplorationView implements Screen {
 	    //     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 	    //   environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
-		ModelManagment.addmodel(testlabel,ModelManagment.RenderOrder.zdecides);
-		ModelManagment.addmodel(testlabel2,ModelManagment.RenderOrder.zdecides);
+		//ModelManagment.addmodel(testlabel,ModelManagment.RenderOrder.zdecides);
+		//ModelManagment.addmodel(testlabel2,ModelManagment.RenderOrder.zdecides);
 		
 		//Now lets try making a vertical panel
 		VerticalPanel testPanel = new VerticalPanel();
 		
-		testPanel.setToPosition(new Vector3(0f,0f,0f));
-		testPanel.add(testlabel2);
+		testPanel.setToPosition(new Vector3(0f,-100f,0f));
+
 		testPanel.add(testlabel);
+		testPanel.add(testlabel2);
+		Label testlabel3 = new Label("test lab 3");
+		testPanel.add(testlabel3);
+		Label testlabel4 = new Label("test lab 4");
+		testPanel.add(testlabel4);
+		
+		testlabel2.setSizeAs(100, 100);
+		
+		//testPanel.setSpaceing(11f);
+		
 		ModelManagment.addmodel(testPanel,ModelManagment.RenderOrder.zdecides);
 
 		

@@ -36,10 +36,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
-/** The visual representation of a piece of data 
+/** 
+ * The visual representation of a piece of data 
  * as well as the node it presents.
- * Designed to be used in inventory's, or when the mouse "holds" it, or as the drop from a creature **/
-
+ * Designed to be used in inventory's, or when the mouse "holds" it, or as the drop from a creature 
+ * 
+ * **/
 public class DataObject extends Image 
 {
 
