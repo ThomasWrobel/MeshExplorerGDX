@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.features.GenericMeshFeature;
@@ -307,7 +308,7 @@ public class MainExplorationView implements Screen {
 		testlabel.setLabelBackColor(new Color(0.3f,0.3f,1f,0.5f));
 			
 		
-		testlabel.setSizeAs(100, 100);
+		//testlabel.setSizeAs(100, 100);
 		
 		
 		testlabel.setToPosition(new Vector3(120,470,0));
@@ -317,7 +318,7 @@ public class MainExplorationView implements Screen {
 		testlabel2.setTextScale(0.6f);		
 		testlabel2.setText("(file url of computer test)");
 		
-		testlabel2.setToPosition(new Vector3(120f,400f,0f));
+		testlabel2.setToPosition(new Vector3(120f,470f,50f));
 		
 		
 		// environment = new Environment();
@@ -326,6 +327,15 @@ public class MainExplorationView implements Screen {
 		
 		ModelManagment.addmodel(testlabel,ModelManagment.RenderOrder.zdecides);
 		ModelManagment.addmodel(testlabel2,ModelManagment.RenderOrder.zdecides);
+		
+		//Now lets try making a vertical panel
+		VerticalPanel testPanel = new VerticalPanel();
+		
+		testPanel.setToPosition(new Vector3(0f,0f,0f));
+		testPanel.add(testlabel2);
+		testPanel.add(testlabel);
+		ModelManagment.addmodel(testPanel,ModelManagment.RenderOrder.zdecides);
+
 		
 		//gameStage.setDebugAll(true);
 		

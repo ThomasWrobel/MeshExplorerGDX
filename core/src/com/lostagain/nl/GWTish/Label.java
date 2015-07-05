@@ -2,13 +2,10 @@ package com.lostagain.nl.GWTish;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
@@ -67,8 +64,8 @@ public class Label extends LabelBase {
 
 	SizeMode labelsSizeMode = SizeMode.ExpandToFitText;
 
-	Texture currentTexture = null;
-	boolean modelNeedsUpdate = true;
+	//Texture currentTexture = null;
+	//boolean modelNeedsUpdate = true;
 
 	//Style data (mostly controlled by shader)
 	static private Color defaultBackColour = Color.WHITE;
@@ -93,8 +90,8 @@ public class Label extends LabelBase {
 			setup=true;
 		}
 		
-		currentTexture  =null; //null tells it to regenerate
-		modelNeedsUpdate=true;
+		//currentTexture  =null; //null tells it to regenerate
+		//modelNeedsUpdate=true;
 
 	}
 
@@ -121,9 +118,9 @@ public class Label extends LabelBase {
 		DistanceFieldAttribute textStyle = null;
 		
 		
-		if (textStyle==null){
+		//if (textStyle==null){
 			textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
-		}
+		//}
 				
 		
 		
@@ -142,7 +139,10 @@ public class Label extends LabelBase {
 		//Gdx.app.log(logstag,"______________generating rect of "+LabelWidth+","+LabelHeight);
 		
 		//Note the *1 is the scale. We have scale 1 by default, duh.
-		Model newModel = ModelMaker.createRectangle(0, 0, sizeX*1,sizeY*1, 0, mat); 
+		Model newModel = Widget.generateBackground(sizeX, sizeY, mat, MODELALIGNMENT.TOPLEFT);
+		
+				
+				//ModelMaker.createRectangle(0, 0, sizeX*1,sizeY*1, 0, mat); 
 
 		
 		backgroundAndCursorObject setupData = new backgroundAndCursorObject(newModel,0,0);
@@ -319,14 +319,6 @@ public class Label extends LabelBase {
 
 
 
-			/*
-				textPixmap.drawPixmap(
-						fontPixmap,
-						xpad+currentX,
-						(TILE_HEIGHT - glyph.height) / 2, 
-						glyph.srcX,
-						glyph.srcY, glyph.width, glyph.height);
-			 */
 			double newprecisepos =  ((glyph.xadvance+2)  * scaledown)+lastremainder;//glyph.width+3
 			lastremainder = newprecisepos - Math.floor(newprecisepos);
 			int newpos = (int) (Math.floor(newprecisepos));
@@ -426,15 +418,26 @@ public class Label extends LabelBase {
 	public void setText(String text){
 		this.contents=text;
 		
-		TextureAndCursorObject NewTexture = generateTexture(labelsSizeMode, contents); 
+		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents); 
 		
 
-		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");		
-		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));	
-		infoBoxsMaterial.set(  TextureAttribute.createDiffuse(NewTexture.textureItself));
+		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");	
+
+
+		Texture newTexture = textureAndData.textureItself;
 		
-		float x = NewTexture.textureItself.getWidth();
-		float y = NewTexture.textureItself.getHeight();
+		
+				
+		//if (textStyle==null){
+			//textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+		
+		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));	
+			//  TextureAttribute.createDiffuse(NewTexture.textureItself)	,	
+		// ColorAttribute.createDiffuse(defaultBackColour)
+		infoBoxsMaterial.set(TextureAttribute.createDiffuse(newTexture));
+
+		float x = textureAndData.textureItself.getWidth();
+		float y = textureAndData.textureItself.getHeight();
 		
 		
 		this.setSizeAs(x, y);
@@ -451,8 +454,8 @@ public class Label extends LabelBase {
 	public void setTextScale(float scale){
 		ModelScale = scale;
 		
-		currentTexture  =null; //null tells it to regenerate
-		modelNeedsUpdate=true;
+		//currentTexture  =null; //null tells it to regenerate
+		//modelNeedsUpdate=true;
 		
 	}
 
@@ -473,6 +476,7 @@ public class Label extends LabelBase {
 			NewTexture = generateTextureNormal(contents,LabelNativeWidth, LabelNativeHeight,1f); 
 
 		}
+		NewTexture.textureItself.setFilter(TextureFilter.Linear, TextureFilter.Linear);//ensure mipmaping is disabled, else distance field shaders wont work
 		
 		return NewTexture;
 	}
@@ -489,61 +493,17 @@ public class Label extends LabelBase {
 
 
 
-	/**
-	 * Changes this objects rect mesh to the new specified size
-	 * The internal texture will be stretched
-	 * 
-	 * @param newWidth
-	 * @param newHeight
-	 */
-	public void setSizeAs(float newWidth,float newHeight){
-		
-		Mesh IconsMesh = labelInstance.meshes.get(0);
-		
-		final VertexAttribute posAttr = IconsMesh.getVertexAttribute(Usage.Position);
-		final int offset = posAttr.offset / 4;
-		final int numComponents = posAttr.numComponents;
-		final int numVertices = IconsMesh.getNumVertices();
-		final int vertexSize = IconsMesh.getVertexSize() / 4;
+	
 
-		final float[] vertices = new float[numVertices * vertexSize];
-		IconsMesh.getVertices(vertices);
-		int idx = offset;
-		
-		float hw =  newWidth/2;
-		float hh = newHeight/2;
-		
-		float newSizeArray[] = new float[] { -hw,-hh,0,
-											  hw,-hh,0,
-											  hw,hh,0,
-											 -hw,hh,0 };
-				
-		//can be optimized latter by pre-calcing the size ratio and just multiply
-		for (int i = 0; i < 12; i=i+3) {
-			
-			//Gdx.app.log(logstag," new::"+comboX+","+comboY+","+comboZ);
-			
-			//currently just scale up a bit
-			vertices[idx    ] = newSizeArray[i];
-			vertices[idx + 1] = newSizeArray[i+1];
-			vertices[idx + 2] = newSizeArray[i+2];
-			
-			idx += vertexSize;
-		}
-		
-		
-		IconsMesh.setVertices(vertices);
-		
-	}
 
+	
 	//
 	//
 	//--------------
 	//Styleing functions below.
 	//These are all subject to a lot of change
 	//Especially as we
-	//a) Try to make this Label extend ModelInstance
-	//b) Try to make it as GWT-like as possible in its api
+	// Try to make it as GWT-like as possible in its api
 
 	/**
 	 * sets the back color

@@ -231,6 +231,16 @@ public class AnimatableModelInstance extends ModelInstance {
 		}
 		return localBoundingBox;
 	}
+	
+	protected void wasResized(){
+		if (localBoundingBox!=null){
+			createBoundBox();
+		}
+		if (collisionBox!=null){
+			recalculateCollisionBox();
+		}
+		
+	}
 	/** 
 	 * Lets you stick one object to another. Its position and rotation will shift as its parent does.
 	 * You can specific a PosRotScale for its displacement from parent.
@@ -246,6 +256,10 @@ public class AnimatableModelInstance extends ModelInstance {
 		if (!attachlist.containsKey(objectToAttach))
 		{
 			attachlist.put(objectToAttach, displacement);
+			
+			//give it a initial update
+			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(objectToAttach));
+			objectToAttach.inheritTransform(newposition);
 		}
 
 
@@ -254,7 +268,7 @@ public class AnimatableModelInstance extends ModelInstance {
 
 	}
 
-	private void updateAllAttachedObjects(){
+	protected void updateAllAttachedObjects(){
 
 		//Gdx.app.log(logstag,"_____________________________________updateAllAttachedObjects ="+attachlist.size()); 
 

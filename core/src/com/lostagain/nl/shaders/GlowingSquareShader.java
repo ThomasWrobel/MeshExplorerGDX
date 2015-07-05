@@ -63,7 +63,7 @@ public class GlowingSquareShader implements Shader {
 			/**
 			 * The presence of this parameter will cause the ConceptBeamShader to be used
 			 * @param width - width of beam
-			 * @param beamcolor - its color
+			 * @param  glowColor - its color
 			 * @param corecolor - color of its core (normally white for a intense glow at the middle of the beam)
 			 */
 			public GlowingSquareAttribute (final float glowWidth,final Color glowColor,final Color backColor, final Color coreColor ) {
@@ -163,7 +163,8 @@ public class GlowingSquareShader implements Shader {
     	//  glEnable(GL_BLEND);
     	 // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);   	 
 			context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
-
+			
+			 context.setDepthTest(GL20.GL_LESS);    	
     	  
     	  //lower for additive
     	 // context.setBlending(true,GL20.GL_ONE ,GL20.GL_ONE);    	  
