@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.GlowingSquareShader;
+import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
 
 /**
  * This will approximate a similar function as GWTs Widget class does
@@ -26,7 +27,7 @@ public class Widget extends AnimatableModelInstance {
 	
 	static Material DefaultWhiteBackground = new Material("Background",
 			   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.99f),
-			   new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLACK,Color.WHITE,Color.BLACK));
+			   new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLACK,Color.WHITE,Color.RED));
 	
 	//Handlers
 	/**
@@ -59,14 +60,23 @@ public class Widget extends AnimatableModelInstance {
 	 * Sets the opacity of the background
 	 * @param opacity
 	 */
-	public void setOpacity(float opacity){
-		
+	public void setOpacity(float opacity){		
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial("Background");
-		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
-		
-	
+		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;	
 	}
+	/**
+	 * Sets the opacity of the background
+	 * @param opacity
+	 */
+	public void setBackgroundColor(Color backcol){		
+		//get the material from the model
+		Material infoBoxsMaterial = this.getMaterial("Background");
+		GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)infoBoxsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
+		
+		backtexture.backColor = backcol;
+	}
+	
 	/**
 	 * makes a arbitery sized background that will be expanded as widgets are added
 	 * @return

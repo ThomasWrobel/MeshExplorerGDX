@@ -125,8 +125,9 @@ public class Label extends LabelBase {
 				
 		
 		
-		Material mat = 	new Material("LabelMaterial",
-									 TextureAttribute.createDiffuse(newTexture),			
+		Material mat = 	new Material("LabelMaterial",	
+									 TextureAttribute.createDiffuse(newTexture),
+									 new BlendingAttribute(1),
 									 ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
 									 textStyle);
 
@@ -501,9 +502,9 @@ public class Label extends LabelBase {
 	//
 	//
 	//--------------
-	//Styleing functions below.
-	//These are all subject to a lot of change
-	//Especially as we
+	// Styling functions below.
+	// These are all subject to a lot of change
+	// Especially as we
 	// Try to make it as GWT-like as possible in its api
 
 	/**
@@ -554,10 +555,13 @@ public class Label extends LabelBase {
 		  style.glowColour.a = opacity;
 		style.shadowColour.a = opacity;
 		*/
-		ColorAttribute background = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
-		background.color.a = opacity;
 		
 		
+		//NOTE: This backgrounds color shouldn't be set directly like this, as it might not be 100% opacity to start with
+		//ColorAttribute background = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
+		//background.color.a = opacity;
+		BlendingAttribute backgroundOpacity = ((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type));
+		backgroundOpacity.opacity = opacity;
 	}
 	
 	

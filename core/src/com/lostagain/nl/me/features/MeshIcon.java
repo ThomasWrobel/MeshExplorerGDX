@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
@@ -34,8 +35,10 @@ import com.lostagain.nl.shaders.GlowingSquareShader;
  *  They extend AnimatableModelInstance so we can animated them latter if we wish 
  * **/
 public class MeshIcon extends AnimatableModelInstance  implements hitable, Animating {
+	
 	final static String logstag = "ME.MeshIcon";
 
+	
 	//generic icon stuff
 	public enum IconType {
 		Email,
@@ -45,6 +48,18 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		Info,
 		OTHER; //used as a catch all for unique features.
 	}
+	
+	public enum OpenMode {
+		SingleClick,DoubleClick
+	}
+	
+	/** if on doubleclick mode this is the time since the first click **/
+	private long timeOfFirstClick=0;
+	private static long MAXDOUBLECLICKTIME = 300; //ms
+	
+	/** Do you need to single click or double click to open this icon?**/
+	OpenMode iconsOpenMode = OpenMode.DoubleClick;
+	
 	
 	static final float iconWidth  = 100f; //standard width and height of all icons
 	static final float iconHeight = 100f;
@@ -68,7 +83,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	}
 	FeatureState currentState = FeatureState.hidden;
 	protected float Opacity = 0f;
-	float fadeDuration = 4.500f;
+	float fadeDuration = 0.500f;
 	float timeIntoFade = 0.0f;
 	Runnable runAfterFadeIn = null;
 	Runnable runAfterFadeOut = null;
@@ -76,7 +91,8 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	float[] IconsDefaultVertexs = null; //this is set on creation and lets us return to the correct geometry after resizing
 	//The  mesh vertexes of this icon when its enlarged
 	float[] IconsEnlargedVertexs = null; //this is set on creation and lets us return to the correct geometry after resizing
-	
+
+
 	
 	
 	//----------------------------------------------------
@@ -207,6 +223,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial("IconMaterial");
 		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
+		
 		MeshIconsLabel.setOpacity(opacity);
 		
 		
@@ -228,13 +245,20 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	/** triggers the icon to close hiding its contents (assocatiedFeature) **/
 	public void close(){
 		
+		if (currentState == FeatureState.normal){
+			Gdx.app.log(logstag,"closing mesh feature");
+			animateClose();
+		} else {
+			Gdx.app.log(logstag,"mesh feature state is:"+currentState);
+		}
 	}
 	
 	/** runs the close animation.
-	 * Should only be called by the associated GenericMeshFeature.
+	 * This can be called by MeshIcon only if the associated feature is not a clickblocker and allows interaction 
+	 * with the meshicon behind it. Else the associated feature will need to call this itself.
 	 * Do not run from elsewhere **/
 	public void animateClose(){
-		
+		startClose(this.fadeDuration, runAfterFadeOut);
 	}
 	
 	/** runs the open animation.
@@ -254,10 +278,46 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		return this.getTransform();
 	}
 
+	/*****/
 	@Override
 	public void fireTouchDown() {
 		Gdx.app.log(logstag,"_mesh icon clicked on_");
-		open();
+		
+		if (iconsOpenMode==OpenMode.SingleClick){
+			open();
+		}
+		
+		if (iconsOpenMode==OpenMode.DoubleClick){
+			
+			if (timeOfFirstClick==0){
+				
+				//if timeOfFirstClick is not set yet, we set it to the current time
+				timeOfFirstClick = TimeUtils.millis();
+				Gdx.app.log(logstag,"mesh icon clicked on at:"+timeOfFirstClick);
+				
+			} else {
+				long currentTime = TimeUtils.millis();
+				long elipsedTime = currentTime -timeOfFirstClick;
+				Gdx.app.log(logstag,"mesh icon clicked on at:"+currentTime+"( last was "+timeOfFirstClick);
+				Gdx.app.log(logstag,"elipsedTime:"+elipsedTime);
+				
+				//else we look at the time difference and if its less then the double click max gap we trigger the open command
+				if (elipsedTime < MAXDOUBLECLICKTIME){
+					timeOfFirstClick=0;
+					if (currentState == FeatureState.hidden){
+						open();
+					} else if (currentState == FeatureState.normal){
+						
+						close();
+					}
+					
+				} else {
+					timeOfFirstClick=currentTime;
+				}
+				
+			}
+		}
+		
 		
 		
 	}
@@ -298,6 +358,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	void startOpen(float duration, Runnable runAfterFadeIn) {
 		currentState = FeatureState.appearing;
 		Opacity = 0f;
+		timeIntoFade=0f;
 		ModelManagment.addmodel(this, RenderOrder.zdecides);
 		
 		ModelManagment.addAnimating(this);
@@ -310,6 +371,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	void startClose(float duration, Runnable runAfterFadeOut) {
 		currentState = FeatureState.disapearing;
 		Opacity = 1f;
+		timeIntoFade=0f;
 		ModelManagment.addAnimating(this);
 		this.runAfterFadeOut= runAfterFadeOut;
 		

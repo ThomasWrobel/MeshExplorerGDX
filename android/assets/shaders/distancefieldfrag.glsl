@@ -175,7 +175,7 @@ void main() {
     	     float glowSize = v_glowSize;
     		 alpha= smoothstep(0.5-v_glowSize, 0.5+v_glowSize, dist);
     		
-    		   float newalpha = newCol.a+(v_glowColor.a*alpha);
+    		   float newalpha = newCol.a + (v_glowColor.a * alpha);
     		   
     		 //now blend glow with whats there already
     		 newCol = (v_glowColor * alpha) + (newCol * (1-alpha));
@@ -213,7 +213,8 @@ void main() {
     		   
     		    //now blend with original (under it!)
     		    newCol = (newCol * newCol.a) + (shadowCol * (1-newCol.a));
-    		  //  newCol.a =newalpha;
+    		  
+    		    newCol.a = newalpha;
     			
     			//newCol.a = shadowCol.a + newCol.a ;
     	

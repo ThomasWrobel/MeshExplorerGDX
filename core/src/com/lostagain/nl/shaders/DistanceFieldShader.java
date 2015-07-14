@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -409,6 +410,13 @@ public class DistanceFieldShader implements Shader {
     	 
     	 //back color comes from diffuse
 		 Color backcolor = ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse)).color;
+		 
+		 //and we multiply it by the opacity
+		 BlendingAttribute backgroundOpacity = ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type));
+		 if (backgroundOpacity!=null){
+			 backcolor.a = backcolor.a*backgroundOpacity.opacity; //Temp. Really Blending should effect everything, not just the background
+		 }
+		 
     	 Color textColour = Color.ORANGE;
     	 if (renderable.material.has(ColorAttribute.Diffuse)){	
     		     		

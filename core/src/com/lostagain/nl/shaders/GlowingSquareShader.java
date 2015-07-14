@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -180,14 +181,29 @@ public class GlowingSquareShader implements Shader {
     	//set the variable for the objects world transform to be passed to the shader
 
     	 program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
-    	 
-    	 
+    	     	
     	 GlowingSquareAttribute squareStyle = (GlowingSquareAttribute)renderable.material.get(GlowingSquareAttribute.ID);
-    	
-    	 program.setUniformf(u_glowWidth, squareStyle.glowWidth);//testAttr.width    	 
-    	 program.setUniformf(u_backColor, squareStyle.backColor);//testAttr.width
-    	 program.setUniformf(u_coreColor, squareStyle.coreColor);//testAttr.width
-      	 program.setUniformf(u_glowColor, squareStyle.glowColor);
+      		Color back = squareStyle.backColor;
+      		Color core = squareStyle.coreColor;
+      		Color glow = squareStyle.glowColor;
+      	 
+    	 BlendingAttribute blending = ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type));
+    	 if (blending!=null){
+
+    		 float opacity = blending.opacity;
+
+ 	    	//Gdx.app.log(logstag, "setting opacity:"+opacity);
+ 	    	
+    			 back.a = back.a * opacity;
+          		 core.a = core.a * opacity;
+          		 glow.a = glow.a * opacity;
+    	 }
+    	 
+    	 program.setUniformf(u_glowWidth, squareStyle.glowWidth);  	 
+    	 program.setUniformf(u_backColor, back);
+    	 program.setUniformf(u_coreColor, core);
+      	 program.setUniformf(u_glowColor, glow);
+      	 
     	 float w = renderable.mesh.calculateBoundingBox().getWidth();
     	 float h = renderable.mesh.calculateBoundingBox().getHeight();
     	 

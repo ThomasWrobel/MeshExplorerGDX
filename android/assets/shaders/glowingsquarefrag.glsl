@@ -88,12 +88,12 @@ void main()
   } 
   
     
-    v_glowColor.a = glowAlpha;
+    v_glowColor.a =  v_glowColor.a* glowAlpha;
   	
   	
   	//add a sharper core
   	float coreAlpha = pow(glowAlpha,6.0);
-  	v_coreColor.a = coreAlpha;
+  	v_coreColor.a = v_coreColor.a * coreAlpha;
   	
   	
     
