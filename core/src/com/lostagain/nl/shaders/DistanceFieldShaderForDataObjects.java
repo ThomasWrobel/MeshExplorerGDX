@@ -109,7 +109,7 @@ public class DistanceFieldShaderForDataObjects implements Shader {
     @Override
     public void init () {
     	
-    	  String vert = Gdx.files.internal("shaders/distancefieldvert.glsl").readString();
+    	  String vert = Gdx.files.internal("shaders/distancefieldvert_spritebatch.glsl").readString();
           String frag = Gdx.files.internal("shaders/distancefieldfrag.glsl").readString();
           
           //String prefix = createPrefix(renderable, this.get);

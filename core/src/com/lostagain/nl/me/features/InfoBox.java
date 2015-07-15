@@ -25,21 +25,21 @@ import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 	VerticalPanel infoBoxsPanel = new VerticalPanel(); //default panel;
 	
-	public InfoBox(String title, String contents) {		
+	//public InfoBox(String title, String contents) {		
 		
-		this(contents);
+	//	this(title,contents);
 		
-	}
+	//}
 	
-	public InfoBox(String contents) {	
+	public InfoBox(String title,String contents) {	
 		super();
 		super.setSpaceing(4f); //set a small spacing between elements vertically
 		super.setBackgroundColor(Color.CLEAR); //set the back colour (excluding border)
 		
 		//add default labels
-		Label testLabel = new Label(contents);
+		Label testLabel = new Label(title);
 		super.add(testLabel);
-		Label testLabel2 = new Label("test 2");
+		Label testLabel2 = new Label(contents);
 		super.add(testLabel2);
 		
 		//labels should have transparent backgrounds by default

@@ -18,8 +18,8 @@ void main()
   float y = 1.0-fPosition.y; //fliped vertically
     
   //normalise values to -1 to 1, libgdx seems to use 0-1 by default
-  y = (y*2.0)-1.0;
   x = (x*2.0)-1.0;
+  y = (y*2.0)-1.0;
   
   //params (in future make these editable at shader creation?)
   
@@ -31,20 +31,20 @@ void main()
   //float width =  0.25; // used to be 0.04
   
   
-   float tsin = abs(sin((shotFrequency*u_time)-x)); //shotFrequency used to be 2.0
+   float tsin = abs(sin((shotFrequency*u_time)-y)); //shotFrequency used to be 2.0
    
-  if (y<(width) && y>-width) 
+  if (x<(width) && x>-width) 
   {
         
     //red bit        
-    float intensity = (width-abs(y))*(1.0/width); //should result in 0-1 range    
+    float intensity = (width-abs(x))*(1.0/width); //should result in 0-1 range    
     
     col = beam*intensity;//vec4(r,g,b,a);  
     
     //white core   
     float corethick = 10.0-(8.0*(tsin));
     
-     intensity  = (width-abs(y*corethick))*(1.0/width);
+     intensity  = (width-abs(x*corethick))*(1.0/width);
      
      if (intensity<0.0){
        		intensity = 0.0;
@@ -65,9 +65,9 @@ void main()
   }
   
   //fade extream end
-  if (x>0.98){ //used to be 90
+  if (y>0.98){ //used to be 90
   	
-  	 float intensity =  x-0.90; // 0 to 0.1
+  	 float intensity =  y-0.90; // 0 to 0.1
   	 intensity = intensity * 10.0; // 0 to 1;
   	
   	col = mix(col,back,intensity);
@@ -81,21 +81,21 @@ void main()
    // -1 = 0 = 1 
   // 
   //we only want the extream end so we get the distance from a target point
-  float targetx = 1.00; //used to be 0.96
-  float distarget = abs(targetx-x);
+  float targety = 1.00; //used to be 0.96
+  float distarget = abs(targety-y);
   //invert so neares tthe target is strongest
-  float abx = 1.0-distarget;
+  float aby = 1.0-distarget;
   
  // float abx=1.1-abs(x-0.9); //0 to 1 based on distance from center 
-  if (x<0.0){
-    abx = 0.0;
+  if (y<0.0){
+    aby = 0.0;
   }
   
-  float eppx=pow(abx,50.0);//
-  float xgrad =(eppx)*tsin;
-  if (xgrad<0.0)
+  float eppy=pow(aby,50.0);//
+  float ygrad =(eppy)*tsin;
+  if (ygrad<0.0)
   {
-    xgrad=0.0;
+    ygrad=0.0;
   }
   
   
@@ -103,13 +103,13 @@ void main()
   // 1 = 0 = 1
   // 0 = 1 = 0
   
-  float aby=1.0-abs(y); //1 to 0 based on distance from center
-  float epp=aby;//pow(aby,1.0);//
-  float ygrad =(epp)*tsin;
-  if (ygrad<0.0){
-    ygrad=0.0;
+  float abx=1.0-abs(x); //1 to 0 based on distance from center
+  float epp=abx;//pow(aby,1.0);//
+  float xgrad =(epp)*tsin;
+  if (xgrad<0.0){
+    xgrad=0.0;
   }
-  float intensityOfEnd = xgrad*ygrad;
+  float intensityOfEnd = ygrad*xgrad;
   vec4 col3 = core*intensityOfEnd;//vec4(xgrad*ygrad,xgrad*ygrad,xgrad*ygrad,xgrad*ygrad);
     
    col = col+(col3);

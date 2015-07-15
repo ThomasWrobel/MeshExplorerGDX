@@ -130,7 +130,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			public void clicked(InputEvent ev, float x , float y){
 
 				Gdx.app.log(logstag,"clicked");
-				if (STMemory.currentlyHeld!=null){
+				if (STMemory.isHoldingItem()){
 					clickedWhileHolding();					
 				}
 
@@ -209,7 +209,7 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 			public void clicked(InputEvent ev, float x , float y){
 
 
-				if (STMemory.currentlyHeld!=null){
+				if (STMemory.isHoldingItem()){
 					clickedWhileHolding();					
 				}
 
@@ -591,7 +591,9 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 
 		//if was successfully added we set currently held to nothing
 		if (success){
-			STMemory.currentlyHeld = null;
+			//STMemory.currentlyHeld = null;
+
+			STMemory.clearCurrentlyHeld();
 		} else {
 
 			//should have some feedback here for STMemory full up

@@ -166,4 +166,10 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 
 	}
 
+	@Override
+	public void fireDragStart() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -29,6 +29,7 @@ import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.features.ConceptObject;
 import com.lostagain.nl.me.objects.DataObject;
 
 /** handles the various semantic objects you can carry with, either for concept gun use
@@ -42,6 +43,9 @@ public class STMemory extends Table implements DataObjectDropTarget {
 	
 	static HashSet<DataObject> carryingObjects = new HashSet<DataObject>();
 	public static DataObject currentlyHeld;
+	
+	/** The object the player is holding Eventually this will replace the DataObject currentlyHeld above**/
+	public static ConceptObject currentlyHeldNEW;
 	
 	int ItemLimit = 7; //can be expanded in future
 	
@@ -125,7 +129,21 @@ public class STMemory extends Table implements DataObjectDropTarget {
 	}
 	
 
+
 	
+	protected static void setCurrentlyHeld(ConceptObject object) {
+		
+		currentlyHeldNEW=object;
+		
+		//temp we might want to truely attach it to the camera rather then switching the cursor image?
+		//not sure which is better here theres many pros and cons to both
+	    MainExplorationView.setCursor(currentlyHeldNEW.getObjectsTexture());
+	    
+	    
+
+			lastTime = TimeUtils.millis();
+		
+	}
 	protected static void setCurrentlyHeld(DataObject object) {
 		
 		currentlyHeld=object;
@@ -213,12 +231,20 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			MainExplorationView.setCursor(null);
 			
 			if (currentlyHeld!=null){
-			//dump on ground where cursor is
-			dropItemToGround(currentlyHeld);
+				//dump on ground where cursor is
+				dropItemToGround(currentlyHeld);			
 			
+				//remove currently held
+				currentlyHeld=null;
+			}
 			
-			//remove currently held
-			currentlyHeld=null;
+			//NEW drop function
+			if (currentlyHeldNEW!=null){
+				//dump on ground where cursor is
+				dropItemToGround(currentlyHeldNEW);			
+			
+				//remove currently held
+				currentlyHeldNEW=null;
 			}
 			
 		}
@@ -239,9 +265,21 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		
 	}
 	
+	 private static void dropItemToGround(ConceptObject item) {
+		 
+		 
+		 //get cursor location
+		 Vector2 cursor = ME.getCurrentStageCursorPosition();
+		 
+		 //drop the item on the ground
+		 ME.addnewdrop(item, cursor.x, cursor.y);
+		 
+		 
+		 
+		
+	}
 	
-	
-	public  boolean 	 addItem(DataObject dataobject){
+	public  boolean  addItem(DataObject dataobject){
 		if (carryingObjects.size()<ItemLimit){
 		
 			carryingObjects.add(dataobject);
@@ -332,6 +370,29 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		public void onDrag(DataObject dataobject) {
 			
 			 removeItem(dataobject);
+		}
+		
+		
+		public static boolean isHoldingItem(){
+			if (currentlyHeld==null){
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
+		public static void clearCurrentlyHeld(){
+			currentlyHeld=null;
+			currentlyHeldNEW=null;
+		}
+		
+		static public void holdItem(ConceptObject objectsnode) {
+			if (currentlyHeldNEW==null){
+				setCurrentlyHeld(objectsnode);
+			} else {
+				dropHeldItem(true);
+			}
+			
 		}
 		
 		static public void holdItem(DataObject objectsnode) {

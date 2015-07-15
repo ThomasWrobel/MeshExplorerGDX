@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -29,6 +30,7 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
+import com.lostagain.nl.me.features.ConceptObject;
 import com.lostagain.nl.me.features.InfoBox;
 import com.lostagain.nl.me.features.MeshIcon;
 import com.lostagain.nl.me.gui.GUIBar;
@@ -127,6 +129,7 @@ public class MainExplorationView implements Screen {
     int drag_dis_y = 0;
     
     boolean newtouch=true; //if a touch event has just started
+    Vector2 touchStartedAt = null;
     
 	public static hitable touchedAModel = null;
 	
@@ -299,12 +302,18 @@ public class MainExplorationView implements Screen {
 
 
 		InfoBox testFeature = new InfoBox("Title","Content Text");
+	
 		
 		MeshIcon iconTest   = new MeshIcon(MeshIcon.IconType.Info,PlayersData.homeLoc,testFeature);
+	//	iconTest.setToRotation(new Quaternion(Vector3.X, 45)); //random rotation test
 		iconTest.setToPosition(new Vector3(120f,670f,0f));
 		ModelManagment.addmodel(iconTest,ModelManagment.RenderOrder.zdecides);
 		
-
+		
+		ConceptObject coTest = new ConceptObject(PlayersData.computersuri);
+		coTest.setToPosition(new Vector3(320f,670f,0f));
+		ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
+		
 		testlabel.setLabelBackColor(new Color(0.3f,0.3f,1f,0.5f));
 			
 		
@@ -544,9 +553,22 @@ public class MainExplorationView implements Screen {
 					} else {
 						Gdx.app.log(logstag,"_-(hit nothing)-_");
 					}
+					
 				}
+				
+
+				touchStartedAt = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+				
 			}
 			
+			//if we are touching we also need to see if we have moved a bit
+			//if so, then we need to inform the model manager to fire any dragevents if needed (ie, for objects held)
+			//This is not the same as the scene itself being dragged. In fact they are multly exclusive
+			Vector2 currentLoc = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+			
+			if (touchStartedAt.dst2(currentLoc)>5){				
+				ModelManagment.fireDragStartOnAll();				
+			}
 			
 			
 			//before starting a new drag we have to do a lot of checks to make sure drags are allowed right now
@@ -557,7 +579,7 @@ public class MainExplorationView implements Screen {
 			if (!dragging
 				&& !cancelnextdragclick 
 				&& (touchedAModel==null) 
-				&& STMemory.currentlyHeld == null
+				&& !STMemory.isHoldingItem()
 				&& !movementControllDisabled){
 				dragging = true;
 				dragstart = TimeUtils.millis();
@@ -653,7 +675,9 @@ public class MainExplorationView implements Screen {
 		}
 		
 		if (!Gdx.input.isTouched()){
+			
 			newtouch = true;
+			ModelManagment.fireDragStartEnd(); 
 		}
 		
 		if (coasting){

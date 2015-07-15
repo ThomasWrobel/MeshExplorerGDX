@@ -54,6 +54,10 @@ public class ModelManagment {
 	/** everything the mouse is currently down over **/
 	public static ObjectSet<hitable> mousedownOn = new ObjectSet<hitable>();
 
+	/** has a drag started? (that is, has the cursor moved after its been down, but not released?)**/
+	static boolean dragStarted = false;
+	
+			
 	/**All model with texture animations **/
 	public static ObjectSet<Animating> animatingobjects = new ObjectSet<Animating>();
 
@@ -232,7 +236,7 @@ public class ModelManagment {
 
 		//	Boolean defaultCanRender = test.canRender(renderableWithAttribute);
 
-		
+
 		//	Gdx.app.log(logstag,"default created with attribute = "+defaultCanRender);
 
 
@@ -255,9 +259,9 @@ public class ModelManagment {
 
 
 		ModelInstance colortest = ModelMaker.createRectangleAt(0, 900, 130, 200, 200, Color.BLACK, testmaterial3); 
-		
+
 		//ModelManagment.addmodel(centermaker,RenderOrder.infrontStage);
-		
+
 		if (ME.currentMode!=GameMode.Production){
 			ModelManagment.addmodel(beamtest,RenderOrder.infrontStage);
 			ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
@@ -426,13 +430,13 @@ public class ModelManagment {
 		ArrayList<hitable> everyThingUnderCursor = new ArrayList<hitable>();
 		hitable closestNonBlockerTouched = null;	    
 		hitable closestBlockerTouched = null;
-		
+
 		for (hitable instance : hitables) {
-			
-		
-		
-		
-		//for (int i = 0; i < hitables.size; ++i) {
+
+
+
+
+			//for (int i = 0; i < hitables.size; ++i) {
 
 			//final hitable instance = hitables.get(i);
 
@@ -540,17 +544,17 @@ public class ModelManagment {
 				if (processHits){
 					instance.fireTouchDown();
 					mousedownOn.add(instance);
-					
+
 				}
 			}
 
 		}
-		
+
 		//and if it exists we should hit the highest blocker too
 		if (closestBlockerTouched!=null){
 			closestBlockerTouched.fireTouchDown();
 			mousedownOn.add(closestBlockerTouched);
-			
+
 		}
 
 		// if (highest!=null){
@@ -605,6 +609,26 @@ public class ModelManagment {
 
 		//animatingobjects.removeValue(model,true);
 		animatingobjects.remove(model);
+	}
+
+	/** fires the drag event on everything the mouse was down on.
+	 * This event should be fired once after a mousedown then mouse movement 
+	 * @return **/
+	public static void fireDragStartOnAll()	 {
+
+		if (!dragStarted) {
+
+			Gdx.app.log(logstag,"_-drag start on all :"+mousedownOn.size);
+			for (hitable model : mousedownOn) {
+				model.fireDragStart();	
+
+			}
+			dragStarted=true;
+		}
+	}
+	
+	public static void fireDragStartEnd() {
+		dragStarted=false;
 	}
 
 	public static void untouchAll() {

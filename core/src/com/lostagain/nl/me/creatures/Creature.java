@@ -321,7 +321,7 @@ public class Creature implements hitable , Animating {
 			SSSNode appliedConcept;
 			if (!ConceptGun.isDisabled()){
 				appliedConcept = ConceptGun.equipedConcept;
-			} else if (STMemory.currentlyHeld!=null) {
+			} else if (STMemory.isHoldingItem()) {
 				appliedConcept = STMemory.currentlyHeld.itemsnode;					
 			} else {
 				Gdx.app.log(logstag,"_nothing currently equiped to fight creature");	
@@ -731,6 +731,14 @@ public class Creature implements hitable , Animating {
 	public boolean rayHits(Ray ray) {
 				
 		return 	Intersector.intersectRaySphere(ray, this.getCenter(), this.getRadius(), null);
+		
+	}
+
+
+
+	@Override
+	public void fireDragStart() {
+		// TODO Auto-generated method stub
 		
 	}
 	

@@ -13,6 +13,7 @@ public interface hitable {
 	public PosRotScale getTransform();
 	public void fireTouchDown();
 	public void fireTouchUp();
+	public void fireDragStart();
 	
 	public void setLastHitsRange(float range); //set the distance squared from the shot origin to this object 
 	public float getLastHitsRange(); //returns the above

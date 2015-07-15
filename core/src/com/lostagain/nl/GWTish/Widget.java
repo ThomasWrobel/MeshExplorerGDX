@@ -41,7 +41,7 @@ public class Widget extends AnimatableModelInstance {
 	 * TOPLEFT is effective normal for GWT like behavior, but we are keeping it flexible here for now
 	 * @author Tom
 	 *
-	 */
+	 **/
 	enum MODELALIGNMENT {
 		TOPLEFT,CENTER,BOTTOMRIGHT
 	}

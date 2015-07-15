@@ -10,6 +10,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -21,6 +22,7 @@ import com.darkflame.client.semantic.SSSIndex;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.me.creatures.Population;
 import com.lostagain.nl.me.domain.MEDomain;
+import com.lostagain.nl.me.features.ConceptObject;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
@@ -522,6 +524,27 @@ public static void disableDrag(){
 		MainExplorationView.cancelnextdragclick = true;
 		
 	}
+//
+
+public static void addnewdrop(ConceptObject newdrop, float x, float y) {
+	 Gdx.app.log(MainExplorationView.logstag,"_____________:newdrop ");
+	 MainExplorationView.infoPopUp.displayMessage("Concept Node dropping:"+newdrop.itemsnode.getPLabel());
+	 
+	 // x = (int)x - (newdrop.getWidth()/2);
+	//  y = (int)y - (newdrop.getHeight()/2); //No need as its centralized anyway
+	 
+	 
+	 newdrop.setToPosition(new Vector3(x,y,0));
+	 newdrop.show();
+	 newdrop.setAsDropped();
+	 
+		double deg = (Math.random()*30)-15; 		
+		newdrop.setToRotation(new Quaternion(Vector3.Z, (float) deg));
+	 
+	// Population.testForReactionsToNewDrop(newdrop,x,y);
+}
+
+
 
 public static void addnewdrop(DataObject newdrop, float x, float y) {
 	

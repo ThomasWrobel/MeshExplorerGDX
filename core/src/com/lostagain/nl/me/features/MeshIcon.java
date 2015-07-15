@@ -46,6 +46,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		Links,
 		Abilitys,
 		Info,
+		Concept, //Used as a generic concept object (Note this might change when first opened and its discovered to be a email, software etc inside?)
 		OTHER; //used as a catch all for unique features.
 	}
 	
@@ -64,7 +65,8 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	static final float iconWidth  = 100f; //standard width and height of all icons
 	static final float iconHeight = 100f;
 	
-	private Label MeshIconsLabel;
+	protected Label MeshIconsLabel;
+	
 	
 	
 	//this icons stuff
@@ -79,9 +81,9 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 
 	//various things to handle animation of appearing/disaspering
 	enum FeatureState {
-		appearing,disapearing,normal,hidden;
+		appearing,disapearing,FeatureOpen,FeatureClosed;
 	}
-	FeatureState currentState = FeatureState.hidden;
+	FeatureState currentState = FeatureState.FeatureClosed;
 	protected float Opacity = 0f;
 	float fadeDuration = 0.500f;
 	float timeIntoFade = 0.0f;
@@ -94,16 +96,18 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 
 
 	
-	
+
 	//----------------------------------------------------
-	
+	public MeshIcon(IconType type,Location parentLocation,GenericMeshFeature assocatiedfeature) {	
+		this(type,null,iconWidth,iconHeight,parentLocation,assocatiedfeature);
+	}
 	/** 
 	 * Creates a icon of the specified type.
 	 * The idea is this is placed relative to the parent location (or rather the parent locations infoIcon which should always be at the center)
 	 *  
 	 * **/
-	public MeshIcon(IconType type,Location parentLocation,GenericMeshFeature assocatiedfeature) {		
-		super(generateBackgroundModel());
+	public MeshIcon(IconType type,String specificName,float w,float h,Location parentLocation,GenericMeshFeature assocatiedfeature) {		
+		super(generateBackgroundModel(w,h));
 		
 		thisIconsType = type;
 		this.parentLocation = parentLocation;
@@ -163,10 +167,16 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		
 		
 		//Now create a new label and attach it too ourselves
-
-		String name = type.name();
+		String name = "";
+		if (specificName==null){
+			name = type.name();
+		} else {
+			name=specificName;
+		}
 		MeshIconsLabel = new Label(name);
 		MeshIconsLabel.setLabelBackColor(Color.CLEAR);
+		
+		
 		
 		Vector3 labelCenter = MeshIconsLabel.getCenter();
 		//AnimatableModelInstance internalModel = MeshIconsLabel.getModel();
@@ -184,9 +194,12 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	 * Generates the generic icon model 
 	 * 
 	 * Currently just a colored rectangle. 
+	 * @param iconheight2 
+	 * @param iconwidth2 
 	 * 
 	 * **/
-	static private Model generateBackgroundModel(){
+	static private Model generateBackgroundModel(float iconwidth, float iconheight){
+		
 		
 				
 		//make its material (this will change in future to something more pretty)
@@ -201,14 +214,13 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
         
 		
 		//work out half widths and heights
-		float hw =  iconWidth/2;
-		float hh = iconHeight/2;
+		float hw =  iconwidth/2;
+		float hh =  iconheight/2;
 		
 		//we create the rectangle at negative half the width and height to positive half the width and height.
 		//this ensures its center point is at 0,0
 		Model model = ModelMaker.createRectangle(-hw, -hh, hw, hh, 0, material);
 				
-		
 				
 		return model;		
 	}
@@ -233,7 +245,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	/** triggers the icon to open showing its contents (assocatiedFeature) **/
 	public void open(){
 		
-		if (currentState == FeatureState.hidden){
+		if (currentState == FeatureState.FeatureClosed){
 			Gdx.app.log(logstag,"opening mesh feature");
 			animateOpen();
 		} else {
@@ -245,7 +257,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	/** triggers the icon to close hiding its contents (assocatiedFeature) **/
 	public void close(){
 		
-		if (currentState == FeatureState.normal){
+		if (currentState == FeatureState.FeatureOpen){
 			Gdx.app.log(logstag,"closing mesh feature");
 			animateClose();
 		} else {
@@ -304,9 +316,9 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 				//else we look at the time difference and if its less then the double click max gap we trigger the open command
 				if (elipsedTime < MAXDOUBLECLICKTIME){
 					timeOfFirstClick=0;
-					if (currentState == FeatureState.hidden){
+					if (currentState == FeatureState.FeatureClosed){
 						open();
-					} else if (currentState == FeatureState.normal){
+					} else if (currentState == FeatureState.FeatureOpen){
 						
 						close();
 					}
@@ -398,7 +410,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 			Opacity = ratio;
 			if (ratio>1){
 				ModelManagment.removeAnimating(this);
-				currentState = FeatureState.normal;
+				currentState = FeatureState.FeatureOpen;
 				if (runAfterFadeIn!=null){
 					runAfterFadeIn.run();
 				}
@@ -409,14 +421,14 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 			Opacity = 1-ratio;
 			if (ratio>1){
 				ModelManagment.removeAnimating(this);
-				currentState = FeatureState.hidden;
+				currentState = FeatureState.FeatureClosed;
 				if (runAfterFadeOut!=null){
 					
 					runAfterFadeOut.run();
 				}
 			}
 			break;
-		case hidden:
+		case FeatureClosed:
 			
 			Opacity = 0f;
 			this.assocatiedFeature.hide();
@@ -424,7 +436,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 			ModelManagment.removeAnimating(this);
 			
 			return;
-		case normal:
+		case FeatureOpen:
 			
 			Opacity = 1f;
 			ModelManagment.removeAnimating(this);
@@ -590,6 +602,11 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	
 	public void updateAnimationFrame(float delta){
 		updateOpenCloseAnimation(delta);
+		
+	}
+	@Override
+	public void fireDragStart() {
+		// TODO Auto-generated method stub
 		
 	}
 	

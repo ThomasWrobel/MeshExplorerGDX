@@ -697,8 +697,8 @@ public class RepairScreen extends Group  implements LocationScreen {
 
 							SSSNode ItemNode = STMemory.currentlyHeld.itemsnode;
 
-							//if not carrying item ignore
-							if (STMemory.currentlyHeld==null){
+							//if not holding items ignore
+							if (!STMemory.isHoldingItem()){
 								return;
 							}
 
