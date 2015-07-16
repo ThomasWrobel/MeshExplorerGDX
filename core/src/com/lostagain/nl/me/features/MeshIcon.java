@@ -1,7 +1,11 @@
 package com.lostagain.nl.me.features;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -18,6 +22,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
+import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
@@ -25,6 +30,7 @@ import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.GlowingSquareShader;
+import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
 
 /** 
  * Will become a 3d icon that can be clicked to turn into a interactive meshFeature.
@@ -42,21 +48,25 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	//generic icon stuff
 	public enum IconType {
 		Email,
-		Software,
+		ConceptStore,
+		AbilityStore,
 		Links,
 		Abilitys,
 		Info,
 		Concept, //Used as a generic concept object (Note this might change when first opened and its discovered to be a email, software etc inside?)
-		OTHER; //used as a catch all for unique features.
+		LocationHub,
+		OTHER;  //used as a catch all for unique features.
 	}
+	
 	
 	public enum OpenMode {
 		SingleClick,DoubleClick
 	}
 	
 	/** if on doubleclick mode this is the time since the first click **/
-	private long timeOfFirstClick=0;
+	protected long timeOfFirstClick=0;
 	private static long MAXDOUBLECLICKTIME = 300; //ms
+	
 	
 	/** Do you need to single click or double click to open this icon?**/
 	OpenMode iconsOpenMode = OpenMode.DoubleClick;
@@ -113,22 +123,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		this.parentLocation = parentLocation;
 		this.assocatiedFeature = assocatiedfeature;
 		
-		//associated features should be hidden by default
-		assocatiedFeature.hide();
-				
-		//set the associated feature to know this is its associated icon
-		//this.assocatiedFeature.setAssociatedIcon(this);
-		
-		//this icon will also position the feature so its attached at the center
-		Vector3 featureCenter = this.assocatiedFeature.getCenter(); //5,5
-		
-		
-		//attach (our middle point is 0,0,0 but we don't know where the features middle point is, so we subtrack is center value
-		//from the location we are attaching it too.
-		//This means it should look centralized.
-		//ie. If it has its center at 5,5 we position it at -5,-5 so that the "center" 5,5 point is in the middle
-		super.attachThis(this.assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z));
-				
+		setupAssociatedFeature();
 		
 		
 		
@@ -137,32 +132,8 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		IconsDefaultVertexs = new float[thisMesh.getNumVertices() * thisMesh.getVertexSize()];
 		model.meshes.get(0).getVertices(IconsDefaultVertexs);
 		
-		//Now the more tricky job, we need to work out the size of the associatedFeature, and use that to create new mesh vertex co-ordinates
-		//for us to transform into when opening
-		//We start by getting its minimum and maximum local co-ordinates
-		Vector3 minXYZ = assocatiedFeature.getLocalBoundingBox().min;
-		Vector3 maxXYZ = assocatiedFeature.getLocalBoundingBox().max;
-		Vector3 centerXYZ = assocatiedFeature.getCenter();
-		
-		//We then use the X/Y to form a new set of co-ordinates, normalised around the center point of the associatedfeature
-		float ox = centerXYZ.x;
-		float oy = centerXYZ.y;
-		
 	
-		IconsEnlargedVertexs = new float[] { 
-											 minXYZ.x-ox,minXYZ.y-oy,0,
-											 maxXYZ.x-ox,minXYZ.y-oy,0,
-											 maxXYZ.x-ox,maxXYZ.y-oy,0,
-											 minXYZ.x-ox,maxXYZ.y-oy,0,
-										
-										    };
-		
-		//Gdx.app.log(logstag,"Enl:"+IconsEnlargedVertexs[0]+","+IconsEnlargedVertexs[1]+","+IconsEnlargedVertexs[2]);
-		//Gdx.app.log(logstag,"Enl:"+IconsEnlargedVertexs[3]+","+IconsEnlargedVertexs[4]+","+IconsEnlargedVertexs[5]);
-		//Gdx.app.log(logstag,"Enl:"+IconsEnlargedVertexs[6]+","+IconsEnlargedVertexs[7]+","+IconsEnlargedVertexs[8]);
-		//Gdx.app.log(logstag,"Enl:"+IconsEnlargedVertexs[9]+","+IconsEnlargedVertexs[10]+","+IconsEnlargedVertexs[11]);
-		
-		
+	
 		
 		
 		
@@ -198,6 +169,55 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 
 		
 	}
+	private void setupAssociatedFeature() {
+		//associated features should be hidden by default
+		assocatiedFeature.hide();
+				
+		//set the associated feature to know this is its associated icon
+		//this.assocatiedFeature.setAssociatedIcon(this);
+		
+		//this icon will also position the feature so its attached at the center
+		Vector3 featureCenter = this.assocatiedFeature.getCenter(); //5,5
+		
+		/** objects are attached slightly above the icon, as this helps with blending issues**/
+		float vertDisplacement = 7f;
+				
+		//attach (our middle point is 0,0,0 but we don't know where the features middle point is, so we subtrack is center value
+		//from the location we are attaching it too.
+		//This means it should look centralized.
+		//ie. If it has its center at 5,5 we position it at -5,-5 so that the "center" 5,5 point is in the middle
+		super.attachThis(this.assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z+vertDisplacement));
+				
+		//We need to work out the size of the associatedFeature, and use that to create new mesh vertex co-ordinates
+		//for us to transform into when opening
+		//We start by getting its minimum and maximum local co-ordinates
+		cacheAssociatedFeaturesSize();
+	}
+	
+	
+	
+	private void cacheAssociatedFeaturesSize() {
+		//we need to work out the size of the associatedFeature, and use that to create new mesh vertex co-ordinates
+		//for us to transform into when opening
+		//We start by getting its minimum and maximum local co-ordinates
+		
+		Vector3 minXYZ    = assocatiedFeature.getLocalBoundingBox().min;
+		Vector3 maxXYZ    = assocatiedFeature.getLocalBoundingBox().max;
+		Vector3 centerXYZ = assocatiedFeature.getCenter();
+		
+		//We then use the X/Y to form a new set of co-ordinates, normalised around the center point of the associatedfeature
+		float ox = centerXYZ.x;
+		float oy = centerXYZ.y;
+		
+	
+		IconsEnlargedVertexs = new float[] { 
+											 minXYZ.x-ox,minXYZ.y-oy,0,
+											 maxXYZ.x-ox,minXYZ.y-oy,0,
+											 maxXYZ.x-ox,maxXYZ.y-oy,0,
+											 minXYZ.x-ox,maxXYZ.y-oy,0,
+										
+										    };
+	}
 
 	/** 
 	 * Generates the generic icon model 
@@ -219,7 +239,8 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		
 		//for now, we just use a simple texture
         Material material = new Material("IconMaterial",
-				new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLUE,DefaultColour,Color.WHITE));
+				new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLUE,DefaultColour,Color.WHITE),
+				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f));
         
 		
 		//work out half widths and heights
@@ -250,6 +271,20 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		
 	}
 	
+	/**
+	 * Sets the background of this icon (and its label)
+	 * used currently as par tof its open/close animation
+	 * 
+	 * @param opacity
+	 */
+	public void setBackgroundColor(Color bak){
+		//get the material from the model
+		Material infoBoxsMaterial = this.getMaterial("IconMaterial");
+		GlowingSquareAttribute attribute = ((GlowingSquareShader.GlowingSquareAttribute)infoBoxsMaterial.get( GlowingSquareShader.GlowingSquareAttribute.ID));
+		attribute.backColor = bak;
+		
+		
+	}
 	
 	/** triggers the icon to open showing its contents (assocatiedFeature) **/
 	public void open(){
@@ -418,6 +453,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		case appearing:
 			Opacity = ratio;
 			if (ratio>1){
+				Opacity = 1;
 				ModelManagment.removeAnimating(this);
 				currentState = FeatureState.FeatureOpen;
 				if (runAfterFadeIn!=null){
@@ -429,14 +465,16 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		case disapearing:
 			Opacity = 1-ratio;
 			if (ratio>1){
+				Opacity = 0;
 				ModelManagment.removeAnimating(this);
 				currentState = FeatureState.FeatureClosed;
-				if (runAfterFadeOut!=null){
-					
+				this.assocatiedFeature.hide();
+				this.show();
+				if (runAfterFadeOut!=null){					
 					runAfterFadeOut.run();
 				}
 			}
-			break;
+		break;
 		case FeatureClosed:
 			
 			Opacity = 0f;
@@ -621,10 +659,66 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	
 	
 	
+	/**
+	 * Lets you change the feature associated with this icon when its double clicked
+	 */
+	protected void setAssociatedFeature(GenericMeshFeature newfeature){
+		//remove old one
+		this.removeAttachment(assocatiedFeature.getAnimatableModelInstance());
+		//setup new one
+		this.assocatiedFeature = newfeature;		
+		setupAssociatedFeature();
+		
+	}
 	
+	public void refreshAssociatedFeature() {
+		setupAssociatedFeature();
+	}
 	
+	/**
+	 * Icons linked to this one by lines
+	 */
+	HashMap<MeshIcon,AnimatableModelInstance> linkedIcons = new HashMap<MeshIcon,AnimatableModelInstance>();
 	
+	/**
+	 * Sets a glowing line between this icon and another
+	 */
+	public void addLineTo(MeshIcon target){
+		
+
+		Gdx.app.log(logstag,"Adding new connecting line");
+		AnimatableModelInstance Linksline = ModelMaker.addConnectingLine(this, target);
+		linkedIcons.put(target,Linksline);
+		Linksline.setInheritedRotation(false);
+		
+		this.attachThis(Linksline, new PosRotScale(0,0,-10f)); //a little behind this icon
+		
+		
+		ModelManagment.addmodel(Linksline,ModelManagment.RenderOrder.zdecides);
+		
+		
+		
+		
+	}
 	
+	/**
+	 * update line lengths. 
+	 * Not used yet, when this object moves, or things it links to moves, the lengths of the connecting lines will need to be recalculated
+	 **/
+	private void updateLineLengths(){
+		//Note; No need to update position or rotation as thats handled automatically by it being attached + set to look at
+		
+	}
+	
+	/**
+	 * Sets a glowing line between this icon and another
+	 */
+	public void removeLineTo(MeshIcon target){
+		
+		this.removeAttachment(linkedIcons.get(target));
+		
+		linkedIcons.remove(target);
+	}
 	
 	
 	

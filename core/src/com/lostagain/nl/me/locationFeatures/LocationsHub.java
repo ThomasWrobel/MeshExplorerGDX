@@ -159,8 +159,9 @@ public class LocationsHub extends Table {
 		}
 
 
-		Label nameLabel = new Label(displayLocation,skin);
+		Label nameLabel    = new Label(displayLocation,skin);
 		Label addressLabel = new Label("Location URI:"+displayURI,skin);
+		
 		nameLabel.setAlignment(Align.center);
 		addressLabel.setAlignment(Align.center);
 		nameLabel.setFontScale(1.3f);

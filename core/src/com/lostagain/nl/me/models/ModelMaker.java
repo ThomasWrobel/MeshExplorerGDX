@@ -16,6 +16,8 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.lostagain.nl.me.locationFeatures.LocationsHub;
+import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 public class ModelMaker {
 
@@ -182,5 +184,37 @@ public class ModelMaker {
 
 
 
+	public static AnimatableModelInstance addConnectingLine(AnimatableModelInstance From,AnimatableModelInstance To){
+		float width = 30;
+		
+		Vector3 from = From.transState.position.cpy();
+		Vector3 to   = To.transState.position.cpy();
+		
+		float distance = from.dst(to);
+				
+		//we create a rectangle centered at the middle of its base, and the distance we need as its height
+		
+		//we use the glowing line maker for now but this might be replaced in future for a true shader based one.
+		//in which case we will just use a reactangle as follows
+		//Model linemodel = ModelMaker.createRectangle(0-hw, 0, hw, distance, 0, defaultmaterial);
+
+		
+		Model linemodel = MessyModelMaker.createGlowingRectangle(0, distance, width,0 ,0,Color.RED, true,true );
+		
+		
+		AnimatableModelInstance lineinstance = new AnimatableModelInstance(linemodel);
+		
+		//position it 
+		lineinstance.setToPosition(from);
+		
+		//angle it
+		lineinstance.lookAt(To,Vector3.Y);
+		
+
+		Gdx.app.log(logstag,"created line at:"+from);
+		
+		return lineinstance;
+		
+	}
 	
 }

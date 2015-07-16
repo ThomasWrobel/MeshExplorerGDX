@@ -414,7 +414,7 @@ public class DistanceFieldShader implements Shader {
     	 }
     	 
     	 //back color comes from diffuse
-		 Color backcolor = ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse)).color;
+		 Color backcolor = ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse)).color.cpy();
 		 
 		 //and we multiply it by the opacity
 		 BlendingAttribute backgroundOpacity = ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type));

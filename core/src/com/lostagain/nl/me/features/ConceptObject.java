@@ -41,11 +41,12 @@ public class ConceptObject extends MeshIcon {
 	/** if this object is stored in another object, this provides a link to it**/
 	private ConceptObjectSlot storedin;
 	
+	/** if the mouse has gone down on this object, but we dont yet know if its going to pick it up (by dragging) or merely double clicking to itneract with it!**/
+	boolean mouseDownOn = false;
 	
 	enum ConceptObjectStatus {
 
-		/** if the mouse has gone down on this object, but we dont yet know if its going to pick it up (by dragging) or merely double clicking to itneract with it!**/
-		MouseDownOn,
+		
 		/** if the user is currently holding this object (ie, dragging it) **/
 		Holding,
 		/** if this object is stored in another **/
@@ -111,12 +112,13 @@ public class ConceptObject extends MeshIcon {
 	@Override
 	public void fireTouchDown() {		
 		super.fireTouchDown();
-		this.objectsStatus = ConceptObjectStatus.MouseDownOn;
 		
-		//potential drag operation
-		//we have to tell ME that a item might be about to be dragged
-		//we should only triggger the "picked up" functions once the cursor moves a bit though
-		//This ensures if the user is simply double clicking, they dont cause a drag as well
+		//If we are in a object right now we reset timeOfFirstClick==0 as we dont want double click events to fire
+		if (this.objectsStatus == ConceptObjectStatus.InObject){
+			 timeOfFirstClick=0; 
+		}
+		
+		mouseDownOn=true;
 		
 	}
 	

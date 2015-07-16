@@ -33,6 +33,7 @@ import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.features.ConceptObject;
 import com.lostagain.nl.me.features.ConceptObjectSlot;
 import com.lostagain.nl.me.features.InfoBox;
+import com.lostagain.nl.me.features.LocationHub;
 import com.lostagain.nl.me.features.MeshIcon;
 import com.lostagain.nl.me.gui.GUIBar;
 import com.lostagain.nl.me.gui.InfoPopUp;
@@ -302,13 +303,18 @@ public class MainExplorationView implements Screen {
 	//	addnewlocation( PlayersData.homeLoc.locationsHub,200,500);
 
 
-		InfoBox testFeature = new InfoBox("Title","Content Text");
-	
+	//	String info = "location\n123456789\n12345";
+	//	Label testFeature2 = new Label(info);
+	//	testFeature2.setToPosition(new Vector3(0,0,20f));
+	//	ModelManagment.addmodel(testFeature2,ModelManagment.RenderOrder.zdecides);
 		
-		MeshIcon iconTest   = new MeshIcon(MeshIcon.IconType.Info,PlayersData.homeLoc,testFeature);
+
+	//	InfoBox testFeature = new InfoBox("Title","Content Text");
+	
+	//	MeshIcon iconTest   = new MeshIcon(MeshIcon.IconType.Info,PlayersData.homeLoc,testFeature);
 	//	iconTest.setToRotation(new Quaternion(Vector3.X, 45)); //random rotation test
-		iconTest.setToPosition(new Vector3(120f,670f,0f));
-		ModelManagment.addmodel(iconTest,ModelManagment.RenderOrder.zdecides);
+	//	iconTest.setToPosition(new Vector3(120f,670f,0f));
+	//	ModelManagment.addmodel(iconTest,ModelManagment.RenderOrder.zdecides);
 		
 		
 		ConceptObject coTest = new ConceptObject(PlayersData.computersuri);
@@ -316,11 +322,17 @@ public class MainExplorationView implements Screen {
 		ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
 		
 		ConceptObjectSlot slotTest = new ConceptObjectSlot();
-		slotTest.setToPosition(new Vector3(420f,670f,0f));
+		slotTest.setToPosition(new Vector3(450f,670f,0f));
 		ModelManagment.addmodel(slotTest,ModelManagment.RenderOrder.zdecides);
 		
+		LocationHub testhub = new LocationHub(PlayersData.computersuri,PlayersData.homeLoc);
+		testhub.setToPosition(new Vector3(450f,870f,0f));
+		ModelManagment.addmodel(testhub,ModelManagment.RenderOrder.zdecides);
 		
-		testlabel.setLabelBackColor(new Color(0.3f,0.3f,1f,0.5f));
+	//	testhub.addLineTo(iconTest);
+		
+		
+		testlabel.setLabelBackColor(new Color(0.3f,0.3f,1f,0.9f));
 			
 		
 		//testlabel.setSizeAs(100, 100);
@@ -328,9 +340,8 @@ public class MainExplorationView implements Screen {
 		
 		testlabel.setToPosition(new Vector3(120,550,0));
 		
-		testlabel2.setLabelBackColor(new Color(0.3f,0.3f,1f,0.5f));
-		
-		testlabel2.setTextScale(0.6f);		
+		testlabel2.setLabelBackColor(new Color(0.3f,0.3f,1f,0.6f));
+		testlabel2.setTextScale(0.6f);		//not functional
 		testlabel2.setText("(file url of computer test)");
 		
 		testlabel2.setToPosition(new Vector3(120f,470f,0f));
@@ -341,7 +352,7 @@ public class MainExplorationView implements Screen {
 	    //   environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
 		ModelManagment.addmodel(testlabel,ModelManagment.RenderOrder.zdecides);
-		testlabel.setOpacity(0.75f);
+		testlabel.setOpacity(0.85f);
 		
 		ModelManagment.addmodel(testlabel2,ModelManagment.RenderOrder.zdecides);
 		testlabel2.setOpacity(0.5f);
@@ -679,6 +690,7 @@ public class MainExplorationView implements Screen {
 				Gdx.app.log(logstag,"_-(mouse released but no hit)-_");
 			}
 			touchedAModel=null;
+			
 			//untouch everything else that was previously touched (but we might not be over anymore)
 			ModelManagment.untouchAll(); 
 			

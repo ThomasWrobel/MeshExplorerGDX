@@ -108,11 +108,22 @@ public class VerticalPanel extends Widget {
 		contents.remove(widget);
 		widget.hide();
 		widget.removeOnSizeChangeHandler(updateContainerSize);
+		this.removeAttachment(widget);
 		
 		//regenerate list
 		repositionWidgets(); //we can optimize if we only reposition after the one removed
 	}
 
+	
+	public void clear(){
+		
+		for (Widget widget : contents) {
+			widget.hide();
+			widget.removeOnSizeChangeHandler(updateContainerSize);			
+			this.removeAttachment(widget);
+		}
+		contents.clear();
+	}
 	/**
 	 * Sets the spacing between elements vertically
 	 * @param f

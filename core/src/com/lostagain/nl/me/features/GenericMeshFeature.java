@@ -84,6 +84,10 @@ interface GenericMeshFeature extends IsAnimatableModelInstance {
 	 * @param currentState - appearing,disappearing,normal or hidden
 	 **/
 	void updateApperance(float alpha,FeatureState currentState);
+
+	/** clears this features contents ready to refill/refresh it**/
+	void clear();
+	
 	
 	//abstract void fadeIn(float duration,Runnable runAfterFadeIn);
 	//abstract void fadeOut(float duration,Runnable runAfterFadeOut);

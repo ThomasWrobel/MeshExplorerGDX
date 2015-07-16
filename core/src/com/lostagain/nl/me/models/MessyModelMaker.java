@@ -241,7 +241,21 @@ public class MessyModelMaker {
 		return newinstance;
 	}
 
-
+/**
+ * //x1 =0
+		//y1 =height
+		//x2 =width
+		//y2 =0
+ * @param x1
+ * @param y1
+ * @param x2
+ * @param y2
+ * @param z
+ * @param MColor
+ * @param withStartBlob
+ * @param withEndBlob
+ * @return
+ */
 	public static Model createGlowingRectangle(float x1,float y1,float x2,float y2,float z,Color MColor, boolean withStartBlob, boolean withEndBlob) {
 		//x1 =0
 		//y1 =height
@@ -268,14 +282,15 @@ public class MessyModelMaker {
 	}
 
 	
-	private static Model glowingRectangle(Vector3 corner1,
+	static Model glowingRectangle(Vector3 corner1,
 			Vector3 corner2, Vector3 corner3, Vector3 corner4, Color MColor, boolean withStartBlob, boolean withEndBlob ) {
 
 		//MColor = Color.WHITE;
 		
+		
 		Material lowmaterial = new Material(ColorAttribute.createDiffuse(MColor), 
 				ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(0.3f), 
-				FloatAttribute.createShininess(16f));
+				FloatAttribute.createShininess(16f));	
 
 		
         FileHandle imageFileHandle = Gdx.files.internal("data/beam_low.png"); 
@@ -290,6 +305,8 @@ public class MessyModelMaker {
 		
 		BlendingAttribute blendingAttribute = new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
+
+		 
         FileHandle imageFileHandle2 = Gdx.files.internal("data/beam_top.png"); 
         
         //Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE0);

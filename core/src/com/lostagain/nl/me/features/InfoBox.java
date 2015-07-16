@@ -45,7 +45,7 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		//labels should have transparent backgrounds by default
 		testLabel.setLabelBackColor(Color.CLEAR);
 		testLabel2.setLabelBackColor(Color.CLEAR);
-		
+		//
 	}
 
 	/*

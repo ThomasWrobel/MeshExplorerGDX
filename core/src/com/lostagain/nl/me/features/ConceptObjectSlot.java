@@ -19,7 +19,7 @@ public class ConceptObjectSlot extends Widget implements hitable {
 
 	final static String logstag = "ME.ConceptObjectSlot";
 
-	static float PADDING = 5;
+	static float PADDING = 5f;
     static float WIDTH  = ConceptObject.StandardConceptWidth+PADDING;
     static float HEIGHT = ConceptObject.StandardConceptHeight+PADDING;
     
@@ -56,7 +56,7 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		
 		super(WIDTH,HEIGHT,Widget.MODELALIGNMENT.CENTER); //easier if we are centralized
 		super.setBackgroundColor(Color.LIGHT_GRAY);
-		super.setBorderColor(Color.GREEN);
+		setApperanceAsEmpty();
 		
 		//add to the hitables, so we can detect when a mouseup releases a object over us
 		ModelManagment.addHitable(this);
@@ -75,6 +75,7 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		//check if are accepting of this type of conceptobject
 		if (!willAccept(object)){
 			Gdx.app.log(logstag," Slot not accepting THIS drop ");
+			this.animatedRejection();
 			return;
 		}
 		
@@ -93,7 +94,7 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		objectCurrentlyStored = object;
 		
 		this.attachThis(object, new PosRotScale(0f,0f,2f));
-		
+		setApperanceAsInUse();
 		//ensure its visible
 		object.show();
 		//associate its attachment
@@ -113,6 +114,10 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		this.removeAttachment(objectCurrentlyStored);
 		objectCurrentlyStored=null;
 		
+		//updateapperance
+		setApperanceAsEmpty() ;
+		
+		
 		
 		if (runAfterSomethingDraggedOff!=null){
 			runAfterSomethingDraggedOff.run();
@@ -120,7 +125,16 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		return true;
 		
 	}
-	
+	private void setApperanceAsEmpty() {
+		this.setBorderColor(Color.BLUE);		
+		
+	}
+	private void setApperanceAsInUse() {
+		this.setBorderColor(Color.GREEN);		
+		
+	}
+
+
 	private void animatedRejection() {
 		// TODO Auto-generated method stub
 		

@@ -235,8 +235,14 @@ void main() {
 	
 	//                addColor*addColor.a + sceneColor*(1-addColor.a);
 	
+	
+	//NOTE: the alpha of newCol is not correct here
+	//it seems to be 100% except where the shadow starts
+	
+	
 	vec4 finalCol =  (newCol * newCol.a) + (v_backColor * (1.0-newCol.a));
 	finalCol.a =  newCol.a + v_backColor.a;
+	
 	//finalCol.a = vec4(0.0,0.0,0.0,1.0);
 	//finalCol = clamp(finalCol,vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0));
 	

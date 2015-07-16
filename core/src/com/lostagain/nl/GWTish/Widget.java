@@ -27,7 +27,7 @@ public class Widget extends AnimatableModelInstance {
 	final static String logstag = "GWTish.Widget";
 	
 	static Material DefaultWhiteBackground = new Material("Background",
-			   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.99f),
+			   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
 			   new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLACK,Color.WHITE,Color.RED));
 	
 	//Handlers
@@ -114,7 +114,8 @@ public class Widget extends AnimatableModelInstance {
 		//we first get the offset 
 		Vector2 offset =  getOffsetForSize(sizeX, sizeY,alignment);
 		
-		Model newModel = ModelMaker.createRectangle(-offset.x, -offset.y, sizeX-offset.x,sizeY-offset.y, 0, mat); 		
+		Model newModel = ModelMaker.createRectangle(-offset.x, -offset.y, sizeX-offset.x,sizeY-offset.y, 0, mat); 	
+		
 		return newModel;
 	}
 	

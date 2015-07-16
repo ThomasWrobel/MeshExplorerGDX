@@ -235,8 +235,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		return localBoundingBox.getHeight();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getCenter()
+	/**
+	 * Note; Gets the center position of the bounding box, you need to multiply by the position to get the center on the stage
 	 */
 	@Override
 	public Vector3 getCenter(){

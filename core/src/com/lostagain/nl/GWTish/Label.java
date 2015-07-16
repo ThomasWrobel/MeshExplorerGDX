@@ -123,11 +123,11 @@ public class Label extends LabelBase {
 			textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 		//}
 				
-		
+			
 		
 		Material mat = 	new Material("LabelMaterial",	
 									 TextureAttribute.createDiffuse(newTexture),
-									 new BlendingAttribute(1),
+									 new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
 									 ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
 									 textStyle);
 
@@ -247,7 +247,11 @@ public class Label extends LabelBase {
 		int destX = 0;
 		int destY = 0;
 		int cheight = 0;
-
+		
+		//the bottom right corner of the texture map thats used
+		int biggestX = 0;
+		int biggestY = 0;
+		
 		for (int i = 0; i < Letters.length(); i++) {
 
 			Glyph glyph = data.getGlyph(Letters.charAt(i));
@@ -269,6 +273,8 @@ public class Label extends LabelBase {
 				//new line
 				yp=(int) (yp+(defaultglyph.height* scaledown)+5);
 				currentX=0;
+				
+				continue;
 			}
 
 
@@ -279,31 +285,39 @@ public class Label extends LabelBase {
 
 			destX = 0+currentX+glyph.xoffset;
 			destY = 0+(yp+(yglyphoffset ));
+			
 			//note if we are going to go of the edge, and we are on expand mode, we have to quickly get a bigger map to work in
 			boolean hadToEnlarge = false;
-			int biggestX = destX+cwidth;
-			int biggestY = destY+cheight;
+			int cbiggestX = destX+cwidth;
+			int cbiggestY = destY+cheight;
 
+			//ensure its bigger then anything we have already (remember cbiggest is just the current lines largest x value, not the overall for all lines)
+			if (cbiggestX>biggestX){
+				biggestX = cbiggestX;
+			}
+			if (cbiggestY>biggestY){
+				biggestY = cbiggestY;
+			}
 			if (expandSizeToFit && (biggestX>textPixmap.getWidth())){
 				Gdx.app.log(logstag,"______________x ("+biggestX+") out of range, having to make canvas bigger");
 				//we just double the X size, as we are cropping later anyway
-				biggestX=biggestX*2;
+				cbiggestX=biggestX*2;
 				hadToEnlarge =  true;					
 			} else {
-				biggestX = textPixmap.getWidth();
+				cbiggestX = textPixmap.getWidth();
 			}
 			
 			if (expandSizeToFit && (biggestY>textPixmap.getHeight())){
-				Gdx.app.log(logstag,"______________y ("+biggestY+") out of range, having to make canvas bigger");
+				Gdx.app.log(logstag,"______________y ("+cbiggestY+") out of range, having to make canvas bigger");
 				//we just double the Y size, as we are cropping later anyway
-				biggestY=biggestY*2;
+				cbiggestY=biggestY*2;
 				hadToEnlarge =  true;					
 			} else {
-				biggestY = textPixmap.getHeight();
+				cbiggestY = textPixmap.getHeight();
 			}
 			
 			if (hadToEnlarge){
-				textPixmap = sizePixmapTo(textPixmap, biggestX, biggestY);
+				textPixmap = sizePixmapTo(textPixmap, cbiggestX, cbiggestY);
 			}
 			//--------------------
 			
@@ -331,8 +345,8 @@ public class Label extends LabelBase {
 
 		if (expandSizeToFit){
 			//crop down to final size
-			int biggestX = currentX;
-			int biggestY = destY+cheight;
+			// biggestX = currentX;
+			// biggestY = destY+cheight;
 
 			Gdx.app.log(logstag,"______________final cropped size="+biggestX+","+biggestY);
 
@@ -512,7 +526,7 @@ public class Label extends LabelBase {
 	 * @param labelBackColor
 	 */
 	public void setLabelBackColor(Color labelBackColor) {
-	
+	//	labelBackColor = Color.PINK; //TEMP during testing. Currently another shader bug - the background colour isn't being used correctly for the transparancy, its only effecting the shadows blending
 		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");		
 		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
 	
@@ -562,6 +576,7 @@ public class Label extends LabelBase {
 		//background.color.a = opacity;
 		BlendingAttribute backgroundOpacity = ((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type));
 		backgroundOpacity.opacity = opacity;
+		Gdx.app.log(logstag,"_____________opacity:"+opacity);
 	}
 	
 	
