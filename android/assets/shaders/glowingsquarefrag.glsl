@@ -1,4 +1,14 @@
-precision highp float;
+#ifdef GL_ES 
+#define LOWP lowp
+#define MED mediump
+#define HIGH highp
+precision mediump float;
+#else
+#define MED
+#define LOWP
+#define HIGH
+#endif
+
 
 uniform float u_time;
 uniform vec2 resolution;
@@ -35,8 +45,8 @@ void main()
   
   vec4 result = vec4(0.0,0.0,0.0,0.0);
   
-	float glowAlpha = 0;
-	float edgeDis = 0;
+	float glowAlpha = 0.0;
+	float edgeDis   = 0.0;
 	
 	
     float gwy = v_glowWidth * pixel_step.y;
@@ -45,23 +55,23 @@ void main()
   if (y<(gwy)) {
   	//if we are on the top or bottom our size is based on the y step
   
-    edgeDis= y - (gwy/2);
-    edgeDis= (gwy/2)-abs(edgeDis);
+    edgeDis= y - (gwy/2.0);
+    edgeDis= (gwy/2.0)-abs(edgeDis);
     
                        
-    glowAlpha = smoothstep(0, (gwy/2), edgeDis);       
+    glowAlpha = smoothstep(0.0, (gwy/2.0), edgeDis);       
   } 
   
-  if (y>(1-gwy)) {
+  if (y>(1.0-gwy)) {
   
   	//if we are on the top or bottom our size is based on the y step
  
   	
-    edgeDis= (1-(gwy/2))-y;// - (v_glowWidth/2);
+    edgeDis= (1.0-(gwy/2.0))-y;// - (v_glowWidth/2);
     
-    edgeDis= (gwy/2)-abs(edgeDis);
+    edgeDis= (gwy/2.0)-abs(edgeDis);
     
-    glowAlpha = smoothstep(0, (gwy/2), edgeDis);
+    glowAlpha = smoothstep(0.0, (gwy/2.0), edgeDis);
   } 
   
    if (x<(gwx)) {
@@ -69,42 +79,44 @@ void main()
   	//if we are on the top or bottom our size is based on the y step
   
   	
-    edgeDis= x - (gwx/2);
-    edgeDis= (gwx/2)-abs(edgeDis);
+    edgeDis= x - (gwx/2.0);
+    edgeDis= (gwx/2.0)-abs(edgeDis);
     
-    glowAlpha = smoothstep(0, (gwx/2), edgeDis);
+    glowAlpha = smoothstep(0.0, (gwx/2.0), edgeDis);
                               
   } 
   
-  if (x>(1-gwx)) {
+  if (x>(1.0-gwx)) {
   	
 
   	
-    edgeDis= (1-(gwx/2))-x;// - (v_glowWidth/2);
+    edgeDis= (1.0-(gwx/2.0))-x;// - (v_glowWidth/2);
     
-    edgeDis= (gwx/2)-abs(edgeDis);
+    edgeDis= (gwx/2.0)-abs(edgeDis);
     
-    glowAlpha = smoothstep(0, (gwx/2), edgeDis);
+    glowAlpha = smoothstep(0.0, (gwx/2.0), edgeDis);
   } 
   
     
-    v_glowColor.a =  v_glowColor.a* glowAlpha;
-  	
+    //v_glowColor.a =  v_glowColor.a* glowAlpha;
+  	beam.a =  v_glowColor.a* glowAlpha;
   	
   	//add a sharper core
   	float coreAlpha = pow(glowAlpha,6.0);
-  	v_coreColor.a = v_coreColor.a * coreAlpha;
-  	
+  //	v_coreColor.a = v_coreColor.a * coreAlpha;
+  	core.a  = v_coreColor.a * coreAlpha;
   	
     
     //now blend core with glow
    // result = (v_glowColor * v_glowColor.a) + (v_coreColor * (1-v_glowColor.a));
    // result.a = v_glowColor.a + v_coreColor.a;	
-    result   = v_glowColor     + v_coreColor;
-    result.a = v_glowColor.a   + v_coreColor.a;
+    //result   = v_glowColor     + v_coreColor;
+    result = beam + core;
+   // result.a = v_glowColor.a   + v_coreColor.a;
+    result.a = beam.a   + core.a;
     
     //now blend with background (under it!)
-    result = (result * result.a) + (v_backColor * (1-result.a));
+    result = (result * result.a) + (v_backColor * (1.0-result.a));
    // result.a = 0.5;//result.a + v_backColor.a;
     
     	    //NOTE: Background alpha seems lost when combined...why?

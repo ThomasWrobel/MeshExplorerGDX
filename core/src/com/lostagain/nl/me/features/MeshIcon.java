@@ -176,6 +176,15 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		MeshIconsLabel = new Label(name);
 		MeshIconsLabel.setLabelBackColor(Color.CLEAR);
 		
+		//we also need to scale the label to fit as it might be too long
+		if (MeshIconsLabel.getWidth()>w){
+			//10/5
+			float ratio = MeshIconsLabel.getWidth()/w;
+			float newWidth = w;
+			float newHeight = MeshIconsLabel.getHeight() / ratio;
+			MeshIconsLabel.setSizeAs(newWidth, newHeight);
+			
+		}
 		
 		
 		Vector3 labelCenter = MeshIconsLabel.getCenter();
@@ -287,7 +296,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 
 	@Override
 	public PosRotScale getTransform() {
-		return this.getTransform();
+		return this.getTransform(); //hu? error!
 	}
 
 	/*****/

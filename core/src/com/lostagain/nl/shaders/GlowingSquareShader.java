@@ -71,9 +71,9 @@ public class GlowingSquareShader implements Shader {
 				
 				super(ID);
 				this.glowWidth = glowWidth;
-				this.backColor = backColor;
-				this.coreColor = coreColor;
-				this.glowColor = glowColor;
+				this.backColor = backColor.cpy();
+				this.coreColor = coreColor.cpy();
+				this.glowColor = glowColor.cpy();
 				
 			}
 
@@ -118,21 +118,24 @@ public class GlowingSquareShader implements Shader {
     @Override
     public void init () {
     	
-    	Gdx.app.log(logstag, "init square shader");
+    	  Gdx.app.log(logstag, "initialising square shader");
     	
     		//Note; shader now made yet
     	  String vert = Gdx.files.internal("shaders/glowingsquarevert.glsl").readString();
           String frag = Gdx.files.internal("shaders/glowingsquarefrag.glsl").readString();
           
           program = new ShaderProgram(vert, frag);
+          
           if (!program.isCompiled()){
               throw new GdxRuntimeException(program.getLog());
           }
           
+          Gdx.app.log(logstag, "storing shaders uniform locations");
+          
           u_projViewTrans = program.getUniformLocation("u_projViewTrans");
           u_worldTrans    = program.getUniformLocation("u_worldTrans");
           u_time          = program.getUniformLocation("u_time"); 
-          u_pixel_step =  program.getUniformLocation("u_pixel_step");
+          u_pixel_step   =  program.getUniformLocation("u_pixel_step");
           	//square style
 		  u_glowWidth = program.getUniformLocation("u_glowWidth"); 
           u_backColor = program.getUniformLocation("u_backColor"); 
@@ -183,9 +186,9 @@ public class GlowingSquareShader implements Shader {
     	 program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
     	     	
     	 GlowingSquareAttribute squareStyle = (GlowingSquareAttribute)renderable.material.get(GlowingSquareAttribute.ID);
-      		Color back = squareStyle.backColor;
-      		Color core = squareStyle.coreColor;
-      		Color glow = squareStyle.glowColor;
+      		Color back = squareStyle.backColor.cpy();
+      		Color core = squareStyle.coreColor.cpy();
+      		Color glow = squareStyle.glowColor.cpy();
       	 
     	 BlendingAttribute blending = ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type));
     	 if (blending!=null){

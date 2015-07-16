@@ -1,3 +1,18 @@
+
+#ifdef GL_ES 
+#define LOWP lowp
+#define MED mediump
+#define HIGH highp
+precision mediump float;
+#else
+#define MED
+#define LOWP
+#define HIGH
+#endif
+
+
+
+
 //combined projection and view matrix
 //uniform mat4 u_projView;
 

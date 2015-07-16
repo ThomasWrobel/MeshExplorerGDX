@@ -374,7 +374,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		
 		
 		public static boolean isHoldingItem(){
-			if (currentlyHeld==null){
+			if (currentlyHeld==null && currentlyHeldNEW ==null ){
 				return false;
 			} else {
 				return true;

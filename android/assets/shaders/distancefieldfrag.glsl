@@ -178,7 +178,7 @@ void main() {
     		   float newalpha = newCol.a + (v_glowColor.a * alpha);
     		   
     		 //now blend glow with whats there already
-    		 newCol = (v_glowColor * alpha) + (newCol * (1-alpha));
+    		 newCol = (v_glowColor * alpha) + (newCol * (1.0-alpha));
     		
     		 
     		// newCol   = v_glowColor;
@@ -212,7 +212,7 @@ void main() {
     		   float newalpha = newCol.a+shadowCol.a;
     		   
     		    //now blend with original (under it!)
-    		    newCol = (newCol * newCol.a) + (shadowCol * (1-newCol.a));
+    		    newCol = (newCol * newCol.a) + (shadowCol * (1.0-newCol.a));
     		  
     		    newCol.a = newalpha;
     			
@@ -235,7 +235,7 @@ void main() {
 	
 	//                addColor*addColor.a + sceneColor*(1-addColor.a);
 	
-	vec4 finalCol =  (newCol * newCol.a) + (v_backColor * (1-newCol.a));
+	vec4 finalCol =  (newCol * newCol.a) + (v_backColor * (1.0-newCol.a));
 	finalCol.a =  newCol.a + v_backColor.a;
 	//finalCol.a = vec4(0.0,0.0,0.0,1.0);
 	//finalCol = clamp(finalCol,vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0));

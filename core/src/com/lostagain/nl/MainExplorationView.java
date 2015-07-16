@@ -31,6 +31,7 @@ import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.features.ConceptObject;
+import com.lostagain.nl.me.features.ConceptObjectSlot;
 import com.lostagain.nl.me.features.InfoBox;
 import com.lostagain.nl.me.features.MeshIcon;
 import com.lostagain.nl.me.gui.GUIBar;
@@ -314,6 +315,11 @@ public class MainExplorationView implements Screen {
 		coTest.setToPosition(new Vector3(320f,670f,0f));
 		ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
 		
+		ConceptObjectSlot slotTest = new ConceptObjectSlot();
+		slotTest.setToPosition(new Vector3(420f,670f,0f));
+		ModelManagment.addmodel(slotTest,ModelManagment.RenderOrder.zdecides);
+		
+		
 		testlabel.setLabelBackColor(new Color(0.3f,0.3f,1f,0.5f));
 			
 		
@@ -575,7 +581,7 @@ public class MainExplorationView implements Screen {
 			//this includes checking we arnt already dragging
 			//checking no pending event has canceled the next drag (like if the user is moving a scrollable window)
 			//checking they arnt "dragging" a concept object rather then the landscape (currentlyHeld)
-			//and finnally checking if they are allowed to drag at all (ie, maybe the gun is in use and its disabled normal movement)
+			//and finally checking if they are allowed to drag at all (ie, maybe the gun is in use and its disabled normal movement)
 			if (!dragging
 				&& !cancelnextdragclick 
 				&& (touchedAModel==null) 
@@ -657,9 +663,25 @@ public class MainExplorationView implements Screen {
 		}
 		
 		if ((touchedAModel!=null) && !Gdx.input.isTouched()){
-			Gdx.app.log(logstag,"_-released touch on a model-_");
+			Gdx.app.log(logstag,"_-released with model-_");
 			touchedAModel=null;
-			ModelManagment.untouchAll(); //note; really this should only fire on things that were touched currently it fires on everything hitable
+		
+			
+			//now we need to check if we were over anything when we released, as potentially this means dropping a object onto something
+			Ray ray = ME.getCurrentStageCursorRay();
+			MainExplorationView.touchedAModel = ModelManagment.testForHits(ray,false,false);
+			
+			if (MainExplorationView.touchedAModel!=null){
+				Gdx.app.log(logstag,"_-(mouse up over something)-_");
+				MainExplorationView.touchedAModel.fireTouchUp();
+				ModelManagment.mousedownOn.remove(touchedAModel);
+			} else {
+				Gdx.app.log(logstag,"_-(mouse released but no hit)-_");
+			}
+			touchedAModel=null;
+			//untouch everything else that was previously touched (but we might not be over anymore)
+			ModelManagment.untouchAll(); 
+			
 		}
 		
 		if (!Gdx.input.isTouched() && !newtouch){

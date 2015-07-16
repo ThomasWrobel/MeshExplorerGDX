@@ -2,6 +2,7 @@ package com.lostagain.nl.GWTish;
 
 import java.util.HashSet;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -42,17 +43,26 @@ public class Widget extends AnimatableModelInstance {
 	 * @author Tom
 	 *
 	 **/
-	enum MODELALIGNMENT {
+	public static enum MODELALIGNMENT {
 		TOPLEFT,CENTER,BOTTOMRIGHT
 	}
-	MODELALIGNMENT alignment = MODELALIGNMENT.TOPLEFT;
+	public MODELALIGNMENT alignment = MODELALIGNMENT.TOPLEFT;
 	
 	public Widget(Model object) {
 		super(object);
 	}
-	
+	/**
+	 * 
+	 * @param sizeX
+	 * @param sizeY
+	 * @param align - where this model will be in relation to its centerpoint
+	 */
+	public Widget(float sizeX,float sizeY,MODELALIGNMENT align) {
+		super(generateBackground(sizeX,sizeY,DefaultWhiteBackground.copy(),align)); 
+		
+	}
 	public Widget(float sizeX,float sizeY) {
-		super(generateBackground(10,10,DefaultWhiteBackground.copy(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
+		super(generateBackground(sizeX,sizeY,DefaultWhiteBackground.copy(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
 		
 	}
 	
@@ -61,6 +71,9 @@ public class Widget extends AnimatableModelInstance {
 	 * @param opacity
 	 */
 	public void setOpacity(float opacity){		
+
+		Gdx.app.log(logstag,"______________setOpacity:"+opacity);
+		
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial("Background");
 		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;	
@@ -70,13 +83,28 @@ public class Widget extends AnimatableModelInstance {
 	 * @param opacity
 	 */
 	public void setBackgroundColor(Color backcol){		
+		
+
+		Gdx.app.log(logstag,"______________backcol:"+backcol);
+		
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial("Background");
 		GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)infoBoxsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
 		
 		backtexture.backColor = backcol;
 	}
-	
+	public void setBorderColor(Color bordercol){		
+		
+
+		Gdx.app.log(logstag,"______________bordercoll:"+bordercol);
+		
+		//get the material from the model
+		Material infoBoxsMaterial = this.getMaterial("Background");
+		GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)infoBoxsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
+		
+		backtexture.coreColor = bordercol;
+		backtexture.glowColor = bordercol;
+	}
 	/**
 	 * makes a arbitery sized background that will be expanded as widgets are added
 	 * @return

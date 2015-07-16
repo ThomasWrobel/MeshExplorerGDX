@@ -316,6 +316,8 @@ public class DistanceFieldShader implements Shader {
     @Override
     public void init () {
     	
+    	Gdx.app.log(logstag, "initialising distance field shader");
+    	
     	  String vert = Gdx.files.internal("shaders/distancefieldvert.glsl").readString();
           String frag = Gdx.files.internal("shaders/distancefieldfrag.glsl").readString();
           
@@ -326,7 +328,10 @@ public class DistanceFieldShader implements Shader {
           if (!program.isCompiled()){
               throw new GdxRuntimeException(program.getLog());
           }
+
           
+      	  Gdx.app.log(logstag, "setting distance field shaders uniform location");
+      	
           u_projViewTrans = program.getUniformLocation("u_projViewTrans");
           u_worldTrans = program.getUniformLocation("u_worldTrans");
           u_sampler2D =   program.getUniformLocation("u_texture");
