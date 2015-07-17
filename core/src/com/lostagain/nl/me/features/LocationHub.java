@@ -52,14 +52,27 @@ public class LocationHub extends MeshIcon {
 		//if so make sure it isn't already unlocked
 		
 		//if unlocked we return a InfoBox for display
-		String  title = locationsNode.getPLabel();
-		String  info  = "URI:"+locationsNode.getPURI();
-		if (title.length()>40){
-			title=title.substring(0, 40);
+		
+		SSSNodesWithCommonProperty DiscriptionSet = SSSNodesWithCommonProperty.getSetFor(StaticSSSNodes.DescriptionOf,locationsNode);
+		Gdx.app.log(logstag,"Getting discription for location:"+locationsNode.getPLabel());
+
+		String Discription = "(No Details)";
+		if (DiscriptionSet!=null)
+		{
+			Discription = DiscriptionSet.get(0).getPLabel();
 		}
 
-		if (info.length()>40){
-			info=" ..."+info.substring(info.length()-40);
+		
+		String  title = locationsNode.getPLabel();
+		String  info  = "URI:"+locationsNode.getPURI();
+
+				if (info.length()>40){
+					info=" ..."+info.substring(info.length()-40);
+				}
+
+		info	= info+	"\n \n \n"+Discription;
+		if (title.length()>40){
+			title=title.substring(0, 40);
 		}
 
 		InfoBox locationCenterInformation = new InfoBox(title,info);

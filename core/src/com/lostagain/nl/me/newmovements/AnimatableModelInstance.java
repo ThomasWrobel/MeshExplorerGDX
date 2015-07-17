@@ -247,11 +247,15 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		return localBoundingBox.getCenter(center);
 	}
 	
+	/**
+	 * The bounding box of this object if it was not scaled
+	 */
 	private void createBoundBox() {
+		
 		localBoundingBox = new BoundingBox();
+		
 		 super.calculateBoundingBox(localBoundingBox);
 		 	
-		
 	}
 	
 

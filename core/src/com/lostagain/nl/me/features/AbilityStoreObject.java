@@ -13,7 +13,7 @@ public class AbilityStoreObject extends ConceptStoreObject {
 		super(locationHub);
 		super.setBackgroundColor(Color.ORANGE);
 		
-		
+		TitleLabel.setText("Ability Store:");
 	}
 
 }

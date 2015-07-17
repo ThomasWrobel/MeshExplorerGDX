@@ -60,10 +60,15 @@ public class Label extends LabelBase {
 		/** label is a fixed, specified size and text is scaled to fit **/
 		Fixed,
 		/** label expands till it contains the text **/
-		ExpandToFitText	
+		ExpandXYToFit,
+		/**
+		 * Expands variably with new lines, but wraps to the width
+		 */
+		ExpandHeightFixedWidth,
+		
 	}
 
-	SizeMode labelsSizeMode = SizeMode.ExpandToFitText;
+	SizeMode labelsSizeMode = SizeMode.ExpandXYToFit;
 
 	//Texture currentTexture = null;
 	//boolean modelNeedsUpdate = true;
@@ -71,7 +76,16 @@ public class Label extends LabelBase {
 	//Style data (mostly controlled by shader)
 	static private Color defaultBackColour = Color.WHITE;
 
-	
+	public Label (String contents,float MaxWidth){
+		super(generateObjectData(true, true, contents, SizeMode.ExpandHeightFixedWidth,MaxWidth));
+		 
+			this.contents=contents;
+				
+			if (!setup){
+				firstTimeSetUp();
+				setup=true;
+			}
+	}
 
 	/**
 	 * Generates a label with the specified contents.
@@ -81,7 +95,7 @@ public class Label extends LabelBase {
 	 * @param contents
 	 **/
 	public Label (String contents){
-		super(generateObjectData(true, true, contents, SizeMode.ExpandToFitText));
+		super(generateObjectData(true, true, contents, SizeMode.ExpandXYToFit,-1));//No max width
 		
 		 
 		this.contents=contents;
@@ -101,15 +115,20 @@ public class Label extends LabelBase {
 	 * The object data needed on creation is just the background mesh instance and the cursor position.
 	 * This shouldn't need to be run outside the objects first creation.
 	 * After its created everything should be alterable separately without recreation
+	 * @param maxWidth 
 	 * 
 	 * @return	  
 	 **/
-	private static backgroundAndCursorObject generateObjectData(boolean regenTexture,boolean regenMaterial,String contents,SizeMode labelsSizeMode ) {
+	private static backgroundAndCursorObject generateObjectData(boolean regenTexture,boolean regenMaterial,String contents,SizeMode labelsSizeMode, float maxWidth ) {
 		TextureAndCursorObject textureData = null;
 		
 		
+		
 		if (regenTexture){
-			textureData = generateTexture(labelsSizeMode, contents);
+			
+			
+			
+			textureData = generateTexture(labelsSizeMode, contents,maxWidth);
 			
 		}
 		Texture newTexture = textureData.textureItself;
@@ -434,7 +453,7 @@ public class Label extends LabelBase {
 	public void setText(String text){
 		this.contents=text;
 		
-		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents); 
+		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,-1); //-1 should be max width
 		
 
 		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");	
@@ -475,23 +494,29 @@ public class Label extends LabelBase {
 		
 	}
 
-	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents) {
+	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents, float maxWidth) {
 		
 		
-		TextureAndCursorObject NewTexture;
+		
+		TextureAndCursorObject NewTexture = null;
 		
 		
-		if (labelsSizeMode == SizeMode.ExpandToFitText){
-
+		switch (labelsSizeMode) {
+		
+		case ExpandXYToFit:
 			Gdx.app.log(logstag,"______________generating expand to fit text ");
-
-			NewTexture = generatePixmapExpandedToFit(contents,1f); 
-
-
-		} else {
-			NewTexture = generateTextureNormal(contents,LabelNativeWidth, LabelNativeHeight,1f); 
-
+			NewTexture = generatePixmapExpandedToFit(contents,1f);
+			break;
+		case ExpandHeightFixedWidth:
+			break;
+		case Fixed:
+			break;
+		default:
+			NewTexture = generateTextureNormal(contents,LabelNativeWidth, LabelNativeHeight,1f);
+			break;
+	
 		}
+		
 		NewTexture.textureItself.setFilter(TextureFilter.Linear, TextureFilter.Linear);//ensure mipmaping is disabled, else distance field shaders wont work
 		
 		return NewTexture;

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.LabelBase.TextureAndCursorObject;
 import com.lostagain.nl.GWTish.VerticalPanel;
@@ -39,7 +40,8 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		//add default labels
 		Label testLabel = new Label(title);
 		super.add(testLabel);
-		Label testLabel2 = new Label(contents);
+		Label testLabel2 = new Label(contents);	
+		testLabel2.setToscale(new Vector3(0.7f,0.7f,0.7f)); //content smaller then title
 		super.add(testLabel2);
 		
 		//labels should have transparent backgrounds by default

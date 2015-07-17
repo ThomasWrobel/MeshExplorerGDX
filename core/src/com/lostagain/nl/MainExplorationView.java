@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.lostagain.nl.ME.GameMode;
+import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.camera.DebugCamera;
@@ -316,7 +317,7 @@ public class MainExplorationView implements Screen {
 	//	iconTest.setToPosition(new Vector3(120f,670f,0f));
 	//	ModelManagment.addmodel(iconTest,ModelManagment.RenderOrder.zdecides);
 		
-		
+		/*
 		ConceptObject coTest = new ConceptObject(PlayersData.computersuri);
 		coTest.setToPosition(new Vector3(320f,670f,0f));
 		ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
@@ -324,10 +325,12 @@ public class MainExplorationView implements Screen {
 		ConceptObjectSlot slotTest = new ConceptObjectSlot();
 		slotTest.setToPosition(new Vector3(450f,670f,0f));
 		ModelManagment.addmodel(slotTest,ModelManagment.RenderOrder.zdecides);
+		*/
 		
 		LocationHub testhub = new LocationHub(PlayersData.computersuri,PlayersData.homeLoc);
-		testhub.setToPosition(new Vector3(450f,870f,0f));
+		testhub.setToPosition(new Vector3(350f,950f,0f));
 		ModelManagment.addmodel(testhub,ModelManagment.RenderOrder.zdecides);
+		
 		
 	//	testhub.addLineTo(iconTest);
 		
@@ -357,25 +360,45 @@ public class MainExplorationView implements Screen {
 		ModelManagment.addmodel(testlabel2,ModelManagment.RenderOrder.zdecides);
 		testlabel2.setOpacity(0.5f);
 		
-		//Now lets try making a vertical panel
-		//VerticalPanel testPanel = new VerticalPanel();
 		
 
-		//testPanel.add(testlabel);
-		//testPanel.add(testlabel2);
-		//Label testlabel3 = new Label("test lab 3");
-		//testPanel.add(testlabel3);
-		//Label testlabel4 = new Label("test lab 4");
-		//testPanel.add(testlabel4);
 		
-		//testPanel.setSpaceing(11f);
 
-		//testPanel.setToPosition(new Vector3(300f,-300f,0f));
-		
-		
-		//ModelManagment.addmodel(testPanel,ModelManagment.RenderOrder.zdecides);
+			//Now lets try making a vertical panel
+			VerticalPanel testverticalPanel = new VerticalPanel();
+			
 
-		
+		//	testPanel.add(testlabel);
+			//testPanel.add(testlabel2);
+			Label testlabel3 = new Label("test lab 1");
+			testverticalPanel.add(testlabel3);
+			
+			Label testlabel4 = new Label("test lab 2");
+			testverticalPanel.add(testlabel4);
+			
+			//testPanel.setSpaceing(11f);
+
+			testverticalPanel.setToPosition(new Vector3(300f,-300f,0f));
+			ModelManagment.addmodel(testverticalPanel,ModelManagment.RenderOrder.zdecides);
+			
+			HorizontalPanel testHorizontalPanel = new HorizontalPanel();
+			
+
+			//	testPanel.add(testlabel);
+				//testPanel.add(testlabel2);
+				Label testlabel3h = new Label("|11|");
+				testHorizontalPanel.add(testlabel3h);
+				testHorizontalPanel.add(testverticalPanel);
+				Label testlabel4h = new Label("|2222222222222222222|");
+				testHorizontalPanel.add(testlabel4h);
+				
+				
+				Label testlabel5h = new Label("|33|");
+				testHorizontalPanel.add(testlabel5h);
+				//testPanel.setSpaceing(11f);
+
+				testHorizontalPanel.setToPosition(new Vector3(540f,-300f,0f));
+				ModelManagment.addmodel(testHorizontalPanel,ModelManagment.RenderOrder.zdecides);
 		//gameStage.setDebugAll(true);
 		
 		//------------------------

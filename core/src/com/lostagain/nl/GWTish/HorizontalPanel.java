@@ -3,10 +3,10 @@ package com.lostagain.nl.GWTish;
 import com.badlogic.gdx.math.Vector2;
 
 
-public class VerticalPanel extends CellPanel {
+public class HorizontalPanel extends CellPanel {
 
 	//current stats
-	float currentTotalWidgetHeight   = 0f;
+	float currentTotalWidgetWidth   = 0f;
 	
 
 	
@@ -14,19 +14,19 @@ public class VerticalPanel extends CellPanel {
 	 * Creates a background and lets you position widgets vertical within it
 	 * 
 	 */
-	public VerticalPanel() {
+	public HorizontalPanel() {
 		super(10,10); //default size and background
 		
 		
 	}
 	
-	Vector2 getNextPosition(float incomingWidth,float incomingHeight,boolean updateHeight){
+	Vector2 getNextPosition(float incomingWidth,float incomingHeight,boolean updateWidth){
 		
-		float newLocationX = 0;		
-		float newLocationY = currentTotalWidgetHeight; //under the last widget
+		float newLocationX = currentTotalWidgetWidth;		
+		float newLocationY = 0; //under the last widget
 		
-		if (updateHeight){
-			currentTotalWidgetHeight=currentTotalWidgetHeight+incomingHeight+spaceing;
+		if (updateWidth){
+			currentTotalWidgetWidth=currentTotalWidgetWidth+incomingWidth+spaceing;
 		}
 		
 		return new Vector2(newLocationX,newLocationY);
@@ -42,7 +42,7 @@ public class VerticalPanel extends CellPanel {
 		//simply clear and re-add them all
 		
 		//reset  stats
-		currentTotalWidgetHeight = 0f;
+		currentTotalWidgetWidth = 0f;
 		currentLargestWidgetsWidth = 0f;
 		currentLargestWidgetsHeight = 0f;
 				
@@ -54,7 +54,7 @@ public class VerticalPanel extends CellPanel {
 		}
 		
 		//update back size
-		this.setSizeAs(currentLargestWidgetsWidth,currentTotalWidgetHeight);
+		this.setSizeAs(currentTotalWidgetWidth,currentLargestWidgetsHeight);
 		
 		
 	}
@@ -64,7 +64,7 @@ public class VerticalPanel extends CellPanel {
 	public void add(Widget widget) {
 		super.add(widget);
 		//resize
-		this.setSizeAs(currentLargestWidgetsWidth,currentTotalWidgetHeight);
+		this.setSizeAs(currentTotalWidgetWidth,currentLargestWidgetsHeight);
 	}
 
 	

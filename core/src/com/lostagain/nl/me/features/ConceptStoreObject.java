@@ -19,10 +19,17 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 	
 
 	LocationHub parentLocation;
+	Label TitleLabel;
 	
 	public ConceptStoreObject(LocationHub locationHub) {
 		parentLocation = locationHub;
 		super.setSpaceing(5f);
+		
+		TitleLabel = new Label("Concept Store Object");
+		TitleLabel.setToscale(new Vector3(0.6f,0.6f,0.6f)); 
+		TitleLabel.setLabelBackColor(Color.CLEAR);
+		
+		this.add(TitleLabel);
 		
 	}
 	
@@ -42,7 +49,7 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 		Label testLabelLala = new Label("Test Data Label:"+newConceptObject.itemsnode.getPLabel());
 		testLabelLala.setLabelBackColor(Color.CLEAR);
 		
-		testLabelLala.setToscale(new Vector3(0.2f,0.2f,0.2f)); //half size
+		testLabelLala.setToscale(new Vector3(0.6f,0.6f,0.6f)); //half size
 
 		
 		
