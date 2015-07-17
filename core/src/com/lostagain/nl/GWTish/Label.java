@@ -64,7 +64,7 @@ public class Label extends LabelBase {
 		/**
 		 * Expands variably with new lines, but wraps to the width
 		 */
-		ExpandHeightFixedWidth,
+		ExpandHeightMaxWidth,
 		
 	}
 
@@ -77,7 +77,7 @@ public class Label extends LabelBase {
 	static private Color defaultBackColour = Color.WHITE;
 
 	public Label (String contents,float MaxWidth){
-		super(generateObjectData(true, true, contents, SizeMode.ExpandHeightFixedWidth,MaxWidth));
+		super(generateObjectData(true, true, contents, SizeMode.ExpandHeightMaxWidth,MaxWidth));
 		 
 			this.contents=contents;
 				
@@ -175,7 +175,7 @@ public class Label extends LabelBase {
 	}
 
 
-	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, float sizeratio) {
+	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, float sizeratio,float maxWidth) {
 
 		
 
@@ -192,7 +192,7 @@ public class Label extends LabelBase {
 
 		Gdx.app.log(logstag,"______________predicted size = "+currentWidth+","+currentHeight);
 		
-		TextureAndCursorObject textureDAta = generateTexture( text, 0, 0,  sizeratio, true); //note zeros as size isn't used
+		TextureAndCursorObject textureDAta = generateTexture( text, 0, 0,  sizeratio, true,maxWidth); //note zeros as size isn't used
 
 		
 		return textureDAta;
@@ -209,23 +209,24 @@ public class Label extends LabelBase {
 
 	static public TextureAndCursorObject generateTextureNormal(String text,int TITLE_WIDTH,int TITLE_HEIGHT, float sizeratio) {
 
-		TextureAndCursorObject textureDAta = generateTexture( text, TITLE_WIDTH, TITLE_HEIGHT,  sizeratio,false);
+		TextureAndCursorObject textureDAta = generateTexture( text, TITLE_WIDTH, TITLE_HEIGHT,  sizeratio,false,-1);
 		
 		return textureDAta;
 	}
 
-	static public TextureAndCursorObject generateTexture(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit) {
+	static public TextureAndCursorObject generateTexture(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit, float maxWidth) {
 		 
-		PixmapAndCursorObject data = generatePixmap(text, DefaultWidth, DefaultHeight, sizeratio, expandSizeToFit);
+		PixmapAndCursorObject data = generatePixmap(text, DefaultWidth, DefaultHeight, sizeratio, expandSizeToFit,maxWidth);
 					
 		
 		
 		return new TextureAndCursorObject(new Texture(data.textureItself),data.Cursor.x,data.Cursor.y);
 	}
 	
-	static public PixmapAndCursorObject generatePixmap(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit) {
+	static public PixmapAndCursorObject generatePixmap(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit, float maxWidth) {
 
-
+		//if maxWidth = -1 then theres no max width
+		
 		String Letters    = text;
 		Pixmap textPixmap = new Pixmap(DefaultWidth, DefaultHeight, Format.RGBA8888);
 
@@ -242,7 +243,7 @@ public class Label extends LabelBase {
 		//	textPixmap.drawRectangle(3, 3, TITLE_WIDTH-3, TITLE_HEIGHT-3);
 
 		BitmapFontData data = DefaultStyles.standdardFont.getData(); //new BitmapFontData(Gdx.files.internal(data.imagePaths[0]), true);
-
+	
 		Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0]));
 
 		// draw the character onto our base pixmap
@@ -276,24 +277,10 @@ public class Label extends LabelBase {
 			Glyph glyph = data.getGlyph(Letters.charAt(i));
 
 			if (glyph==null){
+				
 				glyph=defaultglyph; //temp
 
-
-			}
-
-
-
-			//Gdx.app.log(logstag,"Letters.charAt(i)="+Letters.charAt(i));
-
-			if (Letters.charAt(i) == '\n'){
-
-				Gdx.app.log(logstag,"______________adding line=");
-
-				//new line
-				yp=(int) (yp+(defaultglyph.height* scaledown)+5);
-				currentX=0;
 				
-				continue;
 			}
 
 
@@ -303,8 +290,30 @@ public class Label extends LabelBase {
 			int yglyphoffset = (int) (glyph.yoffset * scaledown);
 
 			destX = 0+currentX+glyph.xoffset;
-			destY = 0+(yp+(yglyphoffset ));
+		
 			
+			//Gdx.app.log(logstag,"Letters.charAt(i)="+Letters.charAt(i));
+
+			if (Letters.charAt(i) == '\n' || (destX>maxWidth && maxWidth!=-1) ){
+
+				//new line  NB; defaultglyph.height seems to be zero for some reason
+				yp=(int) (yp+(data.lineHeight* scaledown)+5);
+				currentX=0;
+				destX=glyph.xoffset;
+				lastremainder=0;
+				Gdx.app.log(logstag,"______________adding line. (yp now="+yp+")");
+				
+				//we skip \n as we don't want to really write that
+				if (Letters.charAt(i) == '\n'){
+					continue;
+				}
+				//---
+			}
+			
+			destY = 0+(yp+(yglyphoffset ));
+
+
+
 			//note if we are going to go of the edge, and we are on expand mode, we have to quickly get a bigger map to work in
 			boolean hadToEnlarge = false;
 			int cbiggestX = destX+cwidth;
@@ -505,9 +514,10 @@ public class Label extends LabelBase {
 		
 		case ExpandXYToFit:
 			Gdx.app.log(logstag,"______________generating expand to fit text ");
-			NewTexture = generatePixmapExpandedToFit(contents,1f);
+			NewTexture = generatePixmapExpandedToFit(contents,1f,-1); //-1 = no max width
 			break;
-		case ExpandHeightFixedWidth:
+		case ExpandHeightMaxWidth:
+			NewTexture = generatePixmapExpandedToFit(contents,1f,maxWidth); //-1 = no max width
 			break;
 		case Fixed:
 			break;

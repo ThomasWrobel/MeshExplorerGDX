@@ -36,6 +36,7 @@ import com.lostagain.nl.me.features.ConceptObjectSlot;
 import com.lostagain.nl.me.features.InfoBox;
 import com.lostagain.nl.me.features.LocationHub;
 import com.lostagain.nl.me.features.MeshIcon;
+import com.lostagain.nl.me.features.ProgressBar;
 import com.lostagain.nl.me.gui.GUIBar;
 import com.lostagain.nl.me.gui.InfoPopUp;
 import com.lostagain.nl.me.gui.STMemory;
@@ -327,19 +328,22 @@ public class MainExplorationView implements Screen {
 		ModelManagment.addmodel(slotTest,ModelManagment.RenderOrder.zdecides);
 		*/
 		
+		
+		
 		LocationHub testhub = new LocationHub(PlayersData.computersuri,PlayersData.homeLoc);
-		testhub.setToPosition(new Vector3(350f,950f,0f));
+		testhub.setToPosition(new Vector3(350f,750f,0f));
 		ModelManagment.addmodel(testhub,ModelManagment.RenderOrder.zdecides);
+		
+		ProgressBar testbar = new ProgressBar(30, 10, 200);
+		testbar.setToPosition(new Vector3(350f,700f,0f));
+		testbar.setValue(100);
+		
+		ModelManagment.addmodel(testbar,ModelManagment.RenderOrder.zdecides);
 		
 		
 	//	testhub.addLineTo(iconTest);
-		
-		
 		testlabel.setLabelBackColor(new Color(0.3f,0.3f,1f,0.9f));
-			
-		
 		//testlabel.setSizeAs(100, 100);
-		
 		
 		testlabel.setToPosition(new Vector3(120,550,0));
 		
@@ -362,7 +366,7 @@ public class MainExplorationView implements Screen {
 		
 		
 
-		
+		/*
 
 			//Now lets try making a vertical panel
 			VerticalPanel testverticalPanel = new VerticalPanel();
@@ -399,6 +403,7 @@ public class MainExplorationView implements Screen {
 
 				testHorizontalPanel.setToPosition(new Vector3(540f,-300f,0f));
 				ModelManagment.addmodel(testHorizontalPanel,ModelManagment.RenderOrder.zdecides);
+				*/
 		//gameStage.setDebugAll(true);
 		
 		//------------------------

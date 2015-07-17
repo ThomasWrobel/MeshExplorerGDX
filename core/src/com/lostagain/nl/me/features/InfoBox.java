@@ -38,9 +38,9 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		super.setBackgroundColor(Color.CLEAR); //set the back colour (excluding border)
 		
 		//add default labels
-		Label testLabel = new Label(title);
+		Label testLabel = new Label(title,300);
 		super.add(testLabel);
-		Label testLabel2 = new Label(contents);	
+		Label testLabel2 = new Label(contents,300);	
 		testLabel2.setToscale(new Vector3(0.7f,0.7f,0.7f)); //content smaller then title
 		super.add(testLabel2);
 		

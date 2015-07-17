@@ -54,8 +54,23 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		Abilitys,
 		Info,
 		Concept, //Used as a generic concept object (Note this might change when first opened and its discovered to be a email, software etc inside?)
-		LocationHub,
+		LocationHub("Location\nHub"), //note the new line
 		OTHER;  //used as a catch all for unique features.
+		 
+		String labelName = "";
+		
+		IconType(){
+			 this("");
+		 }
+		IconType(String label){
+			 labelName=label;
+		 }
+		public String getLabelName() {
+			if (labelName.isEmpty()){
+				return this.name(); //default is name of enum;
+			}
+			return labelName;
+		}
 	}
 	
 	
@@ -74,6 +89,8 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	
 	static final float iconWidth  = 100f; //standard width and height of all icons
 	static final float iconHeight = 100f;
+	private static final float LabelMargin = 2f;
+	
 	
 	protected Label MeshIconsLabel;
 	
@@ -140,7 +157,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		//Now create a new label and attach it too ourselves
 		String name = "";
 		if (specificName==null){
-			name = type.name();
+			name = type.getLabelName();
 		} else {
 			name=specificName;
 		}
@@ -148,7 +165,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		MeshIconsLabel.setLabelBackColor(Color.CLEAR);
 		
 		//we also need to scale the label to fit as it might be too long
-		if (MeshIconsLabel.getWidth()>w){
+		if ((MeshIconsLabel.getWidth()+LabelMargin)>w){
 			//10/5
 			float ratio = MeshIconsLabel.getWidth()/w;
 			float newWidth = w;
@@ -164,7 +181,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		ModelManagment.addHitable(this);
 		
 		
-		super.attachThis(MeshIconsLabel, new PosRotScale(-labelCenter.x,-labelCenter.y,5f));
+		super.attachThis(MeshIconsLabel, new PosRotScale(-labelCenter.x,-labelCenter.y,5f)); //hover above a bit
 		
 
 		
@@ -180,7 +197,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		Vector3 featureCenter = this.assocatiedFeature.getCenter(); //5,5
 		
 		/** objects are attached slightly above the icon, as this helps with blending issues**/
-		float vertDisplacement = 7f;
+		float vertDisplacement = 11f;
 				
 		//attach (our middle point is 0,0,0 but we don't know where the features middle point is, so we subtrack is center value
 		//from the location we are attaching it too.

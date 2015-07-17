@@ -400,7 +400,7 @@ public class DataObject extends Image
 				finalpixmap.setColor(0.1f, 0, 0, 0.5f);					
 				finalpixmap.drawRectangle(3, 3, TITLE_WIDTH-6, TITLE_HEIGHT-6);
 				
-			    PixmapAndCursorObject newtextPixmap = com.lostagain.nl.GWTish.Label.generatePixmap(dataname,TITLE_WIDTH,TITLE_HEIGHT,1f,false);//scaledown
+			    PixmapAndCursorObject newtextPixmap = com.lostagain.nl.GWTish.Label.generatePixmap(dataname,TITLE_WIDTH,TITLE_HEIGHT,1f,false,-1);//scaledown
 			    
 			    
 			//	finalpixmap.drawPixmap(textPixmap, ImageBorder,ImageBorder);
