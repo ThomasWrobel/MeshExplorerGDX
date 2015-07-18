@@ -442,7 +442,7 @@ public class ModelManagment {
 
 			//instance.getTransform().getTranslation(position);
 			//position.add(instance.getCenter());
-			position = instance.getCenter();
+			position = instance.getCenterOfBoundingBox();
 
 			float dist2 = ray.origin.dst2(position);
 

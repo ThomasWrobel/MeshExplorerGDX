@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.GWTish.Widget;
@@ -93,7 +94,11 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		Gdx.app.log(logstag," attaching object ");
 		objectCurrentlyStored = object;
 		
-		this.attachThis(object, new PosRotScale(0f,0f,2f));
+		//attach point should be true center, not pivot point
+		Vector3 center = this.getCenterOfBoundingBox();		
+		
+		this.attachThis(object, new PosRotScale(center.x,center.y,2f));
+		
 		setApperanceAsInUse();
 		//ensure its visible
 		object.show();
@@ -221,6 +226,17 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		boolean hit = Intersector.intersectRayBoundsFast(ray, this.getLocalCollisionBox());
 		Gdx.app.log(logstag,"testing for hit on concept object:"+hit);
 		return hit;
+	}
+
+
+	@Override
+	public void setOpacity(float opacity) {
+		super.setOpacity(opacity);
+		//if we have a concept fade that too;
+		if (this.objectCurrentlyStored!=null){
+			objectCurrentlyStored.setOpacity(opacity);
+		}
+		
 	}
 
 }

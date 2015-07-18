@@ -27,11 +27,11 @@ public abstract class CellPanel extends Widget {
 	 * 
 	 * the currently largest width of any stored element (doesnt yet update when elements removed)
 	 */
-	float currentLargestWidgetsWidth = 0f;
+	float largestWidthOfStoredWidgets = 0f;
 	/**
 	 * the currently largest height of any stored element (doesnt update when elements removed)
 	 */
-	float currentLargestWidgetsHeight = 0f;
+	float largestHeightOfStoredWidgets = 0f;
 	
 	
 	public CellPanel(int x, int y) {
@@ -78,11 +78,60 @@ public abstract class CellPanel extends Widget {
 	 */
 	public void add(Widget widget) {
 		
+		
 		//add to the widget list
 		contents.add(widget);
+
+		//recalculate biggest widgets (used for centralisation vertical or horizontal depending on panel)
+		boolean changed = recalculateLargestWidgets();
+		if (changed){
+			this.repositionWidgets(); //reposition all widgets with the new one
+			
+			return;
+		}
 		
+		//else we just add the new one
 		internalAdd(widget);
+		
 	
+	}
+	
+
+	protected boolean recalculateLargestWidgets() {
+
+		boolean changed=false;
+
+		Gdx.app.log(logstag,"recalculateLargestWidgets");
+		
+		for (Widget widget : contents) {
+			
+			//get size of widget
+			BoundingBox size = widget.getLocalBoundingBox();
+			
+			float scaleY = widget.transState.scale.y;
+			float scaleX = widget.transState.scale.x;
+					
+			float height = size.getHeight() * scaleY;
+			float width  = size.getWidth()  * scaleX;
+			
+			if (width>largestWidthOfStoredWidgets){
+				largestWidthOfStoredWidgets=width;
+				changed=true;
+			}
+			if (height>largestHeightOfStoredWidgets){
+				largestHeightOfStoredWidgets=height;
+				changed=true;
+			}
+			
+		}
+		
+		
+
+		Gdx.app.log(logstag,"largestWidthOfStoredWidgets:"+largestWidthOfStoredWidgets);
+		Gdx.app.log(logstag,"largestHeightOfStoredWidgets:"+largestHeightOfStoredWidgets);
+		
+		return changed;
+		
 	}
 
 	/**
@@ -92,6 +141,7 @@ public abstract class CellPanel extends Widget {
 	protected void internalAdd(Widget widget) {
 		
 		//get size of widget
+		
 		BoundingBox size = widget.getLocalBoundingBox();
 		
 		float scaleY = widget.transState.scale.y;
@@ -100,12 +150,13 @@ public abstract class CellPanel extends Widget {
 		float height = size.getHeight() * scaleY;
 		float width  = size.getWidth()  * scaleX;
 		
-		if (width>currentLargestWidgetsWidth){
-			currentLargestWidgetsWidth=width;
+		/*
+		if (width>largestWidthOfStoredWidgets){
+			largestWidthOfStoredWidgets=width;
 		}
-		if (height>currentLargestWidgetsHeight){
-			currentLargestWidgetsHeight=height;
-		}
+		if (height>largestHeightOfStoredWidgets){
+			largestHeightOfStoredWidgets=height;
+		}*/
 		
 		//currently set to position on the right hand side
 		Vector2 newLoc = getNextPosition(width,height,true);

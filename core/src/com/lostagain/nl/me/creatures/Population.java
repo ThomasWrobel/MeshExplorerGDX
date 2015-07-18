@@ -327,7 +327,7 @@ public class Population {
 		
 		for (Creature creature : populationsCreatures) {
 			
-			Vector3 creaturesPosition = creature.getCenter();
+			Vector3 creaturesPosition = creature.getCenterOfBoundingBox();
 			float distanceTo = location.dst(creaturesPosition);
 			
 			if (useCreaturesSight){

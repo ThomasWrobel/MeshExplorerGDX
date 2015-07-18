@@ -8,7 +8,7 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
 public interface hitable {
 	
 	
-	public Vector3 getCenter();
+	public Vector3 getCenterOfBoundingBox();
 	//public int getRadius(); //hitradius
 	public PosRotScale getTransform();
 	public void fireTouchDown();

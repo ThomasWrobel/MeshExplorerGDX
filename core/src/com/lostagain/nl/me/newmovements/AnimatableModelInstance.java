@@ -239,7 +239,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * Note; Gets the center position of the bounding box, you need to multiply by the position to get the center on the stage
 	 */
 	@Override
-	public Vector3 getCenter(){
+	public Vector3 getCenterOfBoundingBox(){
 		if (localBoundingBox==null){
 			createBoundBox();
 		}

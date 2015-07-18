@@ -33,11 +33,11 @@ public class LocationHub extends MeshIcon {
 	HashMap<GenericMeshFeature,MeshIcon> HubsFeatures = new HashMap<GenericMeshFeature,MeshIcon>();
 
 	private ConceptStoreObject linkedConceptDataStore;
-	private AbilityStoreObject linkedAbilityDataStore;;
-	
+	private AbilityStoreObject linkedAbilityDataStore;
+	private EmailHub linkedEmailHub;
 	public LocationHub(SSSNode locationsNode,Location location) {		
 		super(IconType.LocationHub, location, getDefaultFeature(locationsNode));
-		Color basicS = Color.YELLOW;
+		Color basicS = Color.GREEN;
 		basicS.a = 0.5f;
 		super.setBackgroundColor(basicS); //temp
 		LocationsNode = locationsNode;
@@ -64,18 +64,18 @@ public class LocationHub extends MeshIcon {
 
 		
 		String  title = locationsNode.getPLabel();
-		String  info  = "URI:"+locationsNode.getPURI();
+		String  uri  = "URI:"+locationsNode.getPURI();
 
-				if (info.length()>40){
-					info=" ..."+info.substring(info.length()-40);
+				if (uri.length()>40){
+					uri=" ..."+uri.substring(uri.length()-40);
 				}
 
-		info	= info+	"\n \n \n"+Discription;
+		
 		if (title.length()>40){
 			title=title.substring(0, 40);
 		}
 
-		InfoBox locationCenterInformation = new InfoBox(title,info);
+		InfoBox locationCenterInformation = new InfoBox(title,uri,Discription);
 		
 		
 		return locationCenterInformation;
@@ -183,7 +183,7 @@ public class LocationHub extends MeshIcon {
 				
 				
 				
-				addEmailLocation(sssNode,writtenIn); //note; order cant be guaranteed yet
+				addEmailSource(sssNode,writtenIn); //note; order cant be guaranteed yet
 				
 				
 				emails++;
@@ -202,7 +202,7 @@ public class LocationHub extends MeshIcon {
 	 */
 	private void layoutContents() {
 		float total = HubsFeatures.size();
-		float angleDistance = 90; //scale to total after testing
+		float angleDistance = 360/total; //scale to total after testing
 
 		
 		Vector3 center = this.transState.position.cpy();
@@ -226,8 +226,19 @@ public class LocationHub extends MeshIcon {
 		}
 		
 	}
-	private void addEmailLocation(SSSNode sssNode, SSSNode writtenIn) {
+	private void addEmailSource(SSSNode sssNode, SSSNode writtenIn) {
 		//new email location not implemented yet
+		if (linkedEmailHub==null){
+			Gdx.app.log(logstag,"making emailhub");
+			
+			linkedEmailHub = new EmailHub(this); //create a new data store object linked to this location
+			
+			HubsFeatures.put(linkedEmailHub.assocatiedFeature,linkedEmailHub);
+
+			Gdx.app.log(logstag,"HubsFeatures:"+HubsFeatures.values());
+		}
+		
+		linkedEmailHub.addEmailSource(sssNode,writtenIn);
 		
 	}
 

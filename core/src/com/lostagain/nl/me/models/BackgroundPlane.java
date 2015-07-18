@@ -88,7 +88,7 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 	}
 	
 	@Override
-	public Vector3 getCenter() {
+	public Vector3 getCenterOfBoundingBox() {
 		return super.transState.position.cpy();
 	}
 

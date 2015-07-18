@@ -23,6 +23,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.me.creatures.Population;
 import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.me.features.ConceptObject;
+import com.lostagain.nl.me.features.MeshIcon;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
@@ -61,6 +62,7 @@ public class ME extends Game {
 	/** Used to tell if the player is at their home pc **/
 	static boolean isAtHome=true;
 
+	//purhapes eventually make this more fine grained by using a list of meshicons instead?
 	public static  LinkedList<Location> LastLocation = new LinkedList<Location>();
 
 	static Location currentTargetLocation;
@@ -355,6 +357,23 @@ public class ME extends Game {
     public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo){
     	centerViewOn(locationcontainer,  newZ,  addLocationToUndo,4000);
     }
+    
+    
+    public static void centerViewOn(MeshIcon icon, float newZ, boolean addLocationToUndo,int speed){
+    
+		Vector3 dest = icon.transState.position.cpy();
+		if (newZ==-1){
+			dest.z = MainExplorationView.currentPos.z;
+		} else {
+			dest.z = newZ;
+		}
+	
+		Gdx.app.log(MainExplorationView.logstag,"moving to: "+dest);
+		
+		MainExplorationView.camera.setTargetPosition(dest,speed); //new system replaces a lot below
+		
+    }
+    
     
 public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo,int speed){
 	

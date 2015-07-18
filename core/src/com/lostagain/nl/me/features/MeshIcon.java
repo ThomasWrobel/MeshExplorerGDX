@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.lostagain.nl.ME;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
@@ -44,10 +45,12 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	
 	final static String logstag = "ME.MeshIcon";
 
+	static MeshIcon currentlyOpen = null;
 	
 	//generic icon stuff
 	public enum IconType {
 		Email,
+		EmailHub("Email\nHub"),
 		ConceptStore,
 		AbilityStore,
 		Links,
@@ -175,7 +178,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		}
 		
 		
-		Vector3 labelCenter = MeshIconsLabel.getCenter();
+		Vector3 labelCenter = MeshIconsLabel.getCenterOfBoundingBox();
 		//AnimatableModelInstance internalModel = MeshIconsLabel.getModel();
 		
 		ModelManagment.addHitable(this);
@@ -194,7 +197,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		//this.assocatiedFeature.setAssociatedIcon(this);
 		
 		//this icon will also position the feature so its attached at the center
-		Vector3 featureCenter = this.assocatiedFeature.getCenter(); //5,5
+		Vector3 featureCenter = this.assocatiedFeature.getCenterOfBoundingBox(); //5,5
 		
 		/** objects are attached slightly above the icon, as this helps with blending issues**/
 		float vertDisplacement = 11f;
@@ -220,7 +223,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		
 		Vector3 minXYZ    = assocatiedFeature.getLocalBoundingBox().min;
 		Vector3 maxXYZ    = assocatiedFeature.getLocalBoundingBox().max;
-		Vector3 centerXYZ = assocatiedFeature.getCenter();
+		Vector3 centerXYZ = assocatiedFeature.getCenterOfBoundingBox();
 		
 		//We then use the X/Y to form a new set of co-ordinates, normalised around the center point of the associatedfeature
 		float ox = centerXYZ.x;
@@ -307,6 +310,19 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	public void open(){
 		
 		if (currentState == FeatureState.FeatureClosed){
+			
+			if (currentlyOpen!=null && currentlyOpen!=this){
+				//if another was open close it
+				currentlyOpen.close();
+				
+			}
+			currentlyOpen=this;
+			
+			//purhapes make optional?
+			//centralise camera on this icon
+			ME.centerViewOn(this,-1,false,1000);
+			
+			
 			Gdx.app.log(logstag,"opening mesh feature");
 			animateOpen();
 		} else {
@@ -472,6 +488,8 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 			if (ratio>1){
 				Opacity = 1;
 				ModelManagment.removeAnimating(this);
+				//recalc size (for bounding box)
+				wasResized();
 				currentState = FeatureState.FeatureOpen;
 				if (runAfterFadeIn!=null){
 					runAfterFadeIn.run();
@@ -484,6 +502,8 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 			if (ratio>1){
 				Opacity = 0;
 				ModelManagment.removeAnimating(this);
+				//recalc size (for bounding box)
+				wasResized();
 				currentState = FeatureState.FeatureClosed;
 				this.assocatiedFeature.hide();
 				this.show();

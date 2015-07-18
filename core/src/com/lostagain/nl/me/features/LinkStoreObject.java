@@ -8,6 +8,7 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.Widget;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
+import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 
@@ -18,22 +19,22 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
  * @author Tom
  *  *
  */
-public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeature {
+public class LinkStoreObject extends VerticalPanel implements GenericMeshFeature {
 
-	final static String logstag = "ME.ConceptStoreObject";
+	final static String logstag = "ME.LinkStoreObject";
 
 
 	LocationHub parentLocation;
 	Label TitleLabel;
 	
-	public ConceptStoreObject(LocationHub locationHub) {
+	public LinkStoreObject(LocationHub locationHub) {
 		parentLocation = locationHub;
 		super.setSpaceing(5f);
 		super.setPadding(15f); //padding around border
-		TitleLabel = new Label("Concept Store Object");
+		TitleLabel = new Label("Links");
 		TitleLabel.setToscale(new Vector3(0.6f,0.6f,0.6f)); 
 		TitleLabel.setLabelBackColor(Color.CLEAR);
-		
+		super.setBackgroundColor(Color.PURPLE);
 		this.add(TitleLabel);
 		
 	}
@@ -48,7 +49,7 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 		setOpacity(alpha);
 	}
 
-	public void addConceptObject(ConceptObject newConceptObject) {
+	public void addLink(Location dest) {
 		
 		//this will need to be changed to a HorizontalPage + progressbar+conceptObjectSlot with the concept object in it.
 		//Label testLabelLala = new Label("Test Data Label:"+newConceptObject.itemsnode.getPLabel());
@@ -56,33 +57,38 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 		//
 		//testLabelLala.setToscale(new Vector3(0.6f,0.6f,0.6f)); //half size
 
-		ConceptObjectContainerBar newBar = new ConceptObjectContainerBar(newConceptObject);
+		LinkBar newBar = new LinkBar(dest);
 		
 		
 		this.add(newBar);
 		
 	}
 	
-	class ConceptObjectContainerBar extends HorizontalPanel {
+	//temp link object, will be replaced
+	class LinkBar extends Widget {
 		
-		float StandardWidth = 300;
+	
+		static final float StandardWidth = 300;
 		ProgressBar scanbar = new ProgressBar(30,20,StandardWidth);
+		
 		
 		ConceptObjectSlot slot = new ConceptObjectSlot();
 		
-		public ConceptObjectContainerBar(ConceptObject newConceptObject){
-
+		public LinkBar(Location dest){
+			super(StandardWidth, 30);
 			this.setBackgroundColor(Color.CLEAR);
 			scanbar.setValue(15);
 			Gdx.app.log(logstag,"adding scan bar widget.");
 			
-			add(scanbar);
+			super.attachThis(scanbar, new PosRotScale(0,0,3));
+			
+			
 			
 			Label testLabelLala = new Label("||");
-			testLabelLala.setLabelBackColor(Color.CLEAR);				
-			add(testLabelLala);
-			slot.setAlignment(MODELALIGNMENT.TOPLEFT);
-			add(slot);
+			testLabelLala.setLabelBackColor(Color.CLEAR);	
+			testLabelLala.setAlignment(MODELALIGNMENT.TOPLEFT);
+			super.attachThis(testLabelLala, new PosRotScale(0,0,4));
+			
 			
 		}
 		

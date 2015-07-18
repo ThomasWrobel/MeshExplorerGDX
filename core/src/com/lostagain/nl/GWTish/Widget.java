@@ -37,6 +37,30 @@ public class Widget extends AnimatableModelInstance {
 	 */
 	HashSet<Runnable> SizeChangeHandlers = new HashSet<Runnable>();
 
+	//--
+	//The follow is used for widgets attached to it when we want to specify where they go
+	//Note; These may be moved elsewhere as we introduce other classes for widgets-in-widgets
+	enum HorizontalAlignment {
+		Left,Center,Right
+	}
+	
+	enum VerticalAlignment {
+		Top,Middle,Bottom
+	}
+	
+	
+	float topPadding    = 0f;
+	float bottomPadding = 0f;
+	float leftPadding   = 0f;
+	float rightPadding  = 0f;
+	public void setPadding (float padding){
+		topPadding = padding;
+		bottomPadding = padding;
+		leftPadding = padding;
+		rightPadding = padding;
+	}
+	//--------------------------------------------------------------------
+	
 	/**
 	 * Specifies where the pivot should go on the backing model for this widget
 	 * TOPLEFT is effective normal for GWT like behavior, but we are keeping it flexible here for now
@@ -229,11 +253,27 @@ public class Widget extends AnimatableModelInstance {
 		
 		//recalc bounding box if theres one
 		wasResized();
+		
 		//ensure things attached are repositioned
 		this.updateAllAttachedObjects();
 		
 		
 		fireAllSizeChangeHandlers();
+		
+	}
+	
+	public MODELALIGNMENT getAlignment() {
+		return alignment;
+	}
+	/** sets the alignment var and recalcs the mesh to match **/
+	public void setAlignment(MODELALIGNMENT alignment) {
+		this.alignment = alignment;
+
+		Gdx.app.log(logstag,"______________getWidth"+this.getWidth());
+		setSizeAs(this.getWidth(),this.getHeight()); //we should check if before/after it matchs
+
+		Gdx.app.log(logstag,"______________getWidth"+this.getWidth());
+		
 		
 	}
 	

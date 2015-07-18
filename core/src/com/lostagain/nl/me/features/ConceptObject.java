@@ -63,7 +63,7 @@ public class ConceptObject extends MeshIcon {
 	public ConceptObject(SSSNode conceptsNode) {
 
 		//concepts are not squire, but instead have a more rectangular shape hence the size specified
-		super(IconType.Concept,getTitle(conceptsNode),StandardConceptWidth,StandardConceptHeight, null, creaseFeatureForNode(conceptsNode)); //Note; ConceptObjects dont have a parent location as they can be moved about
+		super(IconType.Concept,getTitle(conceptsNode),StandardConceptWidth,StandardConceptHeight, null, createFeatureForNode(conceptsNode)); //Note; ConceptObjects dont have a parent location as they can be moved about
 		//ensure its on doubleclick to open mode, as single click is for dragging
 		//(we can of course look for mouse down/up seperately to also seperate single clicks and drags, but for now I think double click to open is more intuative anyway)
 		super.iconsOpenMode = OpenMode.DoubleClick;
@@ -97,12 +97,12 @@ public class ConceptObject extends MeshIcon {
 	 * @param conceptsNode
 	 * @return
 	 */
-	private static GenericMeshFeature creaseFeatureForNode(SSSNode conceptsNode) {
+	private static GenericMeshFeature createFeatureForNode(SSSNode conceptsNode) {
 		 String URIName = conceptsNode.getPLabel(); //just a basic label for now
-		 String URI = conceptsNode.getPURI();
+		 String URI     = conceptsNode.getPURI();
 		
 		 
-		return new InfoBox(URIName,URI);
+		return new InfoBox(URIName,URI,"");
 		
 	}
 

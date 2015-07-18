@@ -1,6 +1,7 @@
 package com.lostagain.nl.GWTish;
 
 import com.badlogic.gdx.math.Vector2;
+import com.lostagain.nl.GWTish.Widget.VerticalAlignment;
 
 
 public class VerticalPanel extends CellPanel {
@@ -9,33 +10,40 @@ public class VerticalPanel extends CellPanel {
 	float currentTotalWidgetHeight   = 0f;
 	
 
+	HorizontalAlignment DefaultAlignmentinCell = HorizontalAlignment.Center;
 	
 	/**
 	 * Creates a background and lets you position widgets vertical within it
 	 * 
 	 */
 	public VerticalPanel() {
-		super(10,10); //default size and background
 		
+		super(10,10); //default size and background
 		
 	}
 	
 	Vector2 getNextPosition(float incomingWidth,float incomingHeight,boolean updateHeight){
 		
 		float newLocationX = 0;		
+		if (DefaultAlignmentinCell == HorizontalAlignment.Center){
+			float maxW= (largestWidthOfStoredWidgets);
+			newLocationX =  (maxW - incomingWidth)/2;
+		}
+		
 		float newLocationY = currentTotalWidgetHeight; //under the last widget
 		
 		if (updateHeight){
 			currentTotalWidgetHeight=currentTotalWidgetHeight+incomingHeight+spaceing;
 		}
 		
-		return new Vector2(newLocationX,newLocationY);
+		return new Vector2(leftPadding+newLocationX,topPadding+newLocationY);
 		
 	
 	}
 
 	/**
 	 * Refreshes the position of all widgets 
+	 * recalculateLargestWidgets(); should be run first
 	 */
 	void repositionWidgets() {
 		
@@ -43,8 +51,8 @@ public class VerticalPanel extends CellPanel {
 		
 		//reset  stats
 		currentTotalWidgetHeight = 0f;
-		currentLargestWidgetsWidth = 0f;
-		currentLargestWidgetsHeight = 0f;
+	//	largestWidthOfStoredWidgets = 0f;
+	//	largestHeightOfStoredWidgets = 0f;
 				
 		for (Widget widget : contents) {	
 			
@@ -52,9 +60,10 @@ public class VerticalPanel extends CellPanel {
 			internalAdd(widget); //re add
 			
 		}
+
 		
 		//update back size
-		this.setSizeAs(currentLargestWidgetsWidth,currentTotalWidgetHeight);
+		this.setSizeAs(leftPadding+largestWidthOfStoredWidgets+rightPadding,bottomPadding+currentTotalWidgetHeight+topPadding);
 		
 		
 	}
@@ -64,7 +73,7 @@ public class VerticalPanel extends CellPanel {
 	public void add(Widget widget) {
 		super.add(widget);
 		//resize
-		this.setSizeAs(currentLargestWidgetsWidth,currentTotalWidgetHeight);
+		this.setSizeAs(leftPadding+largestWidthOfStoredWidgets+rightPadding,bottomPadding+currentTotalWidgetHeight+topPadding);
 	}
 
 	

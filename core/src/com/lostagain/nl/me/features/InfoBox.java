@@ -32,21 +32,44 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		
 	//}
 	
-	public InfoBox(String title,String contents) {	
+	public InfoBox(String title, String subtitle ,String contents) {	
 		super();
-		super.setSpaceing(4f); //set a small spacing between elements vertically
+		super.setSpaceing(3f); //set a small spacing between elements vertically
+		super.setPadding(10f); //padding around border
+		
 		super.setBackgroundColor(Color.CLEAR); //set the back colour (excluding border)
 		
 		//add default labels
-		Label testLabel = new Label(title,300);
-		super.add(testLabel);
-		Label testLabel2 = new Label(contents,300);	
-		testLabel2.setToscale(new Vector3(0.7f,0.7f,0.7f)); //content smaller then title
-		super.add(testLabel2);
+		Label titleLabel = new Label(title,450);
+		super.add(titleLabel);
+		titleLabel.setLabelBackColor(Color.CLEAR);
+
+		
+		if (!subtitle.isEmpty()){
+			
+			Label subtitleLabel = new Label(subtitle,900); //note; double width as we are shrinking to half the size	
+			subtitleLabel.setToscale(new Vector3(0.5f,0.5f,0.5f)); //content smaller then title
+
+			subtitleLabel.setLabelBackColor(Color.CLEAR);
+			super.add(subtitleLabel);
+
+		
+		}
+		
+		if (!contents.isEmpty()){
+			
+			Label contentLabel = new Label(contents,450);	
+			contentLabel.setToscale(new Vector3(0.7f,0.7f,0.7f)); //content smaller then title
+
+			contentLabel.setLabelBackColor(Color.CLEAR);
+			super.add(contentLabel);
+
+			
+		}
+		
 		
 		//labels should have transparent backgrounds by default
-		testLabel.setLabelBackColor(Color.CLEAR);
-		testLabel2.setLabelBackColor(Color.CLEAR);
+	
 		//
 	}
 

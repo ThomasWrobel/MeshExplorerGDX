@@ -145,7 +145,7 @@ public class Creature implements hitable , Animating {
 
 
 	@Override
-	public Vector3 getCenter() {
+	public Vector3 getCenterOfBoundingBox() {
 		
 		Vector3 tmp = creaturemodel.transState.position.cpy();
 				
@@ -558,8 +558,8 @@ public class Creature implements hitable , Animating {
 			//add to world
 			Gdx.app.log(logstag, "creating drop on screen");
 			
-			float x = (float) (this.getCenter().x+ (-20+Math.random()*40));			
-			float y = (float) (this.getCenter().y+ (-20+Math.random()*40));
+			float x = (float) (this.getCenterOfBoundingBox().x+ (-20+Math.random()*40));			
+			float y = (float) (this.getCenterOfBoundingBox().y+ (-20+Math.random()*40));
 			
 						
 			ME.addnewdrop(newdrop,x, y);			
@@ -667,7 +667,7 @@ public class Creature implements hitable , Animating {
 		
 		float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
 		float EY = parentpolution.centeredOnThisLocation.getHubsY(Align.center);
-		float EZ = getCenter().z;
+		float EZ = getCenterOfBoundingBox().z;
 		//temp disabled while converting to new movement system
 		
 		movementControll.setMovement(creaturemodel.transState,false,NewFaceAndMoveTo.create(creaturemodel, dropsPositionAsVector,2000));
@@ -730,7 +730,7 @@ public class Creature implements hitable , Animating {
 	@Override
 	public boolean rayHits(Ray ray) {
 				
-		return 	Intersector.intersectRaySphere(ray, this.getCenter(), this.getRadius(), null);
+		return 	Intersector.intersectRaySphere(ray, this.getCenterOfBoundingBox(), this.getRadius(), null);
 		
 	}
 

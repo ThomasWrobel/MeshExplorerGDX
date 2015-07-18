@@ -318,11 +318,11 @@ public class MainExplorationView implements Screen {
 	//	iconTest.setToPosition(new Vector3(120f,670f,0f));
 	//	ModelManagment.addmodel(iconTest,ModelManagment.RenderOrder.zdecides);
 		
-		/*
+	
 		ConceptObject coTest = new ConceptObject(PlayersData.computersuri);
-		coTest.setToPosition(new Vector3(320f,670f,0f));
+		coTest.setToPosition(new Vector3(320f,720f,0f));
 		ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
-		
+		/*
 		ConceptObjectSlot slotTest = new ConceptObjectSlot();
 		slotTest.setToPosition(new Vector3(450f,670f,0f));
 		ModelManagment.addmodel(slotTest,ModelManagment.RenderOrder.zdecides);
@@ -342,6 +342,7 @@ public class MainExplorationView implements Screen {
 		
 		
 	//	testhub.addLineTo(iconTest);
+		/*
 		testlabel.setLabelBackColor(new Color(0.3f,0.3f,1f,0.9f));
 		//testlabel.setSizeAs(100, 100);
 		
@@ -363,7 +364,7 @@ public class MainExplorationView implements Screen {
 		
 		ModelManagment.addmodel(testlabel2,ModelManagment.RenderOrder.zdecides);
 		testlabel2.setOpacity(0.5f);
-		
+		*/
 		
 
 		/*
