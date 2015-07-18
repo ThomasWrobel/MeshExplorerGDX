@@ -320,7 +320,7 @@ public class MainExplorationView implements Screen {
 		
 	
 		ConceptObject coTest = new ConceptObject(PlayersData.computersuri);
-		coTest.setToPosition(new Vector3(320f,720f,0f));
+		coTest.setToPosition(new Vector3(320f,650f,0f));
 		ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
 		/*
 		ConceptObjectSlot slotTest = new ConceptObjectSlot();
@@ -331,15 +331,16 @@ public class MainExplorationView implements Screen {
 		
 		
 		LocationHub testhub = new LocationHub(PlayersData.computersuri,PlayersData.homeLoc);
-		testhub.setToPosition(new Vector3(350f,750f,0f));
+		testhub.setToPosition(new Vector3(450f,750f,0f));
 		ModelManagment.addmodel(testhub,ModelManagment.RenderOrder.zdecides);
 		
+		/*
 		ProgressBar testbar = new ProgressBar(30, 10, 200);
 		testbar.setToPosition(new Vector3(350f,700f,0f));
 		testbar.setValue(100);
 		
 		ModelManagment.addmodel(testbar,ModelManagment.RenderOrder.zdecides);
-		
+		*/
 		
 	//	testhub.addLineTo(iconTest);
 		/*

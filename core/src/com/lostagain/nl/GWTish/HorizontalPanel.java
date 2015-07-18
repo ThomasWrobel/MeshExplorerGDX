@@ -2,6 +2,7 @@ package com.lostagain.nl.GWTish;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 
 public class HorizontalPanel extends CellPanel {
@@ -24,7 +25,7 @@ public class HorizontalPanel extends CellPanel {
 		
 	}
 	
-	Vector2 getNextPosition(float incomingWidth,float incomingHeight,boolean updateWidth){
+	Vector3 getNextPosition(float incomingWidth,float incomingHeight,boolean updateWidth,int widgetIndex){
 		
 		float newLocationX = currentTotalWidgetWidth;		
 		float maxH = (largestHeightOfStoredWidgets);
@@ -35,11 +36,12 @@ public class HorizontalPanel extends CellPanel {
 			newLocationY =  (maxH - incomingHeight)/2; //center in panel
 		}
 		
+		//the following option shouldnt be needed I think
 		if (updateWidth){
 			currentTotalWidgetWidth=currentTotalWidgetWidth+incomingWidth+spaceing;
 		}
 		
-		return new Vector2(leftPadding+newLocationX,topPadding+newLocationY);
+		return new Vector3(leftPadding+newLocationX,topPadding+newLocationY,3f);
 		
 	
 	}

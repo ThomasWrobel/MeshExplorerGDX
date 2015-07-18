@@ -37,29 +37,15 @@ public class Widget extends AnimatableModelInstance {
 	 */
 	HashSet<Runnable> SizeChangeHandlers = new HashSet<Runnable>();
 
-	//--
-	//The follow is used for widgets attached to it when we want to specify where they go
-	//Note; These may be moved elsewhere as we introduce other classes for widgets-in-widgets
-	enum HorizontalAlignment {
-		Left,Center,Right
-	}
+	/**
+	 * Min Size X - the widget will never go smaller then this in Xwhen resized
+	 */
+	float MinSizX = 0f;
+	/**
+	 * Min Size Y - the widget will never go smaller then this in Y when resized
+	 */
+	float MinSizY = 0f;
 	
-	enum VerticalAlignment {
-		Top,Middle,Bottom
-	}
-	
-	
-	float topPadding    = 0f;
-	float bottomPadding = 0f;
-	float leftPadding   = 0f;
-	float rightPadding  = 0f;
-	public void setPadding (float padding){
-		topPadding = padding;
-		bottomPadding = padding;
-		leftPadding = padding;
-		rightPadding = padding;
-	}
-	//--------------------------------------------------------------------
 	
 	/**
 	 * Specifies where the pivot should go on the backing model for this widget
@@ -77,17 +63,20 @@ public class Widget extends AnimatableModelInstance {
 	}
 	/**
 	 * 
-	 * @param sizeX
-	 * @param sizeY
+	 * @param sizeX - minimumSize in X
+	 * @param sizeY - minimumSize in Y
 	 * @param align - where this model will be in relation to its centerpoint
 	 */
 	public Widget(float sizeX,float sizeY,MODELALIGNMENT align) {
 		super(generateBackground(sizeX,sizeY,DefaultWhiteBackground.copy(),align)); 
 		
+		this.setMinSize(sizeX, sizeY);
+		
 	}
 	public Widget(float sizeX,float sizeY) {
 		super(generateBackground(sizeX,sizeY,DefaultWhiteBackground.copy(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
-		
+
+		this.setMinSize(sizeX, sizeY);
 	}
 	
 	/**
@@ -208,6 +197,19 @@ public class Widget extends AnimatableModelInstance {
 	 */
 	public void setSizeAs(float newWidth, float newHeight,float offsetX,float offsetY) {
 		
+		//ensure not smaller then minimum
+		if (newWidth<this.MinSizX){
+			newWidth = MinSizX;
+			
+		}
+		if (newHeight<this.MinSizY){
+			newHeight = MinSizY;
+		}
+		//note we can optimize here by checking current size against requested and ensuring its different?
+		
+		
+		//
+		
 		Mesh IconsMesh = this.model.meshes.get(0);
 		
 		final VertexAttribute posAttr = IconsMesh.getVertexAttribute(Usage.Position);
@@ -275,6 +277,11 @@ public class Widget extends AnimatableModelInstance {
 		Gdx.app.log(logstag,"______________getWidth"+this.getWidth());
 		
 		
+	}
+	
+	public void setMinSize(float minSizeX,float minSizeY) {
+		MinSizX = minSizeX;
+		MinSizY = minSizeY;
 	}
 	
 

@@ -1,7 +1,7 @@
 package com.lostagain.nl.GWTish;
 
 import com.badlogic.gdx.math.Vector2;
-import com.lostagain.nl.GWTish.Widget.VerticalAlignment;
+import com.badlogic.gdx.math.Vector3;
 
 
 public class VerticalPanel extends CellPanel {
@@ -22,7 +22,7 @@ public class VerticalPanel extends CellPanel {
 		
 	}
 	
-	Vector2 getNextPosition(float incomingWidth,float incomingHeight,boolean updateHeight){
+	Vector3 getNextPosition(float incomingWidth,float incomingHeight,boolean updateHeight,int index){
 		
 		float newLocationX = 0;		
 		if (DefaultAlignmentinCell == HorizontalAlignment.Center){
@@ -36,7 +36,7 @@ public class VerticalPanel extends CellPanel {
 			currentTotalWidgetHeight=currentTotalWidgetHeight+incomingHeight+spaceing;
 		}
 		
-		return new Vector2(leftPadding+newLocationX,topPadding+newLocationY);
+		return new Vector3(leftPadding+newLocationX,topPadding+newLocationY,3f);
 		
 	
 	}

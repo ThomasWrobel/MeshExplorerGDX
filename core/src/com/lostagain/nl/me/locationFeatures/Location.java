@@ -15,6 +15,7 @@ import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.creatures.Population;
+import com.lostagain.nl.me.features.LocationHub;
 import com.lostagain.nl.uti.MeshWorld;
 
 /** manages the creation and basic attributes of locations in the the game world
@@ -31,6 +32,7 @@ public class Location {
 	
 	public LocationsHub locationsHub;
 	
+	public LocationHub locationsNEWHub; //will slowly replace the above, its a new way to visualise a location
 	
 	ArrayList<Population> locationsPopulations = new ArrayList<Population>();
 			
@@ -47,6 +49,8 @@ public class Location {
 	
 	public SSSNode locationsnode;
 	HashSet<SSSNodesWithCommonProperty> locationsPropertys; //will store all the SSSNodesWithCommonPropertys with the location in it. NOTE this will need refreshing if new sets are loaded 
+
+	
 	
 	
 	

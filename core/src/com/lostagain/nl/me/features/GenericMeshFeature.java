@@ -87,6 +87,11 @@ interface GenericMeshFeature extends IsAnimatableModelInstance {
 
 	/** clears this features contents ready to refill/refresh it**/
 	void clear();
+
+	/** the widget should allow others to monitor its size changes. If using GWTish widgets for mesh features, this will
+	 * be implemented already.
+	 * If not just, fire the specified runnable any time the size fininishs changing **/
+	void addOnSizeChangeHandler(Runnable runnable);
 	
 	
 	//abstract void fadeIn(float duration,Runnable runAfterFadeIn);

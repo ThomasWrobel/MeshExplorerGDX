@@ -35,7 +35,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 	Label gotoLinkButton =  new Label("",DefaultStyles.linkstyle);
 	
 	String LocationsName = "";
-	String LinkName = "";
+	String LinkName      = "";
 	
 	ModelInstance Linksline;
 	//Label ProgressBar = new Label ("--->",DefaultStyles.linkstyle);

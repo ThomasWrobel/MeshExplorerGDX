@@ -217,8 +217,7 @@ public class ConceptObjectSlot extends Widget implements hitable {
 
 	@Override
 	public boolean isBlocker() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override

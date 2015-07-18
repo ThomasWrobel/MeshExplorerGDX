@@ -8,6 +8,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.darkflame.client.query.Query;
+import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
@@ -26,7 +28,7 @@ import com.lostagain.nl.me.models.ModelManagment;
  *
  */
 public class LocationHub extends MeshIcon {
-
+	final static String logstag = "ME.LocationHub";
 	private SSSNode LocationsNode;
 
 	//All features of this location
@@ -35,6 +37,9 @@ public class LocationHub extends MeshIcon {
 	private ConceptStoreObject linkedConceptDataStore;
 	private AbilityStoreObject linkedAbilityDataStore;
 	private EmailHub linkedEmailHub;
+	private LinkStoreObject linkedLinkStore;
+	
+	
 	public LocationHub(SSSNode locationsNode,Location location) {		
 		super(IconType.LocationHub, location, getDefaultFeature(locationsNode));
 		Color basicS = Color.GREEN;
@@ -99,7 +104,12 @@ public class LocationHub extends MeshIcon {
 		}
 		//-----------------------------------------------------------------------
 		getContentOfMachine(LocationsNode);
-
+		
+		getVisibleMachines(LocationsNode);
+		
+		//trigger layout
+		layoutContents();
+		
 		//first load the links visible to this one
 		//getVisibleMachines(mycomputerdata);
 		//make emails
@@ -116,7 +126,89 @@ public class LocationHub extends MeshIcon {
 		
 		
 	}
+
+	/** gets the locations visible to the supplied location **/
+	private void getVisibleMachines(SSSNode tothisnode){
+
+		//String allNodes = SSSNode.getAllKnownNodes().toString();
+
+
+
+		Gdx.app.log(logstag,"-------------------------------X--------------------------------===================----------------");
+		//SSSNodesWithCommonProperty VisibleMachines =  SSSNodesWithCommonProperty.getSetFor(visibletest, everyonetest); //.getAllNodesInSet(callback);
+
+		String thisPURI = tothisnode.getPURI(); ///"C:\\TomsProjects\\MeshExplorer\\bin/semantics/DefaultOntology.n3#bobspc";
+
+		Query realQuery = new Query("(me:connectedto=me:everyone)||(me:connectedto=\""+thisPURI+"\")");
+																				   //E:\Game projects\MeshExplorerGDX\desktop\semantics\TomsNetwork.ntlist#BobsOutpost
+
+	//	Gdx.app.log(logstag,"----prefix tests:"+RawQueryUtilities.getPrefixs());
+	//	Gdx.app.log(logstag,"----all nodes:"+SSSNode.getAllKnownNodes());
+
+		SSSNode.setExtendedDebug(true);
+		
+		Gdx.app.log(logstag,"----me:connectedto test:"+SSSNode.getNodeByUri("me:connectedto").toString());
+		Gdx.app.log(logstag,"----me:everyone test:"   +SSSNode.getNodeByUri("me:everyone").toString());
+		Gdx.app.log(logstag,"----thisPURI  test:"+thisPURI);	
+		
+		Gdx.app.log(logstag,"-------"+realQuery.allUsedNodes());
+		
+		
+		//populate when its retrieved
+		DoSomethingWithNodesRunnable callback = new DoSomethingWithNodesRunnable(){
+
+			@Override
+			public void run(ArrayList<SSSNode> computerNodesFound, boolean invert) {
+
+
+
+				Gdx.app.log(logstag,"populate connectedto Computers");
+				populateVisibleComputers(computerNodesFound);
+
+
+			}
+
+		};
+
+		QueryEngine.processQuery(realQuery, false, null, callback);
+
+
+
+	}
+
+	protected void populateVisibleComputers(ArrayList<SSSNode> computerNodes) {
+		if (linkedLinkStore==null){
+			Gdx.app.log(logstag,"making linkedLinkStore");
+			
+			linkedLinkStore = new LinkStoreObject(this); //create a new data store object linked to this location
+			final MeshIcon newIcon = new MeshIcon(IconType.Links,this.parentLocation, linkedLinkStore);
+			//linkedLinkStore.addOnSizeChangeHandler(new Runnable(){
+			//	@Override
+			//	public void run() {
+			//		newIcon.refreshAssociatedFeature();
+			//	}
+			//});
+			
+			HubsFeatures.put(linkedLinkStore,newIcon);
+
+		} else {
+			linkedLinkStore.clearLinks();
+		}
+		
+		Gdx.app.log(logstag,"computers visible to this = "+computerNodes.size());
 	
+
+		for (SSSNode sssNode : computerNodes) {
+
+			//add to link list if its not the current pc
+			if (sssNode!=this.LocationsNode){			
+				linkedLinkStore.addLink(sssNode);
+			}
+
+		}
+
+
+	}
 
 	/** creates all the contents for this location but does not yet lay them out **/
 	protected void populateContents(ArrayList<SSSNode> contentResults) {
@@ -236,6 +328,8 @@ public class LocationHub extends MeshIcon {
 			HubsFeatures.put(linkedEmailHub.assocatiedFeature,linkedEmailHub);
 
 			Gdx.app.log(logstag,"HubsFeatures:"+HubsFeatures.values());
+			
+			
 		}
 		
 		linkedEmailHub.addEmailSource(sssNode,writtenIn);
@@ -273,12 +367,12 @@ public class LocationHub extends MeshIcon {
 			final MeshIcon newIcon = new MeshIcon(IconType.AbilityStore, parentLocation, linkedAbilityDataStore);
 			
 			
-			linkedAbilityDataStore.addOnSizeChangeHandler(new Runnable(){
-				@Override
-				public void run() {
-					newIcon.refreshAssociatedFeature();
-				}
-			});
+			//linkedAbilityDataStore.addOnSizeChangeHandler(new Runnable(){
+			//	@Override
+			//	public void run() {
+			//		newIcon.refreshAssociatedFeature();
+			//	}
+			//});
 			
 			
 			HubsFeatures.put(linkedAbilityDataStore,newIcon);
@@ -319,8 +413,7 @@ public class LocationHub extends MeshIcon {
 
 					Gdx.app.log(logstag,"generating contents");
 					populateContents(contents);
-					//trigger layout
-					layoutContents();
+					
 
 
 				}

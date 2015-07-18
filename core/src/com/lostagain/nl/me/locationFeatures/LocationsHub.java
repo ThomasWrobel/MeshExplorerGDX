@@ -104,8 +104,9 @@ public class LocationsHub extends Table {
 	RepairScreen repairPage;	
 	ContentsScreen contentsPage;
 	ContentsScreen abilityPage;
-	LinksScreen linksPage;
+	public LinksScreen linksPage;
 
+	
 	//page currently open
 	LocationScreen CurrentlyOpenPage = emailPage;
 	LocationMenuBar menucontainer;

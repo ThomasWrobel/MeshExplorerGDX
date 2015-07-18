@@ -93,6 +93,15 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	static final float iconWidth  = 100f; //standard width and height of all icons
 	static final float iconHeight = 100f;
 	private static final float LabelMargin = 2f;
+
+	private final Runnable SizeChangeHandler = new Runnable(){
+		@Override
+		public void run() {
+
+			Gdx.app.log(logstag,"refreshAssociatedFeature");
+			refreshAssociatedFeature();
+		}
+	};
 	
 	
 	protected Label MeshIconsLabel;
@@ -190,6 +199,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		
 	}
 	private void setupAssociatedFeature() {
+		
 		//associated features should be hidden by default
 		assocatiedFeature.hide();
 				
@@ -206,12 +216,19 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		//from the location we are attaching it too.
 		//This means it should look centralized.
 		//ie. If it has its center at 5,5 we position it at -5,-5 so that the "center" 5,5 point is in the middle
-		super.attachThis(this.assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z+vertDisplacement));
+		super.attachThis(assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z+vertDisplacement));
 				
+
+		
+		
 		//We need to work out the size of the associatedFeature, and use that to create new mesh vertex co-ordinates
 		//for us to transform into when opening
 		//We start by getting its minimum and maximum local co-ordinates
 		cacheAssociatedFeaturesSize();
+		
+		//we need to keep track of any size changes on the associated feature to recache the above if needed
+		Gdx.app.log(logstag,"opening mesh feature");
+		assocatiedFeature.addOnSizeChangeHandler(SizeChangeHandler);
 	}
 	
 	
@@ -320,7 +337,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 			
 			//purhapes make optional?
 			//centralise camera on this icon
-			ME.centerViewOn(this,-1,false,1000);
+			ME.centerViewOn(this,1000);
 			
 			
 			Gdx.app.log(logstag,"opening mesh feature");

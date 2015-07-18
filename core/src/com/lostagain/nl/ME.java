@@ -358,7 +358,10 @@ public class ME extends Game {
     	centerViewOn(locationcontainer,  newZ,  addLocationToUndo,4000);
     }
     
-    
+    public static void centerViewOn(MeshIcon meshIcon, int durationms) {
+    	centerViewOn(meshIcon,ScreenUtils.getSuitableDefaultCameraHeight(),false,durationms);
+    	
+    }
     public static void centerViewOn(MeshIcon icon, float newZ, boolean addLocationToUndo,int speed){
     
 		Vector3 dest = icon.transState.position.cpy();
@@ -374,6 +377,7 @@ public class ME extends Game {
 		
     }
     
+   
     
 public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo,int speed){
 	
@@ -730,6 +734,8 @@ public static boolean checkDatabaseIsLoaded(SSSNode linksToThisPC) {
 	Gdx.app.log(logstag,"not a database");
 	return true;
 }
+
+
 
 
 //SSSIndex.getIndex(linksToThisPC.getPURI());
