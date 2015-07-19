@@ -1,6 +1,7 @@
 package com.lostagain.nl.me.features;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
 import com.lostagain.nl.GWTish.Widget;
 
@@ -38,6 +39,10 @@ public class ProgressBar extends Widget implements GenericProgressMonitor {
 		
 		valueMin = 0;
 		valueMax = 100; 	
+		
+		
+		super.getStyle().setBackgroundColor(Color.RED);
+		super.getStyle().setBorderColor(Color.WHITE);
 		
 	}
 	/**

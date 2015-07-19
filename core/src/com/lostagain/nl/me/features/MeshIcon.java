@@ -41,7 +41,7 @@ import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
  *  
  *  They extend AnimatableModelInstance so we can animated them latter if we wish 
  * **/
-public class MeshIcon extends AnimatableModelInstance  implements hitable, Animating {
+public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	
 	final static String logstag = "ME.MeshIcon";
 
@@ -177,7 +177,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		MeshIconsLabel.setLabelBackColor(Color.CLEAR);
 		
 		//we also need to scale the label to fit as it might be too long
-		if ((MeshIconsLabel.getWidth()+LabelMargin)>w){
+		if ((MeshIconsLabel.getWidth()+(LabelMargin*2))>w){
 			//10/5
 			float ratio = MeshIconsLabel.getWidth()/w;
 			float newWidth = w;
@@ -189,11 +189,11 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		
 		Vector3 labelCenter = MeshIconsLabel.getCenterOfBoundingBox();
 		//AnimatableModelInstance internalModel = MeshIconsLabel.getModel();
+		super.setAsHitable(true);
 		
-		ModelManagment.addHitable(this);
 		
 		
-		super.attachThis(MeshIconsLabel, new PosRotScale(-labelCenter.x,-labelCenter.y,5f)); //hover above a bit
+		super.attachThis(MeshIconsLabel, new PosRotScale(-labelCenter.x+LabelMargin,-labelCenter.y+LabelMargin,5f)); //hover above a bit
 		
 
 		
@@ -210,7 +210,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		Vector3 featureCenter = this.assocatiedFeature.getCenterOfBoundingBox(); //5,5
 		
 		/** objects are attached slightly above the icon, as this helps with blending issues**/
-		float vertDisplacement = 11f;
+		float vertDisplacement = 15f;
 				
 		//attach (our middle point is 0,0,0 but we don't know where the features middle point is, so we subtrack is center value
 		//from the location we are attaching it too.
@@ -373,16 +373,9 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		startOpen(this.fadeDuration, runAfterFadeIn);
 	}
 
-	//@Override
-	//public int getRadius() {
-		// TODO Auto-generated method stub
-	//	return 0;
-	//}
 
-	@Override
-	public PosRotScale getTransform() {
-		return this.getTransform(); //hu? error!
-	}
+
+
 
 	/*****/
 	@Override
@@ -433,18 +426,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		Gdx.app.log(logstag,"_-fireTouchUp-_");
 	}
 
-	@Override
-	public void setLastHitsRange(float range) {
 
-		//Gdx.app.log(logstag,"setting hittable hit range to:"+range);
-		lastHitDistance = range;
-	}
-
-	@Override
-	public float getLastHitsRange() {
-		
-		return lastHitDistance;
-	}
 
 	@Override
 	public boolean isBlocker() {
@@ -564,63 +546,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 	 * @param currentState - specifies the direction of the animation right now
 	 */
 	private void updateApperance(float alpha,FeatureState currentState){
-		/*
 		
-		
-
-		Gdx.app.log(logstag,"nummeshs::"+nummeshs);
-
-		
-
-		
-	//	int vertextsnum = this.model.meshes.items[0].getNumVertices();
-		
-		
-
-
-		Mesh IconsMesh = this.model.meshes.get(0);
-		int vertextsnum = IconsMesh.getNumVertices();
-
-		Gdx.app.log(logstag,"vertextsnum::"+vertextsnum);
-
-		int verteexsize = IconsMesh.getVertexSize();
-		Gdx.app.log(logstag,"verteexsize::"+verteexsize);
-
-		int indices = IconsMesh.getNumIndices();
-		Gdx.app.log(logstag,"getNumIndices::"+indices);
-		
-		float[] vertexArray= new float[19];
-		
-		
-		Gdx.app.log(logstag,"vertexs::"+vertexArray);
-		
-		IconsMesh.getVertices(vertexArray);
-		
-		Gdx.app.log(logstag,"vertexs x::"+vertexArray[0]);
-		Gdx.app.log(logstag,"vertexs y::"+vertexArray[1]);
-		Gdx.app.log(logstag,"vertexs z::"+vertexArray[2]);
-		
-		Gdx.app.log(logstag,"vertexs ::"+vertexArray[3]);		
-		Gdx.app.log(logstag,"vertexs ::"+vertexArray[4]);
-		Gdx.app.log(logstag,"vertexs ::"+vertexArray[5]);
-		
-		Gdx.app.log(logstag,"vertexs::"+vertexArray[6]);
-		Gdx.app.log(logstag,"vertexs ::"+vertexArray[7]);	
-		
-		Gdx.app.log(logstag,"vertexs x::"+vertexArray[8]);		
-		Gdx.app.log(logstag,"vertexs y::"+vertexArray[9]);		
-		Gdx.app.log(logstag,"vertexs z::"+vertexArray[10]);
-		Gdx.app.log(logstag,"vertexs ::"+vertexArray[11]);
-		
-		Gdx.app.log(logstag,"vertexs::"+vertexArray[12]);
-		Gdx.app.log(logstag,"vertexs ::"+vertexArray[13]);
-		Gdx.app.log(logstag,"vertexs ::"+vertexArray[14]);
-		
-		Gdx.app.log(logstag,"vertexs::"+vertexArray[15]);
-		Gdx.app.log(logstag,"vertexs ::"+vertexArray[16]);
-		Gdx.app.log(logstag,"vertexs -:"+vertexArray[17]);		
-		Gdx.app.log(logstag,"vertexs -:"+vertexArray[18]);
-		*/
 		int nummeshs = this.model.meshes.size;
 		Mesh IconsMesh = this.model.meshes.get(0);
 		
@@ -656,14 +582,14 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 			float TargetY = IconsEnlargedVertexs[i+1];
 			float TargetZ = IconsEnlargedVertexs[i+2];
 
-			Gdx.app.log(logstag," Default ::"+IconX  +","+IconY  +","+IconZ        );
-			Gdx.app.log(logstag," Target  ::"+TargetX+","+TargetY+","+TargetZ);
+			//Gdx.app.log(logstag," Default ::"+IconX  +","+IconY  +","+IconZ        );
+		//	Gdx.app.log(logstag," Target  ::"+TargetX+","+TargetY+","+TargetZ);
 			
 			float comboX = ((TargetX-IconX)*alpha)+IconX;
 			float comboY = ((TargetY-IconY)*alpha)+IconY;
 			float comboZ = ((TargetZ-IconZ)*alpha)+IconZ;
 			
-			Gdx.app.log(logstag," new::"+comboX+","+comboY+","+comboZ);
+			//Gdx.app.log(logstag," new::"+comboX+","+comboY+","+comboZ);
 			
 			//currently just scale up a bit
 			vertices[idx    ] = comboX;
@@ -705,13 +631,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 		updateOpenCloseAnimation(delta);
 		
 	}
-	@Override
-	public void fireDragStart() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
+
 	
 	/**
 	 * Lets you change the feature associated with this icon when its double clicked

@@ -144,7 +144,7 @@ public class DistanceFieldShader implements Shader {
 			public DistanceFieldAttribute (presetTextStyle preset) {
 				super(ID);
 				
-				this.textColour         = preset.textColour.cpy();;
+				this.textColour         = preset.textColour.cpy();
 				this.width              = preset.width;
 				this.outlinerInnerLimit = preset.outlinerInnerLimit;
 				this.outlinerOuterLimit = preset.outlinerOuterLimit;
@@ -178,7 +178,7 @@ public class DistanceFieldShader implements Shader {
 				
 				super(ID);
 				
-				this.textColour = textColour.cpy();;
+				this.textColour = textColour.cpy();
 				this.width = width;
 				this.outlinerInnerLimit = outlinerInnerLimit;
 				this.outlinerOuterLimit = outlinerOuterLimit;
@@ -422,20 +422,18 @@ public class DistanceFieldShader implements Shader {
 			 backcolor.a = backcolor.a*backgroundOpacity.opacity; //Temp. Really Blending should effect everything, not just the background
 		 }
 		 
-    	 Color textColour = Color.ORANGE;
-    	 if (renderable.material.has(ColorAttribute.Diffuse)){	
-    		     		
+    	// Color textColour = Color.ORANGE;
+    	// if (renderable.material.has(ColorAttribute.Diffuse)){	    		     		
     		//text from attribute
-    		 textColour = textStyleData.getTextColour();    		 
-    		 	
+		 Color textColour = textStyleData.getTextColour();   	
+		
     		 program.setUniformf(a_colorFlag,1);
     		 
-    	 } else {
+    	// } else {
     		 //if not we assume default text color
-    		 program.setUniformf(a_colorFlag,0);
+    	//	 program.setUniformf(a_colorFlag,0);    	 //this would give colour based on texture	 
     		 
-    		 
-    	 }
+    	/// }
     	 
     	 
     	     //text ans back color

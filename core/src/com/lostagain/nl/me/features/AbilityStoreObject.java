@@ -11,7 +11,7 @@ public class AbilityStoreObject extends ConceptStoreObject {
 
 	public AbilityStoreObject(LocationHub locationHub) {
 		super(locationHub);
-		super.setBackgroundColor(new Color(0.8f,0.6f,0.1f,0.7f));
+		super.getStyle().setBackgroundColor(new Color(0.8f,0.6f,0.1f,0.7f));
 		
 		TitleLabel.setText("Ability Store:");
 	}

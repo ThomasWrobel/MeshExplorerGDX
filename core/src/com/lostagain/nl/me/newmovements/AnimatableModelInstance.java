@@ -10,8 +10,10 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
+import com.lostagain.nl.me.models.hitable;
 
 /**
  * In order to more easily handle animations on objects we make them all extend this, and use this ones functions for all updates.
@@ -23,7 +25,7 @@ import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
  * @author Tom on the excellent and helpful advice of Xoppa
  *
  */
-public class AnimatableModelInstance extends ModelInstance implements IsAnimatableModelInstance {
+public class AnimatableModelInstance extends ModelInstance implements IsAnimatableModelInstance, hitable {
 	final static String logstag = "ME.AnimatableModelInstance";
 
 	//Use this instead of the models matrix
@@ -87,7 +89,13 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	public boolean localVisibility = true;
 	
 	
+	/**
+	 * If this object should be added to the hitable list
+	 */
+	private boolean Hitable = false;
 
+	/** Necessary as part of hit detection **/
+	private float lastHitDistance; 
 	
 	// this is just an example constructor, make sure to implement the constructor you need
 	public AnimatableModelInstance (Model model) {
@@ -187,6 +195,9 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 			localVisibility = false;
 		}
 		
+		//ensure its not on the hitable list
+		ModelManagment.removeHitable(this);
+				
 		//we also hide things positioned relatively to this. Nothing overrides this
 		for (AnimatableModelInstance object : attachlist.keySet()) {
 			if (object.isInheriteingVisibility()){
@@ -200,7 +211,14 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	}
 	
 	private void show(boolean setlocalVisibility){		
+		
 		ModelManagment.addmodel(this,currentRenderPlacement);
+		
+		if (Hitable){
+			ModelManagment.addHitable(this);
+		}
+		
+		
 		if (setlocalVisibility){
 			localVisibility = true;
 		}
@@ -489,6 +507,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		//if our local visibility is false we just ensure we are hidden, nothing else to change
 		if (localVisibility==false){
 			this.hide(false);
+			
+			
 			return;
 		} else {
 		//if our local visibility is true then we base it on the parent setting
@@ -524,7 +544,78 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 				
 	}
 
-	
+	/**
+	 * Adds it to the hitable list. This is a list of things designed to be clicked on or shot at.
+	 * ie. Fires events when a ray hits.
+	 * You will need to override the public boolean rayHits(Ray ray) for your own logic to determine
+	 * if a ray hits.
+	 * Note; When a object is hidden it will automatically be removed from the hitables list.
+	 *  
+	 * @param hitable
+	 */
+	public void setAsHitable(boolean hitable){
+		this.Hitable = hitable;
+		
+		if (Hitable){
+			if (isVisible()){
+				ModelManagment.addHitable(this);
+			}
+		} else {
+			ModelManagment.removeHitable(this);
+		}
+		
+		
+	}
+
+	@Override
+	public PosRotScale getTransform() {
+		return this.transState;
+	}
+
+	@Override
+	public void fireTouchDown() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fireTouchUp() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fireDragStart() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	//The following two just keep track of where this hit was in the stack of hits for a given ray
+	@Override
+	public void setLastHitsRange(float range) {
+		lastHitDistance = range;
+		
+	}
+
+	@Override
+	public float getLastHitsRange() {
+		return lastHitDistance;
+	}
+
+
+	/**
+	 * does this object block whats behind it?
+	 * @return
+	 */
+	@Override
+	public boolean isBlocker() {
+		return false;
+	}
+
+	@Override
+	public boolean rayHits(Ray ray) {
+		return false;
+	}
 	
 	
 

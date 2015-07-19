@@ -34,7 +34,7 @@ public class LinkStoreObject extends VerticalPanel implements GenericMeshFeature
 		TitleLabel = new Label("Links");
 		TitleLabel.setToscale(new Vector3(0.6f,0.6f,0.6f)); 
 		TitleLabel.setLabelBackColor(Color.CLEAR);
-		super.setBackgroundColor(Color.PURPLE);
+		super.getStyle().setBackgroundColor(Color.PURPLE);
 		this.add(TitleLabel);
 		
 	}

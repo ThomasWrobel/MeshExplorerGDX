@@ -36,7 +36,10 @@ import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
  *  setting text or attributes, rather then recreating itself. **/
 public class Label extends LabelBase {
 
+	public static final String LABEL_MATERIAL = "LabelMaterial";
+
 	String contents = "TextNotSetError";
+	
 
 	final static String logstag = "ME.Label";
 
@@ -79,6 +82,8 @@ public class Label extends LabelBase {
 	public Label (String contents,float MaxWidth){
 		super(generateObjectData(true, true, contents, SizeMode.ExpandHeightMaxWidth,MaxWidth));
 		 
+		super.setStyle(getMaterial(LABEL_MATERIAL));
+		
 			this.contents=contents;
 				
 			if (!setup){
@@ -96,7 +101,8 @@ public class Label extends LabelBase {
 	 **/
 	public Label (String contents){
 		super(generateObjectData(true, true, contents, SizeMode.ExpandXYToFit,-1));//No max width
-		
+
+		super.setStyle(this.getMaterial(LABEL_MATERIAL));
 		 
 		this.contents=contents;
 			
@@ -140,11 +146,12 @@ public class Label extends LabelBase {
 		
 		//if (textStyle==null){
 			textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+			
 		//}
 				
 			
 		
-		Material mat = 	new Material("LabelMaterial",	
+		Material mat = 	new Material(LABEL_MATERIAL,	
 									 TextureAttribute.createDiffuse(newTexture),
 									 new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
 									 ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
@@ -465,7 +472,7 @@ public class Label extends LabelBase {
 		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,-1); //-1 should be max width
 		
 
-		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");	
+		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
 
 
 		Texture newTexture = textureAndData.textureItself;
@@ -562,7 +569,7 @@ public class Label extends LabelBase {
 	 */
 	public void setLabelBackColor(Color labelBackColor) {
 	//	labelBackColor = Color.PINK; //TEMP during testing. Currently another shader bug - the background colour isn't being used correctly for the transparancy, its only effecting the shadows blending
-		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");		
+		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);		
 		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
 	
 		infoBoxsMaterial.set( ColorAttribute.createDiffuse(labelBackColor));
@@ -589,7 +596,7 @@ public class Label extends LabelBase {
 		
 		
 		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial("LabelMaterial");
+		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);
 		
 		DistanceFieldAttribute style = ((DistanceFieldAttribute)infoBoxsMaterial.get(DistanceFieldAttribute.ID));
 		style.setOverall_Opacity_Multiplier(opacity);
@@ -611,8 +618,11 @@ public class Label extends LabelBase {
 		//background.color.a = opacity;
 		BlendingAttribute backgroundOpacity = ((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type));
 		backgroundOpacity.opacity = opacity;
-		Gdx.app.log(logstag,"_____________opacity:"+opacity);
+	//	Gdx.app.log(logstag,"_____________opacity:"+opacity);
 	}
+
+	
+
 	
 	
 	

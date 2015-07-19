@@ -55,8 +55,8 @@ public class ConceptObjectSlot extends Widget implements hitable {
 	 */
 	public ConceptObjectSlot() {
 		
-		super(WIDTH,HEIGHT,Widget.MODELALIGNMENT.CENTER); //easier if we are centralized
-		super.setBackgroundColor(Color.LIGHT_GRAY);
+		super(WIDTH,HEIGHT,Widget.MODELALIGNMENT.TOPLEFT); //easier if we are centralized
+		super.getStyle().setBackgroundColor(Color.LIGHT_GRAY);
 		setApperanceAsEmpty();
 		
 		//add to the hitables, so we can detect when a mouseup releases a object over us
@@ -131,11 +131,11 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		
 	}
 	private void setApperanceAsEmpty() {
-		this.setBorderColor(Color.BLUE);		
+		super.getStyle().setBorderColor(Color.BLUE);		
 		
 	}
 	private void setApperanceAsInUse() {
-		this.setBorderColor(Color.GREEN);		
+		super.getStyle().setBorderColor(Color.GREEN);		
 		
 	}
 
@@ -176,11 +176,7 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		return super.transState;
 	}
 
-	@Override
-	public void fireTouchDown() {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	@Override
 	public void fireTouchUp() {
@@ -196,24 +192,7 @@ public class ConceptObjectSlot extends Widget implements hitable {
 	
 	}
 
-	@Override
-	public void fireDragStart() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void setLastHitsRange(float range) {
-
-		//Gdx.app.log(logstag,"setting hittable hit range to:"+range);
-		lastHitDistance = range;
-	}
-
-	@Override
-	public float getLastHitsRange() {
-		
-		return lastHitDistance;
-	}
 
 	@Override
 	public boolean isBlocker() {

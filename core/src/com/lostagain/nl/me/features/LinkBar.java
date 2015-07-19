@@ -8,22 +8,25 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.utils.Align;
+import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.ME;
-import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.DeckPanel;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
-import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 
+/**
+ * Controls the look and status of a single link
+ * 
+ * @author Tom
+ */
 class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 	final static String logstag = "ME.LinkBar";
 
@@ -39,8 +42,7 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 
 	String LocationsName = "";
 	
-	int PercentageScanned = 0;
-	
+	//int PercentageScanned = 0;	
 	
 	private double TOTAL_LOAD_UNITS=1;
 	private double LOAD_PROGRESS=0;
@@ -50,8 +52,6 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 
 	private LinkStoreObject parentLinkStore;
 
-	/** Necessary as part of hit detection **/
-	private float lastHitDistance; 
 	
 	//style
 	static final float StandardWidth = 300;
@@ -61,36 +61,39 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 	final static String SCANNING = "SCANNING- ";
 	
 	//bits
-	ProgressBar scanbar = new ProgressBar(30,10,StandardWidth-10);
+	ProgressBar scanbar = new ProgressBar(30,10,StandardWidth-30);
 	Label gotoLinkLabel = new Label("goto");
 
 	ModelInstance Linksline;
 
 	
 	
-	public LinkBar(SSSNode sssNode, LinkStoreObject parent){
+	public LinkBar(SSSNode targetPC, LinkStoreObject parent){
 		super(StandardWidth,30);
 		this.parentLinkStore = parent;
+		this.setUnknownStyle();
 		
-		this.setBackgroundColor(Color.BLUE);
 		scanbar.setValue(55);
 		Gdx.app.log(LinkStoreObject.logstag,"adding scan bar widget.");
 		
 		super.add(scanbar);
 
-		LocationsName = sssNode.getPLabel();
+		LocationsName = targetPC.getPLabel();
+		linksToThisPC = targetPC;
+		
 		
 		Label nameLabel = new Label(LocationsName);
 		nameLabel.setLabelBackColor(Color.CLEAR);	
 		//testLabelLala.setAlignment(MODELALIGNMENT.TOPLEFT);
-		super.add(nameLabel);
-		
-
-		
+		super.add(nameLabel); //temp hide
+			
 		//remove start if too long
 		if (LocationsName.length()>33){
 			LocationsName="..."+LocationsName.substring(LocationsName.length()-33, LocationsName.length() );
 		}
+		
+		//ensure we are hitable
+		super.setAsHitable(true);
 		
 	}
 	
@@ -113,14 +116,31 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 	}
 	
 	private void setLockedStyle(){
-		setBackgroundColor(Color.RED);
+		getStyle().setBackgroundColor(Color.RED);
+		gotoLinkLabel.getStyle().setColor(Color.BLUE.cpy());
+		
+		//check style is correct one?
+		if (gotoLinkLabel.getStyle().getMaterial() == gotoLinkLabel.getMaterial(Label.LABEL_MATERIAL)){
+			
+			Gdx.app.log(LinkStoreObject.logstag,"styles match");
+			
+		} else {
+			Gdx.app.log(LinkStoreObject.logstag,"styles dont match");
+			
+		}
+		
+		Gdx.app.log(LinkStoreObject.logstag,"gotoLinkLabel.getStyle().getMaterial()"+gotoLinkLabel.getStyle().getMaterial().id);
 	}
 	
 	private void setOpenStyle(){
-		setBackgroundColor(Color.GREEN);
+		getStyle().setBackgroundColor(Color.GREEN);
+		gotoLinkLabel.getStyle().setColor(Color.BLUE.cpy());
+		
 	}
 	private void setUnknownStyle(){
-		setBackgroundColor(Color.BLUE);
+		getStyle().setBackgroundColor(Color.BLUE);
+		gotoLinkLabel.getStyle().setColor(Color.GRAY.cpy());
+		
 	}
 	
 	public void refreshBasedOnMode() {
@@ -135,7 +155,7 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 		if (currentMode == LinkMode.Closed){
 			currentMode = LinkMode.Closed;
 			setLockedStyle();
-			gotoLinkLabel.setText(CLOSED+LocationsName+" )");
+			gotoLinkLabel.setText(CLOSED+":"+LocationsName+" )");
 			//gotoLinkButton.setColor( 220,0, 10, 30);
 
 		} 
@@ -294,14 +314,15 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 	
 	@Override
 	public void setTotalProgressUnits(int i) {
-		// TODO Auto-generated method stub
-		
+		TOTAL_LOAD_UNITS = i;		//could probably put this inside the progress bar as internally it does much the same thing
+		//updateSemanticScan();
 	}
 
 	@Override
 	public void addToTotalProgressUnits(int i) {
-		// TODO Auto-generated method stub
-		
+
+		TOTAL_LOAD_UNITS = TOTAL_LOAD_UNITS + i;
+		//updateSemanticScan();
 	}
 
 	@Override
@@ -312,25 +333,149 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 
 	@Override
 	public void stepProgressForward() {
-		// TODO Auto-generated method stub
-		
+		LOAD_PROGRESS = LOAD_PROGRESS + 1;
+		//updateSemanticScan();
 	}
 
 	@Override
 	public void setCurrentProgress(int i) {
-		// TODO Auto-generated method stub
+		LOAD_PROGRESS = i;
+
+		if (!realURLLink){
+			setStandardLinkScanningAmount((int)Math.floor(LOAD_PROGRESS));
+		} else {
+		//	updateSemanticScan();
+		}
+	}
+
+	public void linkClicked(){
+		Gdx.app.log(logstag,"trying to go to:"+linksToThisPC.getPURI());
 		
-	}
+		//double check if it was a realscan that the database is loaded (should not be needed if loading progress was handled correctly, which it currently is not)
+		if (realURLLink){
 
-	@Override
-	public PosRotScale getTransform() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+			Gdx.app.log(logstag,"checking if url loaded:");
+			
+			
+			boolean loaded = ME.checkDatabaseIsLoaded(linksToThisPC);
+			
+			if (loaded==false){
 
+				Gdx.app.log(logstag,"canceling click as database not loaded");
+				return;
+			}
+			
+		}
+		
+		
+		switch (currentMode)
+		{
+		case Unknown:
+			 requestScan();
+			break;
+		case Closed:
+			//as we already know its locked, we could probably
+			//put a flag here to stop a re-check later?
+			ME.gotoLocation(linksToThisPC);
+			break;
+		case Open:
+			//but probably not here - a locked pc deserves a double checked no?
+			ME.gotoLocation(linksToThisPC);
+			break;
+		case Scanning:
+			break;
+		default:
+			break;
+
+
+		}
+	}
+	
+	
+	
+private void requestScan(){
+		
+		//super.setStyles(Style.BACKGROUND.is(Background.solid(Color.argb(255, 50,50, 255))));
+		
+	//	ProgressBar.setStyles(Style.BACKGROUND.is(Background.solid(Color.argb(255, 250,50, 55))));
+
+
+		
+		//check if needs a new database loaded
+		Boolean newDatabaseLoading=ME.checkForUnloadedDomainAndLoad(linksToThisPC);
+		
+		boolean successfullyStarted = false;
+		
+		if (!newDatabaseLoading){
+			
+			Gdx.app.log(logstag,"triggering scan");
+			
+			//currentParent.startScanningLink(this); Linkscreen used to handle scans. Now its handled by the scan manager
+			successfullyStarted = ScanManager.addNewScan(this); //will add a new scan to start scanning
+			
+			
+			realURLLink=false;
+			
+			
+		} else {
+
+			Gdx.app.log(logstag,"triggering remote scan");
+			
+			realURLLink=true;
+
+			this.setStandardLinkScanningAmount(0);
+			
+			//currentParent.startScanningLink(this);
+			
+			//we use the link as a loading bar for the real remote file!
+			//in future we need to do this separately as many bars could be loading remote
+			//sources at once
+			SuperSimpleSemantics.setGenericLoadingMonitor(this);
+			
+			//assume true for now (the real url scan needs replacing really)
+			successfullyStarted = true;
+		}
+
+		if (successfullyStarted){
+
+			Gdx.app.log(logstag,"___________________________________starting link scan");
+						
+			currentMode = LinkMode.Scanning;
+						
+			gotoLinkLabel.setText(SCANNING+":"+LocationsName);
+			
+			Gdx.app.log(logstag,"_____________n width:"+gotoLinkLabel.getLocalBoundingBox().getWidth());
+			Gdx.app.log(logstag,"_____________n height:"+gotoLinkLabel.getLocalBoundingBox().getHeight());
+		}
+		
+		
+		
+
+	}
+	
+//used to indicate the link is being scanned
+//speed is based on Node timed security / scanner speed
+public void setStandardLinkScanningAmount(int Percentage){
+	
+	if (!realURLLink){
+		scanbar.setValue(Percentage);
+			
+	} 
+	
+	//if percentage is 100% we fire competition
+	if (Percentage>=100)
+	{
+		this.scanComplete();
+	}
+	
+	
+}
 	@Override
 	public void fireTouchDown() {
 		Gdx.app.log(logstag,"touchdown on linkbar object");
+		linkClicked();
+		
+		
 	}
 
 	@Override
@@ -338,22 +483,8 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 		Gdx.app.log(logstag,"touchdown up linkbar object");
 	}
 
-	@Override
-	public void fireDragStart() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
-	@Override
-	public void setLastHitsRange(float range) {
-		lastHitDistance = range;
-		
-	}
-
-	@Override
-	public float getLastHitsRange() {
-		return lastHitDistance;
-	}
 
 	@Override
 	public boolean isBlocker() {

@@ -72,7 +72,7 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 		
 		public ConceptObjectContainerBar(ConceptObject newConceptObject){
 
-			this.setBackgroundColor(Color.CLEAR);
+			this.getStyle().setBackgroundColor(Color.CLEAR);
 			scanbar.setValue(15);
 			Gdx.app.log(logstag,"adding scan bar widget.");
 			

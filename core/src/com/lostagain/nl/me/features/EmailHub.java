@@ -7,6 +7,13 @@ import com.lostagain.nl.me.locationFeatures.Location;
 /**
  * A centerpoint for emails, with individual emails appearing in spokes around it.
  * In future we might have sub-hubs for email threads? or each email leads to another one?
+ * 
+ * idea;
+ * The email hub knows the direction from which its linked to its parenthub
+ * it then uses the opersite direction (ie, 180 around) as the default direction for emails, spacing them
+ * evenly left and right
+ * Each email in turn, links to its own reply emails in the same way.
+ * 
  * @author Tom
  *
  */

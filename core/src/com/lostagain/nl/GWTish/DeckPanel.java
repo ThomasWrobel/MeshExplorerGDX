@@ -113,7 +113,7 @@ public class DeckPanel extends ComplexPanel {
 			cx  = MinSizX/2;
 		}
 		
-		return new Vector3(cx-(incomingWidth/2),cy-(incomingHeight/2),(3f+3f*index)); //widgets are stacked 3 apart vertically
+		return new Vector3(cx-(incomingWidth/2),cy-(incomingHeight/2),(5f+10f*index)); //widgets are stacked 5 apart vertically
 	}
 
 }

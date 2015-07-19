@@ -22,11 +22,13 @@ import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
  * 
  * @author Tom *
  */
-public class Widget extends AnimatableModelInstance {
+public class Widget extends Element {
+
+	private static final String SHADERFORBACKGROUND = "Background";
 
 	final static String logstag = "GWTish.Widget";
 	
-	static Material DefaultWhiteBackground = new Material("Background",
+	static Material DefaultWhiteBackground = new Material(SHADERFORBACKGROUND,
 			   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
 			   new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLACK,Color.WHITE,Color.RED));
 	
@@ -58,6 +60,12 @@ public class Widget extends AnimatableModelInstance {
 	}
 	public MODELALIGNMENT alignment = MODELALIGNMENT.TOPLEFT;
 	
+	/**
+	 * If supplying your own model remember to call
+	 * super.setStyle();
+		
+	 * @param object
+	 */
 	public Widget(Model object) {
 		super(object);
 	}
@@ -69,13 +77,15 @@ public class Widget extends AnimatableModelInstance {
 	 */
 	public Widget(float sizeX,float sizeY,MODELALIGNMENT align) {
 		super(generateBackground(sizeX,sizeY,DefaultWhiteBackground.copy(),align)); 
+		super.setStyle(this.getMaterial(SHADERFORBACKGROUND));
 		
 		this.setMinSize(sizeX, sizeY);
 		
 	}
 	public Widget(float sizeX,float sizeY) {
 		super(generateBackground(sizeX,sizeY,DefaultWhiteBackground.copy(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
-
+		super.setStyle(this.getMaterial(SHADERFORBACKGROUND));
+		
 		this.setMinSize(sizeX, sizeY);
 	}
 	
@@ -85,41 +95,38 @@ public class Widget extends AnimatableModelInstance {
 	 */
 	public void setOpacity(float opacity){		
 
-		Gdx.app.log(logstag,"______________setOpacity:"+opacity);
+	//	Gdx.app.log(logstag,"______________setOpacity:"+opacity);
 		
 		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial("Background");
+		Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;	
 	}
+	
 	/**
 	 * Sets the opacity of the background
 	 * @param opacity
-	 */
+	 
 	public void setBackgroundColor(Color backcol){		
 		
 
 		Gdx.app.log(logstag,"______________backcol:"+backcol);
 		
 		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial("Background");
+		Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)infoBoxsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
 		
 		backtexture.backColor = backcol;
 	}
+	*/
+	/*
 	public void setBorderColor(Color bordercol){		
 		
-
-		Gdx.app.log(logstag,"______________bordercoll:"+bordercol);
+		this.getStyle().setBorderColor(bordercol);
 		
-		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial("Background");
-		GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)infoBoxsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
-		
-		backtexture.coreColor = bordercol;
-		backtexture.glowColor = bordercol;
-	}
+	}*/
+	
 	/**
-	 * makes a arbitery sized background that will be expanded as widgets are added
+	 * makes a arbitrarily sized background that will be expanded as widgets are added
 	 * @return
 	 */
 	protected static Model generateBackground(float sizeX,float sizeY,Material mat,MODELALIGNMENT alignment) {    
@@ -205,8 +212,12 @@ public class Widget extends AnimatableModelInstance {
 		if (newHeight<this.MinSizY){
 			newHeight = MinSizY;
 		}
-		//note we can optimize here by checking current size against requested and ensuring its different?
 		
+		//note we can optimize here by checking current size against requested and ensuring its different?
+		if (newHeight==this.getHeight() && newWidth==this.getWidth()){
+			Gdx.app.log(logstag,"______________already at requested or minimum size:"+newWidth+","+newHeight);
+			return;			
+		}
 		
 		//
 		

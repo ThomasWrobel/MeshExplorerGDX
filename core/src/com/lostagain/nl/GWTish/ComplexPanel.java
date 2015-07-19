@@ -90,6 +90,12 @@ public abstract class ComplexPanel extends Widget {
 		}
 		contents.clear();
 	}
+	
+	
+	/**
+	 * 
+	 * @return true if there was a change AND its bigger then the minimum size of this widget
+	 */
 	protected boolean recalculateLargestWidgets() {
 
 		boolean changed=false;
@@ -108,12 +114,22 @@ public abstract class ComplexPanel extends Widget {
 			float width  = size.getWidth()  * scaleX;
 
 			if (width>largestWidthOfStoredWidgets){
+				
+				if (width>this.MinSizX){
+					//note we only flag as changed if we are exceeding the minimum size
+					changed=true;
+				}
+				
+				//update largest
 				largestWidthOfStoredWidgets=width;
-				changed=true;
+								
 			}
 			if (height>largestHeightOfStoredWidgets){
+				if (height>this.MinSizY){
+					changed=true;
+				}
 				largestHeightOfStoredWidgets=height;
-				changed=true;
+				
 			}
 
 		}
@@ -173,10 +189,11 @@ public abstract class ComplexPanel extends Widget {
 		//add to the widget list
 		contents.add(widget);
 	
-		//recalculate biggest widgets (used for centralisation vertical or horizontal depending on panel)
+		//recalculate biggest widgets (used for centralization vertical or horizontal depending on panel)
 		boolean changed = recalculateLargestWidgets();
+				
 		if (changed){
-			this.repositionWidgets(); //reposition all widgets with the new one			
+			repositionWidgets(); //reposition all widgets with the new one			
 			return;
 		}
 		
