@@ -26,11 +26,7 @@ import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 	VerticalPanel infoBoxsPanel = new VerticalPanel(); //default panel;
 	
-	//public InfoBox(String title, String contents) {		
-		
-	//	this(title,contents);
-		
-	//}
+	Label subtitleLabel;
 	
 	public InfoBox(String title, String subtitle ,String contents) {	
 		super();
@@ -47,7 +43,7 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		
 		if (!subtitle.isEmpty()){
 			
-			Label subtitleLabel = new Label(subtitle,900); //note; double width as we are shrinking to half the size	
+			subtitleLabel = new Label(subtitle,900); //note; double width as we are shrinking to half the size	
 			subtitleLabel.setToscale(new Vector3(0.5f,0.5f,0.5f)); //content smaller then title
 
 			subtitleLabel.setLabelBackColor(Color.CLEAR);
@@ -111,6 +107,12 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 	@Override
 	public AnimatableModelInstance getAnimatableModelInstance() {
 		return this;
+	}
+
+	
+	public void setSubtitle(String string) {
+		subtitleLabel.setText(string);		
+		
 	}
 
 

@@ -217,4 +217,10 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		
 	}
 
+
+	
+	public void setAsCointaining(ConceptObject newConceptObject) {		
+		onDrop(newConceptObject);		
+	}
+
 }

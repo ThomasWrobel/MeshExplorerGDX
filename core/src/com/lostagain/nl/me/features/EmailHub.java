@@ -1,8 +1,17 @@
 package com.lostagain.nl.me.features;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.semantic.SSSNode;
+import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.me.features.MeshIcon.IconType;
 import com.lostagain.nl.me.locationFeatures.Location;
+import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 
 /**
  * A centerpoint for emails, with individual emails appearing in spokes around it.
@@ -18,27 +27,109 @@ import com.lostagain.nl.me.locationFeatures.Location;
  *
  */
 public class EmailHub extends MeshIcon {
-float totalEmails = 0;
-
+	int totalEmails = 0;
+	
+	private ArrayList<MeshIcon> DirectEmails = new  ArrayList<MeshIcon>();
+	LocationHub parentHub;
+	
 	public EmailHub(LocationHub parentHub) {
 		super(IconType.EmailHub, parentHub.parentLocation, generateFeature());
-		
+
 		super.setBackgroundColor(new Color(0.3f,0.3f,0.8f,0.7f));
-		
-		
+		this.parentHub=parentHub;
+
+
 	}
 
 	private static GenericMeshFeature generateFeature() {
-		float num = 0;
-		return new InfoBox("Email Data","Emails:"+num,"");
+
+		return new InfoBox("Email Data","Emails:0","");
 	}
-	
+
 
 	public void addEmailSource(SSSNode sssNode, SSSNode writtenIn) {
+
 		//make new email page on a spoke from this one
+		Email    emailPage = new Email(sssNode, writtenIn);
+		MeshIcon emailIcon = new MeshIcon(IconType.Email,this.parentLocation, emailPage);
+
+		DirectEmails.add(emailIcon);
 		
+		
+
+
 		//increase total email count
 		totalEmails++;
+		refreshStats();
 	}
+
+	private void refreshStats() {
+		InfoBox assFeature = (InfoBox)assocatiedFeature;
+		assFeature.setSubtitle("Num Of Emails:"+totalEmails);
+
+	}
+
+	private float getCurrentAngleToHub() {
+		return 180-this.getAngleTo(parentHub,Vector3.Y).getAngle();
+	}
+
+	
+	public void layout() {
+		
+		for (MeshIcon icon : DirectEmails) {
+
+			//work out position to place it
+			float ang = getCurrentAngleToHub();		
+			Gdx.app.log(logstag,"angle to hub = "+ang);
+			float distance = 300;
+
+			//temp; we place it at that angle (in future we space evenly around it as more email's are added
+			//(ie, make first, then layout)
+			Vector3 pos = this.transState.position.cpy();
+			Vector3 newPosition  = new Vector3(pos);
+			Vector3 displacement = new Vector3(0,distance,0);
+			displacement.rotate(Vector3.Z, ang);
+
+			newPosition.add(displacement);
+
+			icon.setToPosition(newPosition);
+			Gdx.app.log(logstag," pos = "+newPosition);
+			ModelManagment.addmodel(icon, RenderOrder.zdecides);
+			
+			addLineTo(icon);
+			
+			
+		}
+		
+	}
+
+	//layout when opened
+	@Override
+	public void open() {
+		super.open();
+		layout();
+	}
+
+	@Override
+	public void close() {
+		super.close();
+		HideEmails();
+	}
+
+	private void HideEmails() {
+
+		for (MeshIcon icon : DirectEmails) {
+			icon.hide();
+			linkedIcons.get(icon).hide();
+			//remove line to;
+			linkedIcons.remove(icon);
+			
+		}
+		
+		//NOTE: when its shown again we lose the text
+		
+	}
+	
+	
 
 }

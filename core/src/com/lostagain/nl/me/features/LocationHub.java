@@ -181,7 +181,7 @@ public class LocationHub extends MeshIcon {
 			Gdx.app.log(logstag,"making linkedLinkStore");
 			
 			linkedLinkStore = new LinkStoreObject(this); //create a new data store object linked to this location
-			final MeshIcon newIcon = new MeshIcon(IconType.Links,this.parentLocation, linkedLinkStore);
+			final MeshIcon newIcon = new MeshIcon(IconType.LinkStore,this.parentLocation, linkedLinkStore);
 			//linkedLinkStore.addOnSizeChangeHandler(new Runnable(){
 			//	@Override
 			//	public void run() {
@@ -293,6 +293,7 @@ public class LocationHub extends MeshIcon {
 	 * Layers all the known linked features out and draws lines from this hub to them
 	 */
 	private void layoutContents() {
+		
 		float total = HubsFeatures.size();
 		float angleDistance = 360/total; //scale to total after testing
 
@@ -312,10 +313,16 @@ public class LocationHub extends MeshIcon {
 			ModelManagment.addmodel(feature,ModelManagment.RenderOrder.zdecides);
 			
 			//link it to us
-			this.addLineTo(feature);
-			
+			this.addLineTo(feature);			
 			
 		}
+		
+
+		////if there is emails fire a layout on it as it will need to lay out its subcontent
+		//if (linkedEmailHub!=null){
+		//	linkedEmailHub.layout();
+		//	
+		//}
 		
 	}
 	private void addEmailSource(SSSNode sssNode, SSSNode writtenIn) {

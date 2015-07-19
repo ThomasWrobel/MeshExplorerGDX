@@ -47,16 +47,24 @@ public class Style {
 			
 			Gdx.app.log(logstag,"_________setting color to:"+col);
 			
-			//NOTE: No text setting seems to have an effect??
-			//Is style set correct?
-			//somehow duplicate or reset styles on object so its now pointing to the wrong one?
 			textStyle.textColour.set(col);
-			textStyle.glowColour.set(Color.PURPLE);
-			textStyle.shadowXDisplacement =15;
 		}
 
 	}
+	 /* This is normally the shadow text color 
+	 * (Only supported on objects using the DistanceFieldShader)
+	 * @param col
+	 */
+	public void setShadowColor(Color col){
 
+		if (textStyle!=null){
+			
+			Gdx.app.log(logstag,"_________setting shadow color to:"+col);
+			
+			textStyle.shadowColour.set(col);
+		}
+
+	}
 	/**
 	 * only works with GlowingSquareAttribute shaders right now
 	 * @param bordercol

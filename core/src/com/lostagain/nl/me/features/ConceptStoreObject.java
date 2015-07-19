@@ -16,7 +16,7 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
  * They are locked by default untill scanned, whereupon copys can be taken
  * 
  * @author Tom
- *  *
+ *  
  */
 public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeature {
 
@@ -73,16 +73,19 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 		public ConceptObjectContainerBar(ConceptObject newConceptObject){
 
 			this.getStyle().setBackgroundColor(Color.CLEAR);
-			scanbar.setValue(15);
+			scanbar.setValue(75);
 			Gdx.app.log(logstag,"adding scan bar widget.");
 			
 			add(scanbar);
 			
-			Label testLabelLala = new Label("||");
+			Label testLabelLala = new Label("|");
 			testLabelLala.setLabelBackColor(Color.CLEAR);				
 			add(testLabelLala);
 			slot.setAlignment(MODELALIGNMENT.TOPLEFT);
 			add(slot);
+			
+			slot.setAsCointaining(newConceptObject);
+			
 			
 		}
 		

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
@@ -61,8 +62,8 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 	final static String SCANNING = "SCANNING- ";
 	
 	//bits
-	ProgressBar scanbar = new ProgressBar(30,10,StandardWidth-30);
-	Label gotoLinkLabel = new Label("goto");
+	ProgressBar scanbar = new ProgressBar(30,5,StandardWidth-10);
+	Label gotoLinkLabel = null;
 
 	ModelInstance Linksline;
 
@@ -71,26 +72,31 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 	public LinkBar(SSSNode targetPC, LinkStoreObject parent){
 		super(StandardWidth,30);
 		this.parentLinkStore = parent;
-		this.setUnknownStyle();
-		
-		scanbar.setValue(55);
-		Gdx.app.log(LinkStoreObject.logstag,"adding scan bar widget.");
-		
-		super.add(scanbar);
-
 		LocationsName = targetPC.getPLabel();
-		linksToThisPC = targetPC;
-		
-		
-		Label nameLabel = new Label(LocationsName);
-		nameLabel.setLabelBackColor(Color.CLEAR);	
-		//testLabelLala.setAlignment(MODELALIGNMENT.TOPLEFT);
-		super.add(nameLabel); //temp hide
-			
+	
 		//remove start if too long
 		if (LocationsName.length()>33){
 			LocationsName="..."+LocationsName.substring(LocationsName.length()-33, LocationsName.length() );
 		}
+		linksToThisPC = targetPC;
+		
+		scanbar.setValue(1);
+		Gdx.app.log(LinkStoreObject.logstag,"adding scan bar widget.");
+		scanbar.getStyle().setBackgroundColor(new Color(1f,0f,0f,0.8f));
+		
+				
+		super.add(scanbar);
+
+		gotoLinkLabel = new Label(LocationsName);
+		gotoLinkLabel.setToscale(new Vector3(0.6f,0.6f,0.6f));
+		
+		gotoLinkLabel.setLabelBackColor(Color.CLEAR);
+		super.add(gotoLinkLabel); 		
+		setUnknownStyle();
+		
+
+		
+		
 		
 		//ensure we are hitable
 		super.setAsHitable(true);
@@ -117,30 +123,24 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 	
 	private void setLockedStyle(){
 		getStyle().setBackgroundColor(Color.RED);
-		gotoLinkLabel.getStyle().setColor(Color.BLUE.cpy());
+		scanbar.hide();
+		gotoLinkLabel.getStyle().setColor(Color.CYAN.cpy());
+		gotoLinkLabel.getStyle().setShadowColor(Color.CYAN.cpy());
 		
-		//check style is correct one?
-		if (gotoLinkLabel.getStyle().getMaterial() == gotoLinkLabel.getMaterial(Label.LABEL_MATERIAL)){
-			
-			Gdx.app.log(LinkStoreObject.logstag,"styles match");
-			
-		} else {
-			Gdx.app.log(LinkStoreObject.logstag,"styles dont match");
-			
-		}
-		
-		Gdx.app.log(LinkStoreObject.logstag,"gotoLinkLabel.getStyle().getMaterial()"+gotoLinkLabel.getStyle().getMaterial().id);
 	}
 	
 	private void setOpenStyle(){
 		getStyle().setBackgroundColor(Color.GREEN);
-		gotoLinkLabel.getStyle().setColor(Color.BLUE.cpy());
-		
+		getStyle().setBorderColor(Color.GREEN);
+		scanbar.hide();
+		gotoLinkLabel.getStyle().setColor(Color.CYAN.cpy());
+		gotoLinkLabel.getStyle().setShadowColor(Color.CYAN.cpy());
 	}
 	private void setUnknownStyle(){
-		getStyle().setBackgroundColor(Color.BLUE);
+		getStyle().setBackgroundColor(Color.GRAY);
+	
 		gotoLinkLabel.getStyle().setColor(Color.GRAY.cpy());
-		
+		gotoLinkLabel.getStyle().setShadowColor(Color.BLACK.cpy());
 	}
 	
 	public void refreshBasedOnMode() {
@@ -155,7 +155,7 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 		if (currentMode == LinkMode.Closed){
 			currentMode = LinkMode.Closed;
 			setLockedStyle();
-			gotoLinkLabel.setText(CLOSED+":"+LocationsName+" )");
+			gotoLinkLabel.setText(CLOSED+""+LocationsName+" )");
 			//gotoLinkButton.setColor( 220,0, 10, 30);
 
 		} 

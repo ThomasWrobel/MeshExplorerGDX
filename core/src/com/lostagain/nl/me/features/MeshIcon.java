@@ -43,6 +43,8 @@ import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
  * **/
 public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	
+	private static final String ICON_MATERIAL = "IconMaterial";
+
 	final static String logstag = "ME.MeshIcon";
 
 	static MeshIcon currentlyOpen = null;
@@ -50,10 +52,10 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	//generic icon stuff
 	public enum IconType {
 		Email,
-		EmailHub("Email\nHub"),
-		ConceptStore,
-		AbilityStore,
-		Links,
+		EmailHub("Email\nHub",new Color(0.2f,0.2f,0.8f,0.7f)),
+		ConceptStore("Concepts",Color.GREEN),
+		AbilityStore("Abilities",new Color(0.8f,0.6f,0.1f,0.7f)),
+		LinkStore("Links",Color.PURPLE),
 		Abilitys,
 		Info,
 		Concept, //Used as a generic concept object (Note this might change when first opened and its discovered to be a email, software etc inside?)
@@ -61,18 +63,25 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 		OTHER;  //used as a catch all for unique features.
 		 
 		String labelName = "";
-		
+		Color iconColor;
 		IconType(){
 			 this("");
 		 }
 		IconType(String label){
 			 labelName=label;
 		 }
+		IconType(String label,Color col){
+			 labelName=label;
+			 iconColor = col;
+		 }
 		public String getLabelName() {
 			if (labelName.isEmpty()){
 				return this.name(); //default is name of enum;
 			}
 			return labelName;
+		}
+		public Color getIconColour() {
+			return iconColor;
 		}
 	}
 	
@@ -162,6 +171,10 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 		model.meshes.get(0).getVertices(IconsDefaultVertexs);
 		
 	
+		//set the icon color if not default
+		if (type.getIconColour()!=null){
+			setBackgroundColor(type.getIconColour());
+		}
 	
 		
 		
@@ -173,6 +186,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 		} else {
 			name=specificName;
 		}
+		
+		
 		MeshIconsLabel = new Label(name);
 		MeshIconsLabel.setLabelBackColor(Color.CLEAR);
 		
@@ -275,7 +290,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 		Color DefaultColour = new Color(0.3f,0.3f,1f,0.5f);
 		
 		//for now, we just use a simple texture
-        Material material = new Material("IconMaterial",
+        Material material = new Material(ICON_MATERIAL,
 				new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLUE,DefaultColour,Color.WHITE),
 				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f));
         
@@ -300,7 +315,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	 */
 	public void setOpacity(float opacity){
 		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial("IconMaterial");
+		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);
 		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
 		
 		MeshIconsLabel.setOpacity(opacity);
@@ -316,7 +331,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	 */
 	public void setBackgroundColor(Color bak){
 		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial("IconMaterial");
+		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);
 		GlowingSquareAttribute attribute = ((GlowingSquareShader.GlowingSquareAttribute)infoBoxsMaterial.get( GlowingSquareShader.GlowingSquareAttribute.ID));
 		attribute.backColor = bak;
 		
