@@ -335,7 +335,7 @@ public class MeshIcon extends AnimatableModelInstance  implements hitable, Anima
 			}
 			currentlyOpen=this;
 			
-			//purhapes make optional?
+			//Perhaps make optional?
 			//centralise camera on this icon
 			ME.centerViewOn(this,1000);
 			

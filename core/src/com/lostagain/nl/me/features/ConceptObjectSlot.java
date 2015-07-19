@@ -223,7 +223,7 @@ public class ConceptObjectSlot extends Widget implements hitable {
 	@Override
 	public boolean rayHits(Ray ray) {
 		boolean hit = Intersector.intersectRayBoundsFast(ray, this.getLocalCollisionBox());
-		Gdx.app.log(logstag,"testing for hit on concept object:"+hit);
+		Gdx.app.log(logstag,"testing for hit on concept object slot:"+hit);
 		return hit;
 	}
 

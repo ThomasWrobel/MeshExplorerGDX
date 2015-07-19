@@ -174,7 +174,7 @@ public class ModelMaker {
 
 		ModelBuilder modelBuilder = new ModelBuilder();
 		//note; maybe these things could be pre-created and stored rather then a new one each time?
-		Model model =  modelBuilder.createXYZCoordinates(125f, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		Model model =  modelBuilder.createXYZCoordinates(25f, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		
 		
 		

@@ -387,7 +387,7 @@ public class ModelManagment {
 						ColorAttribute.createDiffuse(Color.BLUE)
 						);
 
-		Model lookAtTesterm =  modelBuilder.createXYZCoordinates(295f, blue, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		Model lookAtTesterm =  modelBuilder.createXYZCoordinates(95f, blue, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		lookAtTester = new AnimatableModelInstance(lookAtTesterm);
 		lookAtTester.setToPosition(new Vector3 (500,500,0));
 
