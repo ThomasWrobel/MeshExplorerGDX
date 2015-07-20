@@ -308,7 +308,7 @@ public class Label extends LabelBase {
 				currentX=0;
 				destX=glyph.xoffset;
 				lastremainder=0;
-				Gdx.app.log(logstag,"______________adding line. (yp now="+yp+") next char is:"+Letters.charAt(i));
+				//Gdx.app.log(logstag,"______________adding line. (yp now="+yp+") next char is:"+Letters.charAt(i));
 				
 				//we skip \n as we don't want to really write that
 				if (Letters.charAt(i) == '\n'){
