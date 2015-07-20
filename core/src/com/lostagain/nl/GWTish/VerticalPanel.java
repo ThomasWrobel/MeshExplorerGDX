@@ -1,5 +1,6 @@
 package com.lostagain.nl.GWTish;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -46,7 +47,7 @@ public class VerticalPanel extends CellPanel {
 	 * recalculateLargestWidgets(); should be run first
 	 */
 	void repositionWidgets() {
-		
+		Gdx.app.log(logstag,"repositionWidgets in vp");
 		//simply clear and re-add them all
 		
 		//reset  stats
@@ -60,7 +61,8 @@ public class VerticalPanel extends CellPanel {
 			internalAdd(widget); //re add
 			
 		}
-
+		Gdx.app.log(logstag,"new size:"+largestWidthOfStoredWidgets+","+currentTotalWidgetHeight);
+		
 		
 		//update back size
 		this.setSizeAs(leftPadding+largestWidthOfStoredWidgets+rightPadding,bottomPadding+currentTotalWidgetHeight+topPadding);

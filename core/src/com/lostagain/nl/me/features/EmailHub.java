@@ -35,7 +35,7 @@ public class EmailHub extends MeshIcon {
 	public EmailHub(LocationHub parentHub) {
 		super(IconType.EmailHub, parentHub.parentLocation, generateFeature());
 
-		super.setBackgroundColor(new Color(0.3f,0.3f,0.8f,0.7f));
+		super.setBackgroundColour(new Color(0.3f,0.3f,0.8f,0.7f));
 		this.parentHub=parentHub;
 
 
@@ -52,7 +52,9 @@ public class EmailHub extends MeshIcon {
 		//make new email page on a spoke from this one
 		Email    emailPage = new Email(sssNode, writtenIn);
 		MeshIcon emailIcon = new MeshIcon(IconType.Email,this.parentLocation, emailPage);
-
+		ModelManagment.addmodel(emailIcon, RenderOrder.zdecides);
+		
+		emailIcon.hide();		
 		DirectEmails.add(emailIcon);
 		
 		
@@ -70,31 +72,36 @@ public class EmailHub extends MeshIcon {
 	}
 
 	private float getCurrentAngleToHub() {
-		return 180-this.getAngleTo(parentHub,Vector3.Y).getAngle();
+		return 180+this.getAngleTo(parentHub,Vector3.Y).getAngle();
 	}
 
 	
 	public void layout() {
+		//work out position to place it
+		float ang = getCurrentAngleToHub();		
+		
+		Gdx.app.log(logstag,"angle to hub = "+ang);
+		float totalSpread = 90;
+		float spaceing = totalSpread/DirectEmails.size();		
+		float minAngle = ang - (totalSpread/2);
+				
+		float distance = 200;
 		
 		for (MeshIcon icon : DirectEmails) {
-
-			//work out position to place it
-			float ang = getCurrentAngleToHub();		
-			Gdx.app.log(logstag,"angle to hub = "+ang);
-			float distance = 300;
 
 			//temp; we place it at that angle (in future we space evenly around it as more email's are added
 			//(ie, make first, then layout)
 			Vector3 pos = this.transState.position.cpy();
 			Vector3 newPosition  = new Vector3(pos);
 			Vector3 displacement = new Vector3(0,distance,0);
+			
 			displacement.rotate(Vector3.Z, ang);
 
 			newPosition.add(displacement);
 
 			icon.setToPosition(newPosition);
 			Gdx.app.log(logstag," pos = "+newPosition);
-			ModelManagment.addmodel(icon, RenderOrder.zdecides);
+			icon.show();
 			
 			addLineTo(icon);
 			
@@ -120,9 +127,13 @@ public class EmailHub extends MeshIcon {
 
 		for (MeshIcon icon : DirectEmails) {
 			icon.hide();
-			linkedIcons.get(icon).hide();
-			//remove line to;
-			linkedIcons.remove(icon);
+			
+			if (linkedIcons.get(icon)!=null){
+				linkedIcons.get(icon).hide();
+				//remove line to;
+				linkedIcons.remove(icon);
+			}
+			
 			
 		}
 		

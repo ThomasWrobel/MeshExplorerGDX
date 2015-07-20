@@ -13,6 +13,7 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
 
 public abstract class ComplexPanel extends Widget {
 
+	final static String logstag = "GWTish.ComplexPanel";
 
 	Color DefaultColour = new Color(0.3f,0.3f,1f,0.5f);
 	protected ArrayList<Widget> contents = new ArrayList<Widget>();
@@ -59,7 +60,10 @@ public abstract class ComplexPanel extends Widget {
 		updateContainerSize = new Runnable(){
 			@Override
 			public void run() {
-				//reposition this panels widgets
+
+				Gdx.app.log(logstag,"updating position due to size change");
+				boolean changed = recalculateLargestWidgets();
+				
 				repositionWidgets();
 			}			
 		};
@@ -75,7 +79,10 @@ public abstract class ComplexPanel extends Widget {
 				updateContainerSize = new Runnable(){
 					@Override
 					public void run() {
-						//reposition this panels widgets
+
+						Gdx.app.log(logstag,"updating position due to size change");
+						boolean changed = recalculateLargestWidgets();
+						
 						repositionWidgets();
 					}			
 				};
@@ -234,7 +241,7 @@ public abstract class ComplexPanel extends Widget {
 		float newLocationY = newLoc.y; //under the last widget
 		float newLocationZ = newLoc.z;
 				
-		Gdx.app.log(logstag,"______________placing new widget at: "+newLocationY+" its height is:"+height);
+		Gdx.app.log(logstag,"______________placing new "+widget.getClass()+" widget at: "+newLocationY+" its scaled size is:"+width+","+height);
 	
 		PosRotScale newLocation = new PosRotScale(newLocationX,-newLocationY,newLocationZ); //hover above for now (3 is currently a bit arbitrary, guess we should make this a option in future)
 		

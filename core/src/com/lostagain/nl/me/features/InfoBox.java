@@ -33,7 +33,8 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		super.setSpaceing(3f); //set a small spacing between elements vertically
 		super.setPadding(10f); //padding around border
 		
-		super.getStyle().setBackgroundColor(Color.CLEAR); //set the back colour (excluding border)
+		super.getStyle().clearBackgroundColor(); //set the back colour (excluding border)
+		super.getStyle().clearBorderColor();
 		
 		//add default labels
 		Label titleLabel = new Label(title,450);

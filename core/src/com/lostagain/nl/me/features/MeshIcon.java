@@ -21,6 +21,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.MessyModelMaker;
@@ -99,15 +100,15 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	OpenMode iconsOpenMode = OpenMode.DoubleClick;
 	
 	
-	static final float iconWidth  = 100f; //standard width and height of all icons
-	static final float iconHeight = 100f;
+	static final float defaultIconWidth  = 100f; //standard width and height of all icons
+	static final float defaultIconHeight = 100f;
 	private static final float LabelMargin = 2f;
 
 	private final Runnable SizeChangeHandler = new Runnable(){
 		@Override
 		public void run() {
 
-			Gdx.app.log(logstag,"refreshAssociatedFeature");
+			Gdx.app.log(logstag,"refreshing mesh due to size change");
 			refreshAssociatedFeature();
 		}
 	};
@@ -147,7 +148,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 
 	//----------------------------------------------------
 	public MeshIcon(IconType type,Location parentLocation,GenericMeshFeature assocatiedfeature) {	
-		this(type,null,iconWidth,iconHeight,parentLocation,assocatiedfeature);
+		this(type,null,defaultIconWidth,defaultIconHeight,parentLocation,assocatiedfeature);
 	}
 	/** 
 	 * Creates a icon of the specified type.
@@ -173,7 +174,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	
 		//set the icon color if not default
 		if (type.getIconColour()!=null){
-			setBackgroundColor(type.getIconColour());
+			setBackgroundColour(type.getIconColour());
 		}
 	
 		
@@ -194,8 +195,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 		//we also need to scale the label to fit as it might be too long
 		if ((MeshIconsLabel.getWidth()+(LabelMargin*2))>w){
 			//10/5
-			float ratio = MeshIconsLabel.getWidth()/w;
-			float newWidth = w;
+			float ratio = (MeshIconsLabel.getWidth()-(LabelMargin*2)) /w;
+			float newWidth = w-(LabelMargin*2);
 			float newHeight = MeshIconsLabel.getHeight() / ratio;
 			MeshIconsLabel.setSizeAs(newWidth, newHeight);
 			
@@ -242,13 +243,17 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 		cacheAssociatedFeaturesSize();
 		
 		//we need to keep track of any size changes on the associated feature to recache the above if needed
-		Gdx.app.log(logstag,"opening mesh feature");
+
+		Gdx.app.log(logstag,"adding size change monitor");
 		assocatiedFeature.addOnSizeChangeHandler(SizeChangeHandler);
 	}
 	
 	
 	
 	private void cacheAssociatedFeaturesSize() {
+
+		Gdx.app.log(logstag,"cacheing mesh size:"+assocatiedFeature.getWidth()+","+assocatiedFeature.getHeight());
+		
 		//we need to work out the size of the associatedFeature, and use that to create new mesh vertex co-ordinates
 		//for us to transform into when opening
 		//We start by getting its minimum and maximum local co-ordinates
@@ -329,7 +334,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	 * 
 	 * @param opacity
 	 */
-	public void setBackgroundColor(Color bak){
+	public void setBackgroundColour(Color bak){
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);
 		GlowingSquareAttribute attribute = ((GlowingSquareShader.GlowingSquareAttribute)infoBoxsMaterial.get( GlowingSquareShader.GlowingSquareAttribute.ID));
@@ -351,10 +356,14 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 			currentlyOpen=this;
 			
 			//Perhaps make optional?
-			//centralise camera on this icon
-			ME.centerViewOn(this,1000);
-			
-			
+			//Centralize camera on this icon
+			//For LocationHubs we put the camera a bit higher up
+			if (thisIconsType==MeshIcon.IconType.LocationHub){
+				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight()+150,1000);
+			} else {
+				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight(),1000);
+				
+			}
 			Gdx.app.log(logstag,"opening mesh feature");
 			animateOpen();
 		} else {
@@ -459,19 +468,23 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	///-------------------------------------
 
 	void startOpen(float duration, Runnable runAfterFadeIn) {
+		
 		currentState = FeatureState.appearing;
 		Opacity = 0f;
 		timeIntoFade=0f;
-		ModelManagment.addmodel(this, RenderOrder.zdecides);
-		
+		//ModelManagment.addmodel(this, RenderOrder.zdecides);
+		this.show();
 		ModelManagment.addAnimating(this);
 		this.runAfterFadeIn= runAfterFadeIn;
 		
 		this.assocatiedFeature.show();
+		Gdx.app.log(logstag,"startOpen. assocatiedFeature is vis "+assocatiedFeature.isVisible());
+		
 	}
 
 
 	void startClose(float duration, Runnable runAfterFadeOut) {
+		Gdx.app.log(logstag,"startClose");
 		currentState = FeatureState.disapearing;
 		Opacity = 1f;
 		timeIntoFade=0f;
@@ -708,6 +721,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 		
 		linkedIcons.remove(target);
 	}
+	
+
 	
 	
 	

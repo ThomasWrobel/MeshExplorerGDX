@@ -8,7 +8,7 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
 public interface hitable {
 	
 	
-	public Vector3 getCenterOfBoundingBox();
+	//public Vector3 getCenterOfBoundingBox();
 	//public int getRadius(); //hitradius
 	public PosRotScale getTransform();
 	public void fireTouchDown();
@@ -20,5 +20,7 @@ public interface hitable {
 	
 	public boolean isBlocker(); //if this blocks hits below it
 	public boolean rayHits(Ray ray);
+	public Vector3 getCenterOnStage();
+	
 	
 }

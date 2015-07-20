@@ -235,6 +235,9 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	/* (non-Javadoc)
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getWidth()
 	 */
+	/**
+	 * returns unscaled width
+	 */
 	@Override
 	public float getWidth(){
 		if (localBoundingBox==null){
@@ -245,12 +248,23 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	/* (non-Javadoc)
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getHeight()
 	 */
+	/**
+	 * returns unscaled height
+	 */
 	@Override
 	public float getHeight(){
 		if (localBoundingBox==null){
 			createBoundBox();
 		}
 		return localBoundingBox.getHeight();
+	}
+	
+	/**
+	 * = getCenterOfBoundingBox() * position matrix
+	 * @return
+	 */
+	public Vector3 getCenterOnStage(){
+		return getCenterOfBoundingBox().mul(getMatrixTransform());
 	}
 	
 	/**

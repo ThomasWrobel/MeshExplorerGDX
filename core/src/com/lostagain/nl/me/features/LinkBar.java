@@ -139,7 +139,7 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 	private void setUnknownStyle(){
 		getStyle().setBackgroundColor(Color.GRAY);
 	
-		gotoLinkLabel.getStyle().setColor(Color.GRAY.cpy());
+		gotoLinkLabel.getStyle().setColor(new Color(0.1f,0.1f,0.1f,1f));
 		gotoLinkLabel.getStyle().setShadowColor(Color.BLACK.cpy());
 	}
 	
@@ -200,10 +200,14 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 			Location newlocation =  Location.getLocation(linksToThisPC);
 			
 		
-			LocationHub from = parentLinkStore.parentLocation;
-			
+			LocationHub from = parentLinkStore.parentLocation;			
 			LocationHub to = newlocation.locationsNEWHub;
+			
 			//TODO: Draw line between above
+			//this should really be from the linkbars hub, not the locations
+			if (to!=null){
+				from.addLineTo(to);
+			}
 		
 		}
 	}
@@ -376,11 +380,11 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 		case Closed:
 			//as we already know its locked, we could probably
 			//put a flag here to stop a re-check later?
-			ME.gotoLocation(linksToThisPC);
+			ME.gotoLocation2(linksToThisPC);
 			break;
 		case Open:
 			//but probably not here - a locked pc deserves a double checked no?
-			ME.gotoLocation(linksToThisPC);
+			ME.gotoLocation2(linksToThisPC);
 			break;
 		case Scanning:
 			break;

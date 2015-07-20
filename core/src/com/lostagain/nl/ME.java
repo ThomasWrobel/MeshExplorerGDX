@@ -358,6 +358,10 @@ public class ME extends Game {
     	centerViewOn(locationcontainer,  newZ,  addLocationToUndo,4000);
     }
     
+    public static void centerViewOn(MeshIcon meshIcon,float newZ, int durationms) {
+    	centerViewOn(meshIcon,newZ,false,durationms);
+    	
+    }
     public static void centerViewOn(MeshIcon meshIcon, int durationms) {
     	centerViewOn(meshIcon,ScreenUtils.getSuitableDefaultCameraHeight(),false,durationms);
     	
@@ -485,6 +489,24 @@ public static Ray getCurrentStageCursorRay() {
 		Gdx.app.log(logstag, " testing for hits at: "+currentCursor.x+","+currentCursor.y);
 		return MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
 	}
+
+/** temp only, goes to the meshicon rather then the actual loc**/
+public static void gotoLocation2(SSSNode linksToThisPC) {
+	//flag if the user is home
+	if (linksToThisPC.equals(PlayersData.computersuri)){
+		ME.isAtHome = true;
+	} else {
+		ME.isAtHome = false;		  
+	}
+
+	//get the node screen.
+	//This will automatically check if it already exists
+	//else it will create a new one
+	Location screen = Location.getLocation(linksToThisPC);
+	ME.centerViewOn(screen.locationsNEWHub,4000);
+	
+	MainExplorationView.currentlyOpenLocation = screen;
+}
 
 public static void gotoLocation(SSSNode linksToThisPC) {
 	

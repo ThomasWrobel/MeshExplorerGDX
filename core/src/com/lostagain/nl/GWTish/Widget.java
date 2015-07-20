@@ -142,6 +142,7 @@ public class Widget extends Element {
 	
 	//handles
 	protected void fireAllSizeChangeHandlers (){
+		Gdx.app.log(logstag," firing all size change handlers:"+SizeChangeHandlers.size());
 		for (Runnable handler : SizeChangeHandlers) {
 			handler.run();
 		}		
@@ -203,6 +204,7 @@ public class Widget extends Element {
 	 * @param newHeight
 	 */
 	public void setSizeAs(float newWidth, float newHeight,float offsetX,float offsetY) {
+
 		
 		//ensure not smaller then minimum
 		if (newWidth<this.MinSizX){
@@ -212,6 +214,8 @@ public class Widget extends Element {
 		if (newHeight<this.MinSizY){
 			newHeight = MinSizY;
 		}
+
+		Gdx.app.log(logstag," sizing to ::"+newWidth+","+newHeight);
 		
 		//note we can optimize here by checking current size against requested and ensuring its different?
 		if (newHeight==this.getHeight() && newWidth==this.getWidth()){
@@ -251,7 +255,6 @@ public class Widget extends Element {
 		//can be optimized latter by pre-calcing the size ratio and just multiply
 		for (int i = 0; i < 12; i=i+3) {
 			
-			//Gdx.app.log(logstag," new::"+comboX+","+comboY+","+comboZ);
 			
 			//currently just scale up a bit
 			vertices[idx    ] = newSizeArray[i];
@@ -263,13 +266,17 @@ public class Widget extends Element {
 		
 		
 		IconsMesh.setVertices(vertices);
-		
+
+		Gdx.app.log(logstag," old size::"+this.getWidth()+","+this.getHeight());
 		//recalc bounding box if theres one
 		wasResized();
+
+		Gdx.app.log(logstag," new size::"+this.getWidth()+","+this.getHeight());
 		
 		//ensure things attached are repositioned
-		this.updateAllAttachedObjects();
-		
+		updateAllAttachedObjects();
+
+		Gdx.app.log(logstag," new size2::"+this.getWidth()+","+this.getHeight());
 		
 		fireAllSizeChangeHandlers();
 		

@@ -110,5 +110,20 @@ public class Style {
 		// TODO Auto-generated method stub
 		return objectsMaterial;
 	}
+	public void clearShadowColor() {
+		setShadowColor(Color.CLEAR); 
+		
+	}
+	public void clearBorderColor() {
+		setBorderColor(Color.CLEAR);		
+	}
+	public void clearColor() {
+		setColor(Color.CLEAR); 
+		
+	}
+	public void clearBackgroundColor() {
+		setBackgroundColor(Color.CLEAR); 
+		
+	}
 
 }

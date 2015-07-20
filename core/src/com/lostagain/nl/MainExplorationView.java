@@ -46,6 +46,7 @@ import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
 
 /** The main exploration view, which lets them see LocationURIs 
@@ -320,7 +321,7 @@ public class MainExplorationView implements Screen {
 		
 	
 		ConceptObject coTest = new ConceptObject(PlayersData.computersuri);
-		coTest.setToPosition(new Vector3(320f,650f,0f));
+		coTest.setToPosition(new Vector3(320f,450f,0f));
 		ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
 		/*
 		ConceptObjectSlot slotTest = new ConceptObjectSlot();
@@ -329,12 +330,12 @@ public class MainExplorationView implements Screen {
 		*/
 		
 		
-		
+		/*
 		LocationHub testhub = new LocationHub(PlayersData.computersuri,PlayersData.homeLoc);
 		testhub.setToPosition(new Vector3(450f,750f,0f));
 		ModelManagment.addmodel(testhub,ModelManagment.RenderOrder.zdecides);
 		
-		/*
+	
 		ProgressBar testbar = new ProgressBar(30, 10, 200);
 		testbar.setToPosition(new Vector3(350f,700f,0f));
 		testbar.setValue(100);
@@ -451,15 +452,18 @@ public class MainExplorationView implements Screen {
 		gameStage.addActor(newloc);
 		
 		//add noise back if closed and added to stage
-		if (newloc.closed){
-			
-			newloc.setClosedBackground();
-			
+		if (newloc.closed){			
+			newloc.setClosedBackground();			
 		}
-		
-
 	}
 
+	//	MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y);
+	public static void addnewlocationHub(LocationHub newloc,int x,int y) {
+		newloc.setToPosition(new Vector3(x,y,0));
+		ModelManagment.addmodel(newloc,RenderOrder.zdecides);
+	}
+
+	
 
 	@Override
 	public void render(float delta) {

@@ -15,6 +15,9 @@ import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.me.locationFeatures.EmailScreen;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.ModelManagment;
 
@@ -40,13 +43,20 @@ public class LocationHub extends MeshIcon {
 	private LinkStoreObject linkedLinkStore;
 	
 	
-	public LocationHub(SSSNode locationsNode,Location location) {		
-		super(IconType.LocationHub, location, getDefaultFeature(locationsNode));
+	public LocationHub(SSSNode locationsNode,Location location) {
+		
+		super(IconType.LocationHub,getHubTitle(locationsNode),defaultIconWidth,defaultIconHeight, location, getDefaultFeature(locationsNode));
 		Color basicS = Color.GREEN;
 		basicS.a = 0.5f;
-		super.setBackgroundColor(basicS); //temp
+		super.setBackgroundColour(basicS); //temp
 		LocationsNode = locationsNode;
 		
+		
+	}
+
+	private static String getHubTitle(SSSNode node) {
+		
+		return node.getPLabel();
 	}
 
 	/** returns either a InfoBox or a Lockscreen depending on if this location is locked or not **/
@@ -81,7 +91,7 @@ public class LocationHub extends MeshIcon {
 		}
 
 		InfoBox locationCenterInformation = new InfoBox(title,uri,Discription);
-		
+				
 		
 		return locationCenterInformation;
 	}
@@ -454,7 +464,7 @@ public class LocationHub extends MeshIcon {
 				
 		Gdx.app.log(logstag,"setting back color to:"+col.toString());
 			
-		this.setBackgroundColour(col);
+		super.setBackgroundColour(col);
 		
 		
         

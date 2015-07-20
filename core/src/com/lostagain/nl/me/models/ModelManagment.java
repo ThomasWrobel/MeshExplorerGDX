@@ -241,7 +241,10 @@ public class ModelManagment {
 
 
 
-		//--------------			
+		//--------------	
+		
+		//The following was a test of how the domains colour range should look. Re-enable during testing.
+		
 		Pixmap colourMapAsPixMap = MEDomain.getHomeDomain().getDomainsColourMap().getPixMap(200, 200);
 		//Pixmap colourMapAsPixMap = MessyModelMaker.createNoiseImage(200, 200);
 
@@ -260,11 +263,13 @@ public class ModelManagment {
 
 		ModelInstance colortest = ModelMaker.createRectangleAt(0, 900, 130, 200, 200, Color.BLACK, testmaterial3); 
 
+		
+		
 		//ModelManagment.addmodel(centermaker,RenderOrder.infrontStage);
 
 		if (ME.currentMode!=GameMode.Production){
 			ModelManagment.addmodel(beamtest,RenderOrder.infrontStage);
-			ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
+		//	ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
 
 			addTestModels();
 		}
@@ -431,7 +436,7 @@ public class ModelManagment {
 		hitable closestNonBlockerTouched = null;	    
 		hitable closestBlockerTouched = null;
 
-		for (hitable instance : hitables) {
+		for (hitable newInstance : hitables) {
 
 
 
@@ -442,7 +447,7 @@ public class ModelManagment {
 
 			//instance.getTransform().getTranslation(position);
 			//position.add(instance.getCenter());
-			position = instance.getCenterOfBoundingBox();
+			position = newInstance.getCenterOnStage();
 
 			float dist2 = ray.origin.dst2(position);
 
@@ -452,31 +457,36 @@ public class ModelManagment {
 
 			//	if (Intersector.intersectRaySphere(ray, instance.getCenter(), instance.getRadius(), null)) {
 
-			if (!instance.rayHits(ray)){
+			if (!newInstance.rayHits(ray)){
 				//if it didn't hit we can just skip to the next thing to test
 				continue;
 			}
 
 
 
-			Gdx.app.log(logstag,"_hit object at distance "+dist2);
-
+			Gdx.app.log(logstag,"_hit "+newInstance.getClass()+"object at distance "+dist2);
+			if (newInstance.isBlocker()){
+				Gdx.app.log(logstag,"(it was blocker)");
+					
+			}
 
 			//set last hit range
-			instance.setLastHitsRange(dist2);
+			newInstance.setLastHitsRange(dist2);
 
 
 			//if its a blocker we see if its higher then the last blocker
-			if (instance.isBlocker()){
+			if (newInstance.isBlocker()){
 
 				//if none set just continue
 				if (closestBlockerTouched==null){
-					closestBlockerTouched=instance;
+					closestBlockerTouched=newInstance;
 					continue;
 				}
 				//else we test if its closer
-				if (instance.getLastHitsRange()<closestBlockerTouched.getLastHitsRange()){
-					closestBlockerTouched=instance;
+				//Note the > I think this is because the ray goes from furthest to nearest. So higher values are nearer
+				if (newInstance.getLastHitsRange()<closestBlockerTouched.getLastHitsRange()){
+					Gdx.app.log(logstag,"(new blocker is closer)");
+					closestBlockerTouched = newInstance;
 					continue;
 				}
 
@@ -484,18 +494,19 @@ public class ModelManagment {
 			} else {
 
 				//add to every not hitable under cursor list
-				everyThingUnderCursor.add(instance);
+				everyThingUnderCursor.add(newInstance);
 
 				//if its not a blocker we do the same tests for normal objects
 
 				//if none set just continue
 				if (closestNonBlockerTouched==null){
-					closestNonBlockerTouched=instance;
+					closestNonBlockerTouched=newInstance;
 					continue;
 				}
 				//else we test if its closer
-				if (instance.getLastHitsRange()<closestNonBlockerTouched.getLastHitsRange()){
-					closestNonBlockerTouched=instance;
+				if (newInstance.getLastHitsRange() < closestNonBlockerTouched.getLastHitsRange()){
+					Gdx.app.log(logstag,"(new non-blocker is closer)");
+					closestNonBlockerTouched=newInstance;
 					continue;
 				}
 
@@ -515,7 +526,9 @@ public class ModelManagment {
 		//If we arnt penetrating we just see if the highest hitable is higher then the highest blocker
 		//if so we hit it and exit
 		if (!hitsPenetrate && closestNonBlockerTouched!=null){
-
+			
+			Gdx.app.log(logstag,"ClosestNonBlockerTouched as at:"+closestNonBlockerTouched.getLastHitsRange()+" ("+closestNonBlockerTouched.getClass()+")");
+			
 			if (closestBlockerTouched==null){
 				if (processHits){
 					closestNonBlockerTouched.fireTouchDown();
@@ -525,7 +538,10 @@ public class ModelManagment {
 				return closestNonBlockerTouched;
 			}
 
-			if (closestBlockerTouched.getLastHitsRange()<closestNonBlockerTouched.getLastHitsRange()){
+			//if blocker is further then non-blocker
+			if (closestBlockerTouched.getLastHitsRange() < closestNonBlockerTouched.getLastHitsRange()){
+				Gdx.app.log(logstag,"closestBlockerTouched as at:"+closestBlockerTouched.getLastHitsRange()+" ("+closestBlockerTouched.getClass()+")");
+				
 				if (processHits){
 					closestNonBlockerTouched.fireTouchDown();
 					mousedownOn.add(closestNonBlockerTouched);
@@ -533,6 +549,8 @@ public class ModelManagment {
 				//	mousedownOn.add(closestBlockerTouched); //hmm....not sure if we should use this anymore
 				return closestNonBlockerTouched;
 			}
+		} else{
+			Gdx.app.log(logstag,"hits penatrating, mousing down on;"+everyThingUnderCursor.size()+" objects");
 		}
 
 		//if not we loop and hit anything above the highest blocker

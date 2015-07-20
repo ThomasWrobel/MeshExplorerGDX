@@ -15,8 +15,8 @@ public abstract class CellPanel extends ComplexPanel {
 	protected float spaceing = 0f;
 
 	
-	public CellPanel(int x, int y) {
-		super(x,y);
+	public CellPanel(int w, int h) {
+		super(w,h);
 		
 	
 	}

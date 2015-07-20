@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.creatures.Population;
@@ -64,7 +65,8 @@ public class Location {
 	//Also separate out Hub creation and make generation creation method
 	// Hub
 	// Population creation (for each possible population)
-	
+
+	private static final HashMap<SSSNode,LocationHub> AllLocationHubsNEW = new HashMap<SSSNode,LocationHub>();
 	private static final HashMap<SSSNode,LocationsHub> AllLocationHubs = new HashMap<SSSNode,LocationsHub>();
 	private static final HashMap<SSSNode,Location>     AllLocations = new HashMap<SSSNode,Location>();
 
@@ -229,6 +231,24 @@ public class Location {
 		AllLocationHubs.put(locationsnode,locationsHub);
 		
 		MainExplorationView.addnewlocationHub(locationsHub,X, Y);
+		
+		//new location hub system
+		//currently at inverted Y co-ordinates
+
+		Gdx.app.log(logstag, "creating new hub");
+		
+		locationsNEWHub = new LocationHub(locationsnode,this);
+		AllLocationHubsNEW.put(locationsnode,locationsNEWHub);
+				
+		if (locationsnode!=PlayersData.computersuri){
+			
+			MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y+1100);
+			
+		} else {
+			//new home might be at non-standard place
+			MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y+1100);
+			
+		}
 	}
 	
 	

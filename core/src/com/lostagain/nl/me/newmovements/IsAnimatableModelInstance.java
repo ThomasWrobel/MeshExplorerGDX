@@ -45,6 +45,8 @@ public interface IsAnimatableModelInstance {
 
 	public abstract float getHeight();
 
+	public abstract Vector3 getCenterOnStage();
+	
 	public abstract Vector3 getCenterOfBoundingBox();
 
 	public abstract BoundingBox getLocalCollisionBox();

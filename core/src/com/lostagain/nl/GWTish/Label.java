@@ -262,10 +262,10 @@ public class Label extends LabelBase {
 
 		float scaledown = sizeratio;
 
-		Glyph defaultglyph = data.getGlyph(Letters.charAt(0));
+		//Glyph defaultglyph = data.getGlyph(Letters.charAt(0));
 
 
-		int totalheight=defaultglyph.height+9;
+		//int totalheight=defaultglyph.height+9;
 
 		Gdx.app.log(logstag,"scaledown="+scaledown);
 		double lastremainder =0;
@@ -284,8 +284,8 @@ public class Label extends LabelBase {
 			Glyph glyph = data.getGlyph(Letters.charAt(i));
 
 			if (glyph==null){
-				
-				glyph=defaultglyph; //temp
+				Gdx.app.log(logstag,"_______(current glyph not valid not in character set, setting glyph to space)");
+				glyph=data.getGlyph(' '); //temp
 
 				
 			}
@@ -308,7 +308,7 @@ public class Label extends LabelBase {
 				currentX=0;
 				destX=glyph.xoffset;
 				lastremainder=0;
-				Gdx.app.log(logstag,"______________adding line. (yp now="+yp+")");
+				Gdx.app.log(logstag,"______________adding line. (yp now="+yp+") next char is:"+Letters.charAt(i));
 				
 				//we skip \n as we don't want to really write that
 				if (Letters.charAt(i) == '\n'){
@@ -490,7 +490,8 @@ public class Label extends LabelBase {
 		float x = textureAndData.textureItself.getWidth();
 		float y = textureAndData.textureItself.getHeight();
 		
-		
+		Gdx.app.log(logstag,"_________set text to;"+text+" size:"+x+","+y);
+
 		this.setSizeAs(x, y);
 		
 		

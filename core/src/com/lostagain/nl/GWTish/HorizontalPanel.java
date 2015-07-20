@@ -52,7 +52,7 @@ public class HorizontalPanel extends CellPanel {
 		recalculateLargestWidgets(); should be run first
 	 */
 	void repositionWidgets() {
-		
+		Gdx.app.log(logstag,"repositionWidgets in hp");
 		//simply clear and re-add them all
 		
 		//reset  stats
