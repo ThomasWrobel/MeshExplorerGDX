@@ -199,6 +199,7 @@ public class ConceptObject extends MeshIcon {
 	}
 
 	public void setAsDropped() {
+		storedin=null;
 		this.objectsStatus=ConceptObjectStatus.OnEnviroment;
 		
 	}

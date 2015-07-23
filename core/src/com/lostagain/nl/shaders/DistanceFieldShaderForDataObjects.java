@@ -20,8 +20,6 @@ import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 
 /**
- * Basic normal-colourish shader.
- * good for a template for other shaders
  * 
  * @author Tom
  *

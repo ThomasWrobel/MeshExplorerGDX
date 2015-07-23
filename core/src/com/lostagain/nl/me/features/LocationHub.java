@@ -23,9 +23,12 @@ import com.lostagain.nl.me.models.ModelManagment;
 
 /**
  * A location hub is the center point of any location
+ * 
  * It provides a way to unlock the location (if its locked)
  * It then generates other features for the locations as spokes around it when opened.
  * The center then acts as a infobox like feature
+ * 
+ * The location also provides a means to refresh its children, as its more efficient to refresh them all at once.
  * 
  * @author Tom
  *
@@ -34,14 +37,17 @@ public class LocationHub extends MeshIcon {
 	final static String logstag = "ME.LocationHub";
 	private SSSNode LocationsNode;
 
-	//All features of this location
+	//All features of this location stored in this array
 	HashMap<GenericMeshFeature,MeshIcon> HubsFeatures = new HashMap<GenericMeshFeature,MeshIcon>();
 
+	//All the individual features we can have (stored above)
 	private ConceptStoreObject linkedConceptDataStore;
 	private AbilityStoreObject linkedAbilityDataStore;
 	private EmailHub linkedEmailHub;
 	private LinkStoreObject linkedLinkStore;
 	
+	//if we should fresh the contents next time we are opened
+	boolean refreshOnOpen = true;
 	
 	public LocationHub(SSSNode locationsNode,Location location) {
 		
@@ -112,27 +118,17 @@ public class LocationHub extends MeshIcon {
 			Gdx.app.log(logstag,"setting backcolor to first in :"+backcolours.toString());
 			setBackgroundColour(backcolours.get(0));		
 		}
-		//-----------------------------------------------------------------------
-		getContentOfMachine(LocationsNode);
 		
-		getVisibleMachines(LocationsNode);
+		//-----------------------------------------------------------------------
+		getContentOfMachine(LocationsNode); //objects,abilitys,emails
+		
+		getVisibleMachines(LocationsNode); //links
 		
 		//trigger layout
 		layoutContents();
 		
-		//first load the links visible to this one
-		//getVisibleMachines(mycomputerdata);
-		//make emails
-		
-		//linke emails to hub
-		
-		//make contents
-		
-		//link content to hub
-		
-		//make links
-		
-		//link links to hub
+		//store as updated
+		refreshOnOpen=false;
 		
 		
 	}
@@ -248,10 +244,11 @@ public class LocationHub extends MeshIcon {
 				//place on right page depending on type
 				if (sssNode.isOrHasParentClass(StaticSSSNodes.ability.getPURI())){
 					
-					addAbilityObjectFile(sssNode);
-										
+					addAbilityObjectFile(sssNode);										
 					abil++;
+					
 				} else {
+					
 					addOtherObjectFile(sssNode);
 					data++;
 				}
@@ -303,6 +300,7 @@ public class LocationHub extends MeshIcon {
 	 * Layers all the known linked features out and draws lines from this hub to them
 	 */
 	private void layoutContents() {
+		clearAllLinkLines(); //clears existing link lines
 		
 		float total = HubsFeatures.size();
 		float angleDistance = 360/total; //scale to total after testing
@@ -474,9 +472,16 @@ public class LocationHub extends MeshIcon {
 	public void open() {
 		super.open();
 		
-		//first time we open we generate our contents if we are unlocked and it hasnt been done yet
+		//first time we open we generate our contents if we are unlocked and it hasn't been done yet
 		if (HubsFeatures.size()==0){
-			this.generateLocationContents();
+			generateLocationContents();
+		}
+		
+		//we also refresh if needed
+		if (refreshOnOpen){
+			Gdx.app.log(logstag,"regenerating contents");
+			generateLocationContents(); //needs to be checked
+			
 		}
 		
 	}

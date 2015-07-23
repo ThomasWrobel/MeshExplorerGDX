@@ -586,7 +586,7 @@ public static void addnewdrop(ConceptObject newdrop, float x, float y) {
 		double deg = (Math.random()*30)-15; 		
 		newdrop.setToRotation(new Quaternion(Vector3.Z, (float) deg));
 	 
-	// Population.testForReactionsToNewDrop(newdrop,x,y);
+	 Population.testForReactionsToNewDrop(newdrop,x,y);
 }
 
 
@@ -612,7 +612,7 @@ public static void addnewdrop(DataObject newdrop, float x, float y) {
 		MainExplorationView.gameStage.addActor(newdrop);
 		
 		//now we test for reactions to the drop
-		Population.testForReactionsToNewDrop(newdrop,x,y);
+		Population.testForReactionsToNewDrop(null,x,y); //drop specific reactions not implemented yet anyway, hence the null
 		
 		
 	}

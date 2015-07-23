@@ -6,17 +6,21 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.GWTish.Widget;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
+import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
+import com.lostagain.nl.me.newmovements.NewForward;
+import com.lostagain.nl.me.newmovements.NewMovementController;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.me.objects.DataObject;
 
-public class ConceptObjectSlot extends Widget implements hitable {
+public class ConceptObjectSlot extends Widget implements hitable,Animating {
 
 	final static String logstag = "ME.ConceptObjectSlot";
 
@@ -105,7 +109,28 @@ public class ConceptObjectSlot extends Widget implements hitable {
 		//associate its attachment
 		object.setAsAttachedToObject(this);
 		
-		//runAfterSomethingDroppedOn.run(drop);
+		if (runAfterSomethingDroppedOn!=null){
+			runAfterSomethingDroppedOn.run(object);
+		}
+	}
+	
+	public void ejectConcept() {
+		Gdx.app.log(logstag,"ejecting concept in slot");
+		
+		removeAttachment(objectCurrentlyStored);
+		objectCurrentlyStored.setAsDropped();
+		
+		//randomly dump outside (animate this later?)
+		
+		Vector3 newPosition = this.getCenterOnStage().cpy();
+		newPosition.y = newPosition.y-100;
+		
+		ME.addnewdrop(objectCurrentlyStored, newPosition.x, newPosition.y);
+		objectCurrentlyStored.setMovement(new NewForward(300,3000));
+		
+		
+		setApperanceAsEmpty();
+		objectCurrentlyStored=null;
 		
 	}
 	
@@ -113,6 +138,7 @@ public class ConceptObjectSlot extends Widget implements hitable {
 	boolean onDrag(){
 		//cancel and return false if not allowed
 		if (currentMode==SlotMode.InOnly || currentMode == SlotMode.Locked){
+			Gdx.app.log(logstag,"slot mode is currently:"+currentMode);
 			return false;
 		}
 		//else remove
@@ -140,8 +166,14 @@ public class ConceptObjectSlot extends Widget implements hitable {
 	}
 
 
-	private void animatedRejection() {
-		// TODO Auto-generated method stub
+	
+	protected void animatedRejection() {
+		
+		//flash red maybe?
+		rejectionAnimationPlaying = true;
+		ModelManagment.addAnimating(this);
+		timeElypsed = 0;
+		
 		
 	}
 
@@ -162,7 +194,7 @@ public class ConceptObjectSlot extends Widget implements hitable {
 
 	
 	public interface OnDropRunnable {
-		public void run(DataObject drop);
+		public void run(ConceptObject drop);
 	}
 
 
@@ -221,6 +253,44 @@ public class ConceptObjectSlot extends Widget implements hitable {
 	
 	public void setAsCointaining(ConceptObject newConceptObject) {		
 		onDrop(newConceptObject);		
+	}
+
+
+	public void setCurrentMode(SlotMode currentMode) {
+		this.currentMode = currentMode;
+	}
+
+	boolean rejectionAnimationPlaying = false;
+	float rejectionDuration = 3000/1000;
+	float timeElypsed;
+	@Override
+	public void updateAnimationFrame(float deltatime) {
+		
+		if (rejectionAnimationPlaying){
+			
+			timeElypsed = timeElypsed + deltatime; 
+			
+			float ratio = timeElypsed/rejectionDuration;
+			
+			//in order to cycle the colour change we scale between 0 and 2PI then use sin (as Sin 2PI = 1)
+			float alpha = (float) Math.sin((ratio*Math.PI*2.0f)*3.0); //the 3 is the number of repeats
+			
+			Color normal = Color.BLUE.cpy();
+			Color changeTo = Color.RED;
+			
+			normal.lerp(changeTo, alpha);
+			
+			this.getStyle().setBackgroundColor(changeTo);
+			
+			
+						
+			if (timeElypsed>rejectionDuration){				
+				ModelManagment.removeAnimating(this);	
+				rejectionAnimationPlaying=false;
+				
+			}
+		}
+		
 	}
 
 }

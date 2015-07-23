@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
@@ -33,6 +34,8 @@ import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.features.ConceptObject;
 import com.lostagain.nl.me.features.ConceptObjectSlot;
+import com.lostagain.nl.me.features.DataRequestManager;
+import com.lostagain.nl.me.features.DataRequestScreen;
 import com.lostagain.nl.me.features.InfoBox;
 import com.lostagain.nl.me.features.LocationHub;
 import com.lostagain.nl.me.features.MeshIcon;
@@ -320,9 +323,10 @@ public class MainExplorationView implements Screen {
 	//	ModelManagment.addmodel(iconTest,ModelManagment.RenderOrder.zdecides);
 		
 	
-		ConceptObject coTest = new ConceptObject(PlayersData.computersuri);
-		coTest.setToPosition(new Vector3(320f,450f,0f));
-		ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
+	//	testRequestScreen.setToPosition(new Vector3(320f,550f,0f));
+	//	ModelManagment.addmodel(testRequestScreen,ModelManagment.RenderOrder.zdecides);
+		
+		
 		/*
 		ConceptObjectSlot slotTest = new ConceptObjectSlot();
 		slotTest.setToPosition(new Vector3(450f,670f,0f));
@@ -432,6 +436,27 @@ public class MainExplorationView implements Screen {
 		
 		ME.centerViewOn( PlayersData.homeLoc,ScreenUtils.getSuitableDefaultCameraHeight(),7000);
 
+		
+		
+		//more tests;
+		ConceptObject coTest = new ConceptObject(PlayersData.computersuri);
+		coTest.setToPosition(new Vector3(320f,450f,0f));
+		ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
+		
+		//-----
+		SSSNode greennode = SSSNode.getNodeByLabel("Granny Smith apple");
+		ConceptObject green = new ConceptObject(greennode);
+		green.setToPosition(new Vector3(320f,470f,0f));
+		ModelManagment.addmodel(green,ModelManagment.RenderOrder.zdecides);
+		//--
+		SSSNode applenode = SSSNode.getNodeByLabel("apple");
+		ConceptObject apple = new ConceptObject(applenode);
+		apple.setToPosition(new Vector3(320f,485f,0f));
+		ModelManagment.addmodel(apple,ModelManagment.RenderOrder.zdecides);
+		//--
+		
+		SSSNode firewall = SSSNode.getNodeByLabel("MaxsFirewall");
+		DataRequestManager testRequestScreen = new DataRequestManager(   firewall,PlayersData.homeLoc.locationsNEWHub);		
 	}
 
 	public static void setCursor(Texture curimage){

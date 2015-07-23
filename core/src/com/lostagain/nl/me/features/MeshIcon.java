@@ -27,9 +27,13 @@ import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.Moving;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
+import com.lostagain.nl.me.newmovements.NewForward;
+import com.lostagain.nl.me.newmovements.NewMovement;
+import com.lostagain.nl.me.newmovements.NewMovementController;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.GlowingSquareShader;
 import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
@@ -42,7 +46,7 @@ import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
  *  
  *  They extend AnimatableModelInstance so we can animated them latter if we wish 
  * **/
-public class MeshIcon extends AnimatableModelInstance  implements  Animating {
+public class MeshIcon extends AnimatableModelInstance  implements  Animating,Moving {
 	
 	private static final String ICON_MATERIAL = "IconMaterial";
 
@@ -144,6 +148,10 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	float[] IconsEnlargedVertexs = null; //this is set on creation and lets us return to the correct geometry after resizing
 
 
+	/**
+	 * Controlls the movements of this icon (default null, its created when needed then kept)
+	 */
+	NewMovementController movementController;
 	
 
 	//----------------------------------------------------
@@ -704,6 +712,17 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 	}
 	
 	/**
+	 * deletes all lines linking this icon to others
+	 */
+	public void clearAllLinkLines(){
+		for (MeshIcon icon : linkedIcons.keySet()) {
+			
+			this.removeLineTo(icon);
+			
+			
+		}
+	}
+	/**
 	 * update line lengths. 
 	 * Not used yet, when this object moves, or things it links to moves, the lengths of the connecting lines will need to be recalculated
 	 **/
@@ -722,9 +741,31 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating {
 		linkedIcons.remove(target);
 	}
 	
-
 	
+	public void setMovement(NewMovement... create){
+		
+		if (movementController==null){
+			movementController = new NewMovementController(this.getTransform(), create);
+			ModelManagment.addMoving(this);
+			
+		} else {
+			
+			movementController.setMovement(this.getTransform(), true, create);
+			
+		}
+		
+	}
+	@Override
+	public void updatePosition(float deltatime) {
+		
+		PosRotScale newPosition = movementController.getUpdate(deltatime);
+		this.setTransform(newPosition);
 	
+		if (!movementController.isMoving()){
+			ModelManagment.removeMoving(this);
+		}
+		
+	}
 	
 	
 	

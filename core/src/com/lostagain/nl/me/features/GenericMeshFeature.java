@@ -101,7 +101,6 @@ interface GenericMeshFeature extends IsAnimatableModelInstance {
 	//abstract void updateFade(float delta);
 	
 
-
 	
 
 

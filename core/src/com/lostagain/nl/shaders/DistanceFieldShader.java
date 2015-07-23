@@ -144,13 +144,19 @@ public class DistanceFieldShader implements Shader {
 			public DistanceFieldAttribute (presetTextStyle preset) {
 				super(ID);
 				
+				setToPreset(preset);
+					
+			}
+
+
+			public void setToPreset(presetTextStyle preset) {
 				this.textColour         = preset.textColour.cpy();
 				this.width              = preset.width;
 				this.outlinerInnerLimit = preset.outlinerInnerLimit;
 				this.outlinerOuterLimit = preset.outlinerOuterLimit;
-				this.outlineColour      = preset.outlineColour.cpy();;
+				this.outlineColour      = preset.outlineColour.cpy();
 				this.glowSize           = preset.glowSize;
-				this.glowColour         = preset.glowColour.cpy();;
+				this.glowColour         = preset.glowColour.cpy();
 
 				//Gdx.app.log(logstag, " glowColour on this atrib set to:"+this.glowColour);
 				
@@ -158,7 +164,6 @@ public class DistanceFieldShader implements Shader {
 				this.shadowYDisplacement = preset.shadowYDisplacement;
 				this.shadowBlur = preset.shadowBlur;
 				this.shadowColour = preset.shadowColour.cpy();
-					
 			}
 					
 			
@@ -493,6 +498,28 @@ public class DistanceFieldShader implements Shader {
   
     	
     }
-    
+
+	public static DistanceFieldShader Default = new DistanceFieldShader();
+    /**
+     * returns the default copy of this shader, compiling it if needed
+     * @return
+     */
+	public static ShaderProgram getProgram() {
+		if (Default.program==null){
+			Default.init();
+			  int u_diffuseColor =  Default.program.getUniformLocation("u_diffuseColor");      
+		        int u_colorFlag    =  Default.program.getUniformLocation("u_colorFlag");
+		        int u_textColour    =  Default.program.getUniformLocation("u_textColour");
+		        
+		        Default.program.setUniformf(u_colorFlag, 1f);
+		        Default.program.setUniformf(u_diffuseColor, Color.RED);
+		        
+		        Default.program.setUniformf(u_textColour, Color.RED);  
+		        
+		}
+		// TODO Auto-generated method stub
+		return Default.program;
+	}
+
     
 }

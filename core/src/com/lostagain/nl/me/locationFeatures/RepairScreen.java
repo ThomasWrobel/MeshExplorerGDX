@@ -47,7 +47,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 	private SSSNode neededData;
 
 	boolean locked = false;
-	
+
 	/** if the security is making the user pass a query, this string is the query **/
 	private String QueryPass;
 
@@ -221,29 +221,29 @@ public class RepairScreen extends Group  implements LocationScreen {
 
 				int i=0;
 				int j=0;
-				
+
 				Gdx.app.log(logstag,"_number of querys = "+ acceptableAnswers.size());
 				Gdx.app.log(logstag,"_ans in each = "+ NumberOfObjectNeededList.toString());
 
 				float totalHeight = this.getParent().getHeight();
 
 				Gdx.app.log(logstag,"totalHeight = "+ totalHeight);
-				
+
 				//loop over all required sets here (a set might just be one specific element)
 				//Note;  this whole thing works by acceptable answers being saved in advance.
 				//We might want at some point to instead save the query, and dynamically check if they fit
 				//(slower check time but quicker setup time + more flexible if new data comes in later) 
 				for (ArrayList<SSSNode> currentset : acceptableAnswers) {
-					
+
 					int  NumberOfObjectNeeded = 1;
-					
+
 					if (NumberOfObjectNeededList.size()>=(j+1)){
 						NumberOfObjectNeeded = NumberOfObjectNeededList.get(j);
 					} 
-					
+
 					Gdx.app.log(logstag,j+"_NumberOfObjectNeeded = "+NumberOfObjectNeeded);
 					i=0;
-					
+
 					//adds one set of required nodes
 					while(i<NumberOfObjectNeeded){
 
@@ -253,10 +253,10 @@ public class RepairScreen extends Group  implements LocationScreen {
 
 						Gdx.app.log(logstag,"x= "+20+(i*newObjRequester.getWidth()+"_y= "+(20+(j*10))));
 						float positionFromBottom = 120+(j*(newObjRequester.getHeight()+5));
-						
-						
+
+
 						newObjRequester.setPosition(20+(i*newObjRequester.getWidth()),totalHeight-positionFromBottom);
-					
+
 						super.addActor(newObjRequester);
 						i++;
 
@@ -267,7 +267,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 				}
 
 				needslayout=true;
-				
+
 			}
 
 
@@ -343,7 +343,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 				//so first we split be commas
 				String[] queryArray = protectionString.split(",");
 				String defaultclue = "";
-				
+
 				//loop over each query and get its answers
 				for (String query : queryArray) {
 
@@ -361,13 +361,13 @@ public class RepairScreen extends Group  implements LocationScreen {
 						//create all needed arraylists
 						ArrayList<SSSNode> queryAnswers = new ArrayList<SSSNode>(); //a blank set of answers				
 						acceptableAnswers.add(queryAnswers);	//add this answer set to the overall list
-						
+
 						//get all the answers for this query
 						retrieveAnswersAsycn(queryAnswers,query); //get the answers for the query and put them in the "queryAnswers" arraylist created above
-						
+
 						//store in default clue string
 						defaultclue = defaultclue + query+",";
-						
+
 					} else {
 						Gdx.app.log(logstag,"warning protectionString is null!");
 					}

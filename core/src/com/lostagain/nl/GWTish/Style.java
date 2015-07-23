@@ -3,6 +3,8 @@ package com.lostagain.nl.GWTish;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute.presetTextStyle;
 import com.lostagain.nl.shaders.GlowingSquareShader;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
@@ -71,7 +73,7 @@ public class Style {
 	 */
 	public void setBorderColor(Color bordercol) {
 
-		Gdx.app.log(logstag,"_________setting bordercoll:"+bordercol);
+	//	Gdx.app.log(logstag,"_________setting bordercoll:"+bordercol);
 
 		//get the material from the model
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
@@ -96,18 +98,20 @@ public class Style {
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		if (glowingSquare!=null){
 			//	GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)objectsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
-
 			glowingSquare.backColor = backcol;
 		}
+		
+		if (textStyle!=null){
+			objectsMaterial.set( ColorAttribute.createDiffuse(backcol));
+		}
+		
 	}
 
 	/**
-	 * FOR TESTING ONLY, dont use
+	 * FOR TESTING ONLY, don't use
 	 * @return
 	 */
 	public Material getMaterial() {
-		
-		// TODO Auto-generated method stub
 		return objectsMaterial;
 	}
 	public void clearShadowColor() {
@@ -124,6 +128,13 @@ public class Style {
 	public void clearBackgroundColor() {
 		setBackgroundColor(Color.CLEAR); 
 		
+	}
+	
+
+	public void setTextStyle(presetTextStyle standardwithshadow) {
+		if (textStyle!=null){
+			textStyle.setToPreset(standardwithshadow);
+		}
 	}
 
 }

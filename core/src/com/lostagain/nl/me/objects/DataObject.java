@@ -458,16 +458,16 @@ public class DataObject extends Image
 		
 		//this should all be moved into its own program
 		//MainExplorationView.distancefieldshader.setUniformf("u_pixel_step", super.getWidth(),super.getHeight());   
-       // int u_diffuseColor =  MainExplorationView.distancefieldshader.getUniformLocation("u_diffuseColor");      
-       // int u_colorFlag    =  MainExplorationView.distancefieldshader.getUniformLocation("u_colorFlag");
         
        // DistanceFieldShaderForDataObjects .distancefieldshader.setUniformf(u_diffuseColor, Color.ORANGE);
       //  DistanceFieldShaderForDataObjects.distancefieldshader.setUniformf(u_colorFlag, 1f);
 		
-		ShaderProgram defaultObjectShader = DistanceFieldShaderForDataObjects.getProgram();
-		DistanceFieldShaderForDataObjects.setDefaults(1f,Color.ORANGE);
+		//ShaderProgram defaultObjectShader = DistanceFieldShaderForDataObjects.getProgram();
+		///DistanceFieldShaderForDataObjects.setDefaults(1f,Color.ORANGE);
+		ShaderProgram defaultObjectShader = DistanceFieldShader.getProgram();
+	//	DistanceFieldShaderForDataObjects.setDefaults(1f,Color.ORANGE);
+
 		
-				
 		batch.setShader(defaultObjectShader);
 		
 		

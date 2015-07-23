@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.me.creatures.Population.destructOn;
+import com.lostagain.nl.me.features.ConceptObject;
 import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.STMemory;
@@ -662,7 +663,7 @@ public class Creature implements hitable , Animating {
 
 
 
-	public void fireReactionToDrop(Vector3 dropsPositionAsVector, DataObject newdrop) {
+	public void fireReactionToDrop(Vector3 dropsPositionAsVector, ConceptObject newdrop) {
 		
 		
 		float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);

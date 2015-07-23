@@ -62,7 +62,7 @@ public class ModelManagment {
 	public static ObjectSet<Animating> animatingobjects = new ObjectSet<Animating>();
 
 	/**all models currently moving **/
-	public static ObjectSet<Creature> movingObjects = new ObjectSet<Creature>();
+	public static ObjectSet<Moving> movingObjects = new ObjectSet<Moving>();
 
 
 	static public enum RenderOrder {
@@ -606,12 +606,12 @@ public class ModelManagment {
 
 
 	}
-	public static void addMoving(Creature model) {
+	public static void addMoving(Moving model) {
 		movingObjects.add(model);
 
 	}
 
-	public static void removeMoving(Creature model) 
+	public static void removeMoving(Moving model) 
 	{
 
 		movingObjects.remove(model);
@@ -680,7 +680,7 @@ public class ModelManagment {
 
 		}
 
-		for (Creature instance : movingObjects) {
+		for (Moving instance : movingObjects) {
 
 			instance.updatePosition(deltatime);			
 

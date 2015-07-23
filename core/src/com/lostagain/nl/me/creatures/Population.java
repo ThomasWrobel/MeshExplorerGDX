@@ -15,6 +15,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.features.ConceptObject;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.objects.DataObject;
 
@@ -354,7 +355,7 @@ public class Population {
 	 * @param x
 	 * @param y
 	 */
-	public static void testForReactionsToNewDrop(DataObject newdrop, float x,
+	public static void testForReactionsToNewDrop(ConceptObject newdrop, float x,
 			float y) {
 
 		Vector3 dropsPositionAsVector = new Vector3(x,y,Creature.zPlane); //zPlane is the default vertical position. As the locations are 2D and the creatures 3D, we need to assume the creatures are on the 2D plane

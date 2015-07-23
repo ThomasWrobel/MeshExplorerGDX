@@ -14,6 +14,7 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
+import com.lostagain.nl.shaders.DistanceFieldShader;
 
 /**
  * represents 1 single email page.
@@ -37,6 +38,9 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 		
 		this.add(emailContents);
 		this.getStyle().clearBackgroundColor();
+		emailContents.getStyle().setTextStyle(DistanceFieldShader.DistanceFieldAttribute.presetTextStyle.standardWithShadow);
+		
+		
 		Gdx.app.log(logstag,"added emailContents:"+emailContents.isVisible());
 		
 		
