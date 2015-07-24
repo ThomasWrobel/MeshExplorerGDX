@@ -49,18 +49,21 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	private Runnable runAfterSomethingDraggedOff;
 
 	/** Necessary as part of hit detection **/
-	private float lastHitDistance; 
+	private float lastHitDistance;
+
+	private Color CurrentBackColour = Color.LIGHT_GRAY; 
 	
 	/**
 	 * ConceptObject slots are slots that can hold conceptobjects.
 	 * They are positioned about their center points, not top left
-	 * 	 * They allow the objects to be dragged in or out, if correctly enabled to do so.
+	 * They allow the objects to be dragged in or out, if correctly enabled to do so.
 	 * They can also report back when something is dropped on them
-	 */
+	 **/
 	public ConceptObjectSlot() {
 		
 		super(WIDTH,HEIGHT,Widget.MODELALIGNMENT.TOPLEFT); //easier if we are centralized
 		super.getStyle().setBackgroundColor(Color.LIGHT_GRAY);
+
 		setApperanceAsEmpty();
 		
 		//set as hitables, so we can detect when a mouseup releases a object over us
@@ -103,12 +106,17 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		//attach point should be true center, not pivot point
 		Vector3 center = this.getCenterOfBoundingBox();		
 		
+		//ensure its visible
+		object.show();
+		
+		//ATTACH
 		this.attachThis(object, new PosRotScale(center.x,center.y,2f));
 		
 		setApperanceAsInUse();
-		//ensure its visible
-		object.show();
+		
 		//associate its attachment
+		object.setInheritedVisibility(true);
+		
 		object.setAsAttachedToObject(this);
 		
 		if (runAfterSomethingDroppedOn!=null){
@@ -160,11 +168,13 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		
 	}
 	private void setApperanceAsEmpty() {
-		super.getStyle().setBorderColor(Color.BLUE);		
+		super.getStyle().setBorderColor(Color.LIGHT_GRAY);	
+		CurrentBackColour = Color.LIGHT_GRAY;
 		
 	}
 	private void setApperanceAsInUse() {
 		super.getStyle().setBorderColor(Color.GREEN);		
+		CurrentBackColour = Color.GREEN;
 		
 	}
 
@@ -278,7 +288,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 			//in order to cycle the colour change we scale between 0 and 2PI then use sin (as Sin 2PI = 1)
 			float alpha = (float) Math.sin((ratio*Math.PI*2.0f*3.0)); //the 3 is the number of repeats
 			
-			Color normal = Color.BLUE.cpy();
+			Color normal = CurrentBackColour.cpy();
 			Color changeTo = Color.RED;
 			
 			normal.lerp(changeTo, alpha);

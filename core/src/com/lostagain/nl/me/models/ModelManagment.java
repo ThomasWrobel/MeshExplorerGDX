@@ -56,8 +56,8 @@ public class ModelManagment {
 
 	/** has a drag started? (that is, has the cursor moved after its been down, but not released?)**/
 	static boolean dragStarted = false;
-	
-			
+
+
 	/**All model with texture animations **/
 	public static ObjectSet<Animating> animatingobjects = new ObjectSet<Animating>();
 
@@ -229,7 +229,7 @@ public class ModelManagment {
 
 
 
-		ModelInstance beamtest = ModelMaker.createRectangleAt(0, 1000, 30, 200, 200, Color.BLACK, beamShader); // new ModelInstance(model1); 
+		ModelInstance beamtest = ModelMaker.createRectangleAt(500, 1000, 30, 200, 200, Color.BLACK, beamShader); // new ModelInstance(model1); 
 
 		Renderable renderableWithAttribute = new Renderable();
 		beamtest.getRenderable(renderableWithAttribute);
@@ -242,9 +242,9 @@ public class ModelManagment {
 
 
 		//--------------	
-		
+
 		//The following was a test of how the domains colour range should look. Re-enable during testing.
-		
+
 		Pixmap colourMapAsPixMap = MEDomain.getHomeDomain().getDomainsColourMap().getPixMap(200, 200);
 		//Pixmap colourMapAsPixMap = MessyModelMaker.createNoiseImage(200, 200);
 
@@ -263,13 +263,13 @@ public class ModelManagment {
 
 		ModelInstance colortest = ModelMaker.createRectangleAt(0, 900, 130, 200, 200, Color.BLACK, testmaterial3); 
 
-		
-		
+
+
 		//ModelManagment.addmodel(centermaker,RenderOrder.infrontStage);
 
 		if (ME.currentMode!=GameMode.Production){
 			ModelManagment.addmodel(beamtest,RenderOrder.infrontStage);
-		//	ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
+			//	ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
 
 			addTestModels();
 		}
@@ -467,7 +467,7 @@ public class ModelManagment {
 			Gdx.app.log(logstag,"_hit "+newInstance.getClass()+"object at distance "+dist2);
 			if (newInstance.isBlocker()){
 				Gdx.app.log(logstag,"(it was blocker)");
-					
+
 			}
 
 			//set last hit range
@@ -526,9 +526,9 @@ public class ModelManagment {
 		//If we arnt penetrating we just see if the highest hitable is higher then the highest blocker
 		//if so we hit it and exit
 		if (!hitsPenetrate && closestNonBlockerTouched!=null){
-			
+
 			Gdx.app.log(logstag,"ClosestNonBlockerTouched as at:"+closestNonBlockerTouched.getLastHitsRange()+" ("+closestNonBlockerTouched.getClass()+")");
-			
+
 			if (closestBlockerTouched==null){
 				if (processHits){
 					closestNonBlockerTouched.fireTouchDown();
@@ -541,7 +541,7 @@ public class ModelManagment {
 			//if blocker is further then non-blocker
 			if (closestBlockerTouched.getLastHitsRange() < closestNonBlockerTouched.getLastHitsRange()){
 				Gdx.app.log(logstag,"closestBlockerTouched as at:"+closestBlockerTouched.getLastHitsRange()+" ("+closestBlockerTouched.getClass()+")");
-				
+
 				if (processHits){
 					closestNonBlockerTouched.fireTouchDown();
 					mousedownOn.add(closestNonBlockerTouched);
@@ -644,7 +644,7 @@ public class ModelManagment {
 			dragStarted=true;
 		}
 	}
-	
+
 	public static void fireDragStartEnd() {
 		dragStarted=false;
 	}

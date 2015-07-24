@@ -189,7 +189,7 @@ public class Widget extends Element {
 		//we first get the offset 
 		Vector2 offset =  getOffsetForSize(newWidth, newHeight,alignment);
 		//the offset tells us where the top left corner will be relative to the pivot point.
-		//Effectively it lets us have a custom position for the pivot by messuring everything relative to that point 
+		//Effectively it lets us have a custom position for the pivot by measuring everything relative to that point 
 		//when creating the polygon vectexs
 		
 		setSizeAs(newWidth,  newHeight,offset.x,offset.y);
@@ -268,6 +268,7 @@ public class Widget extends Element {
 		IconsMesh.setVertices(vertices);
 
 		Gdx.app.log(logstag," old size::"+this.getWidth()+","+this.getHeight());
+		
 		//recalc bounding box if theres one
 		wasResized();
 

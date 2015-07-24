@@ -675,9 +675,19 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	 * Lets you change the feature associated with this icon when its double clicked
 	 */
 	protected void setAssociatedFeature(GenericMeshFeature newfeature){
+		
 		//remove old one
+
+		Gdx.app.log(logstag,"removing old feature");
+		
 		this.removeAttachment(assocatiedFeature.getAnimatableModelInstance());
+	
+		//hide it too
+		assocatiedFeature.hide();
+		
 		//setup new one
+		Gdx.app.log(logstag,"setting new feature");
+		
 		this.assocatiedFeature = newfeature;		
 		setupAssociatedFeature();
 		

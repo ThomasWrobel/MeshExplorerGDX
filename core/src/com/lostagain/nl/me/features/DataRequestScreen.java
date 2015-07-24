@@ -162,8 +162,8 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 
 	private void setAsUnlocked() {
 		
-		this.getStyle().setBackgroundColor(Color.GREEN);
-		title.setText("Concepts Accepted.Progress Open");
+		//title.setText("Concepts Accepted.Progress Open"); //setting this erases all text...why?
+		title.setText("."); //setting this erases all text...why?
 		
 		if (itemToConnectToIfUnlocked!=null){
 			itemToConnectToIfUnlocked.show();
@@ -325,11 +325,11 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 						
 						Gdx.app.log(logstag,"setting as locked");
 						ConceptRequester.this.setCurrentMode(SlotMode.Locked);
+												
+						current = RequestorState.accepted;
 						
 						//test if there's any more answers needed
 						sourcescreen.testAllRequestedObjectS();
-
-						current = RequestorState.accepted;
 						
 					} else {
 						
@@ -367,6 +367,17 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 
 	
 
+	}
+
+
+
+
+	public void setRunThisWhenUnlocked(Runnable runThisWhenUnlocked) {
+		this.runThisWhenUnlocked = runThisWhenUnlocked;
+	}
+
+	public void setRunThisWhenMistakeMade(Runnable runThisWhenMistakeMade) {
+		this.runThisWhenMistakeMade = runThisWhenMistakeMade;
 	}
 
 

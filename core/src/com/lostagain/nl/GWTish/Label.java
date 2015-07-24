@@ -462,7 +462,7 @@ public class Label extends LabelBase {
 	}
 	*/
 	/**
-	 * Sets the text and regenerates the texture (does not yet auto-update any generated models from this label!)
+	 * Sets the text and regenerates the texture 
 	 * Also doesn't remember cursor position. This is needed if we want to correctly ADD text to the texture in future, rather then recreating it all
 	 * For animated text this optimization is pretty essential
 	 **/

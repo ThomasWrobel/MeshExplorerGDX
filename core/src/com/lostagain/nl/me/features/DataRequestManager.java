@@ -131,11 +131,21 @@ public class DataRequestManager {
 		
 		//if theres just one request screen, we put it as the associated object at the locationhub we are locking		
 		if (requestScreens.keySet().size()==1){
-			Gdx.app.log(logstag,"__________________adding requestscreens to parents location________________________");
-
+			
 			//add to parentsLocation
 			DataRequestScreen lockscreen = requestScreens.values().iterator().next();	
-			parentsLocation.setAssociatedFeature(lockscreen);
+			lockscreen.setRunThisWhenUnlocked(new Runnable() {
+			
+				@Override
+				public void run() {
+					Gdx.app.log(logstag,"___setting location as unlocked_____");
+					parentsLocation.setAsUnLocked();
+				}
+			});
+			
+			Gdx.app.log(logstag,"__________________adding requestscreens to parents location________________________");
+			parentsLocation.setAsLocked(lockscreen);
+			
 			
 		} else {
 			Gdx.app.log(logstag,"__________________drawing various requestscreens under parents location________________________");
