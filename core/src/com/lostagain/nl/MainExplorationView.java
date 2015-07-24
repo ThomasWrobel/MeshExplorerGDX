@@ -449,7 +449,7 @@ public class MainExplorationView implements Screen {
 		green.setToPosition(new Vector3(320f,470f,0f));
 		ModelManagment.addmodel(green,ModelManagment.RenderOrder.zdecides);
 		//--
-		SSSNode applenode = SSSNode.getNodeByLabel("apple");
+		SSSNode applenode = SSSNode.getNodeByLabel("Pear");
 		ConceptObject apple = new ConceptObject(applenode);
 		apple.setToPosition(new Vector3(320f,485f,0f));
 		ModelManagment.addmodel(apple,ModelManagment.RenderOrder.zdecides);

@@ -180,7 +180,6 @@ public class Creature implements hitable , Animating {
 		//set to model lists
 		ModelManagment.addmodel(creaturemodel,ModelManagment.RenderOrder.zdecides);
 		ModelManagment.addHitable(this);
-		
 		//make bigger (test only)
 		//creaturemodel.transform.mul(new Matrix4().setToScaling(0.5f, 2.5f,0.5f));
 		//rotate (test only)
@@ -196,7 +195,7 @@ public class Creature implements hitable , Animating {
 		//startScaleAndRotation.setToScaling(new Vector3(0.5f, 2.5f,0.5f));
 		
 		Gdx.app.log(logstag, " setting to: "+startScaleAndRotation.toString());	
-		Matrix4 test = startScaleAndRotation.createMatrix();
+		Matrix4 test      = startScaleAndRotation.createMatrix();
 		PosRotScale test2 = new PosRotScale(test);
 		Gdx.app.log(logstag, " check after conversion: "+test2.toString());	
 		

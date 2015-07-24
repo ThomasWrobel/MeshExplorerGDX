@@ -65,8 +65,10 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		Info,
 		Concept, //Used as a generic concept object (Note this might change when first opened and its discovered to be a email, software etc inside?)
 		LocationHub("Location\nHub"), //note the new line
+		RequestScreen("Sealed"),
 		OTHER;  //used as a catch all for unique features.
 		 
+		
 		String labelName = "";
 		Color iconColor;
 		IconType(){
@@ -743,16 +745,20 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	
 	
 	public void setMovement(NewMovement... create){
+
+		Gdx.app.log(logstag,"Starting movement lastloc="+this.getTransform()); //hmm never changes?
 		
 		if (movementController==null){
+			
 			movementController = new NewMovementController(this.getTransform(), create);
-			ModelManagment.addMoving(this);
 			
 		} else {
-			
-			movementController.setMovement(this.getTransform(), true, create);
+			movementController.clearMovement();
+			movementController.setMovement(this.getTransform(), false, create);			
 			
 		}
+		
+		ModelManagment.addMoving(this);
 		
 	}
 	@Override
@@ -762,6 +768,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		this.setTransform(newPosition);
 	
 		if (!movementController.isMoving()){
+		
 			ModelManagment.removeMoving(this);
 		}
 		

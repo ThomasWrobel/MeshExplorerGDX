@@ -31,16 +31,17 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 	Label emailContents;
 	
 	public Email(SSSNode sssNode, SSSNode writtenIn) {
+		super.setPadding(25f);
 		
 		emailContents = new Label("Loading.....");	
 		emailContents.getStyle().setColor(Color.BLACK);
 		emailContents.setToscale(new Vector3(0.4f,0.4f,0.4f));
 		
 		this.add(emailContents);
+		
+		emailContents.getStyle().setTextStyle(DistanceFieldShader.DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 		this.getStyle().clearBackgroundColor();
-		emailContents.getStyle().setTextStyle(DistanceFieldShader.DistanceFieldAttribute.presetTextStyle.standardWithShadow);
-		
-		
+		emailContents.getStyle().clearBackgroundColor();
 		Gdx.app.log(logstag,"added emailContents:"+emailContents.isVisible());
 		
 		
@@ -204,7 +205,6 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 
 	@Override
 	public void updateApperance(float alpha, FeatureState currentState) {
-	//	Gdx.app.log(logstag,"(updating apperance of email:"+alpha+")"+this.isVisible());
 		setOpacity(alpha);
 		
 	}

@@ -64,7 +64,9 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 		recalculateBoundingBox();
 		
 		ModelManagment.addmodel(this, RenderOrder.behindStage);
-		ModelManagment.addHitable(this);
+	//	ModelManagment.addHitable(this);
+		this.setAsHitable(true);
+		
 
 	}
 	

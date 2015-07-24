@@ -571,7 +571,7 @@ public static void disableDrag(){
 	}
 //
 
-public static void addnewdrop(ConceptObject newdrop, float x, float y) {
+public static void addnewdrop(ConceptObject newdrop, float x, float y,float z) {
 	 Gdx.app.log(MainExplorationView.logstag,"_____________:newdrop ");
 	 MainExplorationView.infoPopUp.displayMessage("Concept Node dropping:"+newdrop.itemsnode.getPLabel());
 	 
@@ -579,7 +579,7 @@ public static void addnewdrop(ConceptObject newdrop, float x, float y) {
 	//  y = (int)y - (newdrop.getHeight()/2); //No need as its centralized anyway
 	 
 	 
-	 newdrop.setToPosition(new Vector3(x,y,0));
+	 newdrop.setToPosition(new Vector3(x,y,z));
 	 newdrop.show();
 	 newdrop.setAsDropped();
 	 
@@ -587,6 +587,9 @@ public static void addnewdrop(ConceptObject newdrop, float x, float y) {
 		newdrop.setToRotation(new Quaternion(Vector3.Z, (float) deg));
 	 
 	 Population.testForReactionsToNewDrop(newdrop,x,y);
+	 
+
+		Gdx.app.log(logstag,"newdrop transform is now="+newdrop.getTransform()); 
 }
 
 

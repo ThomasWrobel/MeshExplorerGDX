@@ -272,7 +272,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		 Vector2 cursor = ME.getCurrentStageCursorPosition();
 		 
 		 //drop the item on the ground
-		 ME.addnewdrop(item, cursor.x, cursor.y);
+		 ME.addnewdrop(item, cursor.x, cursor.y,0); //0 is ground
 		 
 		 
 		 

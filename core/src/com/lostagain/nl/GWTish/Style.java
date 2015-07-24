@@ -92,7 +92,7 @@ public class Style {
 	public void setBackgroundColor(Color backcol){		
 
 
-		Gdx.app.log(logstag,"______________backcol:"+backcol);
+		//Gdx.app.log(logstag,"______________backcol:"+backcol);
 
 		//get the material from the model
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);

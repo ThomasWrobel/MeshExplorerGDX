@@ -63,8 +63,10 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		super.getStyle().setBackgroundColor(Color.LIGHT_GRAY);
 		setApperanceAsEmpty();
 		
-		//add to the hitables, so we can detect when a mouseup releases a object over us
-		ModelManagment.addHitable(this);
+		//set as hitables, so we can detect when a mouseup releases a object over us
+		//ModelManagment.addHitable(this);
+		this.setAsHitable(true);
+		
 	}
 	
 	
@@ -123,10 +125,11 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		//randomly dump outside (animate this later?)
 		
 		Vector3 newPosition = this.getCenterOnStage().cpy();
-		newPosition.y = newPosition.y-100;
+		//newPosition.y = newPosition.y-100;
 		
-		ME.addnewdrop(objectCurrentlyStored, newPosition.x, newPosition.y);
-		objectCurrentlyStored.setMovement(new NewForward(300,3000));
+		ME.addnewdrop(objectCurrentlyStored, newPosition.x, newPosition.y,newPosition.z+5); //a little above the slot to start
+		
+		objectCurrentlyStored.setMovement(new NewForward(150,1000));
 		
 		
 		setApperanceAsEmpty();
@@ -261,7 +264,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	}
 
 	boolean rejectionAnimationPlaying = false;
-	float rejectionDuration = 3000/1000;
+	float rejectionDuration = 1000/1000;
 	float timeElypsed;
 	@Override
 	public void updateAnimationFrame(float deltatime) {
@@ -273,14 +276,14 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 			float ratio = timeElypsed/rejectionDuration;
 			
 			//in order to cycle the colour change we scale between 0 and 2PI then use sin (as Sin 2PI = 1)
-			float alpha = (float) Math.sin((ratio*Math.PI*2.0f)*3.0); //the 3 is the number of repeats
+			float alpha = (float) Math.sin((ratio*Math.PI*2.0f*3.0)); //the 3 is the number of repeats
 			
 			Color normal = Color.BLUE.cpy();
 			Color changeTo = Color.RED;
 			
 			normal.lerp(changeTo, alpha);
 			
-			this.getStyle().setBackgroundColor(changeTo);
+			this.getStyle().setBackgroundColor(normal);
 			
 			
 						

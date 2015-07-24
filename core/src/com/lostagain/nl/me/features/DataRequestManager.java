@@ -1,6 +1,7 @@
 package com.lostagain.nl.me.features;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.me.features.MeshIcon.IconType;
 import com.lostagain.nl.me.models.ModelManagment;
 
 /**
@@ -23,6 +25,11 @@ public class DataRequestManager {
 	SSSNode firewallsNode;
 	LocationHub parentsLocation;
 	boolean needslayout=false;
+	
+	/**
+	 * All the requestscreens made by this manager
+	 */
+	HashMap<MeshIcon,DataRequestScreen> requestScreens = new HashMap<MeshIcon,DataRequestScreen>(); 
 	
 	//data used in construction'
 	/** Number of objects needed for query request **/
@@ -99,7 +106,9 @@ public class DataRequestManager {
 		
 
 		Vector3 homepos = parentsLocation.getCenterOnStage();
-
+		
+		
+		//first we generate all the request screens
 		for (int j = 0; j < queryArray.length; j++) {
 			
 			String securedByQuery = queryArray[j];
@@ -107,17 +116,47 @@ public class DataRequestManager {
 			
 			
 			DataRequestScreen newScreen = new DataRequestScreen(this,securedByQuery,objectsRequired,SecurityDiscription,null,null,null);
+			//its icon (might not be needed if its the first one
+			//we could optimise this later to not bother creating one?)
+			MeshIcon requestScreensIcon = new MeshIcon(IconType.RequestScreen,parentsLocation.parentLocation,newScreen);
+			
 		
-			//temp layout
-			Vector3 newpos  = new Vector3(homepos.x-(newScreen.getWidth()/2),homepos.y-200,homepos.z);
-			newScreen.setToPosition(newpos);
-			ModelManagment.addmodel(newScreen,ModelManagment.RenderOrder.zdecides);
 			
 			//add to our child array ready to lay out
+			requestScreens.put(requestScreensIcon,newScreen);
 			
 		}
 
 		//layout
+		
+		//if theres just one request screen, we put it as the associated object at the locationhub we are locking		
+		if (requestScreens.keySet().size()==1){
+			Gdx.app.log(logstag,"__________________adding requestscreens to parents location________________________");
+
+			//add to parentsLocation
+			DataRequestScreen lockscreen = requestScreens.values().iterator().next();	
+			parentsLocation.setAssociatedFeature(lockscreen);
+			
+		} else {
+			Gdx.app.log(logstag,"__________________drawing various requestscreens under parents location________________________");
+
+			int i = 1;
+			
+			//if theres more then 1 they are a succession of MeshIcon based locks leading up to that location hub.
+			for (MeshIcon icon : requestScreens.keySet()) {
+				
+				//temp layout
+				Vector3 newpos  = new Vector3(homepos.x-(icon.getWidth()/2),homepos.y-(i*100),homepos.z);
+				icon.setToPosition(newpos);
+				ModelManagment.addmodel(icon,ModelManagment.RenderOrder.zdecides);
+				i++;
+			}
+			
+			
+		}
+		
+		
+		
 		
 
 		/*

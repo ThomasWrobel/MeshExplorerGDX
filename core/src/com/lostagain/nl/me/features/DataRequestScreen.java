@@ -152,7 +152,30 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 		//passedAllTests
 
 		Gdx.app.log(logstag,"~~~~~~~~~~~~~~~~~~~passedAllTests:"+passedAllTests);
+		if (passedAllTests){
+			setAsUnlocked();
+			
+		}
+		
 
+	}
+
+	private void setAsUnlocked() {
+		
+		this.getStyle().setBackgroundColor(Color.GREEN);
+		title.setText("Concepts Accepted.Progress Open");
+		
+		if (itemToConnectToIfUnlocked!=null){
+			itemToConnectToIfUnlocked.show();
+			
+			//we can only link if we have a parent MeshIcon too
+			//either the hub we are in, or our own container if directly on the landscape
+		}
+		
+		if (runThisWhenUnlocked!=null){
+			runThisWhenUnlocked.run();
+		}
+		
 	}
 	
 	@Override
@@ -252,6 +275,12 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 			super.getStyle().setBorderColor(Color.RED);
 			
 			animatedRejection(); 
+			
+			if (sourcescreen.runThisWhenMistakeMade!=null){
+				sourcescreen.runThisWhenMistakeMade.run();
+			}
+			
+			
 			//ensure concept is first added (silly but this is so later we can have a nice rejection animation
 			//it needs to know what to eject!
 			STMemory.clearCurrentlyHeld();
@@ -306,7 +335,7 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 						
 						Gdx.app.log(logstag,"concept not accepted");
 												
-						rejectConcept(object); //runs even if its not in there!
+						rejectConcept(object); 
 
 						current = RequestorState.rejected;
 						
