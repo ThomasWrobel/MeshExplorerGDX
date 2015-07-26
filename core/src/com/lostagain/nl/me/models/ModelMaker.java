@@ -195,7 +195,7 @@ public class ModelMaker {
 		//we create a rectangle centered at the middle of its base, and the distance we need as its height
 		
 		//we use the glowing line maker for now but this might be replaced in future for a true shader based one.
-		//in which case we will just use a reactangle as follows
+		//in which case we will just use a rectangle as follows
 		//Model linemodel = ModelMaker.createRectangle(0-hw, 0, hw, distance, 0, defaultmaterial);
 
 		

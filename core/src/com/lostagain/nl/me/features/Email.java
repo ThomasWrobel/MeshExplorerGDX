@@ -31,7 +31,7 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 	Label emailContents;
 	
 	//temp notes;
-	//size doesnt update when email does
+	//size doesn't update when email does
 	
 	public Email(SSSNode sssNode, SSSNode writtenIn) {
 		super.setPadding(25f);

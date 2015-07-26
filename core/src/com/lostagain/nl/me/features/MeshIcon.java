@@ -152,9 +152,23 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 
 	/**
-	 * Controlls the movements of this icon (default null, its created when needed then kept)
+	 * Controls the movements of this icon (default null, its created when needed then kept)
 	 */
 	NewMovementController movementController;
+	
+	/**
+	 * Stores the native position of this icon, so when it moves it can return to its native pos
+	 **/
+	Vector3 nativePosition = new Vector3();
+	
+	
+	/**
+	 * 
+	 * @param type
+	 * @param parentLocation
+	 * @param assocatiedfeature
+	 */
+	
 	
 
 	//----------------------------------------------------
@@ -257,6 +271,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		//from the location we are attaching it too.
 		//This means it should look centralized.
 		//ie. If it has its center at 5,5 we position it at -5,-5 so that the "center" 5,5 point is in the middle
+
+		Gdx.app.log(logstag,"featureCenter.x="+-featureCenter.x+"");
 		super.attachThis(assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z+vertDisplacement));
 				
 		//We need to work out the size of the associatedFeature, and use that to create new mesh vertex co-ordinates
@@ -289,9 +305,9 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		Vector3 maxXYZ    = assocatiedFeature.getLocalBoundingBox().max;
 		Vector3 centerXYZ = assocatiedFeature.getCenterOfBoundingBox();
 		
-		//We then use the X/Y to form a new set of co-ordinates, normalised around the center point of the associatedfeature
-		float ox = centerXYZ.x;
-		float oy = centerXYZ.y;
+		//We then use the X/Y to form a new set of co-ordinates, normalized around the center point of the associatedfeature
+		float ox          = centerXYZ.x;
+		float oy          = centerXYZ.y;
 		
 	
 		IconsEnlargedVertexs = new float[] { 
@@ -376,9 +392,14 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		if (currentState == FeatureState.FeatureClosed){
 			
 			if (currentlyOpen!=null && currentlyOpen!=this){
-				//if another was open close it
-				currentlyOpen.close();
-				
+				//if another was open close it,unless its the email hub and we are an email
+				//as things shouldn't close their parents. (in future we might want a generic system to prevent objects from
+				//closing their parents
+				if (this.thisIconsType == IconType.Email && currentlyOpen.thisIconsType == IconType.EmailHub ){
+					//do nothing
+				} else {
+					currentlyOpen.close();
+				}
 			}
 			currentlyOpen=this;
 			
@@ -386,11 +407,17 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 			//Centralize camera on this icon
 			//For LocationHubs we put the camera a bit higher up
 			if (thisIconsType==MeshIcon.IconType.LocationHub){
-				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight()+150,1000);
+				
+				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight()+150,1000); //location hub zooms out a bit
+				
 			} else {
+				
 				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight(),1000);
 				
+				
 			}
+			
+			
 			Gdx.app.log(logstag,"opening mesh feature");
 			animateOpen();
 		} else {
@@ -500,6 +527,10 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		currentState = FeatureState.appearing;
 		Opacity = 0f;
 		timeIntoFade=0f;
+		
+		//store our native position so we can return to it when closing
+		nativePosition = super.transState.position.cpy();
+		
 		//ModelManagment.addmodel(this, RenderOrder.zdecides);
 		this.show();
 		ModelManagment.addAnimating(this);
@@ -587,6 +618,12 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 			break;
 		
 		}
+		
+		//we also change our position slightly, moving this MeshIcon (and its attachments) upwards a bit so as to be infront of anything else thats on the 0 z position)
+		//(ie, other icons)
+		this.transState.position.z = nativePosition.z + (12*Opacity); //12 is how far we move
+		this.sycnTransform();		//as we are only moving in Z changing the transtates position and calling sycn directly is more efficiant then using setToPosition
+		
 		
 		//update associated icon
 		this.assocatiedFeature.updateApperance(Opacity,currentState);
@@ -735,7 +772,14 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	}
 	
 	public void refreshAssociatedFeature() {
-		setupAssociatedFeature();
+		setupAssociatedFeature(); //this updates the size of this icon when maximised/open
+		
+		//if we are open we also have to update the current size to match that maximized size
+		if (this.currentState==FeatureState.FeatureOpen){
+			updateApperance(1,FeatureState.FeatureOpen);
+		}
+		
+		
 	}
 	
 	/**
@@ -755,8 +799,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		AnimatableModelInstance Linksline = ModelMaker.addConnectingLine(this, target);
 		linkedIcons.put(target,Linksline);
 		Linksline.setInheritedRotation(false);
-		
-		this.attachThis(Linksline, new PosRotScale(0,0,-10f)); //a little behind this icon
+		 
+		this.attachThis(Linksline, new PosRotScale(0,0,-20f)); //a little behind this icon to allow movement a bit
 		
 		
 		ModelManagment.addmodel(Linksline,ModelManagment.RenderOrder.zdecides);

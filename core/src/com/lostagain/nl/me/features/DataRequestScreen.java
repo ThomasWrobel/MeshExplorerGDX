@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.darkflame.client.query.Query;
 import com.darkflame.client.semantic.QueryEngine;
@@ -108,6 +109,8 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 		explanation = new Label(description);
 		
 		explanation.getStyle().clearBackgroundColor();
+		explanation.setToscale(new Vector3(0.8f,0.8f,0.8f));
+		
 		title.getStyle().clearBackgroundColor();	
 		SlotBar.getStyle().clearBackgroundColor();
 		
@@ -401,5 +404,25 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 	public MeshIcon getParentMeshIcon() {
 		return parentIcon;
 	}
+
+	
+	//temp experiment
+	/*
+	@Override
+	protected void fireAllSizeChangeHandlers() {
+		
+		//directly trigger
+		if (parentIcon!=null){
+			
+			Gdx.app.log(logstag,"_______________refreshAssociatedFeature______________"+this.getCenterOfBoundingBox());
+			parentIcon.refreshAssociatedFeature();
+			
+		}
+		
+		//dont fire
+		//super.fireAllSizeChangeHandlers();
+		
+		
+	}*/
 	
 }

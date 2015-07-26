@@ -111,7 +111,10 @@ public class DataRequestManager {
 		//so first we split be commas
 		String queryArray[]           = protectionString.split(","); //in future we should support quotes in quotes?
 		String defaultclue            = ""; //should be SecurityDiscription split then sycned
-		String securityDiscriptions[] = SecurityDiscription.split(",");
+		String securityDiscriptions[] = null;
+		if (!SecurityDiscription.isEmpty()){
+			securityDiscriptions = SecurityDiscription.split(",");
+		}
 		
 		Gdx.app.log(logstag,"_______generating "+queryArray.length+" request screens");
 		//first we generate all the request screens
@@ -129,7 +132,7 @@ public class DataRequestManager {
 			
 			String currentDiscription = securedByQuery;//default the description to the query
 			
-			if (securityDiscriptions.length>=j){
+			if (securityDiscriptions!=null && securityDiscriptions.length>j){
 				currentDiscription = securityDiscriptions[j];
 			}
 			Gdx.app.log(logstag,"_______currentDiscription ="+ currentDiscription);

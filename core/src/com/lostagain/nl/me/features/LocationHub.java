@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer;
@@ -146,7 +147,7 @@ public class LocationHub extends MeshIcon {
 				LocationHub.this.setAssociatedFeatureToDefault();
 
 			}
-		}, 1.500f);
+		}, 3.500f);
 		
 	}
 
@@ -355,12 +356,14 @@ public class LocationHub extends MeshIcon {
 			offset.rotate(Vector3.Z, angleDistance);
 			Vector3 newPosition =  new Vector3(center);	//the new position is the old one	
 			newPosition.add(offset);
-			Gdx.app.log(logstag,"adding feature at:"+newPosition);
-
+			Gdx.app.log(logstag,"adding "+feature.thisIconsType+" feature at:"+newPosition);
+		
 
 			feature.setToPosition(newPosition);
 			ModelManagment.addmodel(feature,ModelManagment.RenderOrder.zdecides);
-
+			
+			
+			
 			//link it to us
 			this.addLineTo(feature);			
 

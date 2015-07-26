@@ -123,7 +123,8 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		//ATTACH
 		this.attachThis(object, new PosRotScale(center.x,center.y,2f));
 		
-		setApperanceAsInUse();
+		//setApperanceAsInUse();
+		refreshApperanceBasedOnMode();
 		
 		//associate its attachment
 		object.setInheritedVisibility(true);
@@ -151,7 +152,9 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		objectCurrentlyStored.setMovement(new NewForward(150,1000));
 		
 		
-		setApperanceAsEmpty();
+		//setApperanceAsEmpty();
+		refreshApperanceBasedOnMode();
+		
 		objectCurrentlyStored=null;
 		
 	}
@@ -168,8 +171,8 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		objectCurrentlyStored=null;
 		
 		//updateapperance
-		setApperanceAsEmpty() ;
-		
+		//setApperanceAsEmpty() ;
+		refreshApperanceBasedOnMode();
 		
 		
 		if (runAfterSomethingDraggedOff!=null){
@@ -293,6 +296,10 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	public void setCurrentMode(SlotMode currentMode) {
 		this.currentMode = currentMode;
 		
+		refreshApperanceBasedOnMode();
+	}
+
+	private void refreshApperanceBasedOnMode() {
 		switch (currentMode) {		
 		case Locked:
 			 setApperanceAsLocked();
