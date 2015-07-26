@@ -19,8 +19,9 @@ public interface hitable {
 	public float getLastHitsRange(); //returns the above
 	
 	public boolean isBlocker(); //if this blocks hits below it
-	public boolean rayHits(Ray ray);
+	public Vector3 rayHits(Ray ray);
 	public Vector3 getCenterOnStage();
+	
 	
 	
 }

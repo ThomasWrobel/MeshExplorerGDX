@@ -439,15 +439,14 @@ public class LocationsHub extends Table {
 		Gdx.app.log(logstag,"getting security for:"+mycomputerdata.PURI);
 
 		if (ME.checkDatabaseIsLoaded(mycomputerdata)==false){
+			
 			Gdx.app.log(logstag,"WARNING COMPUTERS DATABASE NOT LOADED. THIS SHOULD NOT HAVE BEEN LINKED TOO YET");
 			
 		}
 
 		HashSet<SSSNodesWithCommonProperty> sets = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(mycomputerdata.getPURI());
-
-
+		
 		Gdx.app.log(logstag,"sets:"+sets.size());
-
 
 		for (SSSNodesWithCommonProperty sssNodesWithCommonProperty : sets) {
 

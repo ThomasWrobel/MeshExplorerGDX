@@ -132,11 +132,13 @@ public class ProgressBar extends Widget implements GenericProgressMonitor {
 	public void setTotalProgressUnits(int i) {
 		valueMin=0;
 		valueMax=i;
+		//refreshVisual();?
 		
 	}
 	@Override
 	public void addToTotalProgressUnits(int i) {
 		valueMax=valueMax+i;
+		//refreshVisual();?
 		
 	}
 	@Override
@@ -147,12 +149,20 @@ public class ProgressBar extends Widget implements GenericProgressMonitor {
 	@Override
 	public void stepProgressForward() {
 		CurrentValue = CurrentValue + 1;
+		refreshVisual();
 		
 	}
 	@Override
 	public void setCurrentProgress(int i) {
 		CurrentValue =  i;
-		
+		refreshVisual();
+	}
+	
+	/**
+	 * refreshs the visualisation based on the current value
+	 */
+	private void refreshVisual(){
+		setCurrentWidth(getCurrentValueAsWidth());
 	}
 	
 }

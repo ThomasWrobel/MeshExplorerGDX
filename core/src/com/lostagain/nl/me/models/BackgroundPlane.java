@@ -132,17 +132,23 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 	public boolean isBlocker() {
 		return true;
 	}
-
+/*
 	@Override
-	public boolean rayHits(Ray ray) {
-
-		Gdx.app.log(logstag,"testing intersection against c:"+collisionBox);
-
-		Boolean hit = Intersector.intersectRayBoundsFast(ray, collisionBox);
-		Gdx.app.log(logstag,"hit:"+hit);
-		return hit;
+	public Vector3 rayHits(Ray ray) {
+		//boolean hit = Intersector.intersectRayBoundsFast(ray, this.getLocalCollisionBox());
+		//Gdx.app.log(logstag,"testing for hit on object:"+hit);
+		
+		
+		//new more precise distance test
+		Vector3 intersection = new Vector3();
+		boolean hit = Intersector.intersectRayBounds(ray, this.getLocalCollisionBox(), intersection);
+		Gdx.app.log(logstag,"testing for hit on object:"+hit);
+		if (hit){
+			return intersection;
+		}
+		return null;
 	}
-
+*/
 	public void setToNoiseShader() {	
 
 		BlendingAttribute blendingAttribute2 = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE,0.6f);

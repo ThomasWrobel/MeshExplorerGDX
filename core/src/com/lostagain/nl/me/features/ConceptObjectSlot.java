@@ -20,6 +20,12 @@ import com.lostagain.nl.me.newmovements.NewMovementController;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.me.objects.DataObject;
 
+/**
+ * A slot that takes ConceptObjects into it and can respond if its accepted or not
+ * 
+ * @author Tom
+ *
+ */
 public class ConceptObjectSlot extends Widget implements hitable,Animating {
 
 	final static String logstag = "ME.ConceptObjectSlot";
@@ -72,14 +78,19 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		
 	}
 	
+	private void onDrop(ConceptObject object){
+		onDrop(object,false);
+	}
 	
 	/** fired when a object is dropped onto it **/
-	private void onDrop(ConceptObject object){
+	private void onDrop(ConceptObject object,boolean overrideLock){
 		
 		//check if we are currently accepting drops
-		if (this.currentMode==SlotMode.OutOnly || this.currentMode==SlotMode.Locked ){
-			Gdx.app.log(logstag," Slot not accepting drops ");
-			return;
+		if (!overrideLock){
+			if (this.currentMode==SlotMode.OutOnly || this.currentMode==SlotMode.Locked ){
+				Gdx.app.log(logstag," Slot not accepting drops ");
+				return;
+			}
 		}
 		
 		//check if are accepting of this type of conceptobject
@@ -170,14 +181,24 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	private void setApperanceAsEmpty() {
 		super.getStyle().setBorderColor(Color.LIGHT_GRAY);	
 		CurrentBackColour = Color.LIGHT_GRAY;
+		super.getStyle().setBackgroundColor(CurrentBackColour);
 		
 	}
 	private void setApperanceAsInUse() {
 		super.getStyle().setBorderColor(Color.GREEN);		
 		CurrentBackColour = Color.GREEN;
+		super.getStyle().setBackgroundColor(CurrentBackColour);
 		
 	}
-
+	private void setApperanceAsLocked() {		
+		super.getStyle().setBorderColor(Color.RED);			
+		CurrentBackColour = Color.LIGHT_GRAY;
+		super.getStyle().setBackgroundColor(CurrentBackColour);
+		
+		//really should have a overlay object here of some sort - possibly with a cross - to help enforce the idea that nothing can be removed yet
+		
+		
+	}
 
 	
 	protected void animatedRejection() {
@@ -244,12 +265,12 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		return true;
 	}
 
-	@Override
-	public boolean rayHits(Ray ray) {
-		boolean hit = Intersector.intersectRayBoundsFast(ray, this.getLocalCollisionBox());
-		Gdx.app.log(logstag,"testing for hit on concept object slot:"+hit);
-		return hit;
-	}
+	//@Override
+	//public boolean rayHits(Ray ray) {
+	//	boolean hit = Intersector.intersectRayBoundsFast(ray, this.getLocalCollisionBox());
+	//	Gdx.app.log(logstag,"testing for hit on concept object slot:"+hit);
+	//	return hit;
+	//}
 
 
 	@Override
@@ -265,12 +286,28 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 
 	
 	public void setAsCointaining(ConceptObject newConceptObject) {		
-		onDrop(newConceptObject);		
+		onDrop(newConceptObject,true);		
 	}
 
 
 	public void setCurrentMode(SlotMode currentMode) {
 		this.currentMode = currentMode;
+		
+		switch (currentMode) {		
+		case Locked:
+			 setApperanceAsLocked();
+			break;
+		case InOnly:
+		case Normal:
+		case OutOnly:
+				if (objectCurrentlyStored==null){
+					 setApperanceAsEmpty();
+				} else {
+					setApperanceAsInUse();
+				}
+			 
+			break;
+		}
 	}
 
 	boolean rejectionAnimationPlaying = false;
@@ -297,7 +334,9 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 			
 			
 						
-			if (timeElypsed>rejectionDuration){				
+			if (timeElypsed>rejectionDuration){	
+
+				getStyle().setBackgroundColor(CurrentBackColour);
 				ModelManagment.removeAnimating(this);	
 				rejectionAnimationPlaying=false;
 				

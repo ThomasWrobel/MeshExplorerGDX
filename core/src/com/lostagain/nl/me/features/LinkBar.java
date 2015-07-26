@@ -201,7 +201,7 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 			
 		
 			LocationHub from = parentLinkStore.parentLocation;			
-			LocationHub to = newlocation.locationsNEWHub;
+			MeshIcon    to = newlocation.getLinkPoint();
 			
 			//TODO: Draw line between above
 			//this should really be from the linkbars hub, not the locations
@@ -495,11 +495,11 @@ public void setStandardLinkScanningAmount(int Percentage){
 		return true;
 	}
 
-	@Override
-	public boolean rayHits(Ray ray) {
-		boolean hit = Intersector.intersectRayBoundsFast(ray, this.getLocalCollisionBox());
-		Gdx.app.log(logstag,"testing for hit on linkbar object:"+hit);
-		return hit;
-	}
+	//@Override
+	//public boolean rayHits(Ray ray) {
+	//	boolean hit = Intersector.intersectRayBoundsFast(ray, this.getLocalCollisionBox());
+	//	Gdx.app.log(logstag,"testing for hit on linkbar object:"+hit);
+	//	return hit;
+	//}
 	
 }

@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -100,7 +101,7 @@ public class ModelManagment {
 	 * If Z is less then the stage Z 5 its behind
 	 * If its more then 5its in front**/
 	public static void addmodel(ModelInstance model, RenderOrder order) {	
-
+	
 		//ignore if present already
 		if (allBackgroundInstances.contains(model) || allForgroundInstances.contains(model)){
 			Gdx.app.log(logstag,"________model already on a render list");
@@ -449,22 +450,25 @@ public class ModelManagment {
 			//position.add(instance.getCenter());
 			position = newInstance.getCenterOnStage();
 
-			float dist2 = ray.origin.dst2(position);
-
 
 			//first check if it hits at all. We base this on the hitables internal tester
 			//this lets different hitables use different intersect types (ie, radius, boundingbox, polygon etc)
 
 			//	if (Intersector.intersectRaySphere(ray, instance.getCenter(), instance.getRadius(), null)) {
-
-			if (!newInstance.rayHits(ray)){
+			Vector3 hitPoint = newInstance.rayHits(ray);
+			if (hitPoint==null){
 				//if it didn't hit we can just skip to the next thing to test
 				continue;
 			}
 
 
+			//float dist2 = ray.origin.dst2(position);
 
-			Gdx.app.log(logstag,"_hit "+newInstance.getClass()+"object at distance "+dist2);
+			float dist2 = ray.origin.dst2(hitPoint);
+
+
+			Gdx.app.log(logstag,"_hit "+newInstance.getClass()+" object at distance "+dist2+" position was("+position+")");
+			
 			if (newInstance.isBlocker()){
 				Gdx.app.log(logstag,"(it was blocker)");
 

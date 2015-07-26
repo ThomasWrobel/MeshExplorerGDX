@@ -6,6 +6,7 @@ import java.util.Set;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -44,7 +45,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	HashMap<AnimatableModelInstance,PosRotScale> attachlist = new HashMap<AnimatableModelInstance,PosRotScale>();
 	
 	/** What THIS object is attached too, if anything **/
-	AnimatableModelInstance parentObject = null;
+	protected AnimatableModelInstance parentObject = null;
+	
 	
 	
 	//how the parent object (if any) effects this one;
@@ -142,7 +144,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	public void sycnTransform() {
 		super.transform.set(transState.position, transState.rotation, transState.scale);
 		
-		//now we check if theres a collision box to update
+		//now we check if there's a collision box to update
 		if (collisionBox!=null){
 			recalculateCollisionBox();
 		}
@@ -303,10 +305,11 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		}
 		//ok, now we know we have both we set one to the other
 		collisionBox.set(localBoundingBox);
-		//Then the collision box gets multiplied by our current position so its boundarys match the real space co-ordinates
+		
+		//Then the collision box gets multiplied by our current position so its boundary's match the real space co-ordinates
 		collisionBox.mul(getMatrixTransform());
 
-		Gdx.app.log(logstag,"collision box="+getMatrixTransform());
+		Gdx.app.log(logstag,"collision box matrix="+getMatrixTransform());
 		Gdx.app.log(logstag,"collision box="+collisionBox);
 	}
 	
@@ -626,11 +629,30 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		return false;
 	}
 
+	/**
+	 * Defaults to intersectRayBounds against bounding box, but you can override for more precision if needed.
+	 * Note; You can also override to make this FASTER!
+	 * If you dont need precise distances to work out which object is "in front" of other ones, you can override
+	 * to use intersectRayBoundsFast instead, and just return a null for no hit, and your own values for the Vector3
+	 * to set which is in front.
+	 * For example, a 2d game could be optimised just to return the Z distance as its hit point.
+	 * As the higher z values will always be "in front" on a 2d game.
+	 */
 	@Override
-	public boolean rayHits(Ray ray) {
-		return false;
+	public Vector3 rayHits(Ray ray) {
+		//boolean hit = Intersector.intersectRayBoundsFast(ray, this.getLocalCollisionBox());
+		//Gdx.app.log(logstag,"testing for hit on object:"+hit);
+		
+		
+		//new more precise distance test
+		Vector3 intersection = new Vector3();
+		boolean hit = Intersector.intersectRayBounds(ray, this.getLocalCollisionBox(), intersection);
+		Gdx.app.log(logstag,"testing for hit on object:"+hit);
+		if (hit){
+			return intersection;
+		}
+		return null;
 	}
-	
 	
 
 }

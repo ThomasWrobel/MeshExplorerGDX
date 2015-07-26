@@ -114,7 +114,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		@Override
 		public void run() {
 
-			Gdx.app.log(logstag,"refreshing mesh due to size change");
+			Gdx.app.log(logstag,"refreshing icon mesh due to size change");
 			refreshAssociatedFeature();
 		}
 	};
@@ -139,6 +139,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		appearing,disapearing,FeatureOpen,FeatureClosed;
 	}
 	FeatureState currentState = FeatureState.FeatureClosed;
+	
 	protected float Opacity = 0f;
 	float fadeDuration = 0.500f;
 	float timeIntoFade = 0.0f;
@@ -171,6 +172,9 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		thisIconsType = type;
 		this.parentLocation = parentLocation;
 		this.assocatiedFeature = assocatiedfeature;
+		//store the currentAssociatedFeature as the default as well.
+		//if a feature is added and removed, this one will be displayed as the default
+		defaultAssociatedFeature = this.assocatiedFeature;
 		
 		setupAssociatedFeature();
 		
@@ -224,11 +228,22 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 		
 	}
+	
+	//NOTE: associated features should only be tied to one meshicon.
+	//Assigning to multiple can mess things up, features being hidden at the wrong time etc.
+	//Perhaps features need a optional "parentMeshIcon" interface?
 	private void setupAssociatedFeature() {
+
+		Gdx.app.log(logstag,"setting up associated feature. currentState="+currentState);
 		
-		//associated features should be hidden by default
-		assocatiedFeature.hide();
-				
+		//associated features should be hidden by default if we are closed
+		if (currentState == FeatureState.FeatureClosed){
+
+			Gdx.app.log(logstag,"hidding "+assocatiedFeature.getClass()+" feature");
+			assocatiedFeature.hide();
+			
+		}
+		
 		//set the associated feature to know this is its associated icon
 		//this.assocatiedFeature.setAssociatedIcon(this);
 		
@@ -244,9 +259,6 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		//ie. If it has its center at 5,5 we position it at -5,-5 so that the "center" 5,5 point is in the middle
 		super.attachThis(assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z+vertDisplacement));
 				
-
-		
-		
 		//We need to work out the size of the associatedFeature, and use that to create new mesh vertex co-ordinates
 		//for us to transform into when opening
 		//We start by getting its minimum and maximum local co-ordinates
@@ -256,10 +268,15 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 		Gdx.app.log(logstag,"adding size change monitor");
 		assocatiedFeature.addOnSizeChangeHandler(SizeChangeHandler);
+		
+		//ensure parent is set (should be already)
+		assocatiedFeature.setParentMeshIcon(this);
+		
 	}
 	
 	
-	
+
+	//seems to fire twice sometimes, probably due to unneeded duplicae change handlers elsewhere?
 	private void cacheAssociatedFeaturesSize() {
 
 		Gdx.app.log(logstag,"cacheing mesh size:"+assocatiedFeature.getWidth()+","+assocatiedFeature.getHeight());
@@ -414,7 +431,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	/*****/
 	@Override
 	public void fireTouchDown() {
-		Gdx.app.log(logstag,"_mesh icon clicked on_");
+
+		Gdx.app.log(logstag,"__touchdown on mesh icon at position="+this.getLocalCollisionBox());
 		
 		if (iconsOpenMode==OpenMode.SingleClick){
 			open();
@@ -467,12 +485,12 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		return true;
 	}
 
-	@Override
-	public boolean rayHits(Ray ray) {
-		boolean hit = Intersector.intersectRayBoundsFast(ray, this.getLocalCollisionBox());
-		Gdx.app.log(logstag,"testing for hit on meshicon:"+hit);
-		return hit;
-	}
+	//@Override
+	//public boolean rayHits(Ray ray) {
+	//	boolean hit = Intersector.intersectRayBoundsFast(ray, this.getLocalCollisionBox());
+	//	Gdx.app.log(logstag,"testing for hit on meshicon:"+hit);
+	//	return hit;
+	//}
 
 	
 	///-------------------------------------
@@ -520,14 +538,17 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		//The icon should be visible when the associated feature is hidden and visa-versa
 		
 		switch (currentState) {
+		
 		case appearing:
 			Opacity = ratio;
 			if (ratio>1){
 				Opacity = 1;
 				ModelManagment.removeAnimating(this);
 				//recalc size (for bounding box)
-				wasResized();
 				currentState = FeatureState.FeatureOpen;
+				wasResized();
+
+				Gdx.app.log(logstag,"currentState set to:"+currentState);
 				if (runAfterFadeIn!=null){
 					runAfterFadeIn.run();
 				}
@@ -539,11 +560,12 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 			if (ratio>1){
 				Opacity = 0;
 				ModelManagment.removeAnimating(this);
-				//recalc size (for bounding box)
-				wasResized();
+				//recalc size (for bounding box)				
 				currentState = FeatureState.FeatureClosed;
-				this.assocatiedFeature.hide();
+				this.assocatiedFeature.hide();				
 				this.show();
+				wasResized();
+				Gdx.app.log(logstag,"currentState set to:"+currentState);
 				if (runAfterFadeOut!=null){					
 					runAfterFadeOut.run();
 				}
@@ -555,13 +577,13 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 			this.assocatiedFeature.hide();
 			this.show();
 			ModelManagment.removeAnimating(this);
-			
+			Gdx.app.log(logstag,"currentState is:"+currentState);
 			return;
 		case FeatureOpen:
 			
 			Opacity = 1f;
 			ModelManagment.removeAnimating(this);
-			
+			Gdx.app.log(logstag,"currentState is :"+currentState);
 			break;
 		
 		}
@@ -676,8 +698,20 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	 */
 	protected void setAssociatedFeature(GenericMeshFeature newfeature){
 		
+		if (newfeature==assocatiedFeature){
+			Gdx.app.log(logstag,"already associated with this feature");
+			return;
+		}
+		
+		//clear any other assocations with the new feature
+		if (newfeature.getParentMeshIcon()!=null && newfeature.getParentMeshIcon()!=this){
+			Gdx.app.log(logstag,"WARNING: iconing new feature already was associated with a mesh icon, removing that assocation");
+			newfeature.getParentMeshIcon().setAssociatedFeatureToDefault();
+			newfeature.setParentMeshIcon(null);
+		}
+		
+		
 		//remove old one
-
 		Gdx.app.log(logstag,"removing old feature");
 		
 		this.removeAttachment(assocatiedFeature.getAnimatableModelInstance());
@@ -685,11 +719,18 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		//hide it too
 		assocatiedFeature.hide();
 		
+		
 		//setup new one
 		Gdx.app.log(logstag,"setting new feature");
 		
-		this.assocatiedFeature = newfeature;		
+		this.assocatiedFeature = newfeature;	
+		newfeature.setParentMeshIcon(this);
 		setupAssociatedFeature();
+		
+	}
+	
+	void setAssociatedFeatureToDefault() {
+		setAssociatedFeature(defaultAssociatedFeature);
 		
 	}
 	
@@ -701,6 +742,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	 * Icons linked to this one by lines
 	 */
 	HashMap<MeshIcon,AnimatableModelInstance> linkedIcons = new HashMap<MeshIcon,AnimatableModelInstance>();
+
+	protected GenericMeshFeature defaultAssociatedFeature;
 	
 	/**
 	 * Sets a glowing line between this icon and another

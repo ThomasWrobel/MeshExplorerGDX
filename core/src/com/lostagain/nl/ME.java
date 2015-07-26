@@ -503,7 +503,7 @@ public static void gotoLocation2(SSSNode linksToThisPC) {
 	//This will automatically check if it already exists
 	//else it will create a new one
 	Location screen = Location.getLocation(linksToThisPC);
-	ME.centerViewOn(screen.locationsNEWHub,4000);
+	ME.centerViewOn(screen.getLinkPoint(),4000);
 	
 	MainExplorationView.currentlyOpenLocation = screen;
 }

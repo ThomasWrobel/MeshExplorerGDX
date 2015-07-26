@@ -27,9 +27,15 @@ public class DataRequestManager {
 	boolean needslayout=false;
 	
 	/**
-	 * All the requestscreens made by this manager
+	 * The request screens needed to unlock the hub, in the order they should appear
 	 */
-	HashMap<MeshIcon,DataRequestScreen> requestScreens = new HashMap<MeshIcon,DataRequestScreen>(); 
+	ArrayList<DataRequestScreen> requestScreens = new ArrayList<DataRequestScreen>();
+	
+	/**
+	 * All the requestscreens and their icons
+	 */
+	HashMap<DataRequestScreen,MeshIcon> requestScreensAndIcons = new HashMap<DataRequestScreen,MeshIcon>(); 
+	
 	
 	//data used in construction'
 	/** Number of objects needed for query request **/
@@ -100,70 +106,140 @@ public class DataRequestManager {
 		// "color=green fruit","color=red fruit"
 		//which should make two slots and answer sets, one for green one for red
 
+		Gdx.app.log(logstag,"_______protectionString ="+ protectionString);
+		
 		//so first we split be commas
-		String[] queryArray  = protectionString.split(","); //in future we should support quotes in quotes?
-		String   defaultclue = ""; //should be SecurityDiscription split then sycned
+		String queryArray[]           = protectionString.split(","); //in future we should support quotes in quotes?
+		String defaultclue            = ""; //should be SecurityDiscription split then sycned
+		String securityDiscriptions[] = SecurityDiscription.split(",");
 		
-
-		Vector3 homepos = parentsLocation.getCenterOnStage();
-		
-		
+		Gdx.app.log(logstag,"_______generating "+queryArray.length+" request screens");
 		//first we generate all the request screens
 		for (int j = 0; j < queryArray.length; j++) {
 			
-			String securedByQuery = queryArray[j];
-			int objectsRequired = NumberOfObjectNeededList.get(j);
+			Gdx.app.log(logstag,"_______generating'screen:"+j);
+			String securedByQuery = queryArray[j]; //the query that determines what objects are accepted.
 			
+			int  objectsRequired = 1; //default to oneobject fitting the criteria required
+
+			if (NumberOfObjectNeededList.size()>=(j+1)){
+				objectsRequired = NumberOfObjectNeededList.get(j); //but more might have been specified
+			} 
+						
 			
-			DataRequestScreen newScreen = new DataRequestScreen(this,securedByQuery,objectsRequired,SecurityDiscription,null,null,null);
-			//its icon (might not be needed if its the first one
-			//we could optimise this later to not bother creating one?)
-			MeshIcon requestScreensIcon = new MeshIcon(IconType.RequestScreen,parentsLocation.parentLocation,newScreen);
+			String currentDiscription = securedByQuery;//default the description to the query
+			
+			if (securityDiscriptions.length>=j){
+				currentDiscription = securityDiscriptions[j];
+			}
+			Gdx.app.log(logstag,"_______currentDiscription ="+ currentDiscription);
 			
 		
 			
+			DataRequestScreen newScreen = new DataRequestScreen(this,securedByQuery,objectsRequired,currentDiscription,null,null,null);
+			MeshIcon requestScreensIcon = null;
+			
+			//associate an icon for it, or use the locationhub if its the last one in the chain
+			if (j<(queryArray.length-1)){				
+				requestScreensIcon = new MeshIcon(IconType.RequestScreen,parentsLocation.parentLocation,newScreen);
+			} else {
+				Gdx.app.log(logstag,"________last security needed, so associating with LocationHub instead);");
+				requestScreensIcon = parentsLocation;
+			}
+			
+			if (j>0){
+				//if we arnt the first screen, then we link the previous screen to this new one
+				//this means when the previous one is unlocked the new one will be shown
+				//if there is no new screen, the locationhub is set instead to be shown the same way
+				requestScreens.get(j-1).itemToConnectToIfUnlocked = requestScreensIcon;
+			}
+		
+			//add to our list of screens (this is the order theuy should be unlocked in)
+			requestScreens.add(newScreen);
+			
 			//add to our child array ready to lay out
-			requestScreens.put(requestScreensIcon,newScreen);
+			requestScreensAndIcons.put(newScreen,requestScreensIcon);
 			
 		}
 
 		//layout
 		
 		//if theres just one request screen, we put it as the associated object at the locationhub we are locking		
-		if (requestScreens.keySet().size()==1){
-			
-			//add to parentsLocation
-			DataRequestScreen lockscreen = requestScreens.values().iterator().next();	
-			lockscreen.setRunThisWhenUnlocked(new Runnable() {
-			
-				@Override
-				public void run() {
-					Gdx.app.log(logstag,"___setting location as unlocked_____");
-					parentsLocation.setAsUnLocked();
-				}
-			});
-			
-			Gdx.app.log(logstag,"__________________adding requestscreens to parents location________________________");
-			parentsLocation.setAsLocked(lockscreen);
-			
-			
-		} else {
-			Gdx.app.log(logstag,"__________________drawing various requestscreens under parents location________________________");
+//		if (requestScreens.keySet().size()==1){
+//			
+//			//add to parentsLocation
+//			DataRequestScreen lockscreen = requestScreens.keySet().iterator().next();	
+//			lockscreen.setRunThisWhenUnlocked(new Runnable() {
+//			
+//				@Override
+//				public void run() {
+//					Gdx.app.log(logstag,"___setting location as unlocked_____");
+//					parentsLocation.setAsUnLocked();
+//				}
+//			});
+//			
+//			Gdx.app.log(logstag,"__________________adding requestscreens to parents location________________________");
+//			parentsLocation.setAsLocked(lockscreen);
+//			
+//			
+//		} else {
+			Gdx.app.log(logstag,"__________________drawing various requestscreens______________________");
 
+
+			Vector3 homepos = parentsLocation.getCenterOnStage();
+			Gdx.app.log(logstag,"__________________homepos="+homepos.toString());
 			int i = 1;
 			
 			//if theres more then 1 they are a succession of MeshIcon based locks leading up to that location hub.
-			for (MeshIcon icon : requestScreens.keySet()) {
+			for (DataRequestScreen screen : requestScreens) {
 				
-				//temp layout
-				Vector3 newpos  = new Vector3(homepos.x-(icon.getWidth()/2),homepos.y-(i*100),homepos.z);
-				icon.setToPosition(newpos);
-				ModelManagment.addmodel(icon,ModelManagment.RenderOrder.zdecides);
-				i++;
+				MeshIcon icon = requestScreensAndIcons.get(screen);
+				
+				if (requestScreens.indexOf(screen)==(requestScreens.size()-1)) { //only the last screen should be set onto the location
+					
+					//then we associate with the hub directly as its the last lock needed
+					//add to parentsLocation
+					DataRequestScreen lockscreen = screen;	
+					
+					lockscreen.setRunThisWhenUnlocked(new Runnable() {					
+						@Override
+						public void run() {
+							Gdx.app.log(logstag,"___setting location as unlocked_____");
+							parentsLocation.setAsUnLocked();
+						}
+					});
+					
+					Gdx.app.log(logstag,"__________________adding requestscreens to parents location________________________");
+					parentsLocation.setAsLocked(lockscreen);
+					
+				} else {
+					//we add the icon to the stage and make it a new link in the chain of locks
+					//temp layout
+					
+					Gdx.app.log(logstag,"__________________adding lock screen icon:"+i);
+					int disY = (requestScreens.size()-i)*130;
+					Vector3 newpos  = new Vector3(homepos.x,homepos.y-disY,homepos.z); //NOTE: negative Y is temp while we are establishing new gui system
+					icon.setToPosition(newpos);
+					ModelManagment.addmodel(icon,ModelManagment.RenderOrder.zdecides);
+
+					//hide by default unless we are the first in the chain
+					if (i>1){				
+						Gdx.app.log(logstag,"__________________hidding lock icon:"+i);
+					//	icon.hide();
+					} else {
+						Gdx.app.log(logstag,"__________________showing lock icon:"+i);
+						//first in chain is visible
+						icon.show();
+					}
+					i++;
+					
+				}
+				
+			
 			}
 			
 			
-		}
+		//}
 		
 		
 		
@@ -217,6 +293,22 @@ public class DataRequestManager {
 
 
 		return newsetofnumbs;
+	}
+	
+	public int numberOfLocks(){
+		return this.requestScreens.size();
+	}
+
+
+/**
+ * The first icon is used for incoming links to connect to, so we have a method to return it
+ * @return
+ */
+	public MeshIcon getFirstLockIcon() {
+		
+		DataRequestScreen lastScreen = requestScreens.get(0);
+		
+		return lastScreen.parentIcon;
 	}
 	
 }

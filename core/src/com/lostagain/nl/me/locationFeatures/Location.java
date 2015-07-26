@@ -11,12 +11,15 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
+import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.creatures.Population;
+import com.lostagain.nl.me.features.DataRequestManager;
 import com.lostagain.nl.me.features.LocationHub;
+import com.lostagain.nl.me.features.MeshIcon;
 import com.lostagain.nl.uti.MeshWorld;
 
 /** manages the creation and basic attributes of locations in the the game world
@@ -31,8 +34,10 @@ public class Location {
 	 */
 	final static float PositionNoise = 50;
 	
-	public LocationsHub locationsHub;
-	
+	public LocationsHub locationsHub; //old being phased out
+
+	//the DataRequestManager, which manages if we are locked 
+	DataRequestManager locationsLock;
 	public LocationHub locationsNEWHub; //will slowly replace the above, its a new way to visualise a location
 	
 	ArrayList<Population> locationsPopulations = new ArrayList<Population>();
@@ -237,21 +242,87 @@ public class Location {
 
 		Gdx.app.log(logstag, "creating new hub");
 		
-		locationsNEWHub = new LocationHub(locationsnode,this);
-		AllLocationHubsNEW.put(locationsnode,locationsNEWHub);
-				
-		if (locationsnode!=PlayersData.computersuri){
-			
-			MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y+1100);
-			
+		
+		
+		locationsNEWHub  = new LocationHub(locationsnode,this);
+		locationsNEWHub.hide(); //hide by default (we will make visible after lockscreen) 
+		
+								
+
+		
+		if (locationsnode!=PlayersData.computersuri){			
+			MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y+1100);			
 		} else {
 			//new home might be at non-standard place
-			MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y+1100);
+			MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y+1100);			
+		}
+		
+		SSSNode firewallNode = getFirewallForLocation();
+		
+		//create lockscreen if any (has to be done after locationsNEWHub has a location set
+		if (firewallNode!=null){
+			locationsLock = new DataRequestManager(firewallNode,locationsNEWHub);
+		
 			
 		}
+			
+		AllLocationHubsNEW.put(locationsnode,locationsNEWHub);
+
+		//only display if theres no locks or just 1
+		//this is because the last lock is always on the locationhub itself and thus the hub should be visible if theres only 1 lock
+		if (locationsLock==null || locationsLock.numberOfLocks()==1){
+			
+			locationsNEWHub.show();
+			
+		}	 else {
+			
+			locationsNEWHub.hide();	
+		//	locationsNEWHub.show(); //temp
+		}
+		
+		
+		
+		
 	}
 	
 	
+	/**
+	 * slightly crude method for getting the firewall of the current location, if any
+	 * Its messy as the SSS engine isn't really designed for indivudual cases of finding value given
+	 * the predicate and subject.
+	 * Its much more efficant when finding all the subjects fitting a given value and predicate.  
+	 * @return
+	 */
+	private SSSNode getFirewallForLocation() {
+		SSSNode securedBy = null;
+
+		Gdx.app.log(logstag,"getting security for:"+locationsnode.PURI);
+
+		if (ME.checkDatabaseIsLoaded(locationsnode)==false){
+			
+			Gdx.app.log(logstag,"WARNING COMPUTERS DATABASE NOT LOADED. THIS SHOULD NOT HAVE BEEN LINKED TOO YET");
+			
+		}
+
+		HashSet<SSSNodesWithCommonProperty> sets = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(locationsnode.getPURI());
+		
+		Gdx.app.log(logstag,"sets:"+sets.size());
+
+		for (SSSNodesWithCommonProperty sssNodesWithCommonProperty : sets) {
+
+			if (sssNodesWithCommonProperty.getCommonPrec()==StaticSSSNodes.SecuredBy){
+
+				securedBy = sssNodesWithCommonProperty.getCommonValue();
+
+				Gdx.app.log(logstag,"security found:"+securedBy.getPURI());
+
+				break;
+			}
+
+		}
+		return securedBy;
+	}
+
 	/**
 	 * Attempts to find the nearest free spot around the current point.
 	 * 
@@ -501,6 +572,22 @@ public class Location {
 		
 		
 		return corruptionTotal;
+	}
+
+	/**
+	 * returns the icon incoming links should goto.
+	 * either the locationshub, or its first lock screen 
+	 * @return
+	 */
+	public MeshIcon getLinkPoint() {
+		
+		if (locationsLock==null){
+			return locationsNEWHub;
+		} else {
+			return locationsLock.getFirstLockIcon();
+		}
+		
+		
 	}
 	
 }

@@ -28,7 +28,7 @@ public abstract class ComplexPanel extends Widget {
 	protected float largestHeightOfStoredWidgets = 0f;
 
 
-	Runnable updateContainerSize; 
+	//Runnable updateContainerSize; 
 
 	//--
 		//The follow is used for widgets attached to it when we want to specify where they go
@@ -56,6 +56,7 @@ public abstract class ComplexPanel extends Widget {
 	public ComplexPanel(float sizeX, float sizeY, MODELALIGNMENT align) {
 		super(sizeX, sizeY, align);
 
+		/*
 		//this will be given to child widgets to inform the parent of size changes
 		updateContainerSize = new Runnable(){
 			@Override
@@ -63,12 +64,30 @@ public abstract class ComplexPanel extends Widget {
 
 				Gdx.app.log(logstag,"updating position due to size change");
 				boolean changed = recalculateLargestWidgets();
-				
+
+				Gdx.app.log(logstag,"_________vis on panel:"+isVisible()+" ");
 				repositionWidgets();
+				Gdx.app.log(logstag,"_________vis on panel2:"+isVisible()+" ");
 			}			
-		};
+		};*/
 
 	}
+	
+	/**
+	 * when a child widget resizes, this is fired to ensure the parent widgets
+	 * size changes to keep it contained
+	 */
+	@Override
+	protected void onChildResize(){
+
+		Gdx.app.log(logstag,"updating position due to child size change");
+		boolean changed = recalculateLargestWidgets();
+
+		Gdx.app.log(logstag,"_________vis on before reposition"+isVisible()+" ");
+		repositionWidgets();
+		Gdx.app.log(logstag,"_________vis on after reposition:"+isVisible()+" ");
+	}
+	
 	public ComplexPanel(float sizeX, float sizeY) {
 		this(sizeX, sizeY,MODELALIGNMENT.TOPLEFT);
 		
@@ -76,6 +95,7 @@ public abstract class ComplexPanel extends Widget {
 	public ComplexPanel(Model object) {
 		super(object);
 		//this will be given to child widgets to inform the parent of size changes
+		/*
 				updateContainerSize = new Runnable(){
 					@Override
 					public void run() {
@@ -85,14 +105,16 @@ public abstract class ComplexPanel extends Widget {
 						
 						repositionWidgets();
 					}			
-				};
+				};*/
 		
 	}
 	public void clear() {
 
 		for (Widget widget : contents) {
 			widget.hide();
-			widget.removeOnSizeChangeHandler(updateContainerSize);			
+			//widget.removeOnSizeChangeHandler(updateContainerSize);	
+			widget.setParent(null);
+			
 			this.removeAttachment(widget);
 		}
 		contents.clear();
@@ -157,7 +179,9 @@ public abstract class ComplexPanel extends Widget {
 	public void remove(Widget widget) {
 		contents.remove(widget);
 		widget.hide();
-		widget.removeOnSizeChangeHandler(updateContainerSize);
+		//widget.removeOnSizeChangeHandler(updateContainerSize);
+		widget.setParent(null);
+		
 		this.removeAttachment(widget);
 		boolean changed = recalculateLargestWidgets();
 		//regenerate list
@@ -253,8 +277,15 @@ public abstract class ComplexPanel extends Widget {
 		//set widget to inherit visibility
 		widget.setInheritedVisibility(true);		
 		
+		//tell the widget we are its parent
+		widget.setParent(this);
+		
+		
+		//No need for the handlers, as the widgets now inform their parent directly.
+		
 		//Now we need to register handlers so we can reform stuff if the size of anything inside changes
-		widget.addOnSizeChangeHandler(updateContainerSize);
+		//Gdx.app.log(logstag," added size change handler:"+updateContainerSize.hashCode()+" from:"+this.getClass());
+		//widget.addOnSizeChangeHandler(updateContainerSize);
 		
 	}
 

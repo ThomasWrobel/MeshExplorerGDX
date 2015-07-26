@@ -72,7 +72,8 @@ public class Label extends LabelBase {
 	}
 
 	SizeMode labelsSizeMode = SizeMode.ExpandXYToFit;
-
+	float maxWidth = -1; //default for no max
+	
 	//Texture currentTexture = null;
 	//boolean modelNeedsUpdate = true;
 
@@ -83,7 +84,7 @@ public class Label extends LabelBase {
 		super(generateObjectData(true, true, contents, SizeMode.ExpandHeightMaxWidth,MaxWidth));
 		 
 		super.setStyle(getMaterial(LABEL_MATERIAL));
-		
+		this.maxWidth = MaxWidth;
 			this.contents=contents;
 				
 			if (!setup){
@@ -103,7 +104,7 @@ public class Label extends LabelBase {
 		super(generateObjectData(true, true, contents, SizeMode.ExpandXYToFit,-1));//No max width
 
 		super.setStyle(this.getMaterial(LABEL_MATERIAL));
-		 
+		this.maxWidth = -1;
 		this.contents=contents;
 			
 		if (!setup){
@@ -461,6 +462,8 @@ public class Label extends LabelBase {
 
 	}
 	*/
+	
+	
 	/**
 	 * Sets the text and regenerates the texture 
 	 * Also doesn't remember cursor position. This is needed if we want to correctly ADD text to the texture in future, rather then recreating it all
@@ -469,7 +472,9 @@ public class Label extends LabelBase {
 	public void setText(String text){
 		this.contents=text;
 		
-		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,-1); //-1 should be max width
+		
+		
+		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,maxWidth); //-1 is the default max width which means "any size"
 		
 
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
@@ -490,11 +495,14 @@ public class Label extends LabelBase {
 		float x = textureAndData.textureItself.getWidth();
 		float y = textureAndData.textureItself.getHeight();
 		
-		Gdx.app.log(logstag,"_________set text to;"+text+" size:"+x+","+y);
+		Gdx.app.log(logstag,"_________setting text to;"+text+" size:"+x+","+y);
 
+		Gdx.app.log(logstag,"_________vis1:"+this.isVisible()+" parent:"+this.parentObject.isVisible());
+		
 		this.setSizeAs(x, y);
 		
-		
+
+		Gdx.app.log(logstag,"_________vis2:"+this.isVisible()+" parent:"+this.parentObject.isVisible());
 		
 	}
 	/**
@@ -620,6 +628,11 @@ public class Label extends LabelBase {
 		BlendingAttribute backgroundOpacity = ((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type));
 		backgroundOpacity.opacity = opacity;
 	//	Gdx.app.log(logstag,"_____________opacity:"+opacity);
+	}
+
+	public void setMaxWidth(float maxWidth) {
+		this.maxWidth = maxWidth;
+		labelsSizeMode = SizeMode.ExpandHeightMaxWidth;
 	}
 
 	

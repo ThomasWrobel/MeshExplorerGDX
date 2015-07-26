@@ -37,34 +37,34 @@ import com.lostagain.nl.me.models.ModelManagment;
  */
 public class LocationHub extends MeshIcon {
 	final static String logstag = "ME.LocationHub";
+	
 	private SSSNode LocationsNode;
 
 	//All features of this location stored in this array
 	HashMap<GenericMeshFeature,MeshIcon> HubsFeatures = new HashMap<GenericMeshFeature,MeshIcon>();
 
+	
 	//All the individual features we can have (stored above)
 	private ConceptStoreObject linkedConceptDataStore;
 	private AbilityStoreObject linkedAbilityDataStore;
-	private EmailHub linkedEmailHub;
-	private LinkStoreObject linkedLinkStore;
+	private EmailHub           linkedEmailHub;
+	private LinkStoreObject    linkedLinkStore;
 
-	//if we should fresh the contents next time we are opened
+	//if we should refresh the contents next time we are opened
 	boolean refreshOnOpen = true;
 
 	/**
 	 * Are we currently locked
-	 */
+	 **/
 	boolean locked=false;
-	private GenericMeshFeature defaultAssociatedFeature; //remember the info we should display once unlocked
-
-	/**
-	 * 
+	
+	/**	 
 	 * @param locationsNode
 	 * @param location
-	 */	
+	 **/	
 	public LocationHub(SSSNode locationsNode,Location location) {
 
-		super(IconType.LocationHub,getHubTitle(locationsNode),defaultIconWidth,defaultIconHeight, location, getDefaultFeature(locationsNode));
+		super(IconType.LocationHub,getHubTitle(locationsNode), defaultIconWidth, defaultIconHeight, location, createDefaultFeature(locationsNode));
 		Color basicS = Color.GREEN;
 		basicS.a = 0.5f;
 		super.setBackgroundColour(basicS); //temp
@@ -79,7 +79,7 @@ public class LocationHub extends MeshIcon {
 	}
 
 	/** returns either a InfoBox or a Lockscreen depending on if this location is locked or not **/
-	private static GenericMeshFeature getDefaultFeature(SSSNode locationsNode) {
+	private static GenericMeshFeature createDefaultFeature(SSSNode locationsNode) {
 
 		//detect if a lock is present
 
@@ -118,8 +118,7 @@ public class LocationHub extends MeshIcon {
 	
 	void setAsLocked(DataRequestScreen lockscreen){
 		locked = true;
-		//store the currentAssociatedFeature
-		defaultAssociatedFeature = this.assocatiedFeature;
+	
 				
 		//set new one
 		this.setAssociatedFeature(lockscreen);
@@ -144,7 +143,7 @@ public class LocationHub extends MeshIcon {
 				LocationHub.this.close();
 				
 				//swap for default feature
-				LocationHub.this.setAssociatedFeature(defaultAssociatedFeature);
+				LocationHub.this.setAssociatedFeatureToDefault();
 
 			}
 		}, 1.500f);

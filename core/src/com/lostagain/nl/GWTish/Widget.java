@@ -40,6 +40,12 @@ public class Widget extends Element {
 	HashSet<Runnable> SizeChangeHandlers = new HashSet<Runnable>();
 
 	/**
+	 * If this widget is attached to another widget, this is its parent widget
+	 * If this widget is resized, its parent will be informed.
+	 */
+	Widget parentWidget = null;
+	
+	/**
 	 * Min Size X - the widget will never go smaller then this in Xwhen resized
 	 */
 	float MinSizX = 0f;
@@ -144,15 +150,22 @@ public class Widget extends Element {
 	protected void fireAllSizeChangeHandlers (){
 		Gdx.app.log(logstag," firing all size change handlers:"+SizeChangeHandlers.size());
 		for (Runnable handler : SizeChangeHandlers) {
+			
+			Gdx.app.log(logstag," firing all size change handler:"+handler.hashCode());
 			handler.run();
+			
 		}		
 	}
 	
 	public void addOnSizeChangeHandler(Runnable onSizeChange){
+	
 		SizeChangeHandlers.add(onSizeChange);		
 	}
 	public void removeOnSizeChangeHandler(Runnable onSizeChange){
 		SizeChangeHandlers.remove(onSizeChange);		
+	}
+	public Widget getParent() {
+		return parentWidget;
 	}
 	
 	
@@ -279,9 +292,24 @@ public class Widget extends Element {
 
 		Gdx.app.log(logstag," new size2::"+this.getWidth()+","+this.getHeight());
 		
+		//inform parent
+		if (parentWidget!=null){
+			Gdx.app.log(logstag,"updating parent of "+this.getClass());		
+			parentWidget.onChildResize();
+		}
+		
+		//fire size change handlers
 		fireAllSizeChangeHandlers();
 		
 	}
+	
+	/**
+	 * if needed, override this method to rearrange widgets or resize stuff after a size change of a child widget
+	 */
+	protected void onChildResize() {
+		
+	}
+	
 	
 	public MODELALIGNMENT getAlignment() {
 		return alignment;
@@ -301,6 +329,10 @@ public class Widget extends Element {
 	public void setMinSize(float minSizeX,float minSizeY) {
 		MinSizX = minSizeX;
 		MinSizY = minSizeY;
+	}
+	
+	protected void setParent(Widget parentWidget) {
+		this.parentWidget=parentWidget;
 	}
 	
 

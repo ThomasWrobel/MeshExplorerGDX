@@ -72,7 +72,7 @@ public class ScanManager {
 	 * Adds and starts a new scan
 	 * scan speed is proportional to the number being scanned
 	 * 
-	 * @param widgetBeingScanned
+	 * @param widgetBeingScanned - TODO:currently we dont check if its already being scanned 
 	 * 
 	 * @return - boolean if successfully added.
 	 */

@@ -68,6 +68,16 @@ public class LinkStoreObject extends VerticalPanel implements GenericMeshFeature
 		
 	}
 
-	
+	MeshIcon parentIcon = null;
+	@Override
+	public void setParentMeshIcon(MeshIcon icon) {
+		parentIcon = icon;
+		return;
+	}
+
+	@Override
+	public MeshIcon getParentMeshIcon() {
+		return parentIcon;
+	}
 
 }

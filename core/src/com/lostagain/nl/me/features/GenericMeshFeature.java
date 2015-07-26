@@ -92,6 +92,21 @@ interface GenericMeshFeature extends IsAnimatableModelInstance {
 	 * be implemented already.
 	 * If not just, fire the specified runnable any time the size fininishs changing **/
 	void addOnSizeChangeHandler(Runnable runnable);
+
+	
+	/**
+	 * sets the meshicon this feature is contained in, if any
+	 * Tracking if the feature is in a meshicon helps ensure a feature is never in two icons at once
+	 * @param ICON 
+	 */
+	void setParentMeshIcon(MeshIcon ICON);	
+	
+	
+	/**
+	 * returns the meshicon which this feature is contained in, if any
+	 * @return
+	 */
+	MeshIcon getParentMeshIcon();
 	
 	
 	//abstract void fadeIn(float duration,Runnable runAfterFadeIn);

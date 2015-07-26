@@ -30,18 +30,23 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 
 	Label emailContents;
 	
+	//temp notes;
+	//size doesnt update when email does
+	
 	public Email(SSSNode sssNode, SSSNode writtenIn) {
 		super.setPadding(25f);
 		
 		emailContents = new Label("Loading.....");	
 		emailContents.getStyle().setColor(Color.BLACK);
-		emailContents.setToscale(new Vector3(0.4f,0.4f,0.4f));
+		emailContents.setToscale(new Vector3(0.7f,0.7f,0.7f));
 		
 		this.add(emailContents);
 		
 		emailContents.getStyle().setTextStyle(DistanceFieldShader.DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
-		this.getStyle().clearBackgroundColor();
+		this.getStyle().clearBackgroundColor(); 
 		emailContents.getStyle().clearBackgroundColor();
+		emailContents.setMaxWidth(720f);
+		
 		Gdx.app.log(logstag,"added emailContents:"+emailContents.isVisible());
 		
 		
@@ -207,6 +212,18 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 	public void updateApperance(float alpha, FeatureState currentState) {
 		setOpacity(alpha);
 		
+	}
+
+	MeshIcon parentIcon = null;
+	@Override
+	public void setParentMeshIcon(MeshIcon icon) {
+		parentIcon = icon;
+		return;
+	}
+
+	@Override
+	public MeshIcon getParentMeshIcon() {
+		return parentIcon;
 	}
 
 }

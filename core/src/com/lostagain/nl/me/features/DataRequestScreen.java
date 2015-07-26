@@ -111,6 +111,8 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 		title.getStyle().clearBackgroundColor();	
 		SlotBar.getStyle().clearBackgroundColor();
 		
+		SlotBar.setSpaceing(15f);
+		
 		this.add(title);
 		this.add(explanation);
 		this.add(SlotBar);
@@ -161,15 +163,22 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 	}
 
 	private void setAsUnlocked() {
-		
-		//title.setText("Concepts Accepted.Progress Open"); //setting this erases all text...why?
-		title.setText("."); //setting this erases all text...why?
+
+		Gdx.app.log(logstag,"_________title1:"+title.isVisible());
+		Gdx.app.log(logstag,"_________hubstate1:"+parent.parentsLocation.currentState);
+		title.setText("Concepts Accepted.Progress Open"); //setting this erases all text...why?
+
+		Gdx.app.log(logstag,"_________title2:"+title.isVisible());
 		
 		if (itemToConnectToIfUnlocked!=null){
 			itemToConnectToIfUnlocked.show();
 			
 			//we can only link if we have a parent MeshIcon too
 			//either the hub we are in, or our own container if directly on the landscape
+			if (parentIcon!=null){
+				parentIcon.addLineTo(itemToConnectToIfUnlocked);
+				
+			}
 		}
 		
 		if (runThisWhenUnlocked!=null){
@@ -381,6 +390,16 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 	}
 
 
+	MeshIcon parentIcon = null;
+	@Override
+	public void setParentMeshIcon(MeshIcon icon) {
+		parentIcon = icon;
+		return;
+	}
 
+	@Override
+	public MeshIcon getParentMeshIcon() {
+		return parentIcon;
+	}
 	
 }
