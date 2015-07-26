@@ -40,7 +40,9 @@ public class EmailHub extends MeshIcon {
 		super.setBackgroundColour(new Color(0.3f,0.3f,0.8f,0.7f));
 		this.parentHub=parentHub;
 
-
+		OpenHeightDisplacement = 5f; //we dont raise as high as other things. (this way emails go ontop of the hub even when the hub is open)
+		
+		
 	}
 
 	private static GenericMeshFeature generateFeature() {

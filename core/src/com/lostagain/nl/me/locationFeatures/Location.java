@@ -251,10 +251,10 @@ public class Location {
 
 		
 		if (locationsnode!=PlayersData.computersuri){			
-			MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y+1100);			
+			MainExplorationView.addnewlocationHub(locationsNEWHub,(X*2), (-Y*2)+1100);			//new hub has different layout, more spaced and (currently) inverted
 		} else {
 			//new home might be at non-standard place
-			MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y+1100);			
+			MainExplorationView.addnewlocationHub(locationsNEWHub,(X*2), (-Y*2)+1100);			
 		}
 		
 		SSSNode firewallNode = getFirewallForLocation();

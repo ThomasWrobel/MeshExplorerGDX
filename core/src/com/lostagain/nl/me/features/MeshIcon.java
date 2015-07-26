@@ -161,6 +161,11 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	 **/
 	Vector3 nativePosition = new Vector3();
 	
+	/**
+	 * when opened, how high does this thing raise up?
+	 */
+	float OpenHeightDisplacement = 15f;
+	
 	
 	/**
 	 * 
@@ -408,7 +413,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 			//For LocationHubs we put the camera a bit higher up
 			if (thisIconsType==MeshIcon.IconType.LocationHub){
 				
-				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight()+150,1000); //location hub zooms out a bit
+				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight()+170,1000); //location hub zooms out a bit
 				
 			} else {
 				
@@ -621,7 +626,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		
 		//we also change our position slightly, moving this MeshIcon (and its attachments) upwards a bit so as to be infront of anything else thats on the 0 z position)
 		//(ie, other icons)
-		this.transState.position.z = nativePosition.z + (12*Opacity); //12 is how far we move
+		this.transState.position.z = nativePosition.z + (OpenHeightDisplacement*Opacity); //12 is how far we move
 		this.sycnTransform();		//as we are only moving in Z changing the transtates position and calling sycn directly is more efficiant then using setToPosition
 		
 		
