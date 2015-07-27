@@ -37,6 +37,7 @@ import com.lostagain.nl.me.features.ConceptObjectSlot;
 import com.lostagain.nl.me.features.DataRequestManager;
 import com.lostagain.nl.me.features.DataRequestScreen;
 import com.lostagain.nl.me.features.InfoBox;
+import com.lostagain.nl.me.features.InventoryPanel;
 import com.lostagain.nl.me.features.LocationHub;
 import com.lostagain.nl.me.features.MeshIcon;
 import com.lostagain.nl.me.features.ProgressBar;
@@ -137,6 +138,8 @@ public class MainExplorationView implements Screen {
     int drag_dis_y = 0;
     
     boolean newtouch=true; //if a touch event has just started
+    boolean newUp = false; //if the next time the mouse is up represents a mouse release
+    
     Vector2 touchStartedAt = null;
     
 	public static hitable touchedAModel = null;
@@ -455,13 +458,11 @@ public class MainExplorationView implements Screen {
 		ModelManagment.addmodel(apple,ModelManagment.RenderOrder.zdecides);
 		//--
 		
-		SSSNode firewall = SSSNode.getNodeByLabel("MaxsFirewall");
-		DataRequestManager testRequestScreen = new DataRequestManager(   firewall,PlayersData.homeLoc.locationsNEWHub);		
-		
-		//DataRequestScreen alignmentTest = new DataRequestScreen(testRequestScreen,"fruit",1,"test screen",null,null,null);
-		//ModelManagment.addmodel(alignmentTest,ModelManagment.RenderOrder.zdecides);
-		//alignmentTest.show();
-		
+	
+		//inventory test
+		InventoryPanel testInventory = new InventoryPanel();
+		testInventory.setToPosition(new Vector3(320f,985f,0f));
+		ModelManagment.addmodel(testInventory,ModelManagment.RenderOrder.zdecides);
 		
 	}
 
@@ -619,6 +620,7 @@ public class MainExplorationView implements Screen {
 		//  game.batch.setProjectionMatrix(camera.combined);
 
 		if (Gdx.input.isTouched()) {
+			newUp=true; //the next mouse release will be a new one
 			
 			if (newtouch ){							
 				//fire gun if not disabled
@@ -737,11 +739,11 @@ public class MainExplorationView implements Screen {
 			Gdx.app.log(logstag,"reenable click");
 			cancelnextdragclick = false;
 		}
-		
-		if ((touchedAModel!=null) && !Gdx.input.isTouched()){
+		//(touchedAModel!=null) &&
+		if (newUp && !Gdx.input.isTouched()){
 			Gdx.app.log(logstag,"_-released with model-_");
 			touchedAModel=null;
-		
+			newUp=false;
 			
 			//now we need to check if we were over anything when we released, as potentially this means dropping a object onto something
 			Ray ray = ME.getCurrentStageCursorRay();

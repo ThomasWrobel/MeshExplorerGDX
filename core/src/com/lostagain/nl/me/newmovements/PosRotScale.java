@@ -89,6 +89,18 @@ public class PosRotScale {
 		position.y = y;
 		position.z = z;
 	}
+	
+	/**
+	 * creates a new pos rot scale with only a position set to the one supplied  scale remains 1,1,1 and rotation 0,0,0
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
+	public PosRotScale(Vector3 newpos) {
+		position.x = newpos.x;
+		position.y = newpos.y;
+		position.z = newpos.z;
+	}
 
 	/**
 	 * This displaces one PosRotScale by another

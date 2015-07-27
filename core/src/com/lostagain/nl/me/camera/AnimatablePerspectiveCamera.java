@@ -121,18 +121,19 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera {
 	 * 
 	 * Note; Displacement is not copied. Changes to the given displacement will continue to effect the objects position**/
 	public void attachThis(AnimatableModelInstance objectToAttach, PosRotScale displacement){
-
-	//	Gdx.app.log(logstag,"_____________________________________adding object "); 
-		
+	
 		//add if not already there
 		if (!attachlist.containsKey(objectToAttach))
 		{
 			attachlist.put(objectToAttach, displacement);
 		}
 		
+	}
+	
+	public void deattachThis(AnimatableModelInstance objectToAttach){
 
-	//	Gdx.app.log(logstag,"_____________________________________total objects now: "+attachlist.size()); 
-		
+		attachlist.remove(objectToAttach);
+	
 		
 	}
 	
