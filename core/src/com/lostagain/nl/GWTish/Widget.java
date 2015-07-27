@@ -205,7 +205,7 @@ public class Widget extends Element {
 		//Effectively it lets us have a custom position for the pivot by measuring everything relative to that point 
 		//when creating the polygon vectexs
 		
-		setSizeAs(newWidth,  newHeight,offset.x,offset.y);
+		setSizeAs(newWidth,  newHeight, offset.x,offset.y);
 		
 	}
 	

@@ -457,6 +457,12 @@ public class MainExplorationView implements Screen {
 		
 		SSSNode firewall = SSSNode.getNodeByLabel("MaxsFirewall");
 		DataRequestManager testRequestScreen = new DataRequestManager(   firewall,PlayersData.homeLoc.locationsNEWHub);		
+		
+		//DataRequestScreen alignmentTest = new DataRequestScreen(testRequestScreen,"fruit",1,"test screen",null,null,null);
+		//ModelManagment.addmodel(alignmentTest,ModelManagment.RenderOrder.zdecides);
+		//alignmentTest.show();
+		
+		
 	}
 
 	public static void setCursor(Texture curimage){

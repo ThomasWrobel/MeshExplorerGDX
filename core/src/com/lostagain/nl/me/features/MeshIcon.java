@@ -266,24 +266,60 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		//set the associated feature to know this is its associated icon
 		//this.assocatiedFeature.setAssociatedIcon(this);
 		
+		assocatiedFeature.getAnimatableModelInstance().wasResized();
+		
 		//this icon will also position the feature so its attached at the center
-		Vector3 featureCenter = this.assocatiedFeature.getCenterOfBoundingBox(); //5,5
+		Vector3 featureCenter = this.assocatiedFeature.getCenterOfBoundingBox(); 
+		Vector3 ourCenter = this.getCenterOfBoundingBox(); 
+		
 		
 		/** objects are attached slightly above the icon, as this helps with blending issues**/
 		float vertDisplacement = 15f;
-				
+							
+
+		//We need to work out the size of the associatedFeature, and use that to create new mesh vertex co-ordinates
+		//for us to transform into when opening
+		//We start by getting its minimum and maximum local co-ordinates
+		cacheAssociatedFeaturesSize();
+		
+		//if we are open we also have to update the current size to match that maximized size
+		if (this.currentState==FeatureState.FeatureOpen){
+			updateApperance(1,FeatureState.FeatureOpen);
+		}
+		
 		//attach (our middle point is 0,0,0 but we don't know where the features middle point is, so we subtrack is center value
 		//from the location we are attaching it too.
 		//This means it should look centralized.
 		//ie. If it has its center at 5,5 we position it at -5,-5 so that the "center" 5,5 point is in the middle
 
-		Gdx.app.log(logstag,"featureCenter.x="+-featureCenter.x+"");
-		super.attachThis(assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z+vertDisplacement));
-				
-		//We need to work out the size of the associatedFeature, and use that to create new mesh vertex co-ordinates
-		//for us to transform into when opening
-		//We start by getting its minimum and maximum local co-ordinates
-		cacheAssociatedFeaturesSize();
+	//	Gdx.app.log(logstag,"featureCenter x:"+featureCenter.x+" (out of:"+assocatiedFeature.getWidth());
+		//Gdx.app.log(logstag,"featureCenter y:"+featureCenter.y+" (out of:"+assocatiedFeature.getHeight());
+	
+		
+	//	Gdx.app.log(logstag,"target pivot x:"+super.getTransform().position.x +" (w of:"+super.getWidth());
+	//	super.wasResized();			
+	//	Gdx.app.log(logstag,"target pivot x:"+super.getTransform().position.x +" (w of:"+super.getWidth());
+	//	Gdx.app.log(logstag,"box:"+super.getLocalCollisionBox());
+		
+		//need to align assocatiedFeatures center to our center
+		//to do thiss we need its pivots offset
+	//	assocatiedFeature.getAnimatableModelInstance().wasResized();
+		
+		//Vector3 ourDisplacement =  getPivotsDisplacementFromCenterOfBoundingBox();		
+		Vector3 pivotDisplacement =  assocatiedFeature.getAnimatableModelInstance().getPivotsDisplacementFromCenterOfBoundingBox();
+	
+		//Gdx.app.log(logstag,"pivotDisplacement:"+pivotDisplacement);
+		//Gdx.app.log(logstag,"ourDisplacement:"+ourDisplacement);
+		
+		//Gdx.app.log(logstag,"ourCenter :"+new PosRotScale(-ourCenter.x,-ourCenter.y,-ourCenter.z+vertDisplacement));
+		
+	//	Vector3 diff = ourCenter.sub(featureCenter);
+	//	Gdx.app.log(logstag,"target attach point:"+new PosRotScale(-diff.x,-diff.y,-diff.z+vertDisplacement));
+		
+	//	super.attachThis(assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z+vertDisplacement));
+		super.attachThis(assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-pivotDisplacement.x,-pivotDisplacement.y,-pivotDisplacement.z+vertDisplacement));
+		
+		
 		
 		//we need to keep track of any size changes on the associated feature to recache the above if needed
 
@@ -418,8 +454,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 			} else {
 				
 				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight(),1000);
-				
-				
+								
 			}
 			
 			
@@ -646,7 +681,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	 * 
 	 * @param alpha - 0 = closed state 1 = open state
 	 * @param currentState - specifies the direction of the animation right now
-	 */
+	 **/
 	private void updateApperance(float alpha,FeatureState currentState){
 		
 		int nummeshs = this.model.meshes.size;
@@ -777,12 +812,10 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	}
 	
 	public void refreshAssociatedFeature() {
-		setupAssociatedFeature(); //this updates the size of this icon when maximised/open
+		setupAssociatedFeature(); //this updates the size of this icon when maximized/open
+				
 		
-		//if we are open we also have to update the current size to match that maximized size
-		if (this.currentState==FeatureState.FeatureOpen){
-			updateApperance(1,FeatureState.FeatureOpen);
-		}
+		
 		
 		
 	}

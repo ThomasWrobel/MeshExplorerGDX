@@ -28,11 +28,11 @@ import com.lostagain.nl.me.objects.DataObject;
  * 
  * Changes compared to the old system;
  * 
- * Unlike the old "repair screen" system we dont allow multiple different requests.
- * To handle that now you simple have a series of request screens, each handleing one type of concept to be inserted
+ * Unlike the old "repair screen" system we don't allow multiple different requests.
+ * To handle that now you simple have a series of request screens, each handling one type of concept to be inserted
  * (it can, however, ask for a few of the same type)
  * 
- * We also dont cache answers in advance anymore, as its always possible the database could have changed
+ * We also don't cache answers in advance anymore, as its always possible the database could have changed
  * 
  * @author Tom
  *
@@ -120,9 +120,9 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 		this.add(explanation);
 		this.add(SlotBar);
 		
-		
 		//tell it to refresh the request screen
 		refreshSlots();
+
 		
 		
 	}
@@ -166,11 +166,11 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 	}
 
 	private void setAsUnlocked() {
-
-		Gdx.app.log(logstag,"_________title1:"+title.isVisible());
-		Gdx.app.log(logstag,"_________hubstate1:"+parent.parentsLocation.currentState);
-		title.setText("Concepts Accepted.Progress Open"); //setting this erases all text...why?
-
+			
+		title.setText("Concepts Accepted.Progress Open  Open"); 
+		
+		
+		
 		Gdx.app.log(logstag,"_________title2:"+title.isVisible());
 		
 		if (itemToConnectToIfUnlocked!=null){
@@ -179,9 +179,11 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 			//we can only link if we have a parent MeshIcon too
 			//either the hub we are in, or our own container if directly on the landscape
 			if (parentIcon!=null){
+				
 				parentIcon.addLineTo(itemToConnectToIfUnlocked);
 				
 			}
+			
 		}
 		
 		if (runThisWhenUnlocked!=null){

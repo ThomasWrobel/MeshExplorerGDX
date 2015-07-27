@@ -147,7 +147,7 @@ public class LocationHub extends MeshIcon {
 				LocationHub.this.setAssociatedFeatureToDefault();
 
 			}
-		}, 3.500f);
+		}, 1.500f); //put nice unlocking animation in future
 		
 	}
 

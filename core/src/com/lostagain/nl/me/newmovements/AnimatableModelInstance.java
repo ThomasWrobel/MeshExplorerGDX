@@ -262,6 +262,20 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	}
 	
 	/**
+	 * the position of the pivot relative to the bounding box center
+	 * @return
+	 */
+	public Vector3 getPivotsDisplacementFromCenterOfBoundingBox(){
+		
+		Vector3 centerOnStage =  getCenterOnStage();
+		Vector3 currentPos = this.getTransform().position;
+		
+		return centerOnStage.sub(currentPos);
+		
+	}
+	
+	
+	/**
 	 * = getCenterOfBoundingBox() * position matrix
 	 * @return
 	 */
@@ -298,10 +312,12 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		//the bounding box is a prerequisite
 		if (localBoundingBox==null){
 			createBoundBox();
+			
 		}
 		//so is an existing collisionBox
 		if (collisionBox==null){
 			collisionBox = new BoundingBox();
+			
 		}
 		//ok, now we know we have both we set one to the other
 		collisionBox.set(localBoundingBox);
@@ -336,7 +352,10 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		return localBoundingBox;
 	}
 	
-	protected void wasResized(){
+	/**
+	 * should not really need to be public only temp while testing things to ensure it isn't the bounding box being inaccurate
+	 */
+	public void wasResized(){
 		if (localBoundingBox!=null){
 			createBoundBox();
 		}
@@ -369,6 +388,10 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		} else {
 			Gdx.app.log(logstag,"_____________________________________already attached so repositioning to new displacement"); 
 			this.updateAtachment(objectToAttach, displacement);
+			
+			//give it a initial update
+			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(objectToAttach));
+			objectToAttach.inheritTransform(newposition);
 			
 		}
 
