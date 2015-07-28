@@ -102,6 +102,14 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		topBar.add(pinButton);
 		this.add(topBar);
 		
+		//add click detection on title
+		Title.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick() {
+				Gdx.app.log(logstag,"---header clicked---");
+			}
+		});
+		
 		//add the slots
 		for (int i = 0; i < NumberOfSlots; i++) {
 			
@@ -113,7 +121,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		
 		//shrinktest
 		
-		this.setToscale(new Vector3(0.5f,0.5f,0.5f));
+		this.setToscale(new Vector3(0.65f,0.65f,0.65f));
 		
 		
 	}
@@ -130,7 +138,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 			
 			Vector3 displacement = position.sub(camera); //set relative to cam
 			//make closer			
-			displacement.z = displacement.z + 50f;
+			displacement.z = displacement.z + 150f;
 						
 			PosRotScale dis  = new PosRotScale(displacement);
 			dis.scale = existingTransform.scale.cpy();
@@ -145,7 +153,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 			Gdx.app.log(logstag,"--removing from camera---");
 			MainExplorationView.camera.deattachThis(this);
 						
-			this.getTransform().position.z = this.getTransform().position.z - 50f;
+			this.getTransform().position.z = this.getTransform().position.z - 150f;
 			this.sycnTransform();
 		}
 		

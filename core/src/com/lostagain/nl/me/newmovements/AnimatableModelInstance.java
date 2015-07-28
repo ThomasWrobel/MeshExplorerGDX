@@ -730,6 +730,12 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		}
 		return null;
 	}
+
+	protected boolean isHitable() {
+		
+		return ModelManagment.hitables.contains(this);
+		
+	}
 	
 
 }
