@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME.GameMode;
+import com.lostagain.nl.GWTish.Button;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
@@ -456,7 +457,33 @@ public class MainExplorationView implements Screen {
 		ConceptObject apple = new ConceptObject(applenode);
 		apple.setToPosition(new Vector3(320f,485f,0f));
 		ModelManagment.addmodel(apple,ModelManagment.RenderOrder.zdecides);
-		//--
+		
+		//slot 
+		final ConceptObjectSlot slotTest = new ConceptObjectSlot();
+		slotTest.setToPosition(new Vector3(450f,670f,0f));
+		ModelManagment.addmodel(slotTest,ModelManagment.RenderOrder.zdecides);
+		
+		
+		//---
+		Button tempbuttonSmaller = new Button(200,35,new Runnable(){
+			@Override
+			public void run() {
+				slotTest.setToscale(new Vector3(0.5f,0.5f,0.5f));
+				
+			}			
+		});
+		Button tempbuttonBigger = new Button(200,35,new Runnable(){
+			@Override
+			public void run() {
+				slotTest.setToscale(new Vector3(2f,2f,2f));
+				
+			}			
+		});
+		tempbuttonSmaller.setToPosition(new Vector3(450f,610f,0f));
+		tempbuttonBigger.setToPosition(new Vector3(450f,570f,0f));
+		
+		ModelManagment.addmodel(tempbuttonSmaller,ModelManagment.RenderOrder.zdecides);
+		ModelManagment.addmodel(tempbuttonBigger,ModelManagment.RenderOrder.zdecides);
 		
 	
 		//inventory test

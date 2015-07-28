@@ -67,7 +67,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	 **/
 	public ConceptObjectSlot() {
 		
-		super(WIDTH,HEIGHT,Widget.MODELALIGNMENT.TOPLEFT); //easier if we are centralized
+		super(WIDTH,HEIGHT,Widget.MODELALIGNMENT.TOPLEFT);
 		super.getStyle().setBackgroundColor(Color.LIGHT_GRAY);
 
 		setApperanceAsEmpty();
@@ -111,17 +111,30 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		}
 		
 		//attach new object and store
-		Gdx.app.log(logstag," attaching object ");
+	
 		objectCurrentlyStored = object;
 		
 		//attach point should be true center, not pivot point
-		Vector3 center = this.getCenterOfBoundingBox();		
+		//our pivot should always be top left
+		//conceptobjects should always be center
+		//Therefor the new middle is the incoming conceptobjects center point scaled to its new size (ie, our size)
+		//(note; we dont use the existing scale, as it might change when attached)	
+		Vector3 dimensionsOf = new Vector3();
+		objectCurrentlyStored.getLocalBoundingBox().getDimensions(dimensionsOf);
+		
+		Vector3 scaledObject = dimensionsOf;//.scl(this.transState.scale);
+		
+		Gdx.app.log(logstag," attaching object at half of:"+scaledObject);
+		
+		
+		PosRotScale displacement = new PosRotScale(scaledObject.x/2,-scaledObject.y/2,2f);
+	
 		
 		//ensure its visible
 		object.show();
 		
 		//ATTACH
-		this.attachThis(object, new PosRotScale(center.x,center.y,2f));
+		attachThis(object, displacement);
 		
 		//setApperanceAsInUse();
 		refreshApperanceBasedOnMode();
@@ -142,6 +155,10 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		removeAttachment(objectCurrentlyStored);
 		objectCurrentlyStored.setAsDropped();
 		
+		//reset any scale changes (concepts should always be 1:1:1 when on stage)
+		objectCurrentlyStored.setToscale(new Vector3(1f,1f,1f));
+	
+		
 		//randomly dump outside (animate this later?)
 		
 		Vector3 newPosition = this.getCenterOnStage().cpy();
@@ -161,11 +178,15 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	
 	/** fired when a object is attempted to be dragged from it **/
 	boolean onDrag(){
+		
 		//cancel and return false if not allowed
 		if (currentMode==SlotMode.InOnly || currentMode == SlotMode.Locked){
 			Gdx.app.log(logstag,"slot mode is currently:"+currentMode);
 			return false;
 		}
+		//reset any scale changes (concepts should always be 1:1:1 when on stage)
+		objectCurrentlyStored.setToscale(new Vector3(1f,1f,1f));
+	
 		//else remove
 		this.removeAttachment(objectCurrentlyStored);
 		objectCurrentlyStored=null;

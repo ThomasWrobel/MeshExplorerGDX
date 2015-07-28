@@ -115,11 +115,12 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera {
 
     
 	/** stick to
-	 * Lets you stick one object to another. Its position and rotation will shift as its parent does.
-	 * You can specific a PosRotScale for its displacement from parent.
-	 * Note; This should check for inheritance loops at some point it does not at the moment
-	 * 
-	 * Note; Displacement is not copied. Changes to the given displacement will continue to effect the objects position**/
+	 * Lets you stick one object to another. Its position and rotation will shift as its parent does. <br>
+	 * You can specific a PosRotScale for its displacement from parent. <br>
+	 * Note; This should check for inheritance loops at some point it does not at the moment <br>
+	 * <br>
+	 * Note; Displacement is not copied. Changes to the given displacement will continue to effect the objects position<br>
+	 * Note3: Displacement should also contain any existing scaleing you have applied, **/
 	public void attachThis(AnimatableModelInstance objectToAttach, PosRotScale displacement){
 	
 		//add if not already there

@@ -125,6 +125,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 */
 	@Override
 	public void inheritTransform ( PosRotScale newState) {
+		
 		if (inheritedPosition){
 			transState.position.set(newState.position);
 		}
@@ -132,8 +133,13 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 			transState.rotation.set(newState.rotation);
 		}
 		if (inheritedScale){
-			transState.scale.set(newState.scale);
+			
+			//transState.scale.set(newState.scale);
+			setToscale(newState.scale,false);
+			
+			
 		}
+		
 		sycnTransform();
 	}
 
@@ -169,13 +175,37 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		transState.rotation.set(angle);
 		sycnTransform();
 	}
-	/* (non-Javadoc)
-	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#setToscale(com.badlogic.gdx.math.Vector3)
-	 */
+	
+	/**
+	 * Sets the transform of this meshobject to a certain scale
+	 * It will also scale all things attached to this, if they have been set to inherit the scale, 
+	 * as well as scaling their relative displacement so they remain attached to the same place
+	 *  
+	 **/
 	@Override
-	public void setToscale(Vector3 scale) {		
+	public void setToscale(Vector3 scale) {	
+		setToscale(scale,true);
+	}
+
+	//we have a separate method with the option to not sycn
+	//this is so internal methods like inheritTransform can call setToScale without wastefully sycning
+	//when they are about to do that anyway.
+	private void setToscale(Vector3 scale,boolean sycn) {		
+		
 		transState.scale.set(scale);
-		sycnTransform();
+						
+		//if we have had our scale change we need to also scale our attachment points position
+		//this is so they stayed pinned to the same place
+		//for (AnimatableModelInstance object : attachlist.keySet()) {
+			
+		//	PosRotScale displacement = attachlist.get(object);
+		//	displacement.position.scl(scale);
+		//	updateAtachment(object, displacement);
+			
+		//}
+		if (sycn){
+			sycnTransform();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -284,7 +314,14 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	}
 	
 	/**
-	 * Note; Gets the center position of the bounding box, you need to multiply by the position to get the center on the stage
+	 * Note; Gets the center position of the bounding box if it was scaled but not positioned, you need to multiply by the position to get the center on the stage
+	 */
+	public Vector3 getCenterOfBoundingBoxScaled(){
+		return getCenterOfBoundingBox().scl(getTransform().scale);
+	}
+	
+	/**
+	 * Note; Gets the center position of the bounding box if it was unscaled, you need to multiply by the position to get the center on the stage
 	 */
 	@Override
 	public Vector3 getCenterOfBoundingBox(){
@@ -325,8 +362,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		//Then the collision box gets multiplied by our current position so its boundary's match the real space co-ordinates
 		collisionBox.mul(getMatrixTransform());
 
-		Gdx.app.log(logstag,"collision box matrix="+getMatrixTransform());
-		Gdx.app.log(logstag,"collision box="+collisionBox);
+		//Gdx.app.log(logstag,"collision box matrix="+getMatrixTransform());
+		//Gdx.app.log(logstag,"collision box="       +collisionBox);
 	}
 	
 	/* (non-Javadoc)
@@ -381,8 +418,10 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 			objectToAttach.parentObject=this;
 			
 			//give it a initial update
-			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(objectToAttach));
-			objectToAttach.inheritTransform(newposition);
+			updateAttachedObject(objectToAttach);
+			
+			//PosRotScale newposition = transState.copy().displaceBy(displacement); //attachlist.get(objectToAttach)
+			//objectToAttach.inheritTransform(newposition);
 			
 			
 		} else {
@@ -390,8 +429,10 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 			this.updateAtachment(objectToAttach, displacement);
 			
 			//give it a initial update
-			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(objectToAttach));
-			objectToAttach.inheritTransform(newposition);
+			updateAttachedObject(objectToAttach);
+			
+			//PosRotScale newposition = transState.copy().displaceBy(displacement);
+			//objectToAttach.inheritTransform(newposition);
 			
 		}
 
@@ -415,7 +456,15 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		
 	}
 	
-	
+	private void updateAttachedObject(AnimatableModelInstance objectToUpdate){
+
+		PosRotScale displacement = attachlist.get(objectToUpdate).copy();			
+		displacement.position = displacement.position.scl(transState.scale); //displacement needs to be scaled			
+		PosRotScale newposition = transState.copy().displaceBy(displacement);
+		
+		
+		objectToUpdate.inheritTransform(newposition);
+	}
 
 	protected void updateAllAttachedObjects(){
 
@@ -423,11 +472,12 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 
 		for (AnimatableModelInstance object : attachlist.keySet()) {
 
-			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(object));
-			object.inheritTransform(newposition);
-
-
+			
+			updateAttachedObject(object);
+			
+			
 		}
+		
 	}
 
 	/* (non-Javadoc)
@@ -439,6 +489,10 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 
 		attachlist.put(object, displacement);
 
+	}
+	
+	public PosRotScale getAttachmentsPoint(AnimatableModelInstance object){
+		return attachlist.get(object);
 	}
 
 

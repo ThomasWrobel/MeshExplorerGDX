@@ -48,13 +48,13 @@ public class ToggleButton extends DeckPanel {
 			//show the down widget
 			showWidget(1, true);
 			//fire the down runnable
-			onClick.run();
+		
 		} else {
 			//show the up widget
 			showWidget(0, true);
 		}
 		
-		
+		onClick.run();
 	}
 
 	@Override

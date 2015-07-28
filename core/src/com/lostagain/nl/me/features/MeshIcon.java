@@ -236,7 +236,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		}
 		
 		
-		Vector3 labelCenter = MeshIconsLabel.getCenterOfBoundingBox();
+		Vector3 labelCenter = MeshIconsLabel.getCenterOfBoundingBoxScaled();
 		//AnimatableModelInstance internalModel = MeshIconsLabel.getModel();
 		super.setAsHitable(true);
 		
@@ -269,8 +269,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		assocatiedFeature.getAnimatableModelInstance().wasResized();
 		
 		//this icon will also position the feature so its attached at the center
-		Vector3 featureCenter = this.assocatiedFeature.getCenterOfBoundingBox(); 
-		Vector3 ourCenter = this.getCenterOfBoundingBox(); 
+		//Vector3 featureCenter = this.assocatiedFeature.getCenterOfBoundingBox(); 
+		//Vector3 ourCenter = this.getCenterOfBoundingBox(); 
 		
 		
 		/** objects are attached slightly above the icon, as this helps with blending issues**/
@@ -343,8 +343,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		//We start by getting its minimum and maximum local co-ordinates
 		
 		Vector3 minXYZ    = assocatiedFeature.getLocalBoundingBox().min;
-		Vector3 maxXYZ    = assocatiedFeature.getLocalBoundingBox().max;
-		Vector3 centerXYZ = assocatiedFeature.getCenterOfBoundingBox();
+		Vector3 maxXYZ    = assocatiedFeature.getLocalBoundingBox().max; //what if its scaled?
+		Vector3 centerXYZ = assocatiedFeature.getCenterOfBoundingBox(); //what if its scaled? use getCenterOfBoundingBoxScaled
 		
 		//We then use the X/Y to form a new set of co-ordinates, normalized around the center point of the associatedfeature
 		float ox          = centerXYZ.x;
