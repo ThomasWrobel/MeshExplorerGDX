@@ -214,6 +214,13 @@ public abstract class ComplexPanel extends Widget {
 	
 	abstract Vector3 getNextPosition(float width, float height, boolean b,int widgetIndex);
 	
+	
+	public boolean add(Widget widget) {
+		
+		return insert(widget,contents.size()+1);
+		
+	}
+	
 	/**
 	 * Adds a widget below the current ones.
 	 * This class should be extended by subclasses in order to call setSizeAs(w,h) with the correct new total size afterwards)
@@ -221,7 +228,8 @@ public abstract class ComplexPanel extends Widget {
 	 * @param widget
 	 * @return true on success, false if not added (ie, was already there)
 	 */
-	public boolean add(Widget widget) {
+	public boolean insert(Widget widget,int beforeIndex) {
+		int atIndex = beforeIndex-1;
 		
 		if (contents.contains(widget)){
 			//do nothing as its already contained
@@ -229,12 +237,12 @@ public abstract class ComplexPanel extends Widget {
 		}
 		
 		//add to the widget list
-		contents.add(widget);
+		contents.add(atIndex,widget);
 			
 		//recalculate biggest widgets (used for centralization vertical or horizontal depending on panel)
 		boolean changed = recalculateLargestWidgets();
 		
-		if (changed){
+		if (changed || atIndex!=contents.size()){
 			repositionWidgets(); //reposition all widgets with the new one	
 			sizeToFitContents();
 			return true;

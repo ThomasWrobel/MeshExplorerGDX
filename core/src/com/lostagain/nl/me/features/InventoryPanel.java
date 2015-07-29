@@ -11,6 +11,8 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.ToggleButton;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
+import com.lostagain.nl.me.models.Animating;
+import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 
@@ -27,7 +29,7 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
  * @author Tom
  *
  */
-public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature  {
+public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature,Animating  {
 
 	final static String logstag = "ME.InventoryPanel";
 	
@@ -54,18 +56,23 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		
 	boolean isCollapsed = false;
 	
+	enum DisclosureState {
+		Collapsed,Collapsing,Expanding,Expanded
+	}
+	
+	DisclosureState collapsedState = DisclosureState.Expanded;
+	
 	//widgets
-
 	ArrayList<ConceptObjectSlot> inventorySlots = new ArrayList<ConceptObjectSlot>();
 	Label Title = new Label("Inventory");	
 	ToggleButton pinButton;
 	
+	
 	public InventoryPanel(){
 		
 		//Appearance
-		this.getStyle().setBackgroundColor(new Color(0.1f,0.1f,0.1f,0.8f));
-		
-		
+		getStyle().setBackgroundColor(new Color(0.1f,0.1f,0.1f,0.8f));
+				
 		//title		
 		Title.getStyle().clearBackgroundColor();
 		Title.setToscale(new Vector3(0.6f,0.6f,0.6f));
@@ -114,11 +121,15 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 			@Override
 			public void onClick() {
 				Gdx.app.log(logstag,"---header clicked---");
-				if (isCollapsed){
+				
+				if (collapsedState == DisclosureState.Collapsed){
 					expand();
-				} else {
-					collapse();//test
 				}
+				if (collapsedState == DisclosureState.Expanded){
+					collapse();
+				}
+					
+				
 			}
 		});
 		
@@ -199,36 +210,107 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	
 	//hide everything but the header (we should animate in future)
 	private void collapse(){
-		
-		remove(inventorySlots.get(0));
-		
-	
-		
-		
-
-		//for (ConceptObjectSlot slot : inventorySlots) {
-		//	remove(slot);	
+		durationIntoCollapseAnimation = 0f;
+		collapsedState = DisclosureState.Collapsing;
+		ModelManagment.addAnimating(this);
+		/*
+		for (ConceptObjectSlot slot : inventorySlots) {
+			remove(slot);	
 			
-		//}
+		}
 		
-		isCollapsed = true;
+		isCollapsed = true;*/
 	}
 	
 	//show everything
 	private void expand(){
-		
-		//reset its size
-		inventorySlots.get(0).setToscale(new Vector3(1f,1f,1f));
-		inventorySlots.get(0).show();
-		
-		add(inventorySlots.get(0));
-		
+		durationIntoCollapseAnimation = 0f; //instantly appearing works, but when we reset the time to do it gradully it goes wrong scale-wise...hmm
+		collapsedState = DisclosureState.Expanding;
+		ModelManagment.addAnimating(this);
 		
 	//assumes none are yet added
-		//for (ConceptObjectSlot slot : inventorySlots) {
-		//	add(slot); //
+		/*
+		for (ConceptObjectSlot slot : inventorySlots) {
 			
-		//}
-		isCollapsed = false;
+			slot.setToscale(new Vector3(1f,1f,1f));
+			slot.show();
+			
+			add(slot); 
+			
+		}
+		
+		isCollapsed = false;*/
 	}
+
+	float collapseDuration = 0.5f;
+	float durationIntoCollapseAnimation = 0f;
+	
+	@Override
+	public void updateAnimationFrame(float deltaTime) {
+		
+		int total = inventorySlots.size();
+		float timePerSlot = collapseDuration/total;
+		durationIntoCollapseAnimation=durationIntoCollapseAnimation+deltaTime;
+		
+		for (int i = 0; i < total; i++) {
+			
+			ConceptObjectSlot slotToChange = null;
+			
+			//different depending on direction
+			if (collapsedState==DisclosureState.Expanding){		
+
+				 slotToChange = inventorySlots.get((total-1)-i);
+				
+			} else if (collapsedState==DisclosureState.Collapsing){
+				
+
+				 slotToChange = inventorySlots.get(i);
+			}
+
+			
+			
+			
+			float targetTime = i*timePerSlot;
+			
+			//note; currently it keeps making them visible even if they are already
+			//we really need to only add the latest,not try to  re-add them all
+			if (durationIntoCollapseAnimation>targetTime){
+				
+				if (collapsedState==DisclosureState.Expanding){
+					//ensure its not there already else we waste time and wreck scaling
+					if (!this.hasAttachment(slotToChange))
+					{
+						slotToChange.setToscale(new Vector3(1f,1f,1f));
+						slotToChange.show();					
+						//add(slotToChange); 
+						
+						insert(slotToChange,2);
+						
+					}
+					
+				} else if (collapsedState==DisclosureState.Collapsing){
+						remove(slotToChange);	
+				}
+				
+			}
+			
+					
+		}
+		
+		if (durationIntoCollapseAnimation>collapseDuration){
+			
+			if (collapsedState==DisclosureState.Expanding){
+				collapsedState=DisclosureState.Expanded;				
+			} else if (collapsedState==DisclosureState.Collapsing){
+				collapsedState=DisclosureState.Collapsed;	
+			}
+			ModelManagment.removeAnimating(this);
+		}
+		
+		
+		
+	}
+	
+	
+	
 }
