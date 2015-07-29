@@ -28,12 +28,20 @@ public class HorizontalPanel extends CellPanel {
 	Vector3 getNextPosition(float incomingWidth,float incomingHeight,boolean updateWidth,int widgetIndex){
 		
 		float newLocationX = currentTotalWidgetWidth;		
-		float maxH = (largestHeightOfStoredWidgets);
 		
 		float newLocationY = 0;
 		
 		if (DefaultAlignmentinCell == VerticalAlignment.Middle){
+			float maxH = (largestHeightOfStoredWidgets);
+			//ensure its at least min height
+			if (maxH<MinSizY){
+				maxH=MinSizY;
+			}
+			
 			newLocationY =  (maxH - incomingHeight)/2; //center in panel
+			
+		
+			
 		}
 		
 		//the following option shouldnt be needed I think

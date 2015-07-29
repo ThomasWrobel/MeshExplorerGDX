@@ -75,7 +75,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 				
 		//title		
 		Title.getStyle().clearBackgroundColor();
-		Title.setToscale(new Vector3(0.6f,0.6f,0.6f));
+		Title.setToScale(new Vector3(0.6f,0.6f,0.6f));
 		
 		
 		Label PinUp   = new Label("(  Pin  )");
@@ -84,8 +84,8 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		  PinUp.getStyle().clearBackgroundColor();
 		PinDown.getStyle().clearBackgroundColor();
 		
-		  PinUp.setToscale(new Vector3(0.6f,0.6f,0.6f));
-		PinDown.setToscale(new Vector3(0.6f,0.6f,0.6f));
+		  PinUp.setToScale(new Vector3(0.6f,0.6f,0.6f));
+		PinDown.setToScale(new Vector3(0.6f,0.6f,0.6f));
 
 		
 		Runnable onChange = new Runnable(){
@@ -144,7 +144,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		
 		//shrinktest
 		
-		this.setToscale(new Vector3(0.65f,0.65f,0.65f));
+		this.setToScale(new Vector3(0.65f,0.65f,0.65f));
 		
 		
 	}
@@ -280,7 +280,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 					//ensure its not there already else we waste time and wreck scaling
 					if (!this.hasAttachment(slotToChange))
 					{
-						slotToChange.setToscale(new Vector3(1f,1f,1f));
+						slotToChange.setToScale(new Vector3(1f,1f,1f));
 						slotToChange.show();					
 						//add(slotToChange); 
 						

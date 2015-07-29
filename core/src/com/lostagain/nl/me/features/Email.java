@@ -38,7 +38,7 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 		
 		emailContents = new Label("Loading.....");	
 		emailContents.getStyle().setColor(Color.BLACK);
-		emailContents.setToscale(new Vector3(0.7f,0.7f,0.7f));
+		emailContents.setToScale(new Vector3(0.7f,0.7f,0.7f));
 		
 		this.add(emailContents);
 		

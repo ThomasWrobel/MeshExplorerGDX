@@ -29,6 +29,12 @@ public class VerticalPanel extends CellPanel {
 		
 		if (DefaultAlignmentinCell == HorizontalAlignment.Center){
 			float maxW= (largestWidthOfStoredWidgets);
+			//or minimum size if smaller
+			if (maxW<this.MinSizX){
+				maxW=this.MinSizX;
+			}
+			
+			
 			newLocationX =  (maxW - incomingWidth)/2;
 		}
 

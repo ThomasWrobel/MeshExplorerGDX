@@ -156,7 +156,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		objectCurrentlyStored.setAsDropped();
 		
 		//reset any scale changes (concepts should always be 1:1:1 when on stage)
-		objectCurrentlyStored.setToscale(new Vector3(1f,1f,1f));
+		objectCurrentlyStored.setToScale(new Vector3(1f,1f,1f));
 	
 		
 		//randomly dump outside (animate this later?)
@@ -185,7 +185,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 			return false;
 		}
 		//reset any scale changes (concepts should always be 1:1:1 when on stage)
-		objectCurrentlyStored.setToscale(new Vector3(1f,1f,1f));
+		objectCurrentlyStored.setToScale(new Vector3(1f,1f,1f));
 	
 		//else remove
 		this.removeAttachment(objectCurrentlyStored);

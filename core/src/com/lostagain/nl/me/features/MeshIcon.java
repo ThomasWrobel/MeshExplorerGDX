@@ -60,6 +60,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		EmailHub("Email\nHub",new Color(0.2f,0.2f,0.8f,0.7f)),
 		ConceptStore("Concepts",Color.GREEN),
 		AbilityStore("Abilities",new Color(0.8f,0.6f,0.1f,0.7f)),
+		AbilityInstaller("Ability Installer",new Color(0.8f,0.6f,0.1f,0.7f)),
 		LinkStore("Links",Color.PURPLE),
 		Abilitys,
 		Info,

@@ -45,7 +45,7 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		if (!subtitle.isEmpty()){
 			
 			subtitleLabel = new Label(subtitle,900); //note; double width as we are shrinking to half the size	
-			subtitleLabel.setToscale(new Vector3(0.5f,0.5f,0.5f)); //content smaller then title
+			subtitleLabel.setToScale(new Vector3(0.5f,0.5f,0.5f)); //content smaller then title
 
 			subtitleLabel.setLabelBackColor(Color.CLEAR);
 			super.add(subtitleLabel);
@@ -56,7 +56,7 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		if (!contents.isEmpty()){
 			
 			Label contentLabel = new Label(contents,450);	
-			contentLabel.setToscale(new Vector3(0.7f,0.7f,0.7f)); //content smaller then title
+			contentLabel.setToScale(new Vector3(0.7f,0.7f,0.7f)); //content smaller then title
 
 			contentLabel.setLabelBackColor(Color.CLEAR);
 			super.add(contentLabel);

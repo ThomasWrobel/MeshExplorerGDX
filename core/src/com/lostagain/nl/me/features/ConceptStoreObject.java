@@ -37,7 +37,7 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 		super.getStyle().clearBackgroundColor();
 		
 		TitleLabel = new Label("Concept Store Object");
-		TitleLabel.setToscale(new Vector3(0.6f,0.6f,0.6f)); 
+		TitleLabel.setToScale(new Vector3(0.6f,0.6f,0.6f)); 
 		TitleLabel.setLabelBackColor(Color.CLEAR);
 		
 		this.add(TitleLabel);

@@ -109,7 +109,7 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 		explanation = new Label(description);
 		
 		explanation.getStyle().clearBackgroundColor();
-		explanation.setToscale(new Vector3(0.8f,0.8f,0.8f));
+		explanation.setToScale(new Vector3(0.8f,0.8f,0.8f));
 		
 		title.getStyle().clearBackgroundColor();	
 		SlotBar.getStyle().clearBackgroundColor();

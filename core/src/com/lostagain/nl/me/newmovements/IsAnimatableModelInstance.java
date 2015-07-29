@@ -26,7 +26,7 @@ public interface IsAnimatableModelInstance {
 	public abstract void setToRotation(Quaternion angle);
 
 	/*** Convince to quickly set the scale. If doing a more complex change make a PosRotScale and call setTransform **/
-	public abstract void setToscale(Vector3 scale);
+	public abstract void setToScale(Vector3 scale);
 
 	/** try to avoid using this, use the transState to update/change things then sync to reflect them in the instance.
 	 * This is just here when you need to get the transform, dont change it with this **/
@@ -45,6 +45,10 @@ public interface IsAnimatableModelInstance {
 
 	public abstract float getHeight();
 
+	float getScaledWidth();
+
+	float getScaledHeight();
+	
 	public abstract Vector3 getCenterOnStage();
 	
 	public abstract Vector3 getCenterOfBoundingBox();
@@ -108,6 +112,6 @@ public interface IsAnimatableModelInstance {
 	 * @return
 	 */
 	public abstract boolean isVisible();
-	
+
 
 }

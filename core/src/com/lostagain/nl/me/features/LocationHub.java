@@ -17,6 +17,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.lostagain.nl.DefaultStyles;
+import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
@@ -50,7 +51,10 @@ public class LocationHub extends MeshIcon {
 	private AbilityStoreObject linkedAbilityDataStore;
 	private EmailHub           linkedEmailHub;
 	private LinkStoreObject    linkedLinkStore;
-
+	//just for player
+	private AbilityInstaller linkedAbilityInstaller;
+	
+	
 	//if we should refresh the contents next time we are opened
 	boolean refreshOnOpen = true;
 
@@ -162,10 +166,15 @@ public class LocationHub extends MeshIcon {
 		}
 
 		//-----------------------------------------------------------------------
-		getContentOfMachine(LocationsNode); //objects,abilitys,emails
+		getContentOfMachine(LocationsNode); //objects,ability's,emails
 
 		getVisibleMachines(LocationsNode); //links
-
+		
+		//if we are on the players location add the installer screen
+		if (parentLocation==PlayersData.homeLoc){
+			this.addAbilityInstaller();
+		}
+		
 		layoutContents();
 
 
@@ -362,8 +371,6 @@ public class LocationHub extends MeshIcon {
 			feature.setToPosition(newPosition);
 			ModelManagment.addmodel(feature,ModelManagment.RenderOrder.zdecides);
 			
-			
-			
 			//link it to us
 			this.addLineTo(feature);			
 
@@ -416,6 +423,26 @@ public class LocationHub extends MeshIcon {
 
 	}
 
+	/**
+	 * currently only the players own location has one of these.
+	 * new ability's can be dragged onto it to upgrade/install them
+	 * 
+	 */
+	private void addAbilityInstaller(){
+		
+		// 
+		if (linkedAbilityInstaller==null){
+			Gdx.app.log(logstag,"making linkedAbilityInstaller");
+
+			linkedAbilityInstaller = new AbilityInstaller(this); //create a new data store object linked to this location
+			final MeshIcon newIcon = new MeshIcon(IconType.AbilityInstaller, parentLocation, linkedAbilityInstaller);
+
+			HubsFeatures.put(linkedAbilityInstaller,newIcon);
+
+			Gdx.app.log(logstag,"HubsFeatures:"+HubsFeatures.values());
+		}
+
+	}
 
 	private void addAbilityObjectFile(SSSNode sssNode) {
 

@@ -183,7 +183,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 *  
 	 **/
 	@Override
-	public void setToscale(Vector3 scale) {	
+	public void setToScale(Vector3 scale) {	
 		setToscale(scale,true);
 	}
 
@@ -264,9 +264,21 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getWidth()
+	/**
+	 * returns scaled width
 	 */
+	@Override
+	public float getScaledWidth(){		
+		return this.getWidth()*this.transState.scale.x;
+	}
+	
+	/**
+	 * returns scaled height
+	 */
+	@Override
+	public float getScaledHeight(){		
+		return this.getHeight()*this.transState.scale.y;
+	}
 	/**
 	 * returns unscaled width
 	 */

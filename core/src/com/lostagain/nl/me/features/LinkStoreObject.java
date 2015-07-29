@@ -32,7 +32,7 @@ public class LinkStoreObject extends VerticalPanel implements GenericMeshFeature
 		super.setSpaceing(5f);
 		super.setPadding(15f); //padding around border
 		TitleLabel = new Label("Links");
-		TitleLabel.setToscale(new Vector3(0.6f,0.6f,0.6f)); 
+		TitleLabel.setToScale(new Vector3(0.6f,0.6f,0.6f)); 
 		TitleLabel.setLabelBackColor(Color.CLEAR);
 		
 		getStyle().setBackgroundColor(Color.CLEAR);

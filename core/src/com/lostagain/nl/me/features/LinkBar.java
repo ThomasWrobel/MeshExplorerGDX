@@ -88,7 +88,7 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 		super.add(scanbar);
 
 		gotoLinkLabel = new Label(LocationsName);
-		gotoLinkLabel.setToscale(new Vector3(0.6f,0.6f,0.6f));
+		gotoLinkLabel.setToScale(new Vector3(0.6f,0.6f,0.6f));
 		
 		gotoLinkLabel.setLabelBackColor(Color.CLEAR);
 		super.add(gotoLinkLabel); 		

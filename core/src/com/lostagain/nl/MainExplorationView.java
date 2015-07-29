@@ -150,46 +150,6 @@ public class MainExplorationView implements Screen {
  
 	
 
-	/*
-	private Image testdataobject = new DataObject(StaticSSSNodes.knows,"12");
-	private Image testdataobject2 = new DataObject(StaticSSSNodes.asciidecoder,"123456");
-	private Image testdataobject3 = new DataObject(StaticSSSNodes.language,"1234567890");
-	private Image testdataobject4 = new DataObject(StaticSSSNodes.SecuredBy,"1234567890ABCDEFGH");
-
-*
-*/
-	/*
-	private static class DistanceFieldShader extends ShaderProgram {
-		public DistanceFieldShader () {
-			super(Gdx.files.internal("shaders/distancefield.vert"), Gdx.files.internal("shaders/distancefield.frag"));
-			if (!isCompiled()) {
-				throw new RuntimeException("Shader compilation failed:\n" + getLog());
-			}
-		}
-
-		 @param smoothing a value between 0 and 1 
-		public void setSmoothing (float smoothing) {
-			float delta = 0.5f * MathUtils.clamp(smoothing, 0, 1);
-			setUniformf("u_lower", 0.5f - delta);
-			setUniformf("u_upper", 0.5f + delta);
-		}
-	}*/
-	
-	/*
-	public static class MyShaderProvider extends DefaultShaderProvider {
-	    @Override
-	    protected Shader createShader (Renderable renderable) {
-	        if (renderable.material.has(ColorAttribute.Diffuse))
-	        	
-	            return new MyShader(renderable);
-	        else
-	            return super.createShader(renderable);
-	    }
-	}
-	*/
-	
-	//DistanceFieldShader testshader = new DistanceFieldShader();
-	
 	
 	public static ShaderProgram distancefieldshader;
 	
@@ -468,14 +428,14 @@ public class MainExplorationView implements Screen {
 		Button tempbuttonSmaller = new Button(200,35,new Runnable(){
 			@Override
 			public void run() {
-				slotTest.setToscale(new Vector3(0.5f,0.5f,0.5f));
+				slotTest.setToScale(new Vector3(0.5f,0.5f,0.5f));
 				
 			}			
 		});
 		Button tempbuttonBigger = new Button(200,35,new Runnable(){
 			@Override
 			public void run() {
-				slotTest.setToscale(new Vector3(2f,2f,2f));
+				slotTest.setToScale(new Vector3(2f,2f,2f));
 				
 			}			
 		});
