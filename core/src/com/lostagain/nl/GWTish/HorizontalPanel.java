@@ -64,14 +64,13 @@ public class HorizontalPanel extends CellPanel {
 				
 		for (Widget widget : contents) {	
 			
-			super.removeAttachment(widget); //remove			
+		//	super.removeAttachment(widget); //remove			
 			internalAdd(widget); //re add
 			
 		}
 		Gdx.app.log(logstag,"new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
 		//update back size
-		this.setSizeAs(leftPadding+currentTotalWidgetWidth+rightPadding,
-			     bottomPadding+largestHeightOfStoredWidgets+topPadding);
+		sizeToFitContents(); 
 		
 	}
 	
@@ -88,20 +87,22 @@ public class HorizontalPanel extends CellPanel {
 		}
 		
 		Gdx.app.log(logstag,"new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
+		sizeToFitContents(); 
+	}
+	
+	//@Override
+	//public void add(Widget widget) {
+	//	super.add(widget);
+		//resize
+	//	Gdx.app.log(logstag,"new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
+		
+	//	sizeToFitContents(); 
+	//}
+//
+	@Override
+	void sizeToFitContents() {
 		this.setSizeAs(leftPadding+currentTotalWidgetWidth+rightPadding,
 			     bottomPadding+largestHeightOfStoredWidgets+topPadding);
 	}
-	
-	@Override
-	public void add(Widget widget) {
-		super.add(widget);
-		//resize
-		Gdx.app.log(logstag,"new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
-		
-		this.setSizeAs(leftPadding+currentTotalWidgetWidth+rightPadding,
-				     bottomPadding+largestHeightOfStoredWidgets+topPadding);
-	}
-
-	
 
 }

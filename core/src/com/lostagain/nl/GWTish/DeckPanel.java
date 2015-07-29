@@ -19,12 +19,12 @@ public class DeckPanel extends ComplexPanel {
 		// TODO Auto-generated constructor stub
 	}
 	
-	@Override
-	public void add(Widget widget) {
-		super.add(widget);
+	//@Override
+	//public void add(Widget widget) {
+	//	super.add(widget);
 		//resize
-		this.setSizeAs(leftPadding+largestWidthOfStoredWidgets+rightPadding,bottomPadding+this.largestHeightOfStoredWidgets+topPadding);
-	}
+	//	sizeToFitContents();
+	//}
 
 	/**
 	 * even though we have all the widgets ontop of eachother we need to reposition them if our size changes in order
@@ -45,13 +45,12 @@ public class DeckPanel extends ComplexPanel {
 				
 		for (Widget widget : contents) {	
 			
-			super.removeAttachment(widget); //remove			
+			//super.removeAttachment(widget); //remove			
 			internalAdd(widget); //re add
 			
 		}
 		
-		this.setSizeAs(leftPadding+largestWidthOfStoredWidgets+rightPadding,
-			     bottomPadding+largestHeightOfStoredWidgets+topPadding);
+		sizeToFitContents();
 		/*
 		float cy  = largestHeightOfStoredWidgets/2;
 		
@@ -114,6 +113,12 @@ public class DeckPanel extends ComplexPanel {
 		}
 		
 		return new Vector3(cx-(incomingWidth/2),cy-(incomingHeight/2),(5f+10f*index)); //widgets are stacked 5 apart vertically
+	}
+
+	@Override
+	void sizeToFitContents() {
+		this.setSizeAs(leftPadding+largestWidthOfStoredWidgets+rightPadding,bottomPadding+this.largestHeightOfStoredWidgets+topPadding);
+
 	}
 
 }

@@ -19,6 +19,11 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
  * will eventually replace the 2d on I hope
  * 
  * Essentially a list of slots
+ * 
+ * 
+ * TODO: hide/show contents when clicking on header?
+ * TODO: dragabout function by dragging header?
+ * 
  * @author Tom
  *
  */
@@ -47,6 +52,8 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	int NumberOfSlots = 7; //number of inventory slots
 	boolean pinned = false; //are we pinned to the interface 		
 		
+	boolean isCollapsed = false;
+	
 	//widgets
 
 	ArrayList<ConceptObjectSlot> inventorySlots = new ArrayList<ConceptObjectSlot>();
@@ -107,6 +114,11 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 			@Override
 			public void onClick() {
 				Gdx.app.log(logstag,"---header clicked---");
+				if (isCollapsed){
+					expand();
+				} else {
+					collapse();//test
+				}
 			}
 		});
 		
@@ -185,7 +197,38 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		return parentMesh;
 	}
 	
+	//hide everything but the header (we should animate in future)
+	private void collapse(){
+		
+		remove(inventorySlots.get(0));
+		
 	
+		
+		
+
+		//for (ConceptObjectSlot slot : inventorySlots) {
+		//	remove(slot);	
+			
+		//}
+		
+		isCollapsed = true;
+	}
 	
-	
+	//show everything
+	private void expand(){
+		
+		//reset its size
+		inventorySlots.get(0).setToscale(new Vector3(1f,1f,1f));
+		inventorySlots.get(0).show();
+		
+		add(inventorySlots.get(0));
+		
+		
+	//assumes none are yet added
+		//for (ConceptObjectSlot slot : inventorySlots) {
+		//	add(slot); //
+			
+		//}
+		isCollapsed = false;
+	}
 }

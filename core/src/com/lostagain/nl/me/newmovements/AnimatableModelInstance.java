@@ -488,6 +488,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 			PosRotScale displacement) {
 
 		attachlist.put(object, displacement);
+		updateAttachedObject(object);
+		
 
 	}
 	
@@ -735,6 +737,10 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		
 		return ModelManagment.hitables.contains(this);
 		
+	}
+
+	protected boolean hasAttachment(AnimatableModelInstance object) {
+		return attachlist.containsKey(object);
 	}
 	
 

@@ -86,6 +86,9 @@ public abstract class ComplexPanel extends Widget {
 		Gdx.app.log(logstag,"_________vis on before reposition"+isVisible()+" ");
 		repositionWidgets();
 		Gdx.app.log(logstag,"_________vis on after reposition:"+isVisible()+" ");
+
+		//update back size
+		sizeToFitContents();
 	}
 	
 	public ComplexPanel(float sizeX, float sizeY) {
@@ -171,22 +174,12 @@ public abstract class ComplexPanel extends Widget {
 		return changed;
 
 	}
-	/**
-	 * removes a widget from this panel and hides it.
-	 * Note; The widget will still exist if you wish to unhide it, it just wont be attached to this panel anymore
-	 * @param widget
-	 */
-	public void remove(Widget widget) {
-		contents.remove(widget);
-		widget.hide();
-		//widget.removeOnSizeChangeHandler(updateContainerSize);
-		widget.setParent(null);
-		
-		this.removeAttachment(widget);
-		boolean changed = recalculateLargestWidgets();
-		//regenerate list
-		repositionWidgets(); //we can optimize if we only reposition after the one removed
-	}
+
+	
+
+
+	
+	
 	@Override
 	public void setOpacity(float opacity) {		
 		super.setOpacity(opacity);
@@ -198,9 +191,22 @@ public abstract class ComplexPanel extends Widget {
 	}
 
 	/**
+	 * This function should size the widget to fit its contents.
+	 * This normally is called after a reposition,add or remove and relays upon recalculateLargestWidgets being up to date.
+	 * A horizontal panel might implement this by calling;
+	 *
+	 * this.setSizeAs(leftPadding+currentTotalWidgetWidth+rightPadding,
+	 *	     bottomPadding+largestHeightOfStoredWidgets+topPadding);
+	 *
+	 * as that information will determine its size. A vertical panel will be similar but use the total height instead of width, and the largest widget instead of height
+	 *		     
+	 */
+	abstract void sizeToFitContents();
+	
+	/**
 	 * All subtypes must implement the ability to reposition all the widgets correctly.
-	 * This will be called if a size of one of the wdigets changes (for example, a new max size might
-	 * expanded the overall widget size, and thus mean anything centraly aligned needs to be updated)
+	 * This will be called if a size of one of the widgets changes (for example, a new max size might
+	 * expanded the overall widget size, and thus mean anything centrally aligned needs to be updated)
 	 * internally it should remove all widgets and call internalAdd to ensure the methods stay sinked
 	 */
 	abstract void repositionWidgets();
@@ -213,79 +219,150 @@ public abstract class ComplexPanel extends Widget {
 	 * This class should be extended by subclasses in order to call setSizeAs(w,h) with the correct new total size afterwards)
 	 * 
 	 * @param widget
+	 * @return true on success, false if not added (ie, was already there)
 	 */
-	public void add(Widget widget) {
+	public boolean add(Widget widget) {
 		
+		if (contents.contains(widget)){
+			//do nothing as its already contained
+			return false;			
+		}
 		
 		//add to the widget list
 		contents.add(widget);
-	
+			
 		//recalculate biggest widgets (used for centralization vertical or horizontal depending on panel)
 		boolean changed = recalculateLargestWidgets();
-				
+		
 		if (changed){
-			repositionWidgets(); //reposition all widgets with the new one			
-			return;
+			repositionWidgets(); //reposition all widgets with the new one	
+			sizeToFitContents();
+			return true;
 		}
 		
 		//else we just add the new one
 		internalAdd(widget);
 		
-	
+		//resize
+		sizeToFitContents();
+		
+		return true;
 	}
+	
+	/**
+	 * removes a widget from this panel and hides it.
+	 * Note; The widget will still exist if you wish to unhide it, it just wont be attached to this panel anymore
+	 * 
+	 * @param widget
+	 * @return false is widget was not found
+	 */
+	public boolean remove(Widget widget) {
+		
+		boolean removedSuccessfully = contents.remove(widget);
+		
+		if (!removedSuccessfully){
+			return false;
+		}
+		
+		widget.hide();
+		
+		widget.setParent(null);
+		
+		this.removeAttachment(widget);
+		boolean changed = recalculateLargestWidgets();
+		
+		//regenerate list
+		repositionWidgets(); //we can optimize if we only reposition after the last one removed
+		
+		sizeToFitContents();
+		
+		return true;
+	}
+
+	
+	//protected void internalAdd(Widget widget) {
+//		internalAdd(widget,true);
+//	}
+	
 	/**
 	 * Attaches the widget at the end of the current ones without resizing or adding to lists
 	 * @param widget
 	 */
 	protected void internalAdd(Widget widget) {
 		
-		//get size of widget
-		
+		//get size of widget (unscaled)
+
 		BoundingBox size = widget.getLocalBoundingBox();
 		
-		float scaleY = widget.transState.scale.y;
-		float scaleX = widget.transState.scale.x;
-				
-		float height = size.getHeight() * scaleY;
-		float width  = size.getWidth()  * scaleX;
 		
-		/*
-		if (width>largestWidthOfStoredWidgets){
-			largestWidthOfStoredWidgets=width;
+		boolean isAttachedAlready = this.hasAttachment(widget);
+		
+		if (!isAttachedAlready) {
+			
+	
+			float scaleY = widget.transState.scale.y;
+			float scaleX = widget.transState.scale.x;
+					
+			float height = size.getHeight() * scaleY;
+			float width  = size.getWidth()  * scaleX;
+			
+					
+			Vector3 newLoc = getNextPosition(width,height,true,contents.indexOf(widget));
+			
+			
+			float newLocationX = newLoc.x;
+			float newLocationY = newLoc.y; //under the last widget
+			float newLocationZ = newLoc.z;
+					
+			
+			PosRotScale newLocation = new PosRotScale(newLocationX,-newLocationY,newLocationZ); 
+			
+			
+			//set the scale of the newLocation to match the scale of the incoming object too (so its size is preserved
+			newLocation.setToScaling(widget.transState.scale);
+			
+			Gdx.app.log(logstag,"______________placing new "+widget.getClass()+" widget at: "+newLocationY+" its scaled size is:"+width+","+height);
+		
+			attachThis(widget, newLocation);
+		
+			//set widget to inherit visibility
+			widget.setInheritedVisibility(true);		
+			
+			//tell the widget we are its parent
+			widget.setParent(this);
+			
+		} else {
+			//we take the existing displacement and only change the position.
+			//This is in order to preserve the scale :)
+			PosRotScale currentDisplacement  = this.getAttachmentsPoint(widget);
+			
+			//get new location (note the widget and height now use the scaling from their existing attachment
+			float scaleY = currentDisplacement.scale.x;
+			float scaleX = currentDisplacement.scale.y;
+					
+			float height = size.getHeight() * scaleY;
+			float width  = size.getWidth()  * scaleX;
+						
+			Vector3 newLoc = getNextPosition(width,height,true,contents.indexOf(widget));
+					
+			
+			float newLocationX = newLoc.x;
+			float newLocationY = newLoc.y; //under the last widget
+			float newLocationZ = newLoc.z;
+					
+			
+			PosRotScale newLocation = new PosRotScale(newLocationX,-newLocationY,newLocationZ); 
+			
+			currentDisplacement.setToPosition(newLocation.position);
+			
+			//just update position without the other gunk
+			updateAtachment(widget, currentDisplacement);
+			
+			
 		}
-		if (height>largestHeightOfStoredWidgets){
-			largestHeightOfStoredWidgets=height;
-		}*/
-		
-		//currently set to position on the right hand side
-		Vector3 newLoc = getNextPosition(width,height,true,contents.indexOf(widget));
 		
 		
-		float newLocationX = newLoc.x;
-		float newLocationY = newLoc.y; //under the last widget
-		float newLocationZ = newLoc.z;
-				
-		Gdx.app.log(logstag,"______________placing new "+widget.getClass()+" widget at: "+newLocationY+" its scaled size is:"+width+","+height);
-	
-		PosRotScale newLocation = new PosRotScale(newLocationX,-newLocationY,newLocationZ); //hover above for now (3 is currently a bit arbitrary, guess we should make this a option in future)
 		
-		//set the scale of the newLocation to match the scale of the incoming object too (so its size is preserved
-		newLocation.setToScaling(widget.transState.scale);
-		
-		this.attachThis(widget, newLocation);
-	
-		//set widget to inherit visibility
-		widget.setInheritedVisibility(true);		
-		
-		//tell the widget we are its parent
-		widget.setParent(this);
-		
-		
-		//No need for the handlers, as the widgets now inform their parent directly.
-		
-		//Now we need to register handlers so we can reform stuff if the size of anything inside changes
-		//Gdx.app.log(logstag," added size change handler:"+updateContainerSize.hashCode()+" from:"+this.getClass());
-		//widget.addOnSizeChangeHandler(updateContainerSize);
 		
 	}
 

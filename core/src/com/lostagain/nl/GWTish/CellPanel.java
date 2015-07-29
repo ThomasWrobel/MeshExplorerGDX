@@ -29,6 +29,8 @@ public abstract class CellPanel extends ComplexPanel {
 		this.spaceing = f;
 		
 		repositionWidgets();
+		//update back size
+		sizeToFitContents();
 		
 	}
 
