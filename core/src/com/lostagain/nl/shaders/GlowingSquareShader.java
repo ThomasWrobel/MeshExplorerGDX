@@ -136,6 +136,7 @@ public class GlowingSquareShader implements Shader {
           u_worldTrans    = program.getUniformLocation("u_worldTrans");
           u_time          = program.getUniformLocation("u_time"); 
           u_pixel_step   =  program.getUniformLocation("u_pixel_step");
+          
           	//square style
 		  u_glowWidth = program.getUniformLocation("u_glowWidth"); 
           u_backColor = program.getUniformLocation("u_backColor"); 

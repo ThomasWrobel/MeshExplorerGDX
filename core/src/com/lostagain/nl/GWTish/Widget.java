@@ -32,6 +32,8 @@ public class Widget extends Element {
 			   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
 			   new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLACK,Color.WHITE,Color.RED));
 	
+	
+	
 	//Handlers
 	/**
 	 * A HashSet of all the size change handlers associated with this object
@@ -82,18 +84,24 @@ public class Widget extends Element {
 	 * @param align - where this model will be in relation to its centerpoint
 	 */
 	public Widget(float sizeX,float sizeY,MODELALIGNMENT align) {
-		super(generateBackground(sizeX,sizeY,DefaultWhiteBackground.copy(),align)); 
-		super.setStyle(this.getMaterial(SHADERFORBACKGROUND));
+		super(generateBackground(sizeX,sizeY,generateMaterial(),align)); 
+		super.setStyle(getMaterial());
 		
 		this.setMinSize(sizeX, sizeY);
 		
 	}
 	public Widget(float sizeX,float sizeY) {
-		super(generateBackground(sizeX,sizeY,DefaultWhiteBackground.copy(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
-		super.setStyle(this.getMaterial(SHADERFORBACKGROUND));
+		super(generateBackground(sizeX,sizeY,generateMaterial(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
+		super.setStyle(getMaterial());
 		
 		this.setMinSize(sizeX, sizeY);
 	}
+	
+	
+	static protected Material generateMaterial(){
+		return DefaultWhiteBackground.copy();
+	}
+	
 	
 	/**
 	 * Sets the opacity of the background
@@ -104,10 +112,14 @@ public class Widget extends Element {
 	//	Gdx.app.log(logstag,"______________setOpacity:"+opacity);
 		
 		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
+		Material infoBoxsMaterial = getMaterial();
 		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;	
 	}
 	
+	
+	public Material getMaterial(){
+		return getMaterial(SHADERFORBACKGROUND);
+	}
 	/**
 	 * Sets the opacity of the background
 	 * @param opacity

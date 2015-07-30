@@ -388,9 +388,7 @@ public class DistanceFieldShader implements Shader {
           //context.setCullFace(GL20.GL_BACK);
 
   			context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
-  			
-
-			 context.setDepthTest(GL20.GL_LESS);    	
+  			context.setDepthTest(GL20.GL_LESS);    	
     }
     
     @Override

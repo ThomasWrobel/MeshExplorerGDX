@@ -29,6 +29,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.GWTish.Button;
 import com.lostagain.nl.GWTish.HorizontalPanel;
+import com.lostagain.nl.GWTish.Image;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.camera.DebugCamera;
@@ -53,6 +54,8 @@ import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.shaders.InvertShader;
+import com.lostagain.nl.shaders.NormalMapShader;
 
 /** The main exploration view, which lets them see LocationURIs 
  * **/
@@ -450,6 +453,14 @@ public class MainExplorationView implements Screen {
 		InventoryPanel testInventory = new InventoryPanel();
 		testInventory.setToPosition(new Vector3(320f,985f,0f));
 		ModelManagment.addmodel(testInventory,ModelManagment.RenderOrder.zdecides);
+		
+		Image testImage = new Image(Gdx.files.internal("data/infovours/genericinfovour.png"));
+		testImage.setToPosition(new Vector3(300f,955f,0f));
+		ModelManagment.addmodel(testImage,ModelManagment.RenderOrder.zdecides);
+		
+		testImage.setShaderAttribute(new NormalMapShader.NormalMapShaderAttribute(false, Color.RED),false); //attributes not used 
+		
+		
 		
 	}
 
