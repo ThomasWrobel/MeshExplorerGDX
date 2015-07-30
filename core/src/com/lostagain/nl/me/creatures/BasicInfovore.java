@@ -27,6 +27,7 @@ import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.Moving;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
+import com.lostagain.nl.shaders.NormalMapShader;
 
 /** defines what a basic infovore looks like and how it behaves**/
 public class BasicInfovore extends Creature implements Animating,Moving {
@@ -96,7 +97,9 @@ public class BasicInfovore extends Creature implements Animating,Moving {
 		
 		Model model = ModelMaker.createRectangle( -20, -20, 20, 20, 0, mat );
         mat.set(blendingAttribute2);
-        
+
+		Texture rockNormals = new Texture(Gdx.files.internal("data/rock_n.png")); //just giving them a random normal map for now to test
+		mat.set(new NormalMapShader.NormalMapShaderAttribute(rockNormals)); 
 		
 		creaturemodel = new AnimatableModelInstance(model);				
 		creaturemodel.setToPosition(new Vector3(x,y,z));

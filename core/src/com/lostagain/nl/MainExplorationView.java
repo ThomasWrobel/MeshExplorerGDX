@@ -1,5 +1,7 @@
 package com.lostagain.nl;
 
+import java.util.Vector;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -416,10 +418,14 @@ public class MainExplorationView implements Screen {
 		green.setToPosition(new Vector3(320f,470f,0f));
 		ModelManagment.addmodel(green,ModelManagment.RenderOrder.zdecides);
 		//--
-		SSSNode applenode = SSSNode.getNodeByLabel("Pear");
-		ConceptObject apple = new ConceptObject(applenode);
-		apple.setToPosition(new Vector3(320f,485f,0f));
-		ModelManagment.addmodel(apple,ModelManagment.RenderOrder.zdecides);
+		//SSSNode applenode = SSSNode.getNodeByLabel("Pear");
+		ConceptObject BasicInventory = new ConceptObject(StaticSSSNodes.BasicInventory);
+		BasicInventory.setToPosition(new Vector3(320f,485f,0f));
+		ModelManagment.addmodel(BasicInventory,ModelManagment.RenderOrder.zdecides);
+		
+		ConceptObject ExpandedInventory = new ConceptObject(StaticSSSNodes.ExpandedInventory);
+		ExpandedInventory.setToPosition(new Vector3(320f,485f,0f));
+		ModelManagment.addmodel(ExpandedInventory,ModelManagment.RenderOrder.zdecides);
 		
 		//slot 
 		final ConceptObjectSlot slotTest = new ConceptObjectSlot();
@@ -450,15 +456,18 @@ public class MainExplorationView implements Screen {
 		
 	
 		//inventory test
-		InventoryPanel testInventory = new InventoryPanel();
-		testInventory.setToPosition(new Vector3(320f,985f,0f));
-		ModelManagment.addmodel(testInventory,ModelManagment.RenderOrder.zdecides);
+		//InventoryPanel testInventory = new InventoryPanel();
+		//testInventory.setToPosition(new Vector3(320f,985f,0f));
+		//ModelManagment.addmodel(testInventory,ModelManagment.RenderOrder.zdecides);
 		
-		Image testImage = new Image(Gdx.files.internal("data/infovours/genericinfovour.png"));
-		testImage.setToPosition(new Vector3(300f,955f,0f));
+		Image testImage = new Image(Gdx.files.internal("data/infovours/genericinfovour.png")); // //   diffuseMap        = new Texture(Gdx.files.internal("data/rock.png")); (rocktexture test)
+		testImage.setToPosition(new Vector3(100f,530f,50f));
+		
 		ModelManagment.addmodel(testImage,ModelManagment.RenderOrder.zdecides);
 		
-		testImage.setShaderAttribute(new NormalMapShader.NormalMapShaderAttribute(false, Color.RED),false); //attributes not used 
+		Texture rockNormals = new Texture(Gdx.files.internal("data/rock_n.png"));
+		testImage.setShaderAttribute(new NormalMapShader.NormalMapShaderAttribute(rockNormals),false); 
+		
 		
 		
 		

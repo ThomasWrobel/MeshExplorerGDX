@@ -1,5 +1,6 @@
 package com.lostagain.nl.me.features;
 
+import java.util.HashSet;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.darkflame.client.semantic.SSSNode;
+import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.HorizontalPanel;
@@ -18,6 +20,7 @@ import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.locationFeatures.Location;
+import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 
@@ -105,7 +108,7 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 			feedback.getStyle().setColor(Color.RED);
 			feedback.setText("Not an Ability!");
 			//should reset after a period
-			resetFeedbackAfterPause();
+			resetFeedbackAfterPause(3f);
 			return;
 		}
 		
@@ -117,7 +120,7 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 			feedback.setText("(ability already installed)");
 			feedback.getStyle().setColor(Color.RED);
 			
-			resetFeedbackAfterPause();
+			resetFeedbackAfterPause(3f);
 			slot.ejectConcept(); 
 			return;
 		}
@@ -126,15 +129,53 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 		feedback.setText("(ability accepted, please wait)");
 		
 		//process install
+		HashSet<SSSNode> types =	ability.getAllClassesThisBelongsToo();
 		
-		//first check if we have something the same TYPE
-		//in which case we run the upgrade function (normally means just changing stats)
+		if (types.contains(StaticSSSNodes.STMemoryAbility)){
+			//its a type of inventory
+			installInventory(ability);			
+		}
 		
-		//if not we create and add the new page
+		//add to the players information
+		//(in future we use PlayersData as a save system)
+		PlayersData.playerslocationcontents.addNodeToThisSet(ability, "local");
+		
 		
 	}
 
-	private void resetFeedbackAfterPause() {
+	private void installInventory(SSSNode ability) {
+		
+		//if the inventory does not already exists;
+		if (PlayersData.playersInventoryPanel==null){
+		
+			InventoryPanel testInventory = new InventoryPanel();
+			testInventory.setToPosition(new Vector3(350f,1185f,0f));
+			ModelManagment.addmodel(testInventory,ModelManagment.RenderOrder.zdecides);
+		
+			PlayersData.playersInventoryPanel = testInventory;
+			
+			testInventory.updateParameters(ability);
+			
+			feedback.setText("( "+ability.getPLabel()+" installed )");
+			feedback.getStyle().setColor(Color.GREEN);
+			resetFeedbackAfterPause(4f);
+			
+			MainExplorationView.infoPopUp.displayMessage("Inventory Installed", Color.GREEN);
+			
+		} else {
+		//else we update the existing one
+		
+	
+		//set a message
+			MainExplorationView.infoPopUp.displayMessage("New Inventory Installed", Color.GREEN);
+			
+			
+		}
+		
+		
+	}
+
+	private void resetFeedbackAfterPause(float pauseLength) {
 		
 		Timer.schedule(new Task() {				
 			@Override
@@ -143,7 +184,7 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 				feedback.setText(STANDARD_FEEDBACK_MESSAGE);
 				
 			}
-		}, 3f);
+		}, pauseLength);
 		
 		
 		

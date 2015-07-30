@@ -13,6 +13,7 @@ import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.ME.GameMode;
+import com.lostagain.nl.me.features.InventoryPanel;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.objects.DataObject;
@@ -60,6 +61,20 @@ public class PlayersData {
 	
 	/** mains a list of all the nodes of known/scanned locations (but not necessarily open) **/
 	private static HashSet<SSSNode> locationScanned = new  HashSet<SSSNode>();
+	
+	
+	
+	/**
+	 * Below is all the players panels and features
+	 * These are collected over the game, and reloaded from save games
+	 * Each one might have many possible parameters, which are determained by its precise SSSNode's propertys.
+	 * ie.
+	 * A basic inventory has 7 slots (Capacity:7)
+	 * A expanded one has nine (Capcity:9)
+	 * 
+	 */
+	public static InventoryPanel playersInventoryPanel;
+	
 	
 	
 

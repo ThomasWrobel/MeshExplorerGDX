@@ -19,7 +19,7 @@ alicespc me:populatedBy smallInfovorPopulation.
 MysteriousGateway me:populatedBy tinyInfovorPopulation.
 
 smallInfovorPopulation rdfs:subClassOf me:population.
-smallInfovorPopulation me:quantity 1.
+smallInfovorPopulation me:quantity 30.
 smallInfovorPopulation me:anydrop Human.
 smallInfovorPopulation me:exactdrop Apple.
 smallInfovorPopulation me:anydrop Fish.

@@ -12,7 +12,7 @@ import com.lostagain.nl.MainExplorationView;
 
 
 /**
- * Will become a class for displaying small information notices to the player.
+ * Class for displaying small information notices to the player.
  * Pops up things for a set time, then fades away.
  * If a new thing gets added, will display it under it and reset the timer till it fades.
  * **/

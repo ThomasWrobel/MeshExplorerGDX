@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
+import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
@@ -308,6 +309,42 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		}
 		
 		
+		
+	}
+
+	
+	public void updateParameters(SSSNode ability) {
+		// get stats from node
+		NumberOfSlots = 5; //temp for testing
+		
+		if (NumberOfSlots>inventorySlots.size()){
+			int difference = NumberOfSlots-inventorySlots.size();
+			//add extra slots
+			for (int i = 0; i < difference; i++) {
+				
+				ConceptObjectSlot newSlot = new ConceptObjectSlot();
+				inventorySlots.add(newSlot);
+				this.add(newSlot);
+				
+			}
+		}
+		
+		
+		if (NumberOfSlots<inventorySlots.size()){			
+			//remove slots (ejecting contents as we go)
+			int difference = inventorySlots.size()-NumberOfSlots;
+			//add extra slots
+			for (int i = 0; i < difference; i++) {		
+				ConceptObjectSlot slot = inventorySlots.get(inventorySlots.size()-1);
+				inventorySlots.remove(slot);	
+				slot.ejectConcept();
+				this.remove(slot);
+			}						
+		}
+
+		Gdx.app.log(logstag,"--total slots now:"+inventorySlots.size());
+		
+		//collapse();
 		
 	}
 	

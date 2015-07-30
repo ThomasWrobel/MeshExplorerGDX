@@ -42,32 +42,29 @@ public class NormalMapShader extends DefaultShader {
 			public final static String Alias = "NormalMapShaderAttribute";
 			public final static long ID = register(Alias);
 
-			public boolean rgbmode = false;
-			public Color tintcolor;
+			public Texture normalMap;
 			
 			/**
 			 * The presence of this parameter will cause the NormalMapShaderAttribute to be used
 			 * @param rgbmode - if the noise is the full color
 			 * @param tintcolor - color of the tint
 			 */
-			public  NormalMapShaderAttribute (final boolean rgbmode,final Color tintcolor) {
+			public  NormalMapShaderAttribute (final Texture normalMap) {
 				
 				super(ID);
-				this.rgbmode = rgbmode;
-				this.tintcolor = tintcolor;
+				this.normalMap = normalMap;
 				
 			}
 
 			@Override
 			public Attribute copy () {
-				return new  NormalMapShaderAttribute(rgbmode,tintcolor);
+				return new  NormalMapShaderAttribute(normalMap);
 			}
 
 			@Override
 			protected boolean equals (Attribute other) {
 				if (
-					((( NormalMapShaderAttribute)other).rgbmode == rgbmode) &&
-					((( NormalMapShaderAttribute)other).tintcolor == tintcolor) 
+					(((NormalMapShaderAttribute)other).normalMap == normalMap) 
 					)
 				
 				{
@@ -200,7 +197,7 @@ public class NormalMapShader extends DefaultShader {
 		
 		
 		//temp fixed textures
-		Texture rock, rockNormals;
+		Texture diffuseMap, diffuseNormals;
 		
 	 /*
 	ShaderProgram program;
@@ -225,8 +222,8 @@ public class NormalMapShader extends DefaultShader {
     public void init () {
 
         //temp fixed textures
-          rock        = new Texture(Gdx.files.internal("data/rock.png"));
-	      rockNormals = new Texture(Gdx.files.internal("data/rock_n.png"));
+      
+	      
 	      
     	  String vert = Gdx.files.internal("shaders/normalshadervert.glsl").readString();
           String frag = Gdx.files.internal("shaders/normalshaderfrag.glsl").readString();
@@ -241,9 +238,7 @@ public class NormalMapShader extends DefaultShader {
           //print warnings
   		  if (program.getLog().length()!=0)
   		  {
-
   	          Gdx.app.log(logstag, "normal shader log:"+program.getLog());
-
   		  }
   		  
   		  
@@ -294,9 +289,11 @@ public class NormalMapShader extends DefaultShader {
     	program.setUniformf(AmbientColor, AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
     	program.setUniformf(Falloff, FALLOFF);
 
-        //should not be hard coded
+        //do we need to do this each time?
         program.setUniformf(Resolution, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
           
+        
+        
     	  
     }
     
@@ -339,13 +336,20 @@ public class NormalMapShader extends DefaultShader {
     		 program.setUniformf(u_vcolor, Color.WHITE);    	
     	 }
  		
+ 		//set correct textures	
+		 Texture diffuseMapTexture = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      
+		 diffuseMap        = diffuseMapTexture; 
+ 		
+		 NormalMapShaderAttribute normal = ((NormalMapShaderAttribute)renderable.material.get(NormalMapShaderAttribute.ID)); 
+		 diffuseNormals    = normal.normalMap;
+ 		
  		
  		//bind normal map to texture unit 1
- 		rockNormals.bind(1);
+ 		diffuseNormals.bind(1);
  		
  		//bind diffuse color to texture unit 0
  		//important that we specify 0 otherwise we'll still be bound to glActiveTexture(GL_TEXTURE1)
- 		rock.bind(0);
+ 		diffuseMap.bind(0);
     	 
 
    	 //    program.setUniformi(u_sampler2D, 0);

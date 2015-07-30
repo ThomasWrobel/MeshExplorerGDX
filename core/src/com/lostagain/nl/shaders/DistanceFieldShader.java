@@ -411,8 +411,8 @@ public class DistanceFieldShader implements Shader {
     	 
     	 if (renderable.material.get(TextureAttribute.Diffuse)!=null){
     		 
-    		 Texture testtexture = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
-    		 program.setUniformi(u_sampler2D, context.textureBinder.bind(testtexture));    		    		 
+    		 Texture distanceFieldTextureMap = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
+    		 program.setUniformi(u_sampler2D, context.textureBinder.bind(distanceFieldTextureMap));    		    		 
     		 
     	 }
     	 

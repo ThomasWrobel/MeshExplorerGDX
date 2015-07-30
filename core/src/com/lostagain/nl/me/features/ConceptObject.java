@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME;
+import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.gui.DataObjectDropTarget;
@@ -63,7 +64,7 @@ public class ConceptObject extends MeshIcon {
 	public ConceptObject(SSSNode conceptsNode) {
 
 		//concepts are not squire, but instead have a more rectangular shape hence the size specified
-		super(IconType.Concept,getTitle(conceptsNode),StandardConceptWidth,StandardConceptHeight, null, createFeatureForNode(conceptsNode)); //Note; ConceptObjects dont have a parent location as they can be moved about
+		super(getType(conceptsNode),getTitle(conceptsNode),StandardConceptWidth,StandardConceptHeight, null, createFeatureForNode(conceptsNode)); //Note; ConceptObjects dont have a parent location as they can be moved about
 		//ensure its on doubleclick to open mode, as single click is for dragging
 		//(we can of course look for mouse down/up seperately to also seperate single clicks and drags, but for now I think double click to open is more intuative anyway)
 		super.iconsOpenMode = OpenMode.DoubleClick;
@@ -73,6 +74,19 @@ public class ConceptObject extends MeshIcon {
 		
 		
 		
+	}
+
+
+
+
+	private static IconType getType(SSSNode conceptsNode) {
+		//normally just a concept, but some special concepts (like abilitys) will have their own type and thus style.
+		if (conceptsNode.isOrHasParentClass(StaticSSSNodes.ability.PURI)){
+			return IconType.Ability;
+		}
+		
+		
+		return IconType.Concept;
 	}
 
 

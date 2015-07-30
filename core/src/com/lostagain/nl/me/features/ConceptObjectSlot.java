@@ -150,6 +150,11 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	}
 	
 	public void ejectConcept() {
+		if (objectCurrentlyStored==null){
+			Gdx.app.log(logstag,"No concept to eject");
+			return;
+		}
+		
 		Gdx.app.log(logstag,"ejecting concept in slot");
 		
 		removeAttachment(objectCurrentlyStored);

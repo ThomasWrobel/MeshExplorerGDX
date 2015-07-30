@@ -59,10 +59,10 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		Email,
 		EmailHub("Email\nHub",new Color(0.2f,0.2f,0.8f,0.7f)),
 		ConceptStore("Concepts",Color.GREEN),
-		AbilityStore("Abilities",new Color(0.8f,0.6f,0.1f,0.7f)),
-		AbilityInstaller("Ability Installer",new Color(0.8f,0.6f,0.1f,0.7f)),
+		AbilityStore("Abilities",new Color(1.0f,0.3f,0.1f,0.7f)),
+		AbilityInstaller("Ability\nInstaller",new Color(1.0f,0.5f,0.1f,0.7f)),
 		LinkStore("Links",Color.PURPLE),
-		Abilitys,
+		Ability(new Color(1.0f,0.3f,0.1f,0.7f)),
 		Info,
 		Concept, //Used as a generic concept object (Note this might change when first opened and its discovered to be a email, software etc inside?)
 		LocationHub("Location\nHub"), //note the new line
@@ -80,6 +80,9 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		 }
 		IconType(String label,Color col){
 			 labelName=label;
+			 iconColor = col;
+		 }
+		IconType(Color col){
 			 iconColor = col;
 		 }
 		public String getLabelName() {

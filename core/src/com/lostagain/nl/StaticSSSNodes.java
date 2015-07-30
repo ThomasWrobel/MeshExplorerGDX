@@ -39,6 +39,14 @@ public class StaticSSSNodes {
 	//other languages
 	public static final SSSNode scram1 =  SSSNode.createSSSNode("Scram1",ME.INTERNALNS+"scram1", ME.INTERNALNS,new SSSNode[]{language});
 
+	//nodes used in ability's
+	public static final SSSNode Capacity = SSSNode.createSSSNode("Capacity", ME.INTERNALNS+"Capacity", ME.INTERNALNS);
+	public static final SSSNode Integer = SSSNode.createSSSNode("Capacity", ME.INTERNALNS+"Capacity", ME.INTERNALNS);
+	
+	public static final SSSNode Seven = SSSNode.createSSSNode("7", ME.INTERNALNS+"Seven", ME.INTERNALNS,new SSSNode[]{Integer});
+	public static final SSSNode Nine = SSSNode.createSSSNode("9", ME.INTERNALNS+"Seven", ME.INTERNALNS,new SSSNode[]{Integer});
+
+	
 	//Ability's
 	public static final SSSNode ability= SSSNode.createSSSNode("Ability", ME.INTERNALNS+"ability", ME.INTERNALNS,new SSSNode[]{software});	
 	public static final SSSNode decoder= SSSNode.createSSSNode("Decoder", ME.INTERNALNS+"decoder", ME.INTERNALNS,new SSSNode[]{ability});
@@ -54,12 +62,6 @@ public class StaticSSSNodes {
 	public static final SSSNode scanner = SSSNode.createSSSNode("scanner", ME.INTERNALNS+"scanner", ME.INTERNALNS,new SSSNode[]{ability});
 	public static final SSSNode prototype_scanner = SSSNode.createSSSNode("PrototypeScanner", ME.INTERNALNS+"PrototypeScanner", ME.INTERNALNS,new SSSNode[]{scanner});
 	
-	//memory ability	
-	public static final SSSNode STMemoryAbility = SSSNode.createSSSNode("STMemoryAbility", ME.INTERNALNS+"STMemoryAbility", ME.INTERNALNS,new SSSNode[]{ability});
-	
-	//concept gun ability	
-	public static final SSSNode ConceptGun1 = SSSNode.createSSSNode("ConceptGun1", ME.INTERNALNS+"ConceptGun1", ME.INTERNALNS,new SSSNode[]{ability});
-		
 	
 	//give it base abilities
 	public static final SSSNode multitasking= SSSNode.createSSSNode(ME.INTERNALNS+"multitasking", ME.INTERNALNS);
@@ -68,6 +70,18 @@ public class StaticSSSNodes {
 	public static final SSSNodesWithCommonProperty level1multitasking = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(speed, level1, new SSSNode[]{prototype_scanner});
 	public static final SSSNodesWithCommonProperty level1downloadspeed = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(multitasking, level1, new SSSNode[]{prototype_scanner});
 
+	//memory ability (that is, the players inventory)	
+	public static final SSSNode STMemoryAbility   = SSSNode.createSSSNode("STMemoryAbility", ME.INTERNALNS+"STMemoryAbility"    , ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode BasicInventory    = SSSNode.createSSSNode("BasicInventory", ME.INTERNALNS+"BasicInventory"      , ME.INTERNALNS,new SSSNode[]{STMemoryAbility});
+	public static final SSSNode ExpandedInventory = SSSNode.createSSSNode("ExpandedInventory", ME.INTERNALNS+"ExpandedInventory", ME.INTERNALNS,new SSSNode[]{STMemoryAbility});
+	//note (these lists arnt needed, its just a method to give basicinventory and expanded inventory their propertys)
+	public static final SSSNodesWithCommonProperty CapcitySeven = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(Capacity, Seven, new SSSNode[]{BasicInventory});
+	public static final SSSNodesWithCommonProperty CapcityNine = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(Capacity, Nine, new SSSNode[]{ExpandedInventory});
+	
+	
+	//concept gun ability	
+	public static final SSSNode ConceptGun1 = SSSNode.createSSSNode("ConceptGun1", ME.INTERNALNS+"ConceptGun1", ME.INTERNALNS,new SSSNode[]{ability});
+		
 	
 	
 	//populations
