@@ -1,6 +1,7 @@
 package com.lostagain.nl.me.features;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -9,8 +10,10 @@ import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.darkflame.client.semantic.SSSNode;
+import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.ToggleButton;
@@ -82,7 +85,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 				
 		//title		
 		Title.getStyle().clearBackgroundColor();
-		Title.getStyle().setColor(Color.GREEN);
+		Title.getStyle().setColor(new Color(0.2f,0.9f,0.2f,1.0f));
 		Title.setToScale(new Vector3(0.7f,0.7f,0.7f));
 		
 		
@@ -179,7 +182,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		
 		this.setToScale(new Vector3(0.4f,0.4f,0.4f));
 		
-		MainExplorationView.camera.attachThisRelativeToScreen(this,10,70,222f);
+		MainExplorationView.camera.attachThisRelativeToScreen(this,5,60,222f);
 		
 		
 		this.pinned=true;
@@ -351,14 +354,25 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 
 	
 	public void updateParameters(SSSNode ability) {
-		
-		
 		inventorysNode=ability;
 		
+		//all property for ability
+		HashSet<SSSNodesWithCommonProperty> populationPropertys = SSSNodesWithCommonProperty.getCommonPropertySetsContaining(ability.PURI);
+		for (SSSNodesWithCommonProperty property : populationPropertys) {
+			
+			if (property.getCommonPrec() == StaticSSSNodes.Capacity){
+				NumberOfSlots = Integer.parseInt(property.getCommonValue().getPLabel()); //rather crude using label like this really
+				Gdx.app.log(logstag,"-capacity now:"+NumberOfSlots);
+			}
+						
+		}
+		Gdx.app.log(logstag,"-capacity now:"+NumberOfSlots);
 		//get capacity
 		
 		// get stats from node
-		NumberOfSlots = 5; //temp for testing
+		//NumberOfSlots = 5; //temp for testing
+	
+		
 		updateSlotCapacity();
 		
 		//update color too (I mean, why not? lets have custom colors if the data is on the node)
@@ -366,6 +380,8 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		
 		if (col!=null && !col.isEmpty()){
 			//Colors found, so we should set our colour;
+			this.getStyle().setBackgroundColor(col.get(0));//just use first for now
+			
 			
 		}
 		

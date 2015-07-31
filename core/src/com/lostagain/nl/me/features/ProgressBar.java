@@ -29,6 +29,9 @@ public class ProgressBar extends Widget implements GenericProgressMonitor {
 	float widgetsMaxWidth = 0f; 	
 	
 	public ProgressBar(float Height,float MinWidth,float MaxWidth){
+		this( Height, MinWidth, MaxWidth,  0,  100, 0);
+		
+		/*
 		super(MinWidth, Height, MODELALIGNMENT.TOPLEFT);
 		CurrentValue  = 0; 	
 
@@ -42,27 +45,26 @@ public class ProgressBar extends Widget implements GenericProgressMonitor {
 		
 		
 		super.getStyle().setBackgroundColor(Color.RED);
-		super.getStyle().setBorderColor(Color.WHITE);
+		super.getStyle().setBorderColor(Color.WHITE);*/
 		
 	}
 	/**
-	 * 
-	 * @param Height - the height of this widget 
+	 * @param Height   - the height of this widget 
 	 * @param MinWidth - the width when value is minimum
 	 * @param MaxWidth - the width when value is max
 	 * @param MinVal
 	 * @param MaxVal
 	 * @Param CurrentVal 
-	 */
+	 **/
 	public ProgressBar(float Height,float MinWidth,float MaxWidth, float MinNumber, float MaxNumber,float CurrentVal){
-		super(MaxWidth, Height, MODELALIGNMENT.TOPLEFT);
+		super(MinWidth, Height, MODELALIGNMENT.TOPLEFT);
 
-		widgetsHeight = Height;
+		widgetsHeight        = Height;
 		widgetsCurrentWidth  = MaxWidth;
 		
-		widgetsMinWidth  = MinWidth;
-		widgetsMaxWidth  = MaxWidth;
-				
+		widgetsMinWidth      = MinWidth;
+		widgetsMaxWidth      = MaxWidth;
+				 
 		valueMin = MinNumber;
 		valueMax = MaxNumber; 	
 		
@@ -70,7 +72,9 @@ public class ProgressBar extends Widget implements GenericProgressMonitor {
 		
 		setCurrentWidth(getCurrentValueAsWidth());
 		
-		 
+
+		super.getStyle().setBackgroundColor(Color.RED);
+		super.getStyle().setBorderColor(Color.WHITE);
 		
 	}
 	

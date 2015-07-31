@@ -3,6 +3,8 @@ package com.lostagain.nl.me.features;
 import java.util.HashSet;
 import java.util.Vector;
 
+import javax.xml.datatype.Duration;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
@@ -20,6 +22,7 @@ import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.locationFeatures.Location;
+import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
@@ -31,7 +34,7 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
  * @author Tom
  *
  */
-public class AbilityInstaller extends Widget implements GenericMeshFeature {
+public class AbilityInstaller extends Widget implements GenericMeshFeature,Animating {
 	private static final String STANDARD_FEEDBACK_MESSAGE = "(please drop an ability onto the slot)";
 
 	final static String logstag = "ME.AbilityInstaller";
@@ -45,9 +48,16 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 	//widgets
 	Label title = new Label("Installer");
 	ConceptObjectSlot slot = new ConceptObjectSlot();
-	ProgressBar installerBar = new ProgressBar(50,1,100);
-	
+
 	Label feedback = new Label(STANDARD_FEEDBACK_MESSAGE);
+	
+	
+	boolean currentlyInstalling= false;
+	float installDuration = 3.0f;
+	float currentlyIntoInstall = 0f;
+	private SSSNode queuedInstall; //ability about to install.
+	
+	ProgressBar installerBar = new ProgressBar(33,1,width-80,0,installDuration,0);
 	
 	public AbilityInstaller(LocationHub locationHub) {
 		
@@ -66,7 +76,7 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 				installRequested(drop.itemsnode);
 			}
 		});
-
+		
 		//position widgets
 		float hw = width/2;
 		float hh = height/2;
@@ -89,10 +99,10 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 		VerticalPanel feedbackBar  = new VerticalPanel();
 		feedbackBar.getStyle().clearBackgroundColor();
 		feedbackBar.getStyle().clearBorderColor();	
-		feedbackBar.setMinSize(width,30);		
+		feedbackBar.setMinSize(width,40);		
 		feedbackBar.add(feedback);
 		
-		attachThis(feedbackBar, new PosRotScale(0f,-141f,3f));
+		attachThis(feedbackBar, new PosRotScale(0f,-160f,3f));
 		
 		
 	}
@@ -129,25 +139,30 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 		feedback.setText("(ability accepted, please wait)");
 		
 		//process install (we should first wait for the progress bar)
-		installerBar.setValue(10);
+		//installerBar.setValue(10);
 		
-		processInstall(ability);
+		//set bar animation going (installs at end of it)
+		currentlyInstalling = true;
+		ModelManagment.addAnimating(this);
+		queuedInstall = ability;
+		 currentlyIntoInstall = 0f;
+		 
+		
 		
 		
 	}
 
 	private void processInstall(SSSNode ability) {
-	
 		
 		HashSet<SSSNode> types =	ability.getAllClassesThisBelongsToo();
-		installerBar.setValue(30);
+	//	installerBar.setValue(30);
 		if (types.contains(StaticSSSNodes.STMemoryAbility)){
 			//its a type of inventory
 			installInventory(ability);	
 			
 		}
 		
-		installerBar.setValue(100);
+		//installerBar.setValue(100);
 		//add to the players information
 		//(in future we use PlayersData as a save system)
 		PlayersData.playerslocationcontents.addNodeToThisSet(ability, "local");
@@ -240,6 +255,30 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 	@Override
 	public MeshIcon getParentMeshIcon() {
 		return parent;
+	}
+
+	@Override
+	public void updateAnimationFrame(float deltatime) {
+		if (currentlyInstalling){
+			
+			currentlyIntoInstall=currentlyIntoInstall+deltatime;
+			
+			//percent into install
+			//float percentage = (currentlyIntoInstall/installDuration) * 100.0f; 
+			
+			installerBar.setValue(currentlyIntoInstall);
+			
+			
+			if (currentlyIntoInstall>installDuration){				
+				processInstall(queuedInstall);
+				currentlyInstalling = false;
+				currentlyIntoInstall=0f;
+				installerBar.setValue(0);
+				ModelManagment.removeAnimating(this);
+				queuedInstall = null;
+			}
+			
+		}
 	}
 
 }
