@@ -72,7 +72,6 @@ public class DefaultStyles {
 
 
 	/** if a node has colors, this will return them 
-	 * currently supports just one color, the first found
 	 * 
 	 * returns null if none found **/
 	static public ArrayList<Color> getColorsFromNode(SSSNode node){

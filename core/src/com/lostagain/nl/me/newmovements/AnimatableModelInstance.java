@@ -45,7 +45,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	HashMap<AnimatableModelInstance,PosRotScale> attachlist = new HashMap<AnimatableModelInstance,PosRotScale>();
 	
 	/** What THIS object is attached too, if anything **/
-	protected AnimatableModelInstance parentObject = null;
+	public AnimatableModelInstance parentObject = null;
+	
 	
 	
 	
@@ -242,7 +243,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		show(true);
 	}
 	
-	private void show(boolean setlocalVisibility){		
+	
+	public void show(boolean setlocalVisibility){		
 		
 		ModelManagment.addmodel(this,currentRenderPlacement);
 		

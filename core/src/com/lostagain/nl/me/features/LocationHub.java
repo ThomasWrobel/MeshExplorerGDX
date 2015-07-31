@@ -164,16 +164,18 @@ public class LocationHub extends MeshIcon {
 			Gdx.app.log(logstag,"setting backcolor to first in :"+backcolours.toString());
 			setBackgroundColour(backcolours.get(0));		
 		}
-
-		//-----------------------------------------------------------------------
-		getContentOfMachine(LocationsNode); //objects,ability's,emails
-
-		getVisibleMachines(LocationsNode); //links
 		
 		//if we are on the players location add the installer screen
 		if (parentLocation==PlayersData.homeLoc){
 			this.addAbilityInstaller();
 		}
+		
+		//-----------------------------------------------------------------------
+		getContentOfMachine(LocationsNode); //objects,ability's,emails
+
+		getVisibleMachines(LocationsNode); //links
+		
+		
 		
 		layoutContents();
 

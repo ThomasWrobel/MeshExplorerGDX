@@ -4,8 +4,12 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.darkflame.client.semantic.SSSNode;
+import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
@@ -21,7 +25,7 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
  * Experimental inventory class
  * will eventually replace the 2d on I hope
  * 
- * Essentially a list of slots
+ * Essentially a list of slots that represents the players ability to store stuff and bring it with them
  * 
  * 
  * TODO: hide/show contents when clicking on header?
@@ -52,6 +56,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	
 	
 	//status
+	SSSNode inventorysNode; //contains all the data that describes this ability.
 	int NumberOfSlots = 7; //number of inventory slots
 	boolean pinned = false; //are we pinned to the interface 		
 		
@@ -73,12 +78,18 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		
 		//Appearance
 		getStyle().setBackgroundColor(new Color(0.1f,0.1f,0.1f,0.8f));
+		setPadding(5f);
 				
 		//title		
 		Title.getStyle().clearBackgroundColor();
-		Title.setToScale(new Vector3(0.6f,0.6f,0.6f));
+		Title.getStyle().setColor(Color.GREEN);
+		Title.setToScale(new Vector3(0.7f,0.7f,0.7f));
 		
 		
+		
+		//Pin button removed for the movement. Might reconsider it later
+		//but its probably pointless for this panel type
+		/*
 		Label PinUp   = new Label("(  Pin  )");
 		Label PinDown = new Label("( Float )");
 		
@@ -102,20 +113,20 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 				}
 			}
 			
-		};
+		};*/
 		
 
-		pinButton = new ToggleButton(PinUp,PinDown,onChange);
-		pinButton.getStyle().clearBackgroundColor();
+		//pinButton = new ToggleButton(PinUp,PinDown,onChange);
+		//pinButton.getStyle().clearBackgroundColor();
 		
-		HorizontalPanel topBar = new HorizontalPanel();
-		topBar.setPadding(2f);
+		//HorizontalPanel topBar = new HorizontalPanel();
+		//topBar.setPadding(2f);
 		
-		topBar.getStyle().clearBackgroundColor();
+		//topBar.getStyle().clearBackgroundColor();
 		
-		topBar.add(Title);
-		topBar.add(pinButton);
-		this.add(topBar);
+		//topBar.add(Title);
+		//topBar.add(pinButton);
+		this.add(Title);
 		
 		//add click detection on title
 		Title.addClickHandler(new ClickHandler() {
@@ -143,13 +154,37 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 			
 		}
 		
-		//shrinktest
+		//shrinktest		
+		setToScale(new Vector3(0.65f,0.65f,0.65f));
 		
-		this.setToScale(new Vector3(0.65f,0.65f,0.65f));
-		
+		setToDefaultPosition();
 		
 	}
 	
+	//default position depends on screen res, as displacement is relative to camera center
+	private void setToDefaultPosition() {
+		
+		//float screenWidth  = Gdx.graphics.getWidth();
+		//floa/t screenHeight = Gdx.graphics.getHeight();
+/*
+		//to work out the point we are attaching things too, we need to cast a ray down from the screen position to the distance of our attachment
+		Ray ray = MainExplorationView.camera.getRelativePickRay(10, 70);
+		Plane testplane = new Plane(new Vector3(0f, 0f,-1f),-222f);//MainExplorationView.camera.direction.rotate(new Vector3(0f, 0f,1f),90),-50f);
+		
+		Vector3 intersection = new Vector3();
+		Intersector.intersectRayPlane(ray, testplane, intersection);
+	
+		Gdx.app.log(logstag,"intersection:"+intersection.x+" , "+intersection.y);
+		*/
+		
+		this.setToScale(new Vector3(0.4f,0.4f,0.4f));
+		
+		MainExplorationView.camera.attachThisRelativeToScreen(this,10,70,222f);
+		
+		
+		this.pinned=true;
+	}
+
 	protected void setPinnedToCamera(boolean b) {
 		if (b){
 			Gdx.app.log(logstag,"--pinning to camera---");
@@ -162,10 +197,12 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 			
 			Vector3 displacement = position.sub(camera); //set relative to cam
 			//make closer			
-			displacement.z = displacement.z + 150f;
+			displacement.z = displacement.z + 150f;						
 						
 			PosRotScale dis  = new PosRotScale(displacement);
 			dis.scale = existingTransform.scale.cpy();
+			
+			Gdx.app.log(logstag,"attaching at:"+dis.toString());
 			
 			//then attach it with that displacement
 			MainExplorationView.camera.attachThis(this, dis);
@@ -314,9 +351,28 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 
 	
 	public void updateParameters(SSSNode ability) {
+		
+		
+		inventorysNode=ability;
+		
+		//get capacity
+		
 		// get stats from node
 		NumberOfSlots = 5; //temp for testing
+		updateSlotCapacity();
 		
+		//update color too (I mean, why not? lets have custom colors if the data is on the node)
+		ArrayList<Color> col = DefaultStyles.getColorsFromNode(ability);
+		
+		if (col!=null && !col.isEmpty()){
+			//Colors found, so we should set our colour;
+			
+		}
+		
+		
+	}
+
+	private void updateSlotCapacity() {
 		if (NumberOfSlots>inventorySlots.size()){
 			int difference = NumberOfSlots-inventorySlots.size();
 			//add extra slots
@@ -343,9 +399,6 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		}
 
 		Gdx.app.log(logstag,"--total slots now:"+inventorySlots.size());
-		
-		//collapse();
-		
 	}
 	
 	

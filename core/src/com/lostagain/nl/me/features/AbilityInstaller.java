@@ -45,7 +45,7 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 	//widgets
 	Label title = new Label("Installer");
 	ConceptObjectSlot slot = new ConceptObjectSlot();
-	ProgressBar installerBar = new ProgressBar(30,0,100);
+	ProgressBar installerBar = new ProgressBar(50,1,100);
 	
 	Label feedback = new Label(STANDARD_FEEDBACK_MESSAGE);
 	
@@ -77,7 +77,7 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 		PosRotScale slotPosition = new PosRotScale(hw - (slot.getScaledWidth()/2),-55f,3f);
 		attachThis(slot, slotPosition);
 		
-		PosRotScale installerBarPosition = new PosRotScale(40f,-80f,3f);
+		PosRotScale installerBarPosition = new PosRotScale(40f,-105f,3f);
 		attachThis(installerBar, installerBarPosition);
 		
 		
@@ -92,7 +92,7 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 		feedbackBar.setMinSize(width,30);		
 		feedbackBar.add(feedback);
 		
-		attachThis(feedbackBar, new PosRotScale(0f,-111f,3f));
+		attachThis(feedbackBar, new PosRotScale(0f,-141f,3f));
 		
 		
 	}
@@ -128,18 +128,32 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 		//detect what ability is being installed
 		feedback.setText("(ability accepted, please wait)");
 		
-		//process install
-		HashSet<SSSNode> types =	ability.getAllClassesThisBelongsToo();
+		//process install (we should first wait for the progress bar)
+		installerBar.setValue(10);
 		
+		processInstall(ability);
+		
+		
+	}
+
+	private void processInstall(SSSNode ability) {
+	
+		
+		HashSet<SSSNode> types =	ability.getAllClassesThisBelongsToo();
+		installerBar.setValue(30);
 		if (types.contains(StaticSSSNodes.STMemoryAbility)){
 			//its a type of inventory
-			installInventory(ability);			
+			installInventory(ability);	
+			
 		}
 		
+		installerBar.setValue(100);
 		//add to the players information
 		//(in future we use PlayersData as a save system)
 		PlayersData.playerslocationcontents.addNodeToThisSet(ability, "local");
 		
+		//remove concept from slot now its been used to install
+		slot.ejectConcept(); //might not want to fire any negative looking "rejection" style eject
 		
 	}
 
@@ -163,9 +177,14 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature {
 			MainExplorationView.infoPopUp.displayMessage("Inventory Installed", Color.GREEN);
 			
 		} else {
-		//else we update the existing one
-		
-	
+			//remove the old parameters from the players data
+			PlayersData.playerslocationcontents.removeNodeFromThisSet(PlayersData.playersInventoryPanel.inventorysNode);		
+			//(the new one gets added in the processInstall function that calls this)
+			
+		    //else we update the existing panel to this new set of abilitys for it
+			PlayersData.playersInventoryPanel.updateParameters(ability);			
+			
+			
 		//set a message
 			MainExplorationView.infoPopUp.displayMessage("New Inventory Installed", Color.GREEN);
 			

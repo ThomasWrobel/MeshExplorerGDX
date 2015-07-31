@@ -970,7 +970,10 @@ public class MainExplorationView implements Screen {
 	    ((PerspectiveCamera)camera).near=0.5f;
 	    ((PerspectiveCamera)camera).far=1900.0f;
 	    ((PerspectiveCamera)camera).update();
-		
+	    
+	    camera.updateDummyCam();
+	    camera.updateScreenRelativeAttachments();
+	    
 		gameStage.getViewport().setCamera(camera);
 		gameStage.getViewport().setScreenSize(width, height);
 		gameStage.getViewport().setWorldSize(width, height);

@@ -1,8 +1,12 @@
 package com.lostagain.nl.me.camera;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.MainExplorationView;
@@ -61,6 +65,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	 * Translations should be ok, and thats all thats needed for the camera right now.
 	 */
 	NewMovementController movement;
+
 
 	public MECamera() {
 		super(defaultFieldOfView, defaultViewportWidth, defaultViewportHeight);
@@ -245,8 +250,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	}
 
 
-	public void updateAtachment(AnimatableModelInstance object,
-			PosRotScale objectdisplacement) {
+	public void updateAtachment(AnimatableModelInstance object,PosRotScale objectdisplacement) {
 
 		super.updateAtachment(object, objectdisplacement);
 		
@@ -274,6 +278,28 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		return dummycam.getPickRay(x,y);
 	}
 	
+	/**
+	 * Get camera displacement for screen relative co-ordinates.
+	 * That is, if pinning something to the viewpoint, this translates screen relative top-left co-ordinates
+	 * into the co-ordinates needed to be used in the .attachThis() function of this camera.
+	 * 
+	 * Note; This attachment wont auto-update if the screen viewport resizes
+	 */
+	public Vector3 getDisplacementForScreenCoOrdinates(float screenX,float screenY,float distanceFromCamera){
+	
+		Ray ray = getRelativePickRay(screenX, screenY);
+		
+		Plane testplane = new Plane(new Vector3(0f, 0f,-1f),-distanceFromCamera);
+		
+		Vector3 intersection = new Vector3();
+		Intersector.intersectRayPlane(ray, testplane, intersection);
+	
+		Gdx.app.log(logstag,"intersection:"+intersection.x+" , "+intersection.y);
+		
+		return intersection;
+	}
+	
+	
 	
 	public void hideCameraVisualizer(){
 		cameraVisualiserCube.hide();
@@ -282,4 +308,89 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	public void showCameraVisualizer(){
 		cameraVisualiserCube.show();
 	}
+
+
+
+
+	//we overall this method to ensure any screen-relative stuff is updated when the camera is
+	//this is because screen relative stuff are view-port size dependant
+	//@Override
+	//public void update(boolean updateFrustum) {
+	//	super.update(updateFrustum);	
+	//	updateScreenRelativeAttachments();
+	//}
+
+
+	private HashMap<AnimatableModelInstance,Vector3> screenRelativeObjects = new HashMap<AnimatableModelInstance,Vector3>();
+	
+	
+	
+	public void updateScreenRelativeAttachments() {
+
+		
+		Gdx.app.log(logstag,"updating camera attachments positions");
+		
+		
+		if (screenRelativeObjects==null){
+			return;
+		}
+		
+		//loop over and update all with their correct screen relative positions
+		for (AnimatableModelInstance object : screenRelativeObjects.keySet()) {
+			
+			//existing displacement (we look at the existing one as it has the scale info we need to preserve)
+			PosRotScale existing = getAttachmentsPoint(object);
+			
+			//update pos
+			Vector3 screenDisplacement   = screenRelativeObjects.get(object);	
+
+			Gdx.app.log(logstag,"screenDisplacement:"+screenDisplacement.x+" , "+screenDisplacement.y);
+			
+			Vector3 positionDisplacement = getDisplacementForScreenCoOrdinates(screenDisplacement.x,screenDisplacement.y,screenDisplacement.z);
+			existing.setToPosition(positionDisplacement);
+					
+
+			
+			//update attachment with new position
+			this.updateAtachment(object, existing);
+			
+		}
+	}
+
+
+	public void attachThisRelativeToScreen(AnimatableModelInstance object,float screenX,float screenY,float distanceFromCamera) {
+
+		Vector3 posDis = getDisplacementForScreenCoOrdinates(screenX,screenY,distanceFromCamera);
+		
+		
+		PosRotScale displacement = new PosRotScale(posDis); //(new Vector3(intersection.x,intersection.y,-222f)); //(new Vector3(-165f,95f,-222f));
+	
+		displacement.setToScaling(object.getTransform().scale); //preserve scale
+		
+		Gdx.app.log(logstag,"attaching at:"+displacement.toString());
+		
+		//then attach it with that displacement
+		MainExplorationView.camera.attachThis(object, displacement);
+		
+		//add to screen relative object store  (needed in case screen size changes)
+		Vector3 rawScreenRelativeData = new Vector3(screenX,screenY,distanceFromCamera);
+		screenRelativeObjects.put(object,rawScreenRelativeData);
+		
+		
+	}
+
+
+	public void updateDummyCam() {
+	 //update to match this cams settings
+		 
+		 dummycam.fieldOfView    = fieldOfView;
+		 dummycam.viewportWidth  = viewportWidth;
+		 dummycam.viewportHeight = viewportHeight;
+			 
+		 dummycam.update(true);
+		 
+	}
+	
+	
+	
 }
