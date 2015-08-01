@@ -11,12 +11,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.utils.Align;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
@@ -29,11 +31,7 @@ import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
  * The most significant thing here though is we enable it to use distance mapped fonts in a 3d view. 
  * This lets things look sharp at all distances.
  * With the DistanceFieldShader we can also emulate shadows and outlines - sort of letting the label have "css styles" 
- * 
- *  TODO: make this extend AnimatableModelInstance.
- *  We need to make a lot of changes to make the label a true model though.
- *  Specifically making the create model function static, and making the model directly change itself when
- *  setting text or attributes, rather then recreating itself. **/
+ ***/
 public class Label extends LabelBase {
 
 	public static final String LABEL_MATERIAL = "LabelMaterial";
@@ -191,25 +189,127 @@ public class Label extends LabelBase {
 	  //  BitmapFontData data = DefaultStyles.standdardFont.getData();
 
 	    GlyphLayout layout = new GlyphLayout();	    
-
-	    layout.setText(DefaultStyles.standdardFont, text);
+	    //layout.setText(DefaultStyles.standdardFont, text);
 	    
-	    float currentWidth  = layout.width;
-	    float currentHeight = layout.height;
+	    //if maxWidth is zero or -1 then we dynamically work it out instead
+	    if (maxWidth<1){
+	    	layout.setText(DefaultStyles.standdardFont, text);
+	    	maxWidth = layout.width;
+	    }
 	    
-
-		Gdx.app.log(logstag,"______________predicted size = "+currentWidth+","+currentHeight);
+	  layout.setText(DefaultStyles.standdardFont, text, Color.BLACK, maxWidth, Align.center, true); //cant centralise without width
+	  
+	  //Note; in order to scale text to fit in other modes we still render at the native size, but dont effect the mesh size
+	  //the texture will then auto-scale into the space
+	  
+	  
+	  
+	  
+	  
+	 //   float currentWidth  = layout.width;
+	 //   float currentHeight = layout.height;
+	    /*
+	    for (GlyphRun grun : layout.runs) {
+	    	
+	    	Gdx.app.log(logstag,"______________run width:"+grun.width+" at "+grun.y);	
+	    	String runstring = "";
+	    	
+	    	for (Glyph g : grun.glyphs) {
+	    	
+	    	//	Gdx.app.log(logstag,"___g:"+g.toString());
+	    		runstring=runstring+g.toString();
+	    		
+			}
+	    	Gdx.app.log(logstag,"___runstring:"+runstring);
+	    	
+	    	
+	    	
+		}
+*/
+	    
+	//	Gdx.app.log(logstag,"______________predicted size = "+currentWidth+","+currentHeight);
 		
-		TextureAndCursorObject textureDAta = generateTexture( text, 0, 0,  sizeratio, true,maxWidth); //note zeros as size isn't used
+	//	TextureAndCursorObject textureDAta = generateTexture( text, 0, 0,  sizeratio, true,maxWidth); //note zeros as size isn't used
 
-		
+	  
+	  
+		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, DefaultStyles.standdardFont); //note zeros as size isn't used
+
 		return textureDAta;
 
 	}
 
 
 
+	/**
+	 * new method using the layout function to give us the data needed to...well..layout the glyphs
+	 * @param layout
+	 * @param standdardFont - should match the one used to generate the layout
+	 * @return
+	 */
+	static public TextureAndCursorObject generateTexture_fromLayout(GlyphLayout layout, BitmapFont standdardFont){
+		
+		
+		//create according to predicted size (in future add padding option to texture?)
+	    int currentWidth  = (int) layout.width;
+	    int currentHeight = (int) ( layout.height+10); //<--------------10 is a temp fix, I dont know why height isnt covering whole area!
+		
+	    Pixmap textPixmap = new Pixmap(currentWidth, currentHeight, Format.RGBA8888);
+	    
+		BitmapFontData data = standdardFont.getData();  //need optional font too, should match whats used in layout
+		Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0])); //as pixmap
+		
+		//now loop over each run of letters. 
+		 for (GlyphRun grun : layout.runs) {
+			
+		    	String runstring = "";
+		    	float currentRunX=0;
+		    	//now draw each letter
+		    	Gdx.app.log(logstag,"_________grun="+grun.x+","+grun.y+" ");
+		    	int i =0;
+		    	for (Glyph glyph : grun.glyphs) {
+		    		
+		    		
+		    		float advance = grun.xAdvances.get(i);
+		    		i++;
+		    		currentRunX=currentRunX+advance;
+		    		
+		    		textPixmap.drawPixmap(
+							fontPixmap,
+							glyph.srcX,
+							glyph.srcY, 
+							glyph.width, 
+							glyph.height,
+							(int)grun.x + glyph.xoffset + (int)currentRunX,
+							(int)grun.y + glyph.yoffset,//+(TILE_HEIGHT - (cheight)) / 2,						
+							glyph.width, 
+							glyph.height);
 
+			    	Gdx.app.log(logstag,"___ "+glyph.toString()+" glyph.xadvance:"+glyph.xadvance+" w:"+glyph.width);	
+		    	
+		    	//	Gdx.app.log(logstag,"___g:"+g.toString());
+		    		runstring=runstring+glyph.toString();
+		    		
+				}
+		    	if (grun.glyphs.size>0){
+		    		float advance = grun.xAdvances.get(i);
+		    		i++;
+		    		currentRunX=currentRunX+advance;
+		    		Gdx.app.log(logstag,"______________last run width:"+grun.width+" drawn was till "+currentRunX);	
+		    	}
+		    	//Gdx.app.log(logstag,"___runstring drawen:"+runstring);
+		    	
+		    	
+		    	
+			}
+		 
+		 PixmapAndCursorObject pixmapAndCursor = new PixmapAndCursorObject(textPixmap, currentWidth, currentHeight);
+		 
+			
+		 return new TextureAndCursorObject(new Texture(pixmapAndCursor.textureItself),pixmapAndCursor.Cursor.x,pixmapAndCursor.Cursor.y);
+		 
+		
+	}
 
 
 

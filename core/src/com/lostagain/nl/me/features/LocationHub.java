@@ -363,17 +363,19 @@ public class LocationHub extends MeshIcon {
 
 		Vector3 center = this.transState.position.cpy();
 		Vector3 offset = new Vector3(0,300,0);	
-
+		
+		Gdx.app.log(logstag,"HubsFeatures total= "+HubsFeatures.size());
+		
 		for (MeshIcon feature : HubsFeatures.values()) {
 
 			offset.rotate(Vector3.Z, angleDistance);
 			Vector3 newPosition =  new Vector3(center);	//the new position is the old one	
 			newPosition.add(offset);
-			Gdx.app.log(logstag,"adding "+feature.thisIconsType+" feature at:"+newPosition);
+			Gdx.app.log(logstag,"Adding "+feature.thisIconsType+" feature at:"+newPosition);
 		
 
 			feature.setToPosition(newPosition);
-			ModelManagment.addmodel(feature,ModelManagment.RenderOrder.zdecides); //shuld only add if not already on scene
+			ModelManagment.addmodel(feature,ModelManagment.RenderOrder.zdecides); //should only add if not already on scene
 			
 			//link it to us
 			this.addLineTo(feature);			
@@ -455,15 +457,6 @@ public class LocationHub extends MeshIcon {
 
 			linkedAbilityDataStore = new AbilityStoreObject(this); //create a new data store object linked to this location
 			final MeshIcon newIcon = new MeshIcon(IconType.AbilityStore, parentLocation, linkedAbilityDataStore);
-
-
-			//linkedAbilityDataStore.addOnSizeChangeHandler(new Runnable(){
-			//	@Override
-			//	public void run() {
-			//		newIcon.refreshAssociatedFeature();
-			//	}
-			//});
-
 
 			HubsFeatures.put(linkedAbilityDataStore,newIcon);
 

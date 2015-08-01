@@ -70,7 +70,7 @@ public class LinkStoreObject extends VerticalPanel implements GenericMeshFeature
 		LinkBar newBar = new LinkBar(dest,this);
 		
 		this.add(newBar);
-		
+		StoredLinks.add(dest);
 		
 	}
 

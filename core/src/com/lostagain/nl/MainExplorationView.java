@@ -482,8 +482,8 @@ public class MainExplorationView implements Screen {
 		//--
 		
 		ShaderTestPanel shaderTests = new ShaderTestPanel();
-		shaderTests.setToScale(new Vector3(0.4f,0.4f,0.4f));
-		shaderTests.setToPosition(new Vector3(100f,230f,150f));	
+		shaderTests.setToScale(new Vector3(0.2f,0.2f,0.2f));
+		shaderTests.setToPosition(new Vector3(100f,430f,40f));	
 		ModelManagment.addmodel(shaderTests,ModelManagment.RenderOrder.infrontStage);
 		
 		
@@ -1068,7 +1068,7 @@ public class MainExplorationView implements Screen {
 	
 	
 	/**
-	 * seets the color and intensity 
+	 * sets the color and intensity 
 	 * @param col
 	 * @param Intensity
 	 */

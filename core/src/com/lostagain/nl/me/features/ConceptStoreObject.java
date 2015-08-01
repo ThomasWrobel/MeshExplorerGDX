@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
 import com.darkflame.client.semantic.SSSNode;
+import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
@@ -30,7 +31,7 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 	final static String logstag = "ME.ConceptStoreObject";
 
 
-	private static final HashSet<SSSNode> StoredObjects = new HashSet<SSSNode>();
+	private final HashSet<SSSNode> StoredObjects = new HashSet<SSSNode>();
 	
 
 
@@ -86,11 +87,12 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 			unstarted,scanning,finnished
 		}
 		scanState currentScanState = scanState.unstarted;
+		SSSNode containsNode = null;
 		
 		public ConceptObjectContainerBar(ConceptObject newConceptObject){
 			super.setMinSize(StandardWidth+30, 30);
 			super.setAsHitable(true);
-			
+			containsNode=newConceptObject.itemsnode;
 			
 			this.getStyle().setBackgroundColor(Color.CLEAR);
 			scanbar.setValue(5);
@@ -167,8 +169,12 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 				currentScanState = scanState.finnished;
 				//unlock slot
 				slot.setCurrentMode(SlotMode.OutOnly);
+				//add to datastore (note; this will automatically install ability's - it probably shouldn't gameplay wise)
+				PlayersData.addItemToDatabase(containsNode, "local");
 				
+				//set style as open
 				setAsOpen();
+				
 			}
 			
 		}
