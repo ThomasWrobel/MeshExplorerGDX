@@ -50,6 +50,7 @@ public class StaticSSSNodes {
 	//Ability's
 	public static final SSSNode ability= SSSNode.createSSSNode("Ability", ME.INTERNALNS+"ability", ME.INTERNALNS,new SSSNode[]{software});	
 	public static final SSSNode decoder= SSSNode.createSSSNode("Decoder", ME.INTERNALNS+"decoder", ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode conceptgun= SSSNode.createSSSNode("ConceptGun", ME.INTERNALNS+"ConceptGun", ME.INTERNALNS,new SSSNode[]{ability});
 	
 	//define decoders
 	public static final SSSNode asciidecoder= SSSNode.createSSSNode ("Asciidecoder" , ME.INTERNALNS+"asciidecoder",  ME.INTERNALNS,new SSSNode[]{decoder});
@@ -81,7 +82,7 @@ public class StaticSSSNodes {
 	
 	
 	//concept gun ability	
-	public static final SSSNode ConceptGun1 = SSSNode.createSSSNode("ConceptGun1", ME.INTERNALNS+"ConceptGun1", ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode PrototypeConceptGun = SSSNode.createSSSNode("PrototypeConceptGun", ME.INTERNALNS+"PrototypeConceptGun", ME.INTERNALNS,new SSSNode[]{conceptgun});
 		
 	
 	

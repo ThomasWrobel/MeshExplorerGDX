@@ -161,11 +161,11 @@ public class Inventory  {
 	//	super.validate();
 
 		//update the GUI bar in case the inventory tab isnt there yet
-		if (obj.itemsnode== StaticSSSNodes.STMemoryAbility){
+		if (obj.itemsnode== StaticSSSNodes.STMemoryAbility){ //wont work with current nodes/propertys need the precise subclass of gun
 			MainExplorationView.usersGUI.setSTMemVisible(true);
 		}
 		
-		if (obj.itemsnode== StaticSSSNodes.ConceptGun1){
+		if (obj.itemsnode== StaticSSSNodes.PrototypeConceptGun){
 			MainExplorationView.usersGUI.setmyCGunVisible(true);
 			
 		}

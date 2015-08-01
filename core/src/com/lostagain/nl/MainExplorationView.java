@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -160,6 +161,7 @@ public class MainExplorationView implements Screen {
 	
 	Label testlabel = new Label("HomeLocation");
 	
+	//label for testing large text
 	Label testlabel2 = new Label("ME.ModelManagment: _-testing ray in :425.04813 models\r\n" + 
 			"ME.ModelManagment: _-testing ray in :699.75104 models\r\n" + 
 			"ME.MainExplorationView: _-touch down on a model-_\r\n" + 
@@ -171,13 +173,21 @@ public class MainExplorationView implements Screen {
 			"ME.MainExplorationView: MotionDisY:-61.6519174041298\r\n" + 
 			"ME.MainExplorationView: _-released touch-_\r\n" + 
 			"ME.MainExplorationView: __com.badlogic.gdx.scenes.scene2d.ui.Label");
+	
 	//Controls the 3d background
 	public static  ModelManagment background = new ModelManagment();
 
+	
 
 	
-	
+	//Enviromental Settings (currently just a point light linked to the mouse
+	/**
+	 * Controlls the light source linked to the mouse.
+	 * Currently used by the normal map shader
+	 */
+	public static PointLight mouseLight = new PointLight();
 	// public Environment environment;
+	
 
 
 	/** Sets up the stage,gui and camera for first time. 
@@ -459,17 +469,26 @@ public class MainExplorationView implements Screen {
 		//InventoryPanel testInventory = new InventoryPanel();
 		//testInventory.setToPosition(new Vector3(320f,985f,0f));
 		//ModelManagment.addmodel(testInventory,ModelManagment.RenderOrder.zdecides);
-		
-		Image testImage = new Image(Gdx.files.internal("data/infovours/genericinfovour.png")); // //   diffuseMap        = new Texture(Gdx.files.internal("data/rock.png")); (rocktexture test)
-		testImage.setToPosition(new Vector3(100f,530f,50f));
+	
+		/*
+		Image testImage = new Image(Gdx.files.internal("data/rock.png")); // //   diffuseMap        = new Texture(Gdx.files.internal("data/rock.png")); (rocktexture test)
+		testImage.setToPosition(new Vector3(100f,230f,50f));
 		
 		ModelManagment.addmodel(testImage,ModelManagment.RenderOrder.zdecides);
 		
 		Texture rockNormals = new Texture(Gdx.files.internal("data/rock_n.png"));
 		testImage.setShaderAttribute(new NormalMapShader.NormalMapShaderAttribute(rockNormals),false); 
+		*/
+		//--
+		
+		ShaderTestPanel shaderTests = new ShaderTestPanel();
+		shaderTests.setToScale(new Vector3(0.4f,0.4f,0.4f));
+		shaderTests.setToPosition(new Vector3(100f,230f,150f));	
+		ModelManagment.addmodel(shaderTests,ModelManagment.RenderOrder.infrontStage);
 		
 		
-		
+		//Default light settings
+		mouseLight.set(Color.ORANGE, 1f, 2f, 0.075f, 1f);
 		
 	}
 
@@ -585,6 +604,15 @@ public class MainExplorationView implements Screen {
 		} else {
 			background.modelBatch.begin( camera);
 		}
+		
+		
+		//match mouseLight to mouse location
+		Vector2 currentMouseOnStage = ME.getCurrentStageCursorPosition();		
+		mouseLight.position.x = currentMouseOnStage.x;
+		mouseLight.position.y = currentMouseOnStage.y;
+		//z? intensity?
+		///////////
+		
 		
 		//rcontext.begin();
 		//testdefaultShader.begin(camera, rcontext);		
@@ -1037,4 +1065,16 @@ public class MainExplorationView implements Screen {
 		background.dispose();
 
 	}
+	
+	
+	/**
+	 * seets the color and intensity 
+	 * @param col
+	 * @param Intensity
+	 */
+	public void setMouseLight(Color col, float Intensity){
+		mouseLight.color.set(col);
+		mouseLight.intensity=Intensity;
+	}
+	
 }

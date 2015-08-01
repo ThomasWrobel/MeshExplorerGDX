@@ -2,6 +2,7 @@ package com.lostagain.nl.me.features;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -856,12 +857,15 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	 * deletes all lines linking this icon to others
 	 */
 	public void clearAllLinkLines(){
-		for (MeshIcon icon : linkedIcons.keySet()) {
-			
-			this.removeLineTo(icon);
-			
-			
+		
+		Iterator<MeshIcon> iconIt = linkedIcons.keySet().iterator();
+		while (iconIt.hasNext()) {
+			MeshIcon meshIcon = (MeshIcon) iconIt.next();
+			//this.removeLineTo(meshIcon); //cant use this due to linkedIcons being effected within it
+			this.removeAttachment(linkedIcons.get(meshIcon));
+			iconIt.remove();
 		}
+		
 	}
 	/**
 	 * update line lengths. 

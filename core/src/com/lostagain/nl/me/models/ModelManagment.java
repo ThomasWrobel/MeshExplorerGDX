@@ -107,9 +107,11 @@ public class ModelManagment {
 			Gdx.app.log(logstag,"________model already on a render list");
 			return;
 		}
-
-
-		float Z = model.transform.getValues()[Matrix4.M23];
+		Vector3 position = new Vector3();
+		model.transform.getTranslation(position);
+		float Z = position.z; //is this always correct?
+		//float Z = model.transform.getValues()[Matrix4.M23];
+		
 		Gdx.app.log(logstag,"z = "+Z);
 
 		if (order == RenderOrder.behindStage){

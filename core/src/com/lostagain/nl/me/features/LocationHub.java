@@ -155,6 +155,12 @@ public class LocationHub extends MeshIcon {
 		
 	}
 
+	public void reGenerateLocationContents(){
+		Gdx.app.log(logstag,"updating home location");
+		generateLocationContents(); //needs testing if this is all we need to do
+	}
+	
+	
 	private void generateLocationContents(){
 
 		//first set our back color-------------------------------------------------
@@ -174,11 +180,9 @@ public class LocationHub extends MeshIcon {
 		getContentOfMachine(LocationsNode); //objects,ability's,emails
 
 		getVisibleMachines(LocationsNode); //links
-		
-		
+				
 		
 		layoutContents();
-
 
 		//store as updated
 		refreshOnOpen=false;
@@ -274,12 +278,10 @@ public class LocationHub extends MeshIcon {
 
 		Gdx.app.log(logstag,"populateContents for "+LocationsNode);
 
-		//clear existing features contents
-		for (GenericMeshFeature feature : HubsFeatures.keySet()) {
-
-			feature.clear();
-
-		}
+		//clear existing features contents (dont do this anymore as features should be able to update the changes, not clear and recreate)
+		//for (GenericMeshFeature feature : HubsFeatures.keySet()) {
+		//	feature.clear();
+		//}
 
 		int emails=0;
 		int data=0;
@@ -371,7 +373,7 @@ public class LocationHub extends MeshIcon {
 		
 
 			feature.setToPosition(newPosition);
-			ModelManagment.addmodel(feature,ModelManagment.RenderOrder.zdecides);
+			ModelManagment.addmodel(feature,ModelManagment.RenderOrder.zdecides); //shuld only add if not already on scene
 			
 			//link it to us
 			this.addLineTo(feature);			

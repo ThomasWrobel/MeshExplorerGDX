@@ -50,8 +50,15 @@ public class EmailHub extends MeshIcon {
 		return new InfoBox("Email Data","Emails:0","");
 	}
 
+	ArrayList<SSSNode> StoredEmails = new ArrayList<SSSNode>();
 
 	public void addEmailSource(SSSNode sssNode, SSSNode writtenIn) {
+		
+		//ignore if already displayed
+		if (StoredEmails.contains(sssNode)){
+			Gdx.app.log(logstag,"already displaying email:"+sssNode);			
+			return;
+		}
 
 		//make new email page on a spoke from this one
 		Email    emailPage = new Email(sssNode, writtenIn);
@@ -61,7 +68,7 @@ public class EmailHub extends MeshIcon {
 		emailIcon.hide();		
 		DirectEmails.add(emailIcon);
 		
-		
+		StoredEmails.add(sssNode);
 
 
 		//increase total email count

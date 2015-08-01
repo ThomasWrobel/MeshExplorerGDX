@@ -39,7 +39,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 
 	/** a temp variable used to remember if this should be drawn on the background or foreground. 
 	 * This is used to help hide/show objects remembering their place **/
-	RenderOrder currentRenderPlacement=null;
+	RenderOrder currentRenderPlacement; //default
 
 	/** list of things attached to this object. These things will all move and rotate with it **/
 	HashMap<AnimatableModelInstance,PosRotScale> attachlist = new HashMap<AnimatableModelInstance,PosRotScale>();

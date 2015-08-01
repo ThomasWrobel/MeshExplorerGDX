@@ -63,7 +63,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	int NumberOfSlots = 7; //number of inventory slots
 	boolean pinned = false; //are we pinned to the interface 		
 		
-	boolean isCollapsed = false;
+	//boolean isCollapsed = false;
 	
 	enum DisclosureState {
 		Collapsed,Collapsing,Expanding,Expanded
@@ -73,7 +73,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	
 	//widgets
 	ArrayList<ConceptObjectSlot> inventorySlots = new ArrayList<ConceptObjectSlot>();
-	Label Title = new Label("Inventory");	
+	Label Title = new Label("Inventory /\\");	
 	ToggleButton pinButton;
 	
 	
@@ -86,8 +86,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		//title		
 		Title.getStyle().clearBackgroundColor();
 		Title.getStyle().setColor(new Color(0.2f,0.9f,0.2f,1.0f));
-		Title.setToScale(new Vector3(0.7f,0.7f,0.7f));
-		
+		Title.setToScale(new Vector3(0.8f,0.8f,0.8f));
 		
 		
 		//Pin button removed for the movement. Might reconsider it later
@@ -139,9 +138,12 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 				
 				if (collapsedState == DisclosureState.Collapsed){
 					expand();
+					Title.setText("Inventory /\\");
+					
 				}
 				if (collapsedState == DisclosureState.Expanded){
 					collapse();
+					Title.setText("Inventory \\/");
 				}
 					
 				
@@ -182,7 +184,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		
 		this.setToScale(new Vector3(0.4f,0.4f,0.4f));
 		
-		MainExplorationView.camera.attachThisRelativeToScreen(this,5,60,222f);
+		MainExplorationView.camera.attachThisRelativeToScreen(this,0,59,222f); //0,0 is top left
 		
 		
 		this.pinned=true;
@@ -396,7 +398,10 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 				
 				ConceptObjectSlot newSlot = new ConceptObjectSlot();
 				inventorySlots.add(newSlot);
-				this.add(newSlot);
+				if ( collapsedState == DisclosureState.Expanded){
+					this.add(newSlot); //only add for real is not collapsed
+				}
+				
 				
 			}
 		}
@@ -415,6 +420,12 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		}
 
 		Gdx.app.log(logstag,"--total slots now:"+inventorySlots.size());
+	}
+
+	//dont allow clicks to pass this
+	@Override
+	public boolean isBlocker() {
+		return true;
 	}
 	
 	

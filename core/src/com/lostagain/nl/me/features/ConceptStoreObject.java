@@ -1,10 +1,13 @@
 package com.lostagain.nl.me.features;
 
+import java.util.HashSet;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
+import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
@@ -25,6 +28,10 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
 public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeature {
 
 	final static String logstag = "ME.ConceptStoreObject";
+
+
+	private static final HashSet<SSSNode> StoredObjects = new HashSet<SSSNode>();
+	
 
 
 	LocationHub parentLocation;
@@ -54,17 +61,16 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 		setOpacity(alpha);
 	}
 
+	
+	
 	public void addConceptObject(ConceptObject newConceptObject) {
-		
-		//this will need to be changed to a HorizontalPage + progressbar+conceptObjectSlot with the concept object in it.
-		//Label testLabelLala = new Label("Test Data Label:"+newConceptObject.itemsnode.getPLabel());
-		//.setLabelBackColor(Color.CLEAR);
-		//
-		//testLabelLala.setToscale(new Vector3(0.6f,0.6f,0.6f)); //half size
+		if (StoredObjects.contains(newConceptObject.itemsnode)){
+			Gdx.app.log(logstag,"already has object:"+newConceptObject.itemsnode);			
+			return;
+		}
 
 		ConceptObjectContainerBar newBar = new ConceptObjectContainerBar(newConceptObject);
-		
-		
+		StoredObjects.add(newConceptObject.itemsnode);
 		this.add(newBar);
 		
 	}
@@ -184,6 +190,12 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 	@Override
 	public MeshIcon getParentMeshIcon() {
 		return parentIcon;
+	}
+
+	@Override
+	public void clear() {	
+		super.clear();
+		StoredObjects.clear();
 	}
 	
 

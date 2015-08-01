@@ -149,7 +149,14 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		}
 	}
 	
+	enum ejectStyle{
+		Finished,Rejected
+	}
 	public void ejectConcept() {
+		ejectConcept(ejectStyle.Rejected);
+	}
+	
+	public void ejectConcept(ejectStyle style) {
 		if (objectCurrentlyStored==null){
 			Gdx.app.log(logstag,"No concept to eject");
 			return;
@@ -171,7 +178,16 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		
 		ME.addnewdrop(objectCurrentlyStored, newPosition.x, newPosition.y,newPosition.z+5); //a little above the slot to start
 		
-		objectCurrentlyStored.setMovement(new NewForward(150,1000));
+		//different animation based on type of ejection
+		switch (style) {
+		case Rejected:
+			objectCurrentlyStored.setMovement(new NewForward(150,1000));
+			break;
+		default:
+			objectCurrentlyStored.setMovement(new NewForward(150,1000)); //todo:
+			break;
+		}
+		
 		
 		
 		//setApperanceAsEmpty();

@@ -57,12 +57,13 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 	float currentlyIntoInstall = 0f;
 	private SSSNode queuedInstall; //ability about to install.
 	
-	ProgressBar installerBar = new ProgressBar(33,1,width-80,0,installDuration,0);
+	ProgressBar installerBar = new ProgressBar(33,0,width-80,0,installDuration,0);
 	
 	public AbilityInstaller(LocationHub locationHub) {
 		
 		super(width, height,MODELALIGNMENT.TOPLEFT);
 		super.getStyle().clearBackgroundColor();
+		super.getStyle().clearBorderColor();
 		this.parenthub=locationHub;
 		
 		//setup and style widgets
@@ -155,23 +156,53 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 	private void processInstall(SSSNode ability) {
 		
 		HashSet<SSSNode> types =	ability.getAllClassesThisBelongsToo();
-	//	installerBar.setValue(30);
+		//should only be one type for now
+		//but in future we could allow multi-types?
+		
 		if (types.contains(StaticSSSNodes.STMemoryAbility)){
 			//its a type of inventory
-			installInventory(ability);	
-			
+			installInventory(ability);
+		}
+		if (types.contains(StaticSSSNodes.conceptgun)){
+			//its a type of concept gun
+			installConceptGun(ability);
+		}
+		if (types.contains(StaticSSSNodes.decoder)){
+			//its a type of language decoder
+			installDecoder(ability);
 		}
 		
-		//installerBar.setValue(100);
+		
 		//add to the players information
 		//(in future we use PlayersData as a save system)
-		PlayersData.playerslocationcontents.addNodeToThisSet(ability, "local");
+		
+		PlayersData.addItemToDatabase(ability, "local");
 		
 		//remove concept from slot now its been used to install
 		slot.ejectConcept(); //might not want to fire any negative looking "rejection" style eject
 		
+		//tell hub to update
+		parenthub.reGenerateLocationContents();
 	}
+	
+	
+	private void installDecoder(SSSNode ability) {		
+		//do nothing! merely this node being stored at the players location is enough
+	}
+	
 
+	private void installConceptGun(SSSNode ability) {
+
+		//temp only one gun type right now
+		MainExplorationView.usersGUI.setmyCGunVisible(true);
+		feedback.setText("( "+ability.getPLabel()+" installed )");
+		feedback.getStyle().setColor(Color.GREEN);
+		resetFeedbackAfterPause(4f);
+		
+		MainExplorationView.infoPopUp.displayMessage("ConceptGun Installed", Color.GREEN);
+		
+	}
+	
 	private void installInventory(SSSNode ability) {
 		
 		//if the inventory does not already exists;
@@ -193,13 +224,19 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 			
 		} else {
 			//remove the old parameters from the players data
-			PlayersData.playerslocationcontents.removeNodeFromThisSet(PlayersData.playersInventoryPanel.inventorysNode);		
+			//PlayersData.playerslocationcontents.removeNodeFromThisSet(PlayersData.playersInventoryPanel.inventorysNode);	
+
+			PlayersData.removeItemFromDatabase(PlayersData.playersInventoryPanel.inventorysNode);	
+			
 			//(the new one gets added in the processInstall function that calls this)
 			
 		    //else we update the existing panel to this new set of abilitys for it
 			PlayersData.playersInventoryPanel.updateParameters(ability);			
 			
-			
+
+			feedback.setText("( "+ability.getPLabel()+" installed )");
+			feedback.getStyle().setColor(Color.GREEN);
+			resetFeedbackAfterPause(4f);
 		//set a message
 			MainExplorationView.infoPopUp.displayMessage("New Inventory Installed", Color.GREEN);
 			

@@ -1,5 +1,8 @@
 package com.lostagain.nl.me.features;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.semantic.SSSNode;
@@ -53,7 +56,16 @@ public class LinkStoreObject extends VerticalPanel implements GenericMeshFeature
 	}
 
 
+	ArrayList<SSSNode> StoredLinks = new ArrayList<SSSNode>();
+
+		
+		
 	public void addLink(SSSNode dest) {
+		//ignore if already have
+				if (StoredLinks.contains(dest)){
+					Gdx.app.log(logstag,"already have link for:"+dest);			
+					return;
+				}
 		
 		LinkBar newBar = new LinkBar(dest,this);
 		
@@ -64,6 +76,7 @@ public class LinkStoreObject extends VerticalPanel implements GenericMeshFeature
 
 	public void clearLinks() {
 		super.clear();
+		StoredLinks.clear();
 		this.add(TitleLabel);
 		
 	}
@@ -78,6 +91,13 @@ public class LinkStoreObject extends VerticalPanel implements GenericMeshFeature
 	@Override
 	public MeshIcon getParentMeshIcon() {
 		return parentIcon;
+	}
+
+	@Override
+	public void clear() {		
+		super.clear();
+
+		StoredLinks.clear();
 	}
 
 }

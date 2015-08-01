@@ -275,6 +275,32 @@ public class PlayersData {
 		
 		return;
 		
+	}
+
+	/**
+	 * Adds a item to the players location.
+	 * This acts like the players database of concepts and abilitys 
+	 * In some cases it also enabled abilitys. Added items are automatically enabled (probably should be changed to a seperate list?)
+	 * @param ability
+	 * @param string
+	 **/
+	public static void addItemToDatabase(SSSNode ability, String source) {
+		PlayersData.playerslocationcontents.addNodeToThisSet(ability, source); 
+		//update the location
+		homeLoc.locationsNEWHub.reGenerateLocationContents();
+	}
+
+
+	/**
+	 * Remove a item from the players location.
+	 * This acts like the players database of concepts and ability's 
+	 * 
+	 **/
+	public static void removeItemFromDatabase(SSSNode node) {
+		PlayersData.playerslocationcontents.removeNodeFromThisSet(node);	
+		//update the location 
+		homeLoc.locationsNEWHub.reGenerateLocationContents();
+		
 	} 	
 	
 	

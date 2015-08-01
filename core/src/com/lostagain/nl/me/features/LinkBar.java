@@ -476,7 +476,7 @@ public void setStandardLinkScanningAmount(int Percentage){
 }
 	@Override
 	public void fireTouchDown() {
-		Gdx.app.log(logstag,"touchdown on linkbar object");
+		Gdx.app.log(logstag,"touchdown on linkbar object:"+this.LocationsName);
 		linkClicked();
 		
 		

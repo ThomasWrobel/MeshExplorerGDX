@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.me.features.LinkStoreObject;
 import com.lostagain.nl.shaders.DistanceFieldShaderForDataObjects.DistanceFieldttribute;
 import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 import com.lostagain.nl.shaders.NoiseShader.NoiseShaderAttribute;
@@ -180,11 +182,11 @@ public class NormalMapShader extends DefaultShader {
 		
 
 		//our constants...
-		public static final float DEFAULT_LIGHT_Z = 0.075f;
+		//public static final float DEFAULT_LIGHT_Z = 0.075f;
 		public static final float AMBIENT_INTENSITY = 0.2f;
-		public static final float LIGHT_INTENSITY = 1f;
+		//public static final float LIGHT_INTENSITY = 1f;
 		
-		public static final Vector3 LIGHT_POS = new Vector3(0f,0f,DEFAULT_LIGHT_Z);
+	//	public static final Vector3 LIGHT_POS = new Vector3(0f,0f,DEFAULT_LIGHT_Z);
 		
 		//Light RGB and intensity (alpha)
 		public static final Vector3 LIGHT_COLOR = new Vector3(1f, 0.8f, 0.6f);
@@ -276,16 +278,22 @@ public class NormalMapShader extends DefaultShader {
 		context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);		
 		context.setDepthTest(GL20.GL_LESS);    	
 		 
-
+		 
    	    //the the variable for the cameras projection to be passed to the shader
   	    program.setUniformMatrix(u_projViewTrans, camera.combined);
   	    
     	//our normal map
     	program.setUniformi(u_normals, 1); //GL_TEXTURE1
     			
+    	
+    	//get the scenes light (currently just one at the moment, linked to the mouse)
+    	PointLight mouselight = MainExplorationView.mouseLight;
+    	
     			//light/ambient colors
     			//LibGDX doesn't have Vector4 class at the moment, so we pass them individually...
-    	program.setUniformf(LightColor, LIGHT_COLOR.x, LIGHT_COLOR.y, LIGHT_COLOR.z, LIGHT_INTENSITY);
+    //	program.setUniformf(LightColor, LIGHT_COLOR.x, LIGHT_COLOR.y, LIGHT_COLOR.z, mouselight.intensity);
+    	
+    	program.setUniformf(LightColor, mouselight.color.r, mouselight.color.g, mouselight.color.b, mouselight.intensity);
     	program.setUniformf(AmbientColor, AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
     	program.setUniformf(Falloff, FALLOFF);
 
@@ -294,7 +302,16 @@ public class NormalMapShader extends DefaultShader {
           
         
         
-    	  
+        //set up the light info here (as its the same for all normal map shaders in the scene)
+        
+	    Vector2 mouseLight = MainExplorationView.gameStage.stageToScreenCoordinates( new Vector2(mouselight.position.x, mouselight.position.y));
+ 	 	//get co-ordinates in the range 0-1
+ 		float x =  (mouseLight.x) / (float)Gdx.graphics.getWidth();
+ 		float y = ((MainExplorationView.gameStage.getHeight() - mouseLight.y ) / (float)Gdx.graphics.getHeight()); 		
+ 	      		
+ 		//send to GLSL
+ 		program.setUniformf(LightPos, new Vector3(x,y,mouselight.position.z));
+ 		
     }
     
   
@@ -307,19 +324,33 @@ public class NormalMapShader extends DefaultShader {
     	     	 
     	 
     	//update light position, normalized to screen resolution
-    	Vector2 Mouse = ME.getCurrentCursorScreenPosition();
+    //	Vector2 Mouse = ME.getCurrentCursorScreenPosition();
     
- 		float x = (Mouse.x) / (float)Gdx.graphics.getWidth();
- 		float y = ((MainExplorationView.gameStage.getHeight() - Mouse.y ) / (float)Gdx.graphics.getHeight());
+ 	//	float x = (Mouse.x) / (float)Gdx.graphics.getWidth();
+ 	//	float y = ((MainExplorationView.gameStage.getHeight() - Mouse.y ) / (float)Gdx.graphics.getHeight());
 
     	
- 		LIGHT_POS.x = x;
- 		LIGHT_POS.y = y;
+ 	//	LIGHT_POS.x = x;
+ 	//	LIGHT_POS.y = y;
 
         
- 		//send a Vector4f to GLSL
- 		program.setUniformf(LightPos, LIGHT_POS);
+ 		//we need to get the main lights position as screen relative
+ 	//	Vector2 mouseLight = MainExplorationView.gameStage.stageToScreenCoordinates( new Vector2(MainExplorationView.mouseLight.position.x, MainExplorationView.mouseLight.position.y));
+ 	 	
+ 	//	float x =  (mouseLight.x) / (float)Gdx.graphics.getWidth();
+ 	 //	//float y = -((MainExplorationView.gameStage.getHeight() - mouseLight.y ) / (float)Gdx.graphics.getHeight()); 		
+ 	 //	float y = ((MainExplorationView.gameStage.getHeight() - mouseLight.y ) / (float)Gdx.graphics.getHeight()); 		
+ 	     
+ //	 	LIGHT_POS.x = x;
+ 	// 	LIGHT_POS.y = y;
+ 	 	
+	//	Gdx.app.log(logstag,"mouseLight"+x+","+y);
  		
+ 		//send a Vector4f to GLSL
+ 		//program.setUniformf(LightPos, new Vector3(x,y,NormalMapShader.DEFAULT_LIGHT_Z));
+ 		
+ 		//program.setUniformf(LightPos, LIGHT_POS);
+ 	 	
  		//if we have a color diffuse we use that, else we use white as the vertex colors
  		if (renderable.material.get(ColorAttribute.Diffuse)!=null){
  			
