@@ -129,13 +129,10 @@ public class Label extends LabelBase {
 		
 		
 		
-		if (regenTexture){
-			
-			
-			
-			textureData = generateTexture(labelsSizeMode, contents,maxWidth);
-			
+		if (regenTexture){			
+			textureData = generateTexture(labelsSizeMode, contents,maxWidth);			
 		}
+		
 		Texture newTexture = textureData.textureItself;
 		
 		newTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest does not work with DistanceField shaders
@@ -195,15 +192,13 @@ public class Label extends LabelBase {
 	    if (maxWidth<1){
 	    	layout.setText(DefaultStyles.standdardFont, text);
 	    	maxWidth = layout.width;
-	    }
-	    
+	    }	    
+	    Gdx.app.log(logstag,text+"___layout height:"+layout.height);
+	    Gdx.app.log(logstag,text+"___layout line height:"+DefaultStyles.standdardFont.getLineHeight());
+		  
 	  layout.setText(DefaultStyles.standdardFont, text, Color.BLACK, maxWidth, Align.center, true); //cant centralise without width
 	  
-	  //Note; in order to scale text to fit in other modes we still render at the native size, but dont effect the mesh size
-	  //the texture will then auto-scale into the space
-	  
-	  
-	  
+	 
 	  
 	  
 	 //   float currentWidth  = layout.width;
@@ -233,8 +228,16 @@ public class Label extends LabelBase {
 
 	  
 	  
+	  
 		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, DefaultStyles.standdardFont); //note zeros as size isn't used
-
+	
+		//Note; in order to scale text to fit in other modes we still render at the native size, but dont effect the mesh size
+		  //the texture will then auto-scale into the space
+		 
+		  //
+		
+		
+		
 		return textureDAta;
 
 	}
@@ -246,21 +249,20 @@ public class Label extends LabelBase {
 	 * @param layout
 	 * @param standdardFont - should match the one used to generate the layout
 	 * @return
-	 */
+	 **/
 	static public TextureAndCursorObject generateTexture_fromLayout(GlyphLayout layout, BitmapFont standdardFont){
-		
-		
+				
 		//create according to predicted size (in future add padding option to texture?)
 	    int currentWidth  = (int) layout.width;
-	    int currentHeight = (int) ( layout.height+10); //<--------------10 is a temp fix, I dont know why height isnt covering whole area!
-		
+	    int currentHeight = (int) (layout.height+standdardFont.getCapHeight()); //not sure if cap  height is correct
+	    
 	    Pixmap textPixmap = new Pixmap(currentWidth, currentHeight, Format.RGBA8888);
 	    
 		BitmapFontData data = standdardFont.getData();  //need optional font too, should match whats used in layout
 		Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0])); //as pixmap
 		
 		//now loop over each run of letters. 
-		 for (GlyphRun grun : layout.runs) {
+		for (GlyphRun grun : layout.runs) {
 			
 		    	String runstring = "";
 		    	float currentRunX=0;
@@ -275,7 +277,7 @@ public class Label extends LabelBase {
 		    		currentRunX=currentRunX+advance;
 		    		
 		    		textPixmap.drawPixmap(
-							fontPixmap,
+					    	fontPixmap,
 							glyph.srcX,
 							glyph.srcY, 
 							glyph.width, 
@@ -571,14 +573,12 @@ public class Label extends LabelBase {
 	 **/
 	public void setText(String text){
 		this.contents=text;
-		
-		
+				
 		
 		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,maxWidth); //-1 is the default max width which means "any size"
 		
 
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
-
 
 		Texture newTexture = textureAndData.textureItself;
 		
@@ -597,12 +597,21 @@ public class Label extends LabelBase {
 		
 		Gdx.app.log(logstag,"_________setting text to;"+text+" size:"+x+","+y);
 
-		Gdx.app.log(logstag,"_________vis1:"+this.isVisible()+" parent:"+this.parentObject.isVisible());
+		switch (labelsSizeMode) {
+		case ExpandHeightMaxWidth:
+			this.setSizeAs(x, y); //width should be locked thanks to generateTexture wrapping, but we could insert a test here to be sure? Or only set Y?
+			break;
+		case ExpandXYToFit:
+			this.setSizeAs(x, y); 
+			break;
+		case Fixed:
+			//size should only set if not on fixed size mode so we do nothing here. The texture should autoscale to whatever the current size is.
+			break;
+		}
 		
-		this.setSizeAs(x, y);
+	
 		
 
-		Gdx.app.log(logstag,"_________vis2:"+this.isVisible()+" parent:"+this.parentObject.isVisible());
 		
 	}
 	/**
