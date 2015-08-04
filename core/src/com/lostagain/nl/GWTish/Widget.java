@@ -30,7 +30,7 @@ public class Widget extends Element {
 	
 	static Material DefaultWhiteBackground = new Material(SHADERFORBACKGROUND,
 			   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
-			   new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLACK,Color.WHITE,Color.RED));
+			   new GlowingSquareShader.GlowingSquareAttribute(1f,Color.WHITE,Color.RED));
 	
 	
 	

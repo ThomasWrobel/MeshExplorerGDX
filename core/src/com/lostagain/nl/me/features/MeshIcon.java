@@ -113,7 +113,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 	static final float defaultIconWidth  = 100f; //standard width and height of all icons
 	static final float defaultIconHeight = 100f;
-	private static final float LabelMargin = 2f;
+	private static final float LabelMargin = 12f; //we need this as the text hovers above the icon ad thus the paralax can move iut outside the edge if we dont have plent of padding
 
 	private final Runnable SizeChangeHandler = new Runnable(){
 		@Override
@@ -241,13 +241,12 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		}
 
 
-		Vector3 labelCenter = MeshIconsLabel.getCenterOfBoundingBoxScaled();
+		Vector3 labelCenter = MeshIconsLabel.getPivotsDisplacementFromCenterOfBoundingBox();
 		//AnimatableModelInstance internalModel = MeshIconsLabel.getModel();
 		super.setAsHitable(true);
 
-
-
-		super.attachThis(MeshIconsLabel, new PosRotScale(-labelCenter.x+LabelMargin,-labelCenter.y+LabelMargin,5f)); //hover above a bit
+		//Note; we dont need to take margin into account as we are position center relative to center
+		super.attachThis(MeshIconsLabel, new PosRotScale(-labelCenter.x,-labelCenter.y,5f)); //hover above a bit
 
 
 
@@ -383,9 +382,9 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 		Color DefaultColour = new Color(0.3f,0.3f,1f,0.5f);
 
-		//for now, we just use a simple texture
+		//for now, we just use a simple texture //Color.BLUE,
 		Material material = new Material(ICON_MATERIAL,
-				new GlowingSquareShader.GlowingSquareAttribute(3f,Color.BLUE,DefaultColour,Color.WHITE),
+				new GlowingSquareShader.GlowingSquareAttribute(1f,DefaultColour,Color.WHITE),
 				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f));
 
 

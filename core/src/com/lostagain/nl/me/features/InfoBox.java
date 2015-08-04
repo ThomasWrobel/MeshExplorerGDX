@@ -31,20 +31,20 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 	public InfoBox(String title, String subtitle ,String contents) {	
 		super();
 		super.setSpaceing(3f); //set a small spacing between elements vertically
-		super.setPadding(10f); //padding around border
+		super.setPadding(12f); //padding around border
 		
 		super.getStyle().clearBackgroundColor(); //set the back colour (excluding border)
 		super.getStyle().clearBorderColor();
 		
 		//add default labels
-		Label titleLabel = new Label(title,450);
+		Label titleLabel = new Label(title);
 		super.add(titleLabel);
 		titleLabel.setLabelBackColor(Color.CLEAR);
 
 		
 		if (!subtitle.isEmpty()){
 			
-			subtitleLabel = new Label(subtitle,900); //note; double width as we are shrinking to half the size	
+			subtitleLabel = new Label(subtitle); //note; double width as we are shrinking to half the size	
 			subtitleLabel.setToScale(new Vector3(0.5f,0.5f,0.5f)); //content smaller then title
 
 			subtitleLabel.setLabelBackColor(Color.CLEAR);
@@ -55,7 +55,7 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		
 		if (!contents.isEmpty()){
 			
-			Label contentLabel = new Label(contents,450);	
+			Label contentLabel = new Label(contents,450f);	
 			contentLabel.setToScale(new Vector3(0.7f,0.7f,0.7f)); //content smaller then title
 
 			contentLabel.setLabelBackColor(Color.CLEAR);

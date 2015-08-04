@@ -78,9 +78,9 @@ public class Label extends LabelBase {
 	//Style data (mostly controlled by shader)
 	static private Color defaultBackColour = Color.WHITE;
 
-	public Label (String contents,float MaxWidth){
+	public Label (String contents,float MaxWidth){ //note; this one doesn't seem to work with centralize correctly yet? hmm..
 		super(generateObjectData(true, true, contents, SizeMode.ExpandHeightMaxWidth,MaxWidth));
-		 
+		
 		super.setStyle(getMaterial(LABEL_MATERIAL));
 		this.maxWidth = MaxWidth;
 			this.contents=contents;
@@ -193,7 +193,8 @@ public class Label extends LabelBase {
 	    	layout.setText(DefaultStyles.standdardFont, text);
 	    	maxWidth = layout.width;
 	    }	    
-	    Gdx.app.log(logstag,text+"___layout height:"+layout.height);
+	    
+	    Gdx.app.log(logstag,text+"__"+text+"_layout width:"+maxWidth);
 	    Gdx.app.log(logstag,text+"___layout line height:"+DefaultStyles.standdardFont.getLineHeight());
 		  
 	  layout.setText(DefaultStyles.standdardFont, text, Color.BLACK, maxWidth, Align.center, true); //cant centralise without width

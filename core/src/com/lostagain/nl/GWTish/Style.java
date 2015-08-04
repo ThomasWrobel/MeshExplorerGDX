@@ -80,7 +80,7 @@ public class Style {
 		if (glowingSquare!=null){
 
 			glowingSquare.coreColor = bordercol;
-			glowingSquare.glowColor = bordercol;
+		//	glowingSquare.glowColor = bordercol;
 		}
 
 	}

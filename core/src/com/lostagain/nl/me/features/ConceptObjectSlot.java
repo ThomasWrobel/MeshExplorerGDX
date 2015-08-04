@@ -30,7 +30,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 
 	final static String logstag = "ME.ConceptObjectSlot";
 
-	static float PADDING = 5f;
+	static float PADDING = 8f;
     static float WIDTH  = ConceptObject.StandardConceptWidth+PADDING;
     static float HEIGHT = ConceptObject.StandardConceptHeight+PADDING;
     
@@ -120,15 +120,17 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		//Therefor the new middle is the incoming conceptobjects center point scaled to its new size (ie, our size)
 		//(note; we dont use the existing scale, as it might change when attached)	
 		Vector3 dimensionsOf = new Vector3();
+		
 		objectCurrentlyStored.getLocalBoundingBox().getDimensions(dimensionsOf);
 		
 		Vector3 scaledObject = dimensionsOf;//.scl(this.transState.scale);
 		
 		Gdx.app.log(logstag," attaching object at half of:"+scaledObject);
+		//PosRotScale displacement = new PosRotScale(objectCurrentlyStored.getPivotsDisplacementFromCenterOfBoundingBox());
 		
 		
-		PosRotScale displacement = new PosRotScale(scaledObject.x/2,-scaledObject.y/2,2f);
-	
+		PosRotScale displacement = new PosRotScale((scaledObject.x/2)+(PADDING/2),-(scaledObject.y/2)-(PADDING/2),2f);
+		
 		
 		//ensure its visible
 		object.show();

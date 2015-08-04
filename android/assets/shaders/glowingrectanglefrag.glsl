@@ -44,7 +44,7 @@ void main()
     //vec4 contentColor = v_coreColor;
     
     //uv based color
-	vec4  contentColor = vec4(uv,0.8,v_coreColor.a); //vec4(1.0,0.0,1.0,1.0); //vec4(uv, 0.5 + 0.5*sin(iGlobalTime), 1.0);
+	vec4  contentColor = vec4(uv,1.0,v_coreColor.a); //vec4(1.0,0.0,1.0,1.0); //vec4(uv, 0.5 + 0.5*sin(iGlobalTime), 1.0);
 
 	
     // Simple animation (comment out to fill viewport)
@@ -74,7 +74,7 @@ void main()
     float a = clamp(rr, 0.0,1.0);
     
     
-    float w = 0.5; //width of fade 
+    float w = v_glowWidth;//1.0; //width of fade 
     a = smoothstep(0.5 - w, 0.5 + w,rr);
     
 	//

@@ -59,7 +59,7 @@ public class GlowingSquareShader implements Shader {
 		public float glowWidth;
 		public Color backColor;
 		public Color coreColor;
-		public Color glowColor;
+		//public Color glowColor;
 
 
 		/**
@@ -68,26 +68,26 @@ public class GlowingSquareShader implements Shader {
 		 * @param  glowColor - its color
 		 * @param corecolor - color of its core (normally white for a intense glow at the middle of the beam)
 		 */
-		public GlowingSquareAttribute (final float glowWidth,final Color glowColor,final Color backColor, final Color coreColor ) {
+		public GlowingSquareAttribute (final float glowWidth,final Color backColor, final Color coreColor ) {
 
 			super(ID);
 			this.glowWidth = glowWidth;
 			this.backColor = backColor.cpy();
 			this.coreColor = coreColor.cpy();
-			this.glowColor = glowColor.cpy();
+			//this.glowColor = glowColor.cpy();
 
 		}
 
 		@Override
 		public Attribute copy () {
-			return new GlowingSquareAttribute(glowWidth,glowColor,backColor,coreColor);
+			return new GlowingSquareAttribute(glowWidth,backColor,coreColor);
 		}
 
 		@Override
 		protected boolean equals (Attribute other) {
 			if (
 					(((GlowingSquareAttribute)other).glowWidth == glowWidth) &&
-					(((GlowingSquareAttribute)other).glowColor == glowColor) &&
+				//	(((GlowingSquareAttribute)other).glowColor == glowColor) &&
 					(((GlowingSquareAttribute)other).backColor == backColor) &&
 					(((GlowingSquareAttribute)other).coreColor == coreColor) 
 					)
@@ -178,7 +178,7 @@ public class GlowingSquareShader implements Shader {
 		// context.setDepthTest(GL20.GL_DEPTH_TEST);    	
 		//  context.setDepthTest(GL20.GL_DEPTH_BUFFER_BIT);    	    	  
 		//  context.setCullFace(GL20.GL_BACK);
-
+//
 
 	}
 
@@ -192,7 +192,7 @@ public class GlowingSquareShader implements Shader {
 		GlowingSquareAttribute squareStyle = (GlowingSquareAttribute)renderable.material.get(GlowingSquareAttribute.ID);
 		Color back = squareStyle.backColor.cpy();
 		Color core = squareStyle.coreColor.cpy();
-		Color glow = squareStyle.glowColor.cpy();
+		//Color glow = squareStyle.glowColor.cpy();
 
 		BlendingAttribute blending = ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type));
 		if (blending!=null){
@@ -202,13 +202,13 @@ public class GlowingSquareShader implements Shader {
 
 			back.a = back.a * opacity;
 			core.a = core.a * opacity;
-			glow.a = glow.a * opacity;
+			//glow.a = glow.a * opacity;
 		}
 
 		program.setUniformf(u_glowWidth, squareStyle.glowWidth);  	 
 		program.setUniformf(u_backColor, back);
 		program.setUniformf(u_coreColor, core);
-		program.setUniformf(u_glowColor, glow);
+		//program.setUniformf(u_glowColor, glow);
 
 		float w = renderable.mesh.calculateBoundingBox().getWidth();
 		float h = renderable.mesh.calculateBoundingBox().getHeight();
