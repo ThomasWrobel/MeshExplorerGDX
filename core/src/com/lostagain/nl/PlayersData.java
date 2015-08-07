@@ -13,6 +13,7 @@ import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.ME.GameMode;
+import com.lostagain.nl.me.features.ConceptGunPanel;
 import com.lostagain.nl.me.features.InventoryPanel;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
@@ -41,8 +42,15 @@ public class PlayersData {
 	//make a new common property set to store what this pc has unlocked	
 	static SSSNodesWithCommonProperty playersunlocks = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.UnlockedBy, computersuri);
 	
-	//and what is currently on the players location
+	//and what is currently on the players location (that is, all the players known nodes)
 	public static SSSNodesWithCommonProperty playerslocationcontents = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, computersuri, new SSSNode[]{homemessage,StaticSSSNodes.asciidecoder,StaticSSSNodes.prototype_scanner});
+	
+	/**
+	 * All the things currently running on the players location
+	 * Everything here should also be in playerslocationcontents but not visa-versa
+	 */
+	public static SSSNodesWithCommonProperty playersLocationActiveSoftware = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isRunningOn, computersuri, new SSSNode[]{StaticSSSNodes.asciidecoder,StaticSSSNodes.prototype_scanner});
+	
 	
 	/** the home location container **/
 	public static Location homeLoc;
@@ -74,6 +82,12 @@ public class PlayersData {
 	 * 
 	 */
 	public static InventoryPanel playersInventoryPanel;
+	
+	/**
+	 * This panel controlls the fireing of the concept gun, its visual representation and its ammo slot
+	 */
+	public static ConceptGunPanel playersConceptGun;
+	
 	
 	
 	
@@ -280,14 +294,15 @@ public class PlayersData {
 	/**
 	 * Adds a item to the players location.
 	 * This acts like the players database of concepts and abilitys 
-	 * In some cases it also enabled abilitys. Added items are automatically enabled (probably should be changed to a seperate list?)
 	 * @param ability
 	 * @param string
 	 **/
-	public static void addItemToDatabase(SSSNode ability, String source) {
+	public static void addItemToDatabase(SSSNode ability, String source,boolean regeneratePlayersLocation) {
 		PlayersData.playerslocationcontents.addNodeToThisSet(ability, source); 
 		//update the location
+		if (regeneratePlayersLocation){
 		homeLoc.locationsNEWHub.reGenerateLocationContents();
+		}
 	}
 
 
@@ -296,12 +311,56 @@ public class PlayersData {
 	 * This acts like the players database of concepts and ability's 
 	 * 
 	 **/
-	public static void removeItemFromDatabase(SSSNode node) {
+	public static void removeItemFromDatabase(SSSNode node,boolean regeneratePlayersLocation) {
 		PlayersData.playerslocationcontents.removeNodeFromThisSet(node);	
 		//update the location 
+		if (regeneratePlayersLocation){
 		homeLoc.locationsNEWHub.reGenerateLocationContents();
-		
+		}
 	} 	
+	
+	/**
+	 * Sets the specified node as running. Node should be a bit of software, and on the players machine already.
+	 * Existing running software of the same type should probably be removed before triggering this 
+	 **/
+	public static void addSoftwareAsRunning(SSSNode ability,boolean regeneratePlayersLocation) {
+		PlayersData.playersLocationActiveSoftware.addNodeToThisSet(ability, "internal"); 
+		//update the location
+		if (regeneratePlayersLocation){
+			homeLoc.locationsNEWHub.reGenerateLocationContents();
+		}
+	}
+	
+	/**
+	 * Sets the specified node as running. Node should be a bit of software, and on the players machine already.
+	 * Existing running software of the same type should probably be removed before triggering this.
+	 * Note; this will fire a hub regeneration. This is currently inefficiant if your doing this before a AddSoftware, as that does the same 
+	 **/
+	public static void removeSoftwareAsRunning(SSSNode ability,boolean regeneratePlayersLocation) {
+		PlayersData.playersLocationActiveSoftware.removeNodeFromThisSet(ability); 
+		//update the location
+		if (regeneratePlayersLocation){
+		homeLoc.locationsNEWHub.reGenerateLocationContents();
+		}
+	}
+	
+	/**
+	 * returns a list of all running software as a string
+	 * (currently just a temp method to help the ability installer visualize whats running.
+	 * In future the Ability Installer/Ability Store will have to be sorted to be neater
+	 * 
+	 */
+	public static String getAllRunningSoftwareAsString(){
+		String allSoftwareNames = "";
+		for (SSSNode software : playersLocationActiveSoftware) {
+			//add
+			allSoftwareNames = allSoftwareNames + software.getPLabel()+" , ";
+			
+			
+		}
+		return allSoftwareNames;
+		
+	}
 	
 	
 }

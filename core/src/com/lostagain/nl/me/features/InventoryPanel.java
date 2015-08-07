@@ -19,6 +19,7 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.ToggleButton;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
+import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
@@ -30,8 +31,8 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
  * 
  * Essentially a list of slots that represents the players ability to store stuff and bring it with them
  * 
+ * This really is a new inventory object, along with a new concept gun, should we put these in me.gui
  * 
- * TODO: hide/show contents when clicking on header?
  * TODO: dragabout function by dragging header?
  * 
  * @author Tom
@@ -428,6 +429,14 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		return true;
 	}
 	
-	
+	@Override
+	public Vector3 getDefaultCameraPosition() {
+		//gets the center of this email on the stage
+		Vector3 center = getCenterOnStage();
+		center.z = ScreenUtils.getSuitableDefaultCameraHeight();
+		
+		return center;
+	}
+
 	
 }

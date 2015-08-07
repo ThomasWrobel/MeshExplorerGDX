@@ -1,5 +1,6 @@
 package com.lostagain.nl.me.features;
 
+import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.IsAnimatableModelInstance;
@@ -107,6 +108,14 @@ interface GenericMeshFeature extends IsAnimatableModelInstance {
 	 * @return
 	 */
 	MeshIcon getParentMeshIcon();
+
+	/**
+	 * This should return the position on the scene the camera should move
+	 * to when this item is open.
+	 * 
+	 * @return
+	 */
+	Vector3 getDefaultCameraPosition();
 	
 	
 	//abstract void fadeIn(float duration,Runnable runAfterFadeIn);

@@ -37,10 +37,10 @@ public class EmailHub extends MeshIcon {
 	public EmailHub(LocationHub parentHub) {
 		super(IconType.EmailHub, parentHub.parentLocation, generateFeature());
 
-		super.setBackgroundColour(new Color(0.3f,0.3f,0.8f,0.7f));
+		super.setBackgroundColour(new Color(0.2f,0.2f,0.7f,0.88f));
 		this.parentHub=parentHub;
 
-		OpenHeightDisplacement = 5f; //we dont raise as high as other things. (this way emails go ontop of the hub even when the hub is open)
+		OpenHeightDisplacement = 2f; //we dont raise as high as other things. (this way emails go ontop of the hub even when the hub is open)
 		
 		
 	}
@@ -61,8 +61,11 @@ public class EmailHub extends MeshIcon {
 		}
 
 		//make new email page on a spoke from this one
-		Email    emailPage = new Email(sssNode, writtenIn);
+		Email    emailPage = new Email(this,sssNode, writtenIn);
 		MeshIcon emailIcon = new MeshIcon(IconType.Email,this.parentLocation, emailPage);
+		emailIcon.OpenHeightDisplacement = 30f; //bit higher then normal
+		
+		emailPage.setParentMeshIcon(emailIcon);
 		ModelManagment.addmodel(emailIcon, RenderOrder.zdecides);
 		
 		emailIcon.hide();		

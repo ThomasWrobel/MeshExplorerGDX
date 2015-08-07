@@ -57,8 +57,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 	//generic icon stuff
 	public enum IconType {
-		Email,
-		EmailHub("Email\nHub",new Color(0.2f,0.2f,0.8f,0.7f)),
+		Email("Email",new Color(0.1f,0.1f,0.6f,0.9f)),
+		EmailHub("Email\nHub",new Color(0.11f,0.11f,0.7f,0.88f)),
 		ConceptStore("Concepts",Color.GREEN),
 		AbilityStore("Abilities",new Color(1.0f,0.3f,0.1f,0.7f)),
 		AbilityInstaller("Ability\nInstaller",new Color(1.0f,0.5f,0.1f,0.7f)),
@@ -450,16 +450,17 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 			//Perhaps make optional?
 			//Centralize camera on this icon
-			//For LocationHubs we put the camera a bit higher up
+			//For LocationHubs we put the camera a bit higher up so all the spokes can be seen
 			if (thisIconsType==MeshIcon.IconType.LocationHub){
-
 				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight()+170,1000); //location hub zooms out a bit
-
 			} else {
+			//	ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight(),1000);
 
-				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight(),1000);
-
+				Vector3 targetPosition = assocatiedFeature.getDefaultCameraPosition();
+				ME.centerViewOn(targetPosition,1000);
 			}
+			
+			
 
 
 			Gdx.app.log(logstag,"opening mesh feature");

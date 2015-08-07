@@ -38,7 +38,7 @@ public class Element extends AnimatableModelInstance {
 
 
 	public void setStyle(Material material) {
-		objectsStyle=new Style(material);
+		objectsStyle=new Style(this,material);
 	}
 	
 	//============
@@ -230,8 +230,18 @@ public class Element extends AnimatableModelInstance {
 
 	@Override
 	public void fireDragStart() {
-		// TODO Auto-generated method stub
 		super.fireDragStart();
+	}
+
+
+	/**
+	 * fired when a layout related style is changed in this objects style object (objectsStyle)
+	 * Override this and implement the correct updating if, for example, this widget
+	 * should respond to text align changes
+	 */
+	public void layoutStyleChanged() {
+		// Override by sub classes if needed
+		
 	}
 	
 	

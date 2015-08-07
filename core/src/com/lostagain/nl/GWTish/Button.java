@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 
 /**
  * currently just a widget that has a runnable that fires when clicked.
- * This will naturally change a lot, but having a basic button to test stuff is usefull
+ * This will naturally change a lot, but having a basic button to test stuff is useful
  * 
  * 
  * @author Tom

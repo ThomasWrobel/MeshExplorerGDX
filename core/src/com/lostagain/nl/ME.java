@@ -381,6 +381,12 @@ public class ME extends Game {
 		
     }
     
+    public static void centerViewOn(Vector3 targetPosition,int duration){
+
+		Gdx.app.log(MainExplorationView.logstag,"moving to: "+targetPosition);
+		MainExplorationView.camera.setTargetPosition(targetPosition,duration); //new system replaces a lot below    	
+    	
+    }
    
     
 public static void centerViewOn(Location locationcontainer, float newZ, boolean addLocationToUndo,int speed){
@@ -545,6 +551,15 @@ public static Vector2 getCurrentStageCursorPosition() {
 		
 		return vec;
 	}
+
+
+public static Vector2 screenToStage(Vector2 screen){
+	 Gdx.app.log(logstag,"______world heightt "+MainExplorationView.gameStage.getViewport().getWorldHeight());
+	 Gdx.app.log(logstag,"______world heightt "+MainExplorationView.gameStage.getViewport().getScreenHeight());
+	 
+	return MainExplorationView.gameStage.screenToStageCoordinates(screen);
+}
+
 
 public static Vector2 getCurrentCursorScreenPosition() {
 	

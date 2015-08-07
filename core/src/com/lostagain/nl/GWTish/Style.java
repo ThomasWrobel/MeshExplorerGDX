@@ -10,24 +10,41 @@ import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
 
 /**
- * stores style parameters for objects
+ * stores style parameters for Elements
  * @author Tom
  *
  */
 public class Style {
-
 	final static String logstag = "GWTish.Style";
+	Element elementWithStyle;
 	Material objectsMaterial = null;
 
 	DistanceFieldAttribute textStyle;
 	GlowingSquareAttribute glowingSquare;
+	
+	
+	
+	//enums for shader changes (layout is below)
+	
+	
+	//Not used yet, but shouldn't be too hard to modify a shader to add a underline or overline
+		public enum TextDecoration {
+			     NONE ,
+			     UNDERLINE,
+			     OVERLINE ,
+			     LINE_THROUGH;
+		}
+		
+		
+		
+	
 	/**
 	 * The style object must be given the objects material, which for most functions needs to use the distancefieldshader	 * 
 	 * @param objectsMaterial
-	 */
-	public Style(Material mat) {
+	 **/
+	public Style(Element elementWithStyle,Material mat) {
 		this.objectsMaterial=mat;
-
+		this.elementWithStyle=elementWithStyle;
 
 		//eventually we might want to convert the second shaders functions into the first, and handle them all by one shader?
 		//(so we can have text with a border, etc)
@@ -136,5 +153,50 @@ public class Style {
 			textStyle.setToPreset(standardwithshadow);
 		}
 	}
+	
+	//-------------------
+	//-------------------
+	//layout related styles
+	//-------------------
+	//-------------------
+//ref; http://grepcode.com/file/repo1.maven.org/maven2/com.google.gwt/gwt-user/2.0.4/com/google/gwt/dom/client/Style.java
+	
+	/**
+	 * Enum for the text-align property.
+	 */
+	  public enum TextAlign {
+	    CENTER ,
+	    JUSTIFY,
+	    LEFT,
+	    RIGHT;	    
+	  }
+	  
+	  TextAlign textAlignment = TextAlign.LEFT;
+	  
+	
+	
+	/**
+	 * should be fired when any style related to layout is changed.
+	 * ie. text alignment,padding etc
+	 * pure Shader changes don't need to fire this.
+	 * This method then fires a update function on the object with this style
+	 **/
+	private void layoutStyleChanged(){
+		if (elementWithStyle!=null){
+			elementWithStyle.layoutStyleChanged();
+		}
+		
+		
+	}
+
+	public TextAlign getTextAlignment() {
+		return textAlignment;
+	}
+
+	public void setTextAlignment(TextAlign textAlignment) {
+		this.textAlignment = textAlignment;
+		layoutStyleChanged();
+	}
+	
 
 }

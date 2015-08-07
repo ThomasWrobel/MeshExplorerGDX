@@ -55,7 +55,8 @@ public class ConceptBeam extends AnimatableModelInstance {
 		
 	//ammo dependent styles
 	private ArrayList<Color> currentColors = new ArrayList<Color>();
-
+	Color BeamColor;
+	
 	AnimatableModelInstance impactPoint;
 	
 	public ConceptBeam() {
@@ -115,7 +116,7 @@ public class ConceptBeam extends AnimatableModelInstance {
 		this.show();
 		
 		//ensure style is upto date (if this ever gets too slow it could be updated when the ammo changes instead of before firing)
-		Color BeamColor = new Color(randomColorFromConcept());
+		BeamColor = new Color(randomColorFromConcept());
 		
 		this.materials.get(0).set(new ConceptBeamShader.ConceptBeamAttribute(0.35f,BeamColor,FireFrequency,Color.WHITE));
 		
@@ -154,6 +155,11 @@ public class ConceptBeam extends AnimatableModelInstance {
 		
 		//next time the beam is fired the new style will be used
 		
+	}
+
+
+	public Color getBeamColor() {
+		return BeamColor;
 	}
 	
 }

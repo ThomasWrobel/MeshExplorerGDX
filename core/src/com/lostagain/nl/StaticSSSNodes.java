@@ -23,6 +23,11 @@ public class StaticSSSNodes {
     public static final SSSNode ReqNum =  SSSNode.createSSSNode(ME.INTERNALNS+"ReqNum", ME.INTERNALNS);
 	
 	public static final SSSNode isOn =  SSSNode.createSSSNode(ME.INTERNALNS+"isOn", ME.INTERNALNS);
+	/**
+	 * Indicates a bit of software is running on the specified value
+	 */
+	public static final SSSNode isRunningOn =  SSSNode.createSSSNode(ME.INTERNALNS+"isRunningOn", ME.INTERNALNS);
+	
 	
 	//location content types
 	public static final SSSNode software= SSSNode.createSSSNode(ME.INTERNALNS+"software", ME.INTERNALNS);

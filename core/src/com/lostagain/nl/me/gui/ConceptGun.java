@@ -92,7 +92,7 @@ public class ConceptGun  extends WidgetGroup {
 		disabled,fireing,
 		/** ready means its over 50% charged. If unfired it will continue charging till 100% **/
 		ready,
-		/** less then 50% charged, cant fire **/
+		/** less then 50% charged, can't fire **/
 		charging
 	}
 	

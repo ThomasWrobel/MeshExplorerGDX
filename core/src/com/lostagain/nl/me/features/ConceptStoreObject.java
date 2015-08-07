@@ -16,6 +16,7 @@ import com.lostagain.nl.GWTish.Widget;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScanManager;
+import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 
@@ -169,8 +170,9 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 				currentScanState = scanState.finnished;
 				//unlock slot
 				slot.setCurrentMode(SlotMode.OutOnly);
-				//add to datastore (note; this will automatically install ability's - it probably shouldn't gameplay wise)
-				PlayersData.addItemToDatabase(containsNode, "local");
+				
+				//add to datastore
+				PlayersData.addItemToDatabase(containsNode, "local",true);
 				
 				//set style as open
 				setAsOpen();
@@ -203,6 +205,14 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 		super.clear();
 		StoredObjects.clear();
 	}
-	
+	@Override
+	public Vector3 getDefaultCameraPosition() {
+		//gets the center of this email on the stage
+		Vector3 center = getCenterOnStage();
+		center.z = ScreenUtils.getSuitableDefaultCameraHeight();
+		
+		return center;
+	}
+
 
 }

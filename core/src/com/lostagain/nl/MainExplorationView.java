@@ -134,15 +134,15 @@ public class MainExplorationView implements Screen {
 	static private double MotionDisX = 0;
 	static private double MotionDisY = 0;
 
-	Float startdragx_exview = 0.0f;
-	Float startdragy_exview = 0.0f;
+	static float startdragx_exview = 0.0f;
+	static float startdragy_exview = 0.0f;
 	
 	
-	int startdragxscreen = 0;
-	int startdragyscreen = 0;
+	static int startdragxscreen = 0;
+	static int startdragyscreen = 0;
 	
-    int drag_dis_x = 0;
-    int drag_dis_y = 0;
+	static  int drag_dis_x = 0;
+	static int drag_dis_y = 0;
     
     boolean newtouch=true; //if a touch event has just started
     boolean newUp = false; //if the next time the mouse is up represents a mouse release
@@ -594,7 +594,11 @@ public class MainExplorationView implements Screen {
 		//we start other updates
 		
 		//update the guns animation
-		usersGUI.ConceptGun.update(delta);
+		usersGUI.ConceptGun.update(delta);  //old
+		
+		if (PlayersData.playersConceptGun!=null){
+			PlayersData.playersConceptGun.update(delta); //new gun
+		}
 		
 		//update any scans and their  bars
 		ScanManager.update(delta);
@@ -659,9 +663,16 @@ public class MainExplorationView implements Screen {
 			
 			if (newtouch ){							
 				//fire gun if not disabled
-				Boolean fireEnabled = usersGUI.ConceptGun.fireAt(Gdx.input.getX(), Gdx.input.getY());		
+			//	Boolean fireEnabled = usersGUI.ConceptGun.fireAt(Gdx.input.getX(), Gdx.input.getY());		 //old gun
+				Boolean fireEnabled= false;
+				if (PlayersData.playersConceptGun!=null){
+					fireEnabled = PlayersData.playersConceptGun.fireAt(Gdx.input.getX(), Gdx.input.getY());		 //new gun
+					
+				}
+				
 				//else fire normal click event (note; the gun will also trigger normal click events right now too! shot to click action!)
 				if (!fireEnabled){
+
 					//we only run these if the gun is disabled. This is because shotting triggers the same events ; see above
 					Ray ray = ME.getCurrentStageCursorRay();
 					
@@ -1072,9 +1083,39 @@ public class MainExplorationView implements Screen {
 	 * @param col
 	 * @param Intensity
 	 */
-	public void setMouseLight(Color col, float Intensity){
+	public static void setMouseLight(Color col, float Intensity){
 		mouseLight.color.set(col);
 		mouseLight.intensity=Intensity;
+	}
+	
+	/**
+	 * sets the light to the default
+	 */
+	public static void resetMouseLight(){
+		mouseLight.set(Color.ORANGE, 1f, 2f, 0.075f, 1f);
+	}
+	
+
+	/**
+	 * lets us manually trigging dragging of the landscape from another object
+	 */
+	public static void setAsDragging() {
+		
+		dragging = true;
+		movementControllDisabled = false;
+		
+		dragstart = TimeUtils.millis();
+		
+		
+		startdragxscreen = Gdx.input.getX();
+		startdragyscreen = Gdx.input.getY();
+						
+		Gdx.app.log(logstag,"x="+startdragxscreen+",y="+startdragyscreen);
+		
+		startdragx_exview = currentPos.x;
+		startdragy_exview = currentPos.y;
+		cancelnextdragclick = false;
+		touchedAModel=null;
 	}
 	
 }

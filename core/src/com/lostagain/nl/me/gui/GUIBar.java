@@ -110,6 +110,8 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 				}
 				
 				
+				
+				
 		
 				return false;
 
@@ -263,6 +265,9 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 		if (state){
 			ConceptGun.setVisible(true);				
 			ConceptGun.setEnabled(true);
+			
+			PlayersData.playersConceptGun.show();
+			PlayersData.playersConceptGun.setEnabled(true);
 
 			myCGun.setText(CGunOpen);
 			myCGun.setDownStyle();
@@ -272,6 +277,9 @@ public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 		} else {
 			ConceptGun.setVisible(false);				
 			ConceptGun.setEnabled(false);
+			
+			PlayersData.playersConceptGun.hide();
+			PlayersData.playersConceptGun.setEnabled(false);
 			
 			myCGun.setText(CGunClosed);
 			myCGun.setUpStyle();

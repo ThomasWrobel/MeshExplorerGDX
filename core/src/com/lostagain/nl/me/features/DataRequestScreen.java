@@ -17,6 +17,7 @@ import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.gui.STMemory;
+import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.locationFeatures.RepairScreen;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
@@ -426,5 +427,13 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 		
 		
 	}*/
-	
+	@Override
+	public Vector3 getDefaultCameraPosition() {
+		//gets the center of this email on the stage
+		Vector3 center = getCenterOnStage();
+		center.z = ScreenUtils.getSuitableDefaultCameraHeight();
+		
+		return center;
+	}
+
 }

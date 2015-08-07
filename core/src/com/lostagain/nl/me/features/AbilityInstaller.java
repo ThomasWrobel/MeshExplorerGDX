@@ -21,6 +21,7 @@ import com.lostagain.nl.GWTish.Widget;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
+import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
@@ -34,13 +35,13 @@ import com.lostagain.nl.me.newmovements.PosRotScale;
  * @author Tom
  *
  */
-public class AbilityInstaller extends Widget implements GenericMeshFeature,Animating {
+public class AbilityInstaller extends VerticalPanel implements GenericMeshFeature,Animating {
 	private static final String STANDARD_FEEDBACK_MESSAGE = "(please drop an ability onto the slot)";
 
 	final static String logstag = "ME.AbilityInstaller";
 
-	static float width  = 380f;
-	static float height = 200f;
+	static int width  = 380;
+	static int height = 250;
 	
 	//data
 	LocationHub parenthub;
@@ -51,6 +52,7 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 
 	Label feedback = new Label(STANDARD_FEEDBACK_MESSAGE);
 	
+	Label RunningSoftwareLabel = new Label("--",width-120f);
 	
 	boolean currentlyInstalling= false;
 	float installDuration = 3.0f;
@@ -61,9 +63,12 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 	
 	public AbilityInstaller(LocationHub locationHub) {
 		
-		super(width, height,MODELALIGNMENT.TOPLEFT);
+	//	super(width, height,MODELALIGNMENT.TOPLEFT);
 		super.getStyle().clearBackgroundColor();
 		super.getStyle().clearBorderColor();
+		super.setPadding(9f);
+		
+		
 		this.parenthub=locationHub;
 		
 		//setup and style widgets
@@ -82,14 +87,15 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 		float hw = width/2;
 		float hh = height/2;
 		
-		PosRotScale titlePosition = new PosRotScale(hw - (title.getScaledWidth()/2),-15f,3f);
-		attachThis(title, titlePosition);
-		
-		PosRotScale slotPosition = new PosRotScale(hw - (slot.getScaledWidth()/2),-55f,3f);
-		attachThis(slot, slotPosition);
-		
-		PosRotScale installerBarPosition = new PosRotScale(40f,-105f,3f);
-		attachThis(installerBar, installerBarPosition);
+		//PosRotScale titlePosition = new PosRotScale(hw - (title.getScaledWidth()/2),-15f,3f);
+		//attachThis(title, titlePosition);
+		add(title);
+		//PosRotScale slotPosition = new PosRotScale(hw - (slot.getScaledWidth()/2),-55f,3f);
+		//attachThis(slot, slotPosition);
+		add(slot);
+		//PosRotScale installerBarPosition = new PosRotScale(40f,-105f,3f);
+		//attachThis(installerBar, installerBarPosition);
+		add(installerBar);
 		
 		
 		
@@ -103,7 +109,17 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 		feedbackBar.setMinSize(width,40);		
 		feedbackBar.add(feedback);
 		
-		attachThis(feedbackBar, new PosRotScale(0f,-160f,3f));
+		//attachThis(feedbackBar, new PosRotScale(0f,-160f,3f));
+
+		
+		add(feedbackBar);
+		
+		RunningSoftwareLabel.getStyle().clearBackgroundColor();
+		updateInstalledLabel();
+		RunningSoftwareLabel.setToScale(new Vector3(0.4f,0.4f,0.4f));
+		add(RunningSoftwareLabel);
+		
+		//attachThis(RunningSoftwareLabel, new PosRotScale(0f,-185f,3f));
 		
 		
 	}
@@ -124,9 +140,9 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 		}
 		
 		//check we havnt got this one installed already
-		boolean hasAbility = PlayersData.playerslocationcontents.containsNode(ability);
+		boolean isInstalled = PlayersData.playersLocationActiveSoftware.containsNode(ability);
 		
-		if (hasAbility){
+		if (isInstalled){
 			
 			feedback.setText("(ability already installed)");
 			feedback.getStyle().setColor(Color.RED);
@@ -176,13 +192,23 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 		//add to the players information
 		//(in future we use PlayersData as a save system)
 		
-		PlayersData.addItemToDatabase(ability, "local");
+		PlayersData.addItemToDatabase(ability, "local",false); //ensure its stored, but it might be already
+		PlayersData.addSoftwareAsRunning(ability,false);
+		
+		//update running software label
+		updateInstalledLabel();
 		
 		//remove concept from slot now its been used to install
 		slot.ejectConcept(); //might not want to fire any negative looking "rejection" style eject
 		
 		//tell hub to update
 		parenthub.reGenerateLocationContents();
+	}
+
+	private void updateInstalledLabel() {
+		String runningSoftwareString = PlayersData.getAllRunningSoftwareAsString();
+		RunningSoftwareLabel.setText("Currently Installed : "+runningSoftwareString);
+		
 	}
 	
 	
@@ -194,12 +220,42 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 	private void installConceptGun(SSSNode ability) {
 
 		//temp only one gun type right now
-		MainExplorationView.usersGUI.setmyCGunVisible(true);
-		feedback.setText("( "+ability.getPLabel()+" installed )");
-		feedback.getStyle().setColor(Color.GREEN);
-		resetFeedbackAfterPause(4f);
+		if (PlayersData.playersConceptGun==null){
+			
+			ConceptGunPanel newConceptGun = new ConceptGunPanel();
+			newConceptGun.setToPosition(new Vector3(350f,1185f,0f));
+			ModelManagment.addmodel(newConceptGun,ModelManagment.RenderOrder.zdecides);
 		
-		MainExplorationView.infoPopUp.displayMessage("ConceptGun Installed", Color.GREEN);
+			PlayersData.playersConceptGun = newConceptGun;
+			
+			newConceptGun.updateParameters(ability);
+			
+			feedback.setText("( "+ability.getPLabel()+" installed )");
+			feedback.getStyle().setColor(Color.GREEN);
+			resetFeedbackAfterPause(4f);
+			
+			MainExplorationView.infoPopUp.displayMessage("ConceptGun Installed", Color.GREEN);
+			
+		} else {
+			
+			//remove old from running
+			PlayersData.removeSoftwareAsRunning(PlayersData.playersConceptGun.ConceptGunsNode,false);
+			
+			//update panel
+			PlayersData.playersConceptGun.updateParameters(ability);			
+			
+			//set feedback
+			feedback.setText("( "+ability.getPLabel()+" installed )");
+			feedback.getStyle().setColor(Color.GREEN);
+			resetFeedbackAfterPause(4f);
+			
+		    //set a message
+			MainExplorationView.infoPopUp.displayMessage("New ConceptGun Installed", Color.GREEN);
+			
+		}
+		
+		
+		
 		
 	}
 	
@@ -226,7 +282,10 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 			//remove the old parameters from the players data
 			//PlayersData.playerslocationcontents.removeNodeFromThisSet(PlayersData.playersInventoryPanel.inventorysNode);	
 
-			PlayersData.removeItemFromDatabase(PlayersData.playersInventoryPanel.inventorysNode);	
+			//PlayersData.removeItemFromDatabase(PlayersData.playersInventoryPanel.inventorysNode);	
+			PlayersData.removeSoftwareAsRunning(PlayersData.playersInventoryPanel.inventorysNode,false);
+			
+			
 			
 			//(the new one gets added in the processInstall function that calls this)
 			
@@ -316,6 +375,18 @@ public class AbilityInstaller extends Widget implements GenericMeshFeature,Anima
 			}
 			
 		}
+	}
+	
+	
+	
+	
+	@Override
+	public Vector3 getDefaultCameraPosition() {
+		//gets the center of this email on the stage
+		Vector3 center = getCenterOnStage();
+		center.z = ScreenUtils.getSuitableDefaultCameraHeight();
+		
+		return center;
 	}
 
 }

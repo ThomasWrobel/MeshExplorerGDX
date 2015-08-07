@@ -11,6 +11,7 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.Widget;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
+import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
@@ -98,6 +99,14 @@ public class LinkStoreObject extends VerticalPanel implements GenericMeshFeature
 		super.clear();
 
 		StoredLinks.clear();
+	}
+	@Override
+	public Vector3 getDefaultCameraPosition() {
+		//gets the center of this email on the stage
+		Vector3 center = getCenterOnStage();
+		center.z = ScreenUtils.getSuitableDefaultCameraHeight();
+		
+		return center;
 	}
 
 }
