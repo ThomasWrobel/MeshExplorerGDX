@@ -498,7 +498,9 @@ public class DataObject extends Image
 		 boolean addedToObject = false;
 		 
 		 //find what we droped on, test usersGUI first then after that the game stage
-		Actor test = MainExplorationView.usersGUI.hit(sx,sy, false);
+	
+		 /*
+		 Actor test = MainExplorationView.usersGUI.hit(sx,sy, false);
 		
 		if (test==null){
 			
@@ -532,7 +534,7 @@ public class DataObject extends Image
 		
 		
 		}
-		
+		*/
 		if (addedToObject){
 			
 		} else {

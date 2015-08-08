@@ -53,9 +53,16 @@ public class StaticSSSNodes {
 
 	
 	//Ability's
-	public static final SSSNode ability= SSSNode.createSSSNode("Ability", ME.INTERNALNS+"ability", ME.INTERNALNS,new SSSNode[]{software});	
-	public static final SSSNode decoder= SSSNode.createSSSNode("Decoder", ME.INTERNALNS+"decoder", ME.INTERNALNS,new SSSNode[]{ability});
-	public static final SSSNode conceptgun= SSSNode.createSSSNode("ConceptGun", ME.INTERNALNS+"ConceptGun", ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode ability     = SSSNode.createSSSNode("Ability", ME.INTERNALNS+"ability", ME.INTERNALNS,new SSSNode[]{software});	
+	
+	public static final SSSNode decoder     = SSSNode.createSSSNode("Decoder", ME.INTERNALNS+"decoder", ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode conceptgun  = SSSNode.createSSSNode("ConceptGun", ME.INTERNALNS+"ConceptGun", ME.INTERNALNS,new SSSNode[]{ability});
+	public static final SSSNode gui         = SSSNode.createSSSNode("gui", ME.INTERNALNS+"gui", ME.INTERNALNS,new SSSNode[]{ability});
+	
+	//define gui
+	public static final SSSNode standardgui = SSSNode.createSSSNode("standardgui", ME.INTERNALNS+"standardgui", ME.INTERNALNS,new SSSNode[]{gui});
+	
+	
 	
 	//define decoders
 	public static final SSSNode asciidecoder= SSSNode.createSSSNode ("Asciidecoder" , ME.INTERNALNS+"asciidecoder",  ME.INTERNALNS,new SSSNode[]{decoder});

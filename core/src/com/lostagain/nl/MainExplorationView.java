@@ -116,7 +116,8 @@ public class MainExplorationView implements Screen {
 	long lastDropTime;
 	int dropsGathered;
 
-	public static GUIBar usersGUI;
+	//not usedanymore
+	//public static GUIBar usersGUI;
 	
 	
 	public static InfoPopUp infoPopUp = new InfoPopUp();
@@ -203,10 +204,10 @@ public class MainExplorationView implements Screen {
 		guiStage = new Stage();
 
 		Gdx.app.log(logstag,"setting up stage and stuff..");
-		usersGUI = new GUIBar();
-		guiStage.addActor(usersGUI);
+	//	usersGUI = new GUIBar();
+	//	guiStage.addActor(usersGUI);
 	
-		usersGUI.validate();
+		//usersGUI.validate();
 
 		camera.setToPosition(MainExplorationView.currentPos);
 		debugCamera.setToPosition(MainExplorationView.currentPos);
@@ -437,6 +438,14 @@ public class MainExplorationView implements Screen {
 		ExpandedInventory.setToPosition(new Vector3(320f,485f,0f));
 		ModelManagment.addmodel(ExpandedInventory,ModelManagment.RenderOrder.zdecides);
 		
+		ConceptObject GUI = new ConceptObject(StaticSSSNodes.standardgui);
+		GUI.setToPosition(new Vector3(320f,485f,0f));
+		ModelManagment.addmodel(GUI,ModelManagment.RenderOrder.zdecides);
+		
+		
+		
+		
+		
 		//slot 
 		final ConceptObjectSlot slotTest = new ConceptObjectSlot();
 		slotTest.setToPosition(new Vector3(450f,670f,0f));
@@ -444,6 +453,7 @@ public class MainExplorationView implements Screen {
 		
 		
 		//---
+		/*
 		Button tempbuttonSmaller = new Button(200,35,new Runnable(){
 			@Override
 			public void run() {
@@ -457,12 +467,13 @@ public class MainExplorationView implements Screen {
 				slotTest.setToScale(new Vector3(2f,2f,2f));
 				
 			}			
-		});
-		tempbuttonSmaller.setToPosition(new Vector3(450f,610f,0f));
-		tempbuttonBigger.setToPosition(new Vector3(450f,570f,0f));
+		});*/
 		
-		ModelManagment.addmodel(tempbuttonSmaller,ModelManagment.RenderOrder.zdecides);
-		ModelManagment.addmodel(tempbuttonBigger,ModelManagment.RenderOrder.zdecides);
+		//tempbuttonSmaller.setToPosition(new Vector3(450f,610f,0f));
+		//tempbuttonBigger.setToPosition(new Vector3(450f,570f,0f));
+		//
+		//ModelManagment.addmodel(tempbuttonSmaller,ModelManagment.RenderOrder.zdecides);
+		//ModelManagment.addmodel(tempbuttonBigger,ModelManagment.RenderOrder.zdecides);
 		
 	
 		//inventory test
@@ -594,7 +605,7 @@ public class MainExplorationView implements Screen {
 		//we start other updates
 		
 		//update the guns animation
-		usersGUI.ConceptGun.update(delta);  //old
+	//	usersGUI.ConceptGun.update(delta);  //old
 		
 		if (PlayersData.playersConceptGun!=null){
 			PlayersData.playersConceptGun.update(delta); //new gun
@@ -815,10 +826,10 @@ public class MainExplorationView implements Screen {
 			float tx = Gdx.input.getX();
 			float ty = -Gdx.input.getY()+gameStage.getHeight();
 			
-			Actor test = usersGUI.hit(tx,ty, false);
-			if (test!=null){
-				Gdx.app.log(logstag,"__"+test.getClass().getName());
-			}
+			//Actor test = usersGUI.hit(tx,ty, false);
+			//if (test!=null){
+			//	Gdx.app.log(logstag,"__"+test.getClass().getName());
+			//}
 		}
 		
 		if (!Gdx.input.isTouched()){
@@ -1028,12 +1039,14 @@ public class MainExplorationView implements Screen {
 		multiplexer.addProcessor(gameStage);
 		Gdx.input.setInputProcessor(multiplexer);
 
+		/*
 		usersGUI.ConceptGun.invalidateHierarchy();
 		usersGUI.ConceptGun.validate();
 		usersGUI.setNeedsRepopulating(true); //temp fix for layout resizing, this should be handled correctly by splitting widget positioning from widget adding and letting the invalidate/validate handle the repositioning
 		
 		usersGUI.invalidateHierarchy();
 		usersGUI.validate();
+		*/
 		
 		Gdx.app.log(logstag,"stage height="+guiStage.getHeight());
 		Gdx.app.log(logstag,"stage width="+guiStage.getWidth());

@@ -13,6 +13,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
@@ -163,33 +164,21 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		//shrinktest		
 		setToScale(new Vector3(0.65f,0.65f,0.65f));
 		
-		setToDefaultPosition();
+	//	setToDefaultPosition();
 		
 	}
 	
 	//default position depends on screen res, as displacement is relative to camera center
-	private void setToDefaultPosition() {
+	//	private void setToDefaultPosition() {
+			
 		
-		//float screenWidth  = Gdx.graphics.getWidth();
-		//floa/t screenHeight = Gdx.graphics.getHeight();
-/*
-		//to work out the point we are attaching things too, we need to cast a ray down from the screen position to the distance of our attachment
-		Ray ray = MainExplorationView.camera.getRelativePickRay(10, 70);
-		Plane testplane = new Plane(new Vector3(0f, 0f,-1f),-222f);//MainExplorationView.camera.direction.rotate(new Vector3(0f, 0f,1f),90),-50f);
-		
-		Vector3 intersection = new Vector3();
-		Intersector.intersectRayPlane(ray, testplane, intersection);
-	
-		Gdx.app.log(logstag,"intersection:"+intersection.x+" , "+intersection.y);
-		*/
-		
-		this.setToScale(new Vector3(0.4f,0.4f,0.4f));
-		
-		MainExplorationView.camera.attachThisRelativeToScreen(this,0,59,222f); //0,0 is top left
-		
-		
-		this.pinned=true;
-	}
+		//	this.setToScale(new Vector3(0.4f,0.4f,0.4f));
+			
+		//	MainExplorationView.camera.attachThisRelativeToScreen(this,0,59,222f); //0,0 is top left
+			
+			
+		//	this.pinned=true;
+	//	}
 
 	protected void setPinnedToCamera(boolean b) {
 		if (b){

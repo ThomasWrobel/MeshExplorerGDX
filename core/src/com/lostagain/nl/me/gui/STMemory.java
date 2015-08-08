@@ -285,7 +285,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			carryingObjects.add(dataobject);
 			super.add(dataobject);
 			super.row();
-			MainExplorationView.usersGUI.mySTMemory.setDownForABit();
+		//	MainExplorationView.usersGUI.mySTMemory.setDownForABit();
 			
 			return true;
 		} else {

@@ -118,7 +118,7 @@ public class Inventory  {
 		
 		//if theres no items left the users GUI should have its data tab disabled
 		if (allItems.size()==0){
-		   MainExplorationView.usersGUI.setSTMemVisible(true);
+		//   MainExplorationView.usersGUI.setSTMemVisible(true);
 		}
 		
 	}
@@ -162,11 +162,11 @@ public class Inventory  {
 
 		//update the GUI bar in case the inventory tab isnt there yet
 		if (obj.itemsnode== StaticSSSNodes.STMemoryAbility){ //wont work with current nodes/propertys need the precise subclass of gun
-			MainExplorationView.usersGUI.setSTMemVisible(true);
+		//	MainExplorationView.usersGUI.setSTMemVisible(true);
 		}
 		
 		if (obj.itemsnode== StaticSSSNodes.PrototypeConceptGun){
-			MainExplorationView.usersGUI.setmyCGunVisible(true);
+		//	MainExplorationView.usersGUI.setmyCGunVisible(true);
 			
 		}
 		

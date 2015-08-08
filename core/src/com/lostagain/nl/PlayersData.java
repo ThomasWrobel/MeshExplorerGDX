@@ -15,6 +15,7 @@ import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.me.features.ConceptGunPanel;
 import com.lostagain.nl.me.features.InventoryPanel;
+import com.lostagain.nl.me.features.NewGUIBar;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.objects.DataObject;
@@ -87,6 +88,11 @@ public class PlayersData {
 	 * This panel controlls the fireing of the concept gun, its visual representation and its ammo slot
 	 */
 	public static ConceptGunPanel playersConceptGun;
+	
+	/**
+	 * This panel provides shortcuts for other gui functions like the inventory,concept gun, or just going back to the last location
+	 */
+	public static NewGUIBar playersGUI;
 	
 	
 	
@@ -361,6 +367,8 @@ public class PlayersData {
 		return allSoftwareNames;
 		
 	}
+
+
 	
 	
 }

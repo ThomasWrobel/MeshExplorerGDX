@@ -187,6 +187,11 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 			//its a type of language decoder
 			installDecoder(ability);
 		}
+		//
+		if ( types.contains(StaticSSSNodes.gui)   ){
+			Gdx.app.log(logstag, "installing gui");
+			installGUI(ability);
+		}
 		
 		
 		//add to the players information
@@ -254,23 +259,77 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 			
 		}
 		
+		if (PlayersData.playersGUI!=null){
+			//enable button
+			PlayersData.playersGUI.enableConceptGunButton();
+		}
 		
 		
 		
 	}
-	
+	private void installGUI(SSSNode ability){
+		//setToDefaultPosition()
+		
+		//if the gui does not already exists;
+				if (PlayersData.playersGUI==null){
+				
+					NewGUIBar newGui = new NewGUIBar();
+					//newGui.setToPosition(new Vector3(350f,1185f,0f));
+					ModelManagment.addmodel(newGui,ModelManagment.RenderOrder.zdecides);
+				
+					PlayersData.playersGUI = newGui;
+					
+					newGui.updateParameters(ability);
+					
+					feedback.setText("( "+ability.getPLabel()+" installed )");
+					feedback.getStyle().setColor(Color.GREEN);
+					resetFeedbackAfterPause(4f);
+					
+					MainExplorationView.infoPopUp.displayMessage("GUI Installed", Color.GREEN);
+					
+				} else {
+					//remove the old parameters from the players data
+					//PlayersData.playerslocationcontents.removeNodeFromThisSet(PlayersData.playersInventoryPanel.inventorysNode);	
+
+					//PlayersData.removeItemFromDatabase(PlayersData.playersInventoryPanel.inventorysNode);	
+					PlayersData.removeSoftwareAsRunning(PlayersData.playersGUI.guisNode,false);
+					
+					
+					
+					//(the new one gets added in the processInstall function that calls this)
+					
+				    //else we update the existing panel to this new set of ability's for it
+					PlayersData.playersGUI.updateParameters(ability);			
+					
+
+					feedback.setText("( "+ability.getPLabel()+" installed )");
+					feedback.getStyle().setColor(Color.GREEN);
+					resetFeedbackAfterPause(4f);
+				//set a message
+					MainExplorationView.infoPopUp.displayMessage("New GUI Installed", Color.GREEN);
+					
+					
+				}
+		
+	}
 	private void installInventory(SSSNode ability) {
 		
 		//if the inventory does not already exists;
 		if (PlayersData.playersInventoryPanel==null){
 		
-			InventoryPanel testInventory = new InventoryPanel();
-			testInventory.setToPosition(new Vector3(350f,1185f,0f));
-			ModelManagment.addmodel(testInventory,ModelManagment.RenderOrder.zdecides);
+			InventoryPanel inventory = new InventoryPanel();
 		
-			PlayersData.playersInventoryPanel = testInventory;
+			inventory.setToPosition(new Vector3(350f,1185f,0f));
+			ModelManagment.addmodel(inventory,ModelManagment.RenderOrder.zdecides);
+		
+			PlayersData.playersInventoryPanel = inventory;
 			
-			testInventory.updateParameters(ability);
+			//we no longer pin to screen, instead we go into the GUI panel
+			if (PlayersData.playersGUI!=null){
+				PlayersData.playersGUI.enablePlayersInventory();
+			}
+		
+			inventory.updateParameters(ability);
 			
 			feedback.setText("( "+ability.getPLabel()+" installed )");
 			feedback.getStyle().setColor(Color.GREEN);

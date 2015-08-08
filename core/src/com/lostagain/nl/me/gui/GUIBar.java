@@ -26,7 +26,12 @@ import com.lostagain.nl.me.locationFeatures.InterfaceButton;
 import com.lostagain.nl.me.objects.DataObject;
 
 
-
+/**
+ * no longer used, was part of 2d gui system
+ * 
+ * @author Tom
+ *
+ */
 public class GUIBar extends WidgetGroup implements DataObjectDropTarget {
 
 	final static String logstag = "ME.GUIBar";

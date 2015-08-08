@@ -2,6 +2,7 @@ package com.lostagain.nl.GWTish;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
@@ -184,10 +185,15 @@ public class Element extends AnimatableModelInstance {
 		}
 	}
 
-	private void fireHandlersForType(EventType eventType) {
+	protected void fireHandlersForType(EventType eventType) {
+		
+		if (handlers.isEmpty()){
+			Gdx.app.log(logstag, "no handlers set for element");
+		}
+		
 		for (EventHandler handler : handlers) {
 			
-			//if the type matchs fire the event
+			//if the type matches fire the event
 			if (handler.getType()==eventType){
 				 handler.fireHandler();
 			}
@@ -196,6 +202,7 @@ public class Element extends AnimatableModelInstance {
 			
 		}
 	}
+	
 	
 	//Actual events here;
 	//This is where the clicks are recieved
