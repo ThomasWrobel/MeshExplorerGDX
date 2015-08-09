@@ -15,9 +15,11 @@ import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.GWTish.Button;
+import com.lostagain.nl.GWTish.DeckPanel;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.camera.MECamera;
+import com.lostagain.nl.me.features.ConceptObjectSlot.OnDragRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.models.ConceptBeam;
 import com.lostagain.nl.me.models.ModelMaker;
@@ -48,8 +50,6 @@ public class ConceptGunPanel extends HorizontalPanel {
 	public static SSSNode equipedConcept = null; //the currently equipped concept. Think of it as ammo
 
 	int height = 50; //width is always screen width as its a bar at the top
-	
-
 	
 	
 	enum LazerState {
@@ -84,6 +84,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 	//widgets:	
 	ConceptObjectSlot ammoSlot = new ConceptObjectSlot();
 	Label status               = new Label("needs ammo");
+	DeckPanel slotAndCharge    = new DeckPanel(ammoSlot.getWidth(),ammoSlot.getHeight());
 
 	private ProgressBar rechargeProgress = new ProgressBar(ammoSlot.getHeight(),0,ammoSlot.getWidth());	
 	
@@ -118,13 +119,26 @@ public class ConceptGunPanel extends HorizontalPanel {
 	
 	
 	public ConceptGunPanel() {
+		super.setPadding(15f);
+		super.setSpaceing(15f);
 		
 		this.setMinSize(400f, ammoSlot.getHeight());
 		status.getStyle().clearBackgroundColor();
 		
+		//style widgets
+		ammoSlot.getStyle().clearBackgroundColor();
+		
+		slotAndCharge.getStyle().clearBackgroundColor();
+		slotAndCharge.getStyle().clearBorderColor();
+		
+		//add widgets
 		add(status);
-		add(ammoSlot);
-		add(rechargeProgress);
+		
+		slotAndCharge.add(rechargeProgress);
+		slotAndCharge.add(ammoSlot);
+
+		add(slotAndCharge);
+		//add(rechargeProgress);
 
 		Color ColorM = new Color(Color.MAROON);
 		ColorM.a=0.95f;
@@ -133,8 +147,8 @@ public class ConceptGunPanel extends HorizontalPanel {
 
 
 		
-		ammoSlot.setOnDragRun(new Runnable() {
-			public void run() {
+		ammoSlot.setOnDragRun(new OnDragRunnable() {
+			public void run(ConceptObject drop) {
 				
 				status.setText("Ammo Not Set:");
 				//disabledFire = true;
@@ -142,6 +156,8 @@ public class ConceptGunPanel extends HorizontalPanel {
 				
 				equipedConcept = null;
 				
+				//need a way to reset style of drop?
+				drop.setToDefaultBackColour();
 				
 			}
 		});
@@ -152,6 +168,10 @@ public class ConceptGunPanel extends HorizontalPanel {
 			public void run(ConceptObject drop) {
 				status.setText("Ammo Set To: ");
 				Gdx.app.log(logstag, "Ammo Set To: "+drop.itemsnode.getPLabel());
+				
+				//style drop so the back is transparent?
+				drop.setBackgroundColour(new Color(0.5f,0.5f,0.5f,0.5f));
+				
 				
 				currentLazerState = LazerState.ready;
 				
@@ -207,7 +227,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 		
 		this.setToScale(new Vector3(0.4f,0.4f,0.4f));
 		
-		MainExplorationView.camera.attachThisRelativeToScreen(this,150,0,210f); //a little behind the rest of the interface
+		MainExplorationView.camera.attachThisRelativeToScreen(this,140,0,210f); //a little behind the rest of the interface
 		
 		
 		this.pinned=true;
@@ -515,10 +535,14 @@ public class ConceptGunPanel extends HorizontalPanel {
 				lazer3d.setToPosition(new Vector3(fromPointStage.x,fromPointStage.y,defaultZ));
 				lazer3d.lookAt(MECamera.FirePoint,new Vector3(0,1,0)); //at the moment its the visualizer cube, in future we need a gun shotty shotty point.
 					
-				float amountIntoPulse = timeSinceLastHitCheck/(1/FireFrequency);
+				float pulseMul = (timeSinceLastHitCheck/(1/FireFrequency)); //0-1?
+				pulseMul = 1+((float) Math.sin(pulseMul * Math.PI*2)); //add 1 and deviding by two ensures we stay positive
+				pulseMul=pulseMul/2;
+				
+						//Math.sin(rechargeTime/(1/FireFrequency));
 				
 					
-				 MainExplorationView.setMouseLight(this.lazer3d.getBeamColor() , 10+(20f*amountIntoPulse));//20f should be linked to power
+				 MainExplorationView.setMouseLight(this.lazer3d.getBeamColor() , 5+(15f*pulseMul));//20f should be linked to power
 
 			} else {
 				//remove lazer 

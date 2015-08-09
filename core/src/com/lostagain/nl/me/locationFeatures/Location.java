@@ -8,6 +8,7 @@ import java.util.Set;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Align;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
@@ -33,6 +34,7 @@ public class Location {
 	 * This stops a grid of locations forming thats a bit too regular
 	 */
 	final static float PositionNoise = 50;
+//	private static HashMap<SSSNode, LocationHub> AllLocationNEWHubs;
 	
 	public LocationsHub locationsHub; //old being phased out
 
@@ -234,27 +236,27 @@ public class Location {
 		
 		locationsHub = new LocationsHub(locationsnode);
 		AllLocationHubs.put(locationsnode,locationsHub);
+
+		MainExplorationView.addnewlocationHub(locationsHub,X, -Y+1000); 		//new location hub system below, old one has inverted Y now to keep it out the way
 		
-		MainExplorationView.addnewlocationHub(locationsHub,X, Y);
-		
-		//new location hub system
-		//currently at inverted Y co-ordinates
 
 		Gdx.app.log(logstag, "creating new hub");
-		
-		
+			
 		
 		locationsNEWHub  = new LocationHub(locationsnode,this);
 		locationsNEWHub.hide(); //hide by default (we will make visible after lockscreen) 
 		
-								
+
+		AllLocationHubsNEW.put(locationsnode,locationsNEWHub);
 
 		
 		if (locationsnode!=PlayersData.computersuri){			
-			MainExplorationView.addnewlocationHub(locationsNEWHub,(X*2), (-Y*2)+1100);			//new hub has different layout, more spaced and (currently) inverted
+			//MainExplorationView.addnewlocationHub(locationsNEWHub,(X*2), (-Y*2)+1100);			//new hub has different layout, more spaced and (currently) inverted
+			MainExplorationView.addnewlocationHub(locationsNEWHub,(X), (Y));			//new hub has different layout, more spaced and (currently) inverted
+			
 		} else {
 			//new home might be at non-standard place
-			MainExplorationView.addnewlocationHub(locationsNEWHub,(X*2), (-Y*2)+1100);			
+			MainExplorationView.addnewlocationHub(locationsNEWHub,(X), (Y));			
 		}
 		
 		SSSNode firewallNode = getFirewallForLocation();
@@ -266,7 +268,6 @@ public class Location {
 			
 		}
 			
-		AllLocationHubsNEW.put(locationsnode,locationsNEWHub);
 
 		//only display if theres no locks or just 1
 		//this is because the last lock is always on the locationhub itself and thus the hub should be visible if theres only 1 lock
@@ -338,7 +339,7 @@ public class Location {
 		Vector2 requestedPosition = new Vector2(x,y);
 		
 		//spacing distance
-		float dis = 500+PositionNoise; //should be set to at least the container size + the position variance
+		float dis = 1000+PositionNoise; //should be set to at least the container size + the position variance
 		Vector2 newPosition = null;
 		boolean spaceFree=true;
 		
@@ -386,15 +387,33 @@ public class Location {
 		int CONWIDTH = 500;
 		
 		//loop over all locations, displace X if its overlaps
-		for (LocationsHub con : AllLocationHubs.values()) {
+	//	for (LocationsHub con : AllLocationHubs.values()) {
+		for (LocationHub con : AllLocationHubsNEW.values()) {
+			/*
 
 			float miny = con.getY();
 			float maxy = con.getY() + con.getHeight();
 
 			float minx = con.getX();
 			float maxx = con.getX() + con.getWidth();
+*/
+			
+			BoundingBox bounds = con.getLocalCollisionBox(false);
+			Vector3 min = new Vector3();
+			bounds.getMin(min);
+			
+			Vector3 max = new Vector3();
+			bounds.getMax(max);
+			
+			
+			float miny = min.y;
+			float maxy = max.y;
 
-			Gdx.app.log(logstag, "loc="+con.displayLocation);
+			float minx = min.x;
+			float maxx = max.x;
+			
+			Gdx.app.log(logstag, "location range="+min.y+"-"+max.y+","+min.x+"-"+max.x);
+			
 
 			//Gdx.app.log(logstag, "minx="+minx+" maxx="+maxx+" x="+testingAng.x);
 			//Gdx.app.log(logstag, "miny="+miny+" maxy="+maxy+" y="+testingAng.y);
@@ -406,7 +425,7 @@ public class Location {
 				
 				if (((testingAng.x+CONWIDTH)>minx-5) && (testingAng.x<maxx+5)){
 
-					Gdx.app.log(logstag, "within x and y - we hit "+con.displayLocation);
+					Gdx.app.log(logstag, "within x and y - we hit "+con.LocationsNode);
 
 					return false;
 
@@ -474,16 +493,16 @@ public class Location {
 
 		return x;
 	}
-	public float getHubsY(int align) {		
-		return locationsHub.getY(align);
+	public float getHubsY() {		
+		return locationsNEWHub.getCenterOnStage().y;
 	}
 
-	public float getHubsX(int align) {		
-		return locationsHub.getX(align);
+	public float getHubsX() {		
+		return locationsNEWHub.getCenterOnStage().x;
 	}
 	
 	public float getHubsZ() {		
-		return locationsHub.getZ();
+		return locationsNEWHub.getCenterOnStage().y;
 	}
 	
 	/**
@@ -515,8 +534,8 @@ public class Location {
 		
 		for (Location loc : AllLocations.values()) {
 			
-			float LocX = loc.getHubsX(Align.center);
-			float LocY = loc.getHubsY(Align.center);
+			float LocX = loc.getHubsX();
+			float LocY = loc.getHubsY();
 			float LocZ = 0;
 			Vector3 locationsPosition = new Vector3(LocX,LocY,LocZ);
 			
@@ -550,8 +569,8 @@ public class Location {
 		
 		for (Location loc : AllLocations.values()) {
 			
-			float LocX = loc.getHubsX(Align.center);
-			float LocY = loc.getHubsY(Align.center);
+			float LocX = loc.getHubsX();
+			float LocY = loc.getHubsY();
 			float LocZ = 0;
 			Vector3 locationsPosition = new Vector3(LocX,LocY,LocZ);
 			

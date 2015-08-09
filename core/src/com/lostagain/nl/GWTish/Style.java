@@ -166,6 +166,7 @@ public class Style {
 	 */
 	  public enum TextAlign {
 	    CENTER ,
+	    @Deprecated
 	    JUSTIFY,
 	    LEFT,
 	    RIGHT;	    

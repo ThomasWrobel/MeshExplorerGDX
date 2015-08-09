@@ -395,8 +395,8 @@ public static void centerViewOn(Location locationcontainer, float newZ, boolean 
 		//CurrentX=locationcontainer.getCenterX();  //getX()+(locationcontainer.getWidth()/2);
 		//CurrentY=locationcontainer.getCenterY(); //getY()+(locationcontainer.getHeight()/2);
 	
-		float newX = locationcontainer.getHubsX(Align.center);
-		float newY = locationcontainer.getHubsY(Align.center);
+		float newX = locationcontainer.getHubsX();
+		float newY = locationcontainer.getHubsY();
 		
 		
 		

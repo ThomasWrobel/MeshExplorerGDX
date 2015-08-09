@@ -215,8 +215,8 @@ public class Population {
 		//run this after getting the details
 		//temp details below
 		//num = 10;
-		float cX = centeredOnThisLocation.getHubsX(Align.center);
-		float cY = centeredOnThisLocation.getHubsY(Align.center);
+		float cX = centeredOnThisLocation.getHubsX();
+		float cY = centeredOnThisLocation.getHubsY();
 						
 		
 		//create creatures

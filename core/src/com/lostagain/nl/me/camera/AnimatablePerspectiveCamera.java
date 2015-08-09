@@ -482,4 +482,11 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	public boolean isInheriteingVisibility() {
 		return false;
 	}
+	/**
+	 * returns no opp
+	 */
+	@Override
+	public BoundingBox getLocalCollisionBox(boolean onceOnly) {
+		return null;
+	}
 }

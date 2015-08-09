@@ -52,7 +52,8 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	
 	private OnDropRunnable runAfterSomethingDroppedOn;
 
-	private Runnable runAfterSomethingDraggedOff;
+	private OnDragRunnable runAfterSomethingDraggedOff;
+	
 
 	/** Necessary as part of hit detection **/
 	private float lastHitDistance;
@@ -201,7 +202,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	
 	/** fired when a object is attempted to be dragged from it **/
 	boolean onDrag(){
-		
+		ConceptObject objectBeingRemoved = objectCurrentlyStored;
 		//cancel and return false if not allowed
 		if (currentMode==SlotMode.InOnly || currentMode == SlotMode.Locked){
 			Gdx.app.log(logstag,"slot mode is currently:"+currentMode);
@@ -220,7 +221,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		
 		
 		if (runAfterSomethingDraggedOff!=null){
-			runAfterSomethingDraggedOff.run();
+			runAfterSomethingDraggedOff.run(objectBeingRemoved);
 		}
 		return true;
 		
@@ -259,7 +260,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	}
 
 	
-	public void setOnDragRun(Runnable runnable) {
+	public void setOnDragRun(OnDragRunnable runnable) {
 		
 		runAfterSomethingDraggedOff = runnable;
 		
@@ -275,6 +276,9 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 
 	
 	public interface OnDropRunnable {
+		public void run(ConceptObject drop);
+	}
+	public interface OnDragRunnable {
 		public void run(ConceptObject drop);
 	}
 

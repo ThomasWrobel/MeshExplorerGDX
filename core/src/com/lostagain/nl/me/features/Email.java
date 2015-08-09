@@ -15,6 +15,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.GWTish.Style.TextAlign;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
@@ -53,9 +54,12 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 		emailContents.getStyle().setTextStyle(DistanceFieldShader.DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 		this.getStyle().clearBackgroundColor(); 
 		this.getStyle().clearBorderColor();
+		
+		emailContents.getStyle().setTextAlignment(TextAlign.LEFT);
 		emailContents.getStyle().clearBackgroundColor();
 		emailContents.getStyle().clearBorderColor();
 		emailContents.setMaxWidth(720f);
+		
 		
 		Gdx.app.log(logstag,"added emailContents:"+emailContents.isVisible());	
 		

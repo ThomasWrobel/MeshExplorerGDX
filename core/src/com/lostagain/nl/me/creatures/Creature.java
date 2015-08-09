@@ -665,8 +665,8 @@ public class Creature implements hitable , Animating {
 	public void fireReactionToDrop(Vector3 dropsPositionAsVector, ConceptObject newdrop) {
 		
 		
-		float EX = parentpolution.centeredOnThisLocation.getHubsX(Align.center);
-		float EY = parentpolution.centeredOnThisLocation.getHubsY(Align.center);
+		float EX = parentpolution.centeredOnThisLocation.getHubsX();
+		float EY = parentpolution.centeredOnThisLocation.getHubsY();
 		float EZ = getCenterOnStage().z;
 		//temp disabled while converting to new movement system
 		

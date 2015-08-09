@@ -53,6 +53,7 @@ public interface IsAnimatableModelInstance {
 	
 	public abstract Vector3 getCenterOfBoundingBox();
 
+	public abstract BoundingBox getLocalCollisionBox(boolean onceOnly);
 	public abstract BoundingBox getLocalCollisionBox();
 
 	public abstract BoundingBox getLocalBoundingBox();
@@ -112,6 +113,8 @@ public interface IsAnimatableModelInstance {
 	 * @return
 	 */
 	public abstract boolean isVisible();
+	
+
 
 
 }

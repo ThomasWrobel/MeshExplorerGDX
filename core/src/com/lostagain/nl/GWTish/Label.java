@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.Align;
 import com.lostagain.nl.DefaultStyles;
+import com.lostagain.nl.GWTish.Style.TextAlign;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.DistanceFieldShader;
@@ -130,7 +131,7 @@ public class Label extends LabelBase {
 		
 		
 		if (regenTexture){			
-			textureData = generateTexture(labelsSizeMode, contents,maxWidth);			
+			textureData = generateTexture(labelsSizeMode, contents,maxWidth,TextAlign.CENTER); //center default			
 		}
 		
 		Texture newTexture = textureData.textureItself;
@@ -178,7 +179,7 @@ public class Label extends LabelBase {
 	}
 
 
-	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, float sizeratio,float maxWidth) {
+	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, float sizeratio,float maxWidth,TextAlign align) {
 
 		
 
@@ -197,7 +198,31 @@ public class Label extends LabelBase {
 	    Gdx.app.log(logstag,text+"__"+text+"_layout width:"+maxWidth);
 	    Gdx.app.log(logstag,text+"___layout line height:"+DefaultStyles.standdardFont.getLineHeight());
 		  
-	  layout.setText(DefaultStyles.standdardFont, text, Color.BLACK, maxWidth, Align.center, true); //cant centralise without width
+	    //convert from text align to layout align
+	    int layoutAlignment = Align.center;
+	    
+	    switch (align) {
+		case CENTER:
+			 layoutAlignment = Align.center;
+			break;
+		case JUSTIFY:		    
+		    Gdx.app.log(logstag,"___JUSTIFY NOT SUPPORTED. DEFAULTING TO CENTER");
+			layoutAlignment = Align.center;
+			break;
+		case LEFT:
+			 layoutAlignment = Align.left;
+			break;
+		case RIGHT:
+			 layoutAlignment = Align.right;
+			break;
+		default:
+			 layoutAlignment = Align.center;
+			break;
+		}
+	    
+	    
+	    
+	  layout.setText(DefaultStyles.standdardFont, text, Color.BLACK, maxWidth, layoutAlignment, true); //cant centralise without width
 	  
 	 
 	  
@@ -574,9 +599,20 @@ public class Label extends LabelBase {
 	 **/
 	public void setText(String text){
 		this.contents=text;
-				
 		
-		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,maxWidth); //-1 is the default max width which means "any size"
+				
+		regenerateTexture(text);
+		
+	
+		
+
+		
+	}
+
+	private void regenerateTexture(String text) {
+		TextAlign align = this.getStyle().getTextAlignment();
+		
+		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,maxWidth,align); //-1 is the default max width which means "any size"
 		
 
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
@@ -609,11 +645,6 @@ public class Label extends LabelBase {
 			//size should only set if not on fixed size mode so we do nothing here. The texture should autoscale to whatever the current size is.
 			break;
 		}
-		
-	
-		
-
-		
 	}
 	/**
 	 * A scaleing factor that will enlarge of shrink the text relative to the standard font size.
@@ -629,7 +660,7 @@ public class Label extends LabelBase {
 		
 	}
 
-	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents, float maxWidth) {
+	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents, float maxWidth,TextAlign align) {
 		
 		
 		
@@ -640,10 +671,10 @@ public class Label extends LabelBase {
 		
 		case ExpandXYToFit:
 			Gdx.app.log(logstag,"______________generating expand to fit text ");
-			NewTexture = generatePixmapExpandedToFit(contents,1f,-1); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,1f,-1,align); //-1 = no max width
 			break;
 		case ExpandHeightMaxWidth:
-			NewTexture = generatePixmapExpandedToFit(contents,1f,maxWidth); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,1f,maxWidth,align); //-1 = no max width
 			break;
 		case Fixed:
 			break;
@@ -743,6 +774,14 @@ public class Label extends LabelBase {
 	public void setMaxWidth(float maxWidth) {
 		this.maxWidth = maxWidth;
 		labelsSizeMode = SizeMode.ExpandHeightMaxWidth;
+	}
+
+	//regenerates the texture if the style layout is changed (ie, text alignment)
+	@Override
+	public void layoutStyleChanged() {
+		super.layoutStyleChanged();
+		
+		regenerateTexture(contents);
 	}
 
 	

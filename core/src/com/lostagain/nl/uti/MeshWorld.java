@@ -36,8 +36,8 @@ public class MeshWorld {
 	Log.info("Xletters="+Xletters);
 	Log.info("Yletters="+Yletters);
 		
-		int Xlex = (Xletters.compareTo("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")-10)*50;
-		int Ylex = (Yletters.compareTo("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")-10)*50;
+		int Xlex = (Xletters.compareTo("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")-10)*100;
+		int Ylex = (Yletters.compareTo("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")-10)*100;
 		/*
 		int TestValue = "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ".compareTo("AAAAAAAAAAAAAAAAAAAAAAA");		
 		Log.info("TestValue="+TestValue); 25

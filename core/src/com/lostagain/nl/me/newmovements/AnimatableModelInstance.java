@@ -383,12 +383,35 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	/* (non-Javadoc)
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getLocalCollisionBox()
 	 */
+	
+	/**
+	 * 
+	 * @param onceOnly - indicate that you dont want the collision box to auto-update when this object is moved
+	 * @return
+	 */
 	@Override
-	public BoundingBox getLocalCollisionBox() {
+	public BoundingBox getLocalCollisionBox(boolean onceOnly) {
+		
 		if (collisionBox==null){
 			recalculateCollisionBox();
 		}
-		return collisionBox;
+		BoundingBox collisionBoxTemp = collisionBox;
+		
+		if (onceOnly){
+			collisionBox=null; //clear so we dont update again
+		}
+		
+		return collisionBoxTemp;
+	}
+	
+	@Override
+	public BoundingBox getLocalCollisionBox() {
+		return getLocalCollisionBox(false); 
+		/*
+		if (collisionBox==null){
+			recalculateCollisionBox();
+		}
+		return collisionBox;*/
 	}
 	
 	

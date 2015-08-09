@@ -233,8 +233,11 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		//we also need to scale the label to fit as it might be too long
 		if ((MeshIconsLabel.getWidth()+(LabelMargin*2))>w){
 			//10/5
-			float ratio = (MeshIconsLabel.getWidth()-(LabelMargin*2)) /w;
+			//float ratio = (MeshIconsLabel.getWidth()-(LabelMargin*2)) / w;
+			float oldWidth = MeshIconsLabel.getWidth();
 			float newWidth = w-(LabelMargin*2);
+			float ratio = oldWidth/newWidth;
+			
 			float newHeight = MeshIconsLabel.getHeight() / ratio;
 			MeshIconsLabel.setSizeAs(newWidth, newHeight);
 
@@ -250,6 +253,14 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 
 
+	}
+
+
+	/**
+	 * sets the background color to the default for this icon type
+	 */
+	public void setToDefaultBackColour() {
+		setBackgroundColour(this.thisIconsType.getIconColour());
 	}
 
 	//NOTE: associated features should only be tied to one meshicon.
@@ -454,13 +465,13 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 			if (thisIconsType==MeshIcon.IconType.LocationHub){
 				ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight()+170,1000); //location hub zooms out a bit
 			} else {
-			//	ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight(),1000);
+				//	ME.centerViewOn(this,ScreenUtils.getSuitableDefaultCameraHeight(),1000);
 
 				Vector3 targetPosition = assocatiedFeature.getDefaultCameraPosition();
 				ME.centerViewOn(targetPosition,1000);
 			}
-			
-			
+
+
 
 
 			Gdx.app.log(logstag,"opening mesh feature");
@@ -840,29 +851,29 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		AnimatableModelInstance existing = linkedIcons.get(target); //is there already a existing connection? 
 
 		if ( existing!=null ){
-			
+
 			//update the existing
 			Gdx.app.log(logstag,"updating connecting line");
 			existing.lookAt(target,Vector3.Y); //rotation
 			//need to scale as well somehow? (that is size to the correct length between objects)
-			
-			
+
+
 			return;
-			
+
 		} else {
-			
+
 			//else make a new one
 			Gdx.app.log(logstag,"Adding new connecting line");
 			AnimatableModelInstance Linksline = ModelMaker.addConnectingLine(this, target);
-			
+
 			linkedIcons.put(target,Linksline);
-			
+
 			Linksline.setInheritedRotation(false);
 
-			attachThis(Linksline, new PosRotScale(0,0,-20f)); //a little behind this icon to allow movement a bit
+			attachThis(Linksline, new PosRotScale(0,0,-25f)); //a little behind this icon to allow movement a bit
 
 			ModelManagment.addmodel(Linksline,ModelManagment.RenderOrder.zdecides);
-			
+
 		}
 
 
@@ -875,23 +886,23 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	 * Best to try to update line positions in future, rather then remove them and re-add.
 	 */
 	public void clearAllLinkLines(){
-		
+
 		Gdx.app.log(logstag,"removing all lines:"+linkedIcons.size());
-		
+
 		Iterator<MeshIcon> iconIt = linkedIcons.keySet().iterator();
-		
+
 		while (iconIt.hasNext()) {			
 			MeshIcon meshIcon = (MeshIcon) iconIt.next();
 			//this.removeLineTo(meshIcon); //can't use this due to linkedIcons being effected within it
 			AnimatableModelInstance lineModel = linkedIcons.get(meshIcon);
 			Gdx.app.log(logstag,"removing attachment");
 			this.removeAttachment(lineModel);
-			
+
 			lineModel.hide(); //hide it too;
-			
+
 			iconIt.remove();			
 		}
-		
+
 
 	}
 	/**

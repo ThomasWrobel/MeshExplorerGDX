@@ -40,7 +40,7 @@ import com.lostagain.nl.me.models.ModelManagment;
 public class LocationHub extends MeshIcon {
 	final static String logstag = "ME.LocationHub";
 	
-	private SSSNode LocationsNode;
+	public SSSNode LocationsNode;
 
 	//All features of this location stored in this array
 	HashMap<GenericMeshFeature,MeshIcon> HubsFeatures = new HashMap<GenericMeshFeature,MeshIcon>();
