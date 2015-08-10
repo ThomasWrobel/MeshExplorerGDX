@@ -17,7 +17,6 @@ public class HtmlLauncher extends GwtApplication {
     		System.out.print("GwtApplicationConfiguration");
     		
     		
-    		
                 return new GwtApplicationConfiguration(640, 480);
                 
                 

@@ -28,8 +28,18 @@ import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.ConceptBeamShader;
+
 /**
- * new concept gun 
+ * New concept gun, currently manages the visual interface and the firing of the gun.
+ * In future will also manage stat changes for the gun as well
+ * Stats will include;
+ * 
+ *  - fire frequency 
+ *  - recharge speed
+ *  - maybe multibeam? 
+ *  - ?? (See notes text files for more)
+ *  
+ *  
  * @author Tom
  */
 public class ConceptGunPanel extends HorizontalPanel {

@@ -1,6 +1,7 @@
 package com.lostagain.nl.GWTish;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -11,15 +12,15 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.lostagain.nl.GWTish.Widget.MODELALIGNMENT;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 
+
 public abstract class ComplexPanel extends Widget {
 
 	final static String logstag = "GWTish.ComplexPanel";
-
 	Color DefaultColour = new Color(0.3f,0.3f,1f,0.5f);
-	protected ArrayList<Widget> contents = new ArrayList<Widget>();
+	
+	
 	/**
-	 * 
-	 * the currently largest width of any stored element (doesnt yet update when elements removed)
+	 * the currently largest width of any stored element (doesn't yet update when elements removed)
 	 */
 	protected float largestWidthOfStoredWidgets = 0f;
 	/**
@@ -28,18 +29,50 @@ public abstract class ComplexPanel extends Widget {
 	protected float largestHeightOfStoredWidgets = 0f;
 
 
+	
 	//Runnable updateContainerSize; 
 
 	//--
 		//The follow is used for widgets attached to it when we want to specify where they go
 		//Note; These may be moved elsewhere as we introduce other classes for widgets-in-widgets
-		enum HorizontalAlignment {
+		public enum HorizontalAlignment {
 			Left,Center,Right
 		}
 		
-		enum VerticalAlignment {
+		public enum VerticalAlignment {
 			Top,Middle,Bottom
 		}
+		
+		/**
+		 * A class that stores the widget with its horizontal and vertical alignments
+		 * @author Tom
+		 */
+		class Alignment {		
+			HorizontalAlignment horizontal = null;
+			VerticalAlignment   vert = null;
+						
+			public Alignment(HorizontalAlignment horizontal,VerticalAlignment vert) {
+				
+				this.horizontal = horizontal;
+				this.vert = vert;
+				
+			}			
+						
+		}
+	
+		/**
+		 * the contents of this panel
+		 */
+		protected ArrayList<Widget> contents = new ArrayList<Widget>();
+		
+		
+		/**
+		 * if a widget has a specified alignment, it is stored here
+		 */
+		protected HashMap<Widget,Alignment> contentAlignments = new HashMap<Widget,Alignment>();
+		
+		
+		
 		
 		
 		float topPadding    = 0f;
@@ -114,6 +147,9 @@ public abstract class ComplexPanel extends Widget {
 	public void clear() {
 
 		for (Widget widget : contents) {
+			
+			//Widget widget = widgetdata.widget;
+			
 			widget.hide();
 			//widget.removeOnSizeChangeHandler(updateContainerSize);	
 			widget.setParent(null);
@@ -136,6 +172,8 @@ public abstract class ComplexPanel extends Widget {
 
 		for (Widget widget : contents) {
 
+			//Widget widget = widgetdata.widget;
+			
 			//get size of widget
 			BoundingBox size = widget.getLocalBoundingBox();
 
@@ -185,6 +223,9 @@ public abstract class ComplexPanel extends Widget {
 		super.setOpacity(opacity);
 		//repeat for our attached widgets
 		for (Widget widget : contents) {
+			
+		//	Widget widget = widgetdata.widget;
+			
 			widget.setOpacity(opacity);			
 		}
 
@@ -212,7 +253,8 @@ public abstract class ComplexPanel extends Widget {
 	abstract void repositionWidgets();
 	
 	
-	abstract Vector3 getNextPosition(float width, float height, boolean b,int widgetIndex);
+	abstract Vector3 getNextPosition(float width, float height, boolean b,Widget widget);
+	
 	
 	
 	public boolean add(Widget widget) {
@@ -238,7 +280,7 @@ public abstract class ComplexPanel extends Widget {
 		
 		//add to the widget list
 		contents.add(atIndex,widget);
-			
+		
 		//recalculate biggest widgets (used for centralization vertical or horizontal depending on panel)
 		boolean changed = recalculateLargestWidgets();
 		
@@ -271,6 +313,7 @@ public abstract class ComplexPanel extends Widget {
 		if (!removedSuccessfully){
 			return false;
 		}
+		contentAlignments.remove(widget);
 		
 		widget.hide();
 		
@@ -315,7 +358,7 @@ public abstract class ComplexPanel extends Widget {
 			float width  = size.getWidth()  * scaleX;
 			
 					
-			Vector3 newLoc = getNextPosition(width,height,true,contents.indexOf(widget));
+			Vector3 newLoc = getNextPosition(width,height,true,widget); //contents.indexOf(widget)
 			
 			
 			float newLocationX = newLoc.x;
@@ -351,7 +394,7 @@ public abstract class ComplexPanel extends Widget {
 			float height = size.getHeight() * scaleY;
 			float width  = size.getWidth()  * scaleX;
 						
-			Vector3 newLoc = getNextPosition(width,height,true,contents.indexOf(widget));
+			Vector3 newLoc = getNextPosition(width,height,true,widget);
 					
 			
 			float newLocationX = newLoc.x;
@@ -372,6 +415,55 @@ public abstract class ComplexPanel extends Widget {
 		
 		
 		
+	}
+	
+	
+	
+	/**
+	   * Sets the horizontal alignment of the given widget within its cell.
+	   * 
+	   * @param w the widget whose horizontal alignment is to be set
+	   * @param align the widget's horizontal alignment
+	   */
+	  public void setCellHorizontalAlignment(Widget widget, HorizontalAlignment align) {
+		  
+		  Alignment currentAlignment =contentAlignments.get(widget);
+		  
+		  if (currentAlignment==null){
+			  currentAlignment = new Alignment(align, VerticalAlignment.Middle);
+			  contentAlignments.put(widget, currentAlignment);	
+			  return;
+		  } else {
+			  currentAlignment.horizontal = align;
+		  }
+		  
+		  
+		  	
+	  }
+
+	  /**
+	   * Sets the vertical alignment of the given widget within its cell.
+	   * 
+	   * @param w the widget whose vertical alignment is to be set
+	   * @param align the widget's vertical alignment
+	   */
+	  public void setCellVerticalAlignment(Widget widget, VerticalAlignment align) {
+		  
+		  Alignment currentAlignment = contentAlignments.get(widget);		  
+		  if (currentAlignment==null){
+			  currentAlignment = new Alignment(HorizontalAlignment.Center,align);
+			  contentAlignments.put(widget, currentAlignment);	
+			  return;
+		  } else {
+			  currentAlignment.vert = align;
+		  }
+		  
+		  
+	  }
+
+	  
+	public void setContentAlignments(Widget widget, Alignment contentAlignment) {		
+		contentAlignments.put(widget, contentAlignment);		
 	}
 
 

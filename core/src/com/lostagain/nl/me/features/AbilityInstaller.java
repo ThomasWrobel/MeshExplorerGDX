@@ -18,6 +18,7 @@ import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.Widget;
+import com.lostagain.nl.GWTish.ComplexPanel;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
@@ -92,11 +93,10 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 		add(title);
 		//PosRotScale slotPosition = new PosRotScale(hw - (slot.getScaledWidth()/2),-55f,3f);
 		//attachThis(slot, slotPosition);
-		add(slot);
+		add(slot);	
 		//PosRotScale installerBarPosition = new PosRotScale(40f,-105f,3f);
 		//attachThis(installerBar, installerBarPosition);
 		add(installerBar);
-		
 		
 		
 		feedback.setToScale(new Vector3(0.6f,0.6f,0.6f));

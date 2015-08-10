@@ -19,9 +19,8 @@ import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 
 public class DefaultStyles {
 
-	//static Logger Log = Logger.getLogger("ME.DefaultStyles");
-
 	final static String logstag = "ME.DefaultStyles";
+		
 
 	public static final Color lockedLabel = new Color(1f, 0f, 0f, 0.5f);
 	public static final Color unlockedLabel = new Color(0f, 1f, 0f, 0.5f);
@@ -36,25 +35,20 @@ public class DefaultStyles {
 	public static final Skin defaultStyles = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 
-
-
-
-
-
-
-
-
-
 	public static Skin linkstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
 	public	static Skin buttonstyle = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 	public static Skin colors = new Skin();
 
 
-	//static ProgressBarStyle barStyle = new ProgressBarStyle(Skin.newDrawable("white", Color.DARK_GRAY), textureBar);
+
+	public static Texture texturespaced = new Texture(Gdx.files.internal("data/fonttest_spaced.png"), true);
+	public static BitmapFont standdardFont = new BitmapFont(Gdx.files.internal("data/fonttest_spaced.fnt"), new TextureRegion(texturespaced), true);
+		
+	
 	public static Texture texture = new Texture(Gdx.files.internal("data/standardfont.png"), true);
-	public static BitmapFont scramabledFont = new BitmapFont(Gdx.files.internal("data/dfieldscrambled.fnt"), new TextureRegion(texture), true);
-	public static BitmapFont standdardFont = new BitmapFont(Gdx.files.internal("data/standardfont.fnt"), new TextureRegion(texture), true);
+	
+	public static BitmapFont scramabledFont = new BitmapFont(Gdx.files.internal("data/dfieldscrambled.fnt"), new TextureRegion(texture), true);	
 	public static BitmapFont standdardFont_interface = new BitmapFont(Gdx.files.internal("data/standardfont.fnt"), new TextureRegion(texture), false);
 
 

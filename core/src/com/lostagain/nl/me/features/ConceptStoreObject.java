@@ -43,7 +43,9 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 		parentLocation = locationHub;
 		super.setSpaceing(5f);
 		super.setPadding(15f); //padding around border
+		
 		super.getStyle().clearBackgroundColor();
+		super.getStyle().clearBorderColor();
 		
 		TitleLabel = new Label("Concept Store Object");
 		TitleLabel.setToScale(new Vector3(0.6f,0.6f,0.6f)); 
@@ -78,7 +80,8 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 	}
 	
 	static class ConceptObjectContainerBar extends HorizontalPanel implements GenericProgressMonitor {
-				
+		
+		
 		float StandardWidth = 350;	
 		ProgressBar scanbar = new ProgressBar(20,5,StandardWidth-ConceptObjectSlot.WIDTH);
 		
@@ -100,12 +103,14 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 			Gdx.app.log(logstag,"adding scan bar widget.");
 		
 			
-			add(scanbar);			
+			
+			add(scanbar);
+			
 			Label testLabelLala = new Label("|");
 			testLabelLala.setLabelBackColor(Color.CLEAR);				
 			add(testLabelLala);
 			
-			slot.setAlignment(MODELALIGNMENT.TOPLEFT);
+			slot.setPivotAlignment(MODELALIGNMENT.TOPLEFT);
 			add(slot);
 			
 			//locked  slot untill scanned

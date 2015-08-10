@@ -222,9 +222,10 @@ public class Label extends LabelBase {
 	    
 	    
 	    
-	  layout.setText(DefaultStyles.standdardFont, text, Color.BLACK, maxWidth, layoutAlignment, true); //cant centralise without width
+	  layout.setText(DefaultStyles.standdardFont, text, Color.BLACK, maxWidth, layoutAlignment, true); //cant centralize without width
 	  
-	 
+	
+	  
 	  
 	  
 	 //   float currentWidth  = layout.width;
@@ -297,10 +298,9 @@ public class Label extends LabelBase {
 		    	int i =0;
 		    	for (Glyph glyph : grun.glyphs) {
 		    		
-		    		
 		    		float advance = grun.xAdvances.get(i);
 		    		i++;
-		    		currentRunX=currentRunX+advance;
+		    		currentRunX=currentRunX   +   advance    ; //1 should not be needed
 		    		
 		    		textPixmap.drawPixmap(
 					    	fontPixmap,
@@ -367,6 +367,7 @@ public class Label extends LabelBase {
 		Pixmap textPixmap = new Pixmap(DefaultWidth, DefaultHeight, Format.RGBA8888);
 
 		if (!expandSizeToFit){
+			
 			textPixmap = new Pixmap(DefaultWidth, DefaultHeight, Format.RGBA8888);
 
 		} else {

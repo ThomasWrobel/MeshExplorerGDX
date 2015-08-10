@@ -160,7 +160,7 @@ public class MainExplorationView implements Screen {
 	
 	public static ShaderProgram distancefieldshader;
 	
-	Label testlabel = new Label("HomeLocation");
+	//Label testlabel = new Label("HomeLocation");
 	
 	//label for testing large text
 	Label testlabel2 = new Label("ME.ModelManagment: _-testing ray in :425.04813 models\r\n" + 

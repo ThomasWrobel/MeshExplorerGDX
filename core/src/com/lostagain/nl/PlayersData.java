@@ -26,7 +26,7 @@ public class PlayersData {
 	final static String logstag = "ME.PlayersData";
 	//static Logger Log = Logger.getLogger("ME.PlayersData")
 	//		;
-	public static SSSNode computersuri = SSSNode.createSSSNode("HomeLocation","HomeLocation",ME.INTERNALNS,new SSSNode[]{StaticSSSNodes.Computer});
+	public static SSSNode computersuri = SSSNode.createSSSNode("Home","Home",ME.INTERNALNS,new SSSNode[]{StaticSSSNodes.Computer});
 			
 	 //default software contents
 //	static SSSNode coin = SSSNode.createSSSNode("coin",ME.INTERNALNS+"coin", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.software});

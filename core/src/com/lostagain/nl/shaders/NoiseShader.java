@@ -206,7 +206,7 @@ public class NoiseShader implements Shader {
 			
 			float alpha = Location.getCorruptionAt(position,800);
 			//we should also add height based corruption ontop of this, so the user can't zoom out too much
-			float standardHeight = ScreenUtils.getSuitableDefaultCameraHeight()-50; //the -50 ensures it has a little noise even at standard height
+			float standardHeight = ScreenUtils.getSuitableDefaultCameraHeight()-10; //the -10 ensures it has a little noise even at standard height
 			float heightbasedopacity = (MainExplorationView.camera.transState.position.z-(standardHeight))/1000.0f; //	380.0f
 			alpha=alpha+heightbasedopacity;
 			

@@ -3,6 +3,9 @@ package com.lostagain.nl.GWTish;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.lostagain.nl.GWTish.ComplexPanel.Alignment;
+import com.lostagain.nl.GWTish.ComplexPanel.HorizontalAlignment;
+import com.lostagain.nl.GWTish.ComplexPanel.VerticalAlignment;
 
 
 public class HorizontalPanel extends CellPanel {
@@ -25,24 +28,54 @@ public class HorizontalPanel extends CellPanel {
 		
 	}
 	
-	Vector3 getNextPosition(float incomingWidth,float incomingHeight,boolean updateWidth,int widgetIndex){
+	Vector3 getNextPosition(float incomingWidth,float incomingHeight,boolean updateWidth,Widget widget){
+		
+		int index = contents.indexOf(widget);
+		
+		Alignment align = contentAlignments.get(widget);
+		if (align == null) {
+			align = new Alignment(HorizontalAlignment.Left,
+					defaultVerticalAlignment);
+		}
 		
 		float newLocationX = currentTotalWidgetWidth;		
 		
 		float newLocationY = 0;
 		
+		float maxH = (largestHeightOfStoredWidgets);
+		//ensure its at least min height
+		if (maxH<MinSizY){
+			maxH=MinSizY;
+		}
+		
+		switch (align.vert) {
+		case Bottom:
+			newLocationY = (maxH - incomingHeight);
+			break;
+		case Middle:
+			newLocationY =  (maxH - incomingHeight)/2; //center in panel
+			break;
+		case Top:
+			newLocationY = 0;
+			break;
+		default:
+			newLocationY =  (maxH - incomingHeight)/2; //center in panel
+			break;
+
+		}
+
+		
+		
+		/*
+		
 		if (DefaultAlignmentinCell == VerticalAlignment.Middle){
-			float maxH = (largestHeightOfStoredWidgets);
-			//ensure its at least min height
-			if (maxH<MinSizY){
-				maxH=MinSizY;
-			}
+			
 			
 			newLocationY =  (maxH - incomingHeight)/2; //center in panel
 			
 		
 			
-		}
+		}*/
 		
 		//the following option shouldnt be needed I think
 		if (updateWidth){
@@ -98,14 +131,19 @@ public class HorizontalPanel extends CellPanel {
 		sizeToFitContents(); 
 	}
 	
-	//@Override
-	//public void add(Widget widget) {
-	//	super.add(widget);
-		//resize
-	//	Gdx.app.log(logstag,"new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
-		
-	//	sizeToFitContents(); 
-	//}
+
+	 private VerticalAlignment defaultVerticalAlignment = VerticalAlignment.Middle;
+	 
+	/**
+	   * Sets the default horizontal alignment to be used for widgets added to this
+	   * panel. It only applies to widgets added after this property is set.
+	   * 
+	   */
+	  public void setHorizontalAlignment(VerticalAlignment align) {
+		  defaultVerticalAlignment = align;
+	  }
+
+
 //
 	@Override
 	void sizeToFitContents() {

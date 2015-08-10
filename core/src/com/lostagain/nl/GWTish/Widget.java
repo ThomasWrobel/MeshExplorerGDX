@@ -327,7 +327,7 @@ public class Widget extends Element {
 		return alignment;
 	}
 	/** sets the alignment var and recalcs the mesh to match **/
-	public void setAlignment(MODELALIGNMENT alignment) {
+	public void setPivotAlignment(MODELALIGNMENT alignment) {
 		this.alignment = alignment;
 
 		Gdx.app.log(logstag,"______________getWidth"+this.getWidth());

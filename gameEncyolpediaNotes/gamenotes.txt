@@ -217,7 +217,7 @@ of the current action, it skips to the next action in its current list and retur
 
 
 
-Widgets to make
+Widgets to make (done)
 
 1. Mock GWT label - scalable in 3d using distance map fonts (or whatever its calleD). Has all the basic propertys of a label.
 
