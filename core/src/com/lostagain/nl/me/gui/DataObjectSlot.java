@@ -313,9 +313,8 @@ public class DataObjectSlot  extends WidgetGroup implements DataObjectDropTarget
 			
 			STMemory.clearCurrentlyHeld();
 			//STMemory.currentlyHeld = null;			
-			MainExplorationView.setCursor(null);
-			
-			
+			//MainExplorationView.setCursor(null);
+			ME.setCursorToDefault();
 		
 		}
 		if (old_stored!=null){

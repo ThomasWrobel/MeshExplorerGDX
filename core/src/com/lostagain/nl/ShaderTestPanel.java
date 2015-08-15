@@ -9,6 +9,7 @@ import com.lostagain.nl.GWTish.Image;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.shaders.NormalMapShader;
+import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 
 /**
  * a group of images purely to test shaders
@@ -20,6 +21,8 @@ public class ShaderTestPanel extends HorizontalPanel {
 	public ShaderTestPanel(){
 
 		this.getStyle().setBackgroundColor(Color.BLACK);
+		
+	//	this.getMaterial().set(new ZIndexAttribute(50)); //temp test
 
 		//make rock test
 		//	Image testRockImage = new Image(Gdx.files.internal("data/rock.png")); // //   diffuseMap        = new Texture(Gdx.files.internal("data/rock.png")); (rocktexture test)
@@ -68,6 +71,8 @@ public class ShaderTestPanel extends HorizontalPanel {
 		ModelManagment.addmodel(testBrickImage, RenderOrder.infrontStage);
 		add(testBrickImage);		
 
+
+		//testBrickImage.setShaderAttribute(new ZIndexAttribute(50),false); //temp test
 	}
 
 	//not implemented

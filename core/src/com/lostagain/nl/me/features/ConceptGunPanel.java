@@ -132,7 +132,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 		super.setPadding(15f);
 		super.setSpaceing(15f);
 		
-		this.setMinSize(400f, ammoSlot.getHeight());
+		this.setMinSize(400f, ammoSlot.getScaledHeight());
 		status.getStyle().clearBackgroundColor();
 		
 		//style widgets
@@ -148,6 +148,9 @@ public class ConceptGunPanel extends HorizontalPanel {
 		slotAndCharge.add(ammoSlot);
 
 		add(slotAndCharge);
+		this.setCellHorizontalAlignment(slotAndCharge, HorizontalAlignment.Right);
+		this.setCellVerticalAlignment(slotAndCharge, VerticalAlignment.Top);
+		
 		//add(rechargeProgress);
 
 		Color ColorM = new Color(Color.MAROON);
@@ -237,7 +240,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 		
 		this.setToScale(new Vector3(0.4f,0.4f,0.4f));
 		
-		MainExplorationView.camera.attachThisRelativeToScreen(this,140,0,210f); //a little behind the rest of the interface
+		MainExplorationView.camera.attachThisRelativeToScreen(this,147,0,240f); //a little behind the rest of the interface
 		
 		
 		this.pinned=true;

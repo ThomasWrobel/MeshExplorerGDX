@@ -57,7 +57,7 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 	//style
 	static final float StandardWidth = 300;
 
-	final static String CLOSED   = "CLOSED ( ";
+	final static String CLOSED   = "CLOSED( ";
 	final static String UNKNOWEN = "UNKNOWEN- ";
 	final static String SCANNING = "SCANNING- ";
 	
@@ -75,8 +75,8 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 		LocationsName = targetPC.getPLabel();
 	
 		//remove start if too long
-		if (LocationsName.length()>33){
-			LocationsName="..."+LocationsName.substring(LocationsName.length()-33, LocationsName.length() );
+		if (LocationsName.length()>23){
+			LocationsName="..."+LocationsName.substring(LocationsName.length()-23, LocationsName.length() );
 		}
 		linksToThisPC = targetPC;
 		
@@ -86,12 +86,17 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 		
 				
 		super.add(scanbar);
+		super.setCellHorizontalAlignment(scanbar, HorizontalAlignment.Left);
+		
 
 		gotoLinkLabel = new Label(LocationsName);
-		gotoLinkLabel.setToScale(new Vector3(0.6f,0.6f,0.6f));
+		gotoLinkLabel.setToScale(new Vector3(0.5f,0.5f,0.5f));
+		gotoLinkLabel.setMaxWidth((StandardWidth-10f)*2); //same as progress bar (note width is unscaled hence we double it)
 		
 		gotoLinkLabel.setLabelBackColor(Color.CLEAR);
 		super.add(gotoLinkLabel); 		
+		super.setCellHorizontalAlignment(gotoLinkLabel, HorizontalAlignment.Center);
+		
 		setUnknownStyle();
 		
 
@@ -446,7 +451,7 @@ private void requestScan(){
 						
 			currentMode = LinkMode.Scanning;
 						
-			gotoLinkLabel.setText(SCANNING+":"+LocationsName);
+			gotoLinkLabel.setText(SCANNING+""+LocationsName);
 			
 			Gdx.app.log(logstag,"_____________n width:"+gotoLinkLabel.getLocalBoundingBox().getWidth());
 			Gdx.app.log(logstag,"_____________n height:"+gotoLinkLabel.getLocalBoundingBox().getHeight());

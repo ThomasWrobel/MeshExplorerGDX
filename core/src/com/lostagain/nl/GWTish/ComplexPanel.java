@@ -420,7 +420,7 @@ public abstract class ComplexPanel extends Widget {
 	
 	
 	/**
-	   * Sets the horizontal alignment of the given widget within its cell.
+	   * Sets the horizontal alignment of the given widget within its cell and triggers the widgets to be repositioned
 	   * 
 	   * @param w the widget whose horizontal alignment is to be set
 	   * @param align the widget's horizontal alignment
@@ -437,12 +437,12 @@ public abstract class ComplexPanel extends Widget {
 			  currentAlignment.horizontal = align;
 		  }
 		  
-		  
+		  this.repositionWidgets();
 		  	
 	  }
 
 	  /**
-	   * Sets the vertical alignment of the given widget within its cell.
+	   * Sets the vertical alignment of the given widget within its cell  and triggers the widgets to be repositioned
 	   * 
 	   * @param w the widget whose vertical alignment is to be set
 	   * @param align the widget's vertical alignment
@@ -458,7 +458,7 @@ public abstract class ComplexPanel extends Widget {
 			  currentAlignment.vert = align;
 		  }
 		  
-		  
+		  this.repositionWidgets();
 	  }
 
 	  

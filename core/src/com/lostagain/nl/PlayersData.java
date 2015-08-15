@@ -173,7 +173,7 @@ public class PlayersData {
 		
 		//developers get some stuff automatically
 		//wont work till inventory can add stuff like the gun automatically on first load
-		if (ME.currentMode == GameMode.Developer ){
+		if (ME.currentGameMode == GameMode.Developer ){
 			//playerslocationcontents.add(StaticSSSNodes.ConceptGun1);
 			
     	} 

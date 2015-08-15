@@ -416,7 +416,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	 */
 	@Override
 	public Matrix4 getMatrixTransform() {		
-		return null;//super.transform;
+		return null;
 	}
 
 

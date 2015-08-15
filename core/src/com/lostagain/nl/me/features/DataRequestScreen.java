@@ -299,7 +299,7 @@ public class DataRequestScreen extends VerticalPanel implements GenericMeshFeatu
 			//ensure concept is first added (silly but this is so later we can have a nice rejection animation
 			//it needs to know what to eject!
 			STMemory.clearCurrentlyHeld();
-			 MainExplorationView.setCursor(null);
+		//	 MainExplorationView.setCursor(null);
 			objectCurrentlyStored = object;
 						
 			

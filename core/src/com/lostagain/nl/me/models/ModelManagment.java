@@ -33,6 +33,7 @@ import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.ConceptBeamShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
+import com.lostagain.nl.shaders.MySorter;
 
 public class ModelManagment {
 
@@ -49,7 +50,10 @@ public class ModelManagment {
 
 
 	public ModelBatch modelBatch;
+	
+	public static MySorter mysorter;
 
+	
 	/**all hitable models **/
 	public static ObjectSet<hitable> hitables = new ObjectSet<hitable>(); //should be changed to a set to stop duplicates
 	/** everything the mouse is currently down over **/
@@ -101,6 +105,10 @@ public class ModelManagment {
 	 * If Z is less then the stage Z 5 its behind
 	 * If its more then 5its in front**/
 	public static void addmodel(ModelInstance model, RenderOrder order) {	
+		
+		//temp test putting it all in front of the stage while we test material based ordering
+		order = RenderOrder.infrontStage;		
+		
 	
 		//ignore if present already
 		if (allBackgroundInstances.contains(model) || allForgroundInstances.contains(model)){
@@ -195,9 +203,9 @@ public class ModelManagment {
 		//modelBatch = new ModelBatch(vert,frag);
 		//	 MyShaderProvider myshaderprovider = new MyShaderProvider();
 
+		mysorter = new MySorter();
 		modelBatch = new ModelBatch(myshaderprovider);
-
-
+		
 		//First we add one object at the center with a defaultshader used
 		// Its VERY important to use a defaultshader object as the first thing created, else
 		//the default shader will get confused and think it can render things with other shaders too.
@@ -270,7 +278,7 @@ public class ModelManagment {
 
 		//ModelManagment.addmodel(centermaker,RenderOrder.infrontStage);
 
-		if (ME.currentMode!=GameMode.Production){
+		if (ME.currentGameMode!=GameMode.Production){
 			ModelManagment.addmodel(beamtest,RenderOrder.infrontStage);
 			//	ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
 

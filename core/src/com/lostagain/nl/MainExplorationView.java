@@ -1,5 +1,6 @@
 package com.lostagain.nl;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -57,6 +58,7 @@ import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.InvertShader;
 import com.lostagain.nl.shaders.NormalMapShader;
 
@@ -176,7 +178,7 @@ public class MainExplorationView implements Screen {
 			"ME.MainExplorationView: __com.badlogic.gdx.scenes.scene2d.ui.Label");
 	
 	//Controls the 3d background
-	public static  ModelManagment background = new ModelManagment();
+	public static  ModelManagment the3dscene = new ModelManagment();
 
 	
 
@@ -281,7 +283,7 @@ public class MainExplorationView implements Screen {
 		camera.update(true);
 		
 		Gdx.app.log(logstag,"creating background");
-		background.setup();
+		the3dscene.setup();
 		
 
 		PlayersData.homeLoc = new Location(PlayersData.computersuri, PlayersData.homelocationX,PlayersData.homelocationY);
@@ -415,10 +417,53 @@ public class MainExplorationView implements Screen {
 		infoPopUp.sheduleMessage("Please check your messages and links to get started", Color.WHITE, 8200);
 		
 		ME.centerViewOn( PlayersData.homeLoc,ScreenUtils.getSuitableDefaultCameraHeight(),7000);
+	
 
+		//Default light settings
+		mouseLight.set(Color.ORANGE, 1f, 2f, 0.075f, 1f);
 		
+		//more tests if on developer mode
+		if (ME.currentGameMode == ME.GameMode.Developer){
+			
+			addDeveloperDrops();
+			
+
+		}
+				
 		
-		//more tests;
+	}
+
+
+
+	/**
+	 * adds a bunch of drops to the scene to aid development work
+	 * (ie, give access to stuff earlier without needing to play though early gameplay over and over)
+	 * 
+	 */
+	private void addDeveloperDrops() {
+		
+		//we get all the nodes we want as a list then drop them near the start location
+		ArrayList<SSSNode> developerDropList = new ArrayList<SSSNode>();
+		developerDropList.add(PlayersData.computersuri);			
+		developerDropList.add(StaticSSSNodes.BasicInventory);
+		developerDropList.add(StaticSSSNodes.ExpandedInventory);
+		developerDropList.add(StaticSSSNodes.standardgui);
+		SSSNode applenode = SSSNode.getNodeByLabel("Granny Smith apple");
+		developerDropList.add(applenode);	
+		SSSNode sunnode = SSSNode.getNodeByLabel("Sun");
+		developerDropList.add(sunnode);	
+		//SSSNode waternode = SSSNode.getNodeByLabel("Water");
+		//developerDropList.add(waternode);	
+		
+		for (SSSNode node : developerDropList) {
+			
+			ConceptObject coTest = new ConceptObject(node);
+			coTest.setToPosition(new Vector3(320f,450f,0f));
+			ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
+		
+		}
+		
+		/*
 		ConceptObject coTest = new ConceptObject(PlayersData.computersuri);
 		coTest.setToPosition(new Vector3(320f,450f,0f));
 		ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
@@ -441,14 +486,27 @@ public class MainExplorationView implements Screen {
 		ConceptObject GUI = new ConceptObject(StaticSSSNodes.standardgui);
 		GUI.setToPosition(new Vector3(320f,485f,0f));
 		ModelManagment.addmodel(GUI,ModelManagment.RenderOrder.zdecides);
+		*/
 		
+		SSSNode bobsl =  SSSNode.getNodeByLabel("Bobs Outpost");
+		SSSNode bobs2 = SSSNode.getNodeByLabel("BobsOutpost");
+//	bobs2.addLabel("bobs outpost");
+		bobs2.addLabel("bobs label");
+		String bobslabels = bobs2.getAllPLabels();
+		
+		infoPopUp.sheduleMessage(bobs2.PURI, Color.PINK, 8800);
+		infoPopUp.sheduleMessage(bobslabels, Color.PINK, 8800);
+		
+	//	ConceptObject bobconcept = new ConceptObject(bobs2);	
+	//	GUI.setToPosition(new Vector3(320f,485f,0f));
+	//	ModelManagment.addmodel(bobconcept,ModelManagment.RenderOrder.zdecides);
 		
 		
 		
 		
 		//slot 
 		final ConceptObjectSlot slotTest = new ConceptObjectSlot();
-		slotTest.setToPosition(new Vector3(450f,670f,0f));
+		slotTest.setToPosition(new Vector3(250f,250f,0f));
 		ModelManagment.addmodel(slotTest,ModelManagment.RenderOrder.zdecides);
 		
 		
@@ -475,12 +533,12 @@ public class MainExplorationView implements Screen {
 		//ModelManagment.addmodel(tempbuttonSmaller,ModelManagment.RenderOrder.zdecides);
 		//ModelManagment.addmodel(tempbuttonBigger,ModelManagment.RenderOrder.zdecides);
 		
-	
+
 		//inventory test
 		//InventoryPanel testInventory = new InventoryPanel();
 		//testInventory.setToPosition(new Vector3(320f,985f,0f));
 		//ModelManagment.addmodel(testInventory,ModelManagment.RenderOrder.zdecides);
-	
+
 		/*
 		Image testImage = new Image(Gdx.files.internal("data/rock.png")); // //   diffuseMap        = new Texture(Gdx.files.internal("data/rock.png")); (rocktexture test)
 		testImage.setToPosition(new Vector3(100f,230f,50f));
@@ -496,22 +554,9 @@ public class MainExplorationView implements Screen {
 		shaderTests.setToScale(new Vector3(0.2f,0.2f,0.2f));
 		shaderTests.setToPosition(new Vector3(100f,430f,40f));	
 		ModelManagment.addmodel(shaderTests,ModelManagment.RenderOrder.infrontStage);
-		
-		
-		//Default light settings
-		mouseLight.set(Color.ORANGE, 1f, 2f, 0.075f, 1f);
-		
 	}
+	
 
-	public static void setCursor(Texture curimage){
-
-		if (curimage!=null){
-			customCursor = curimage;
-		} else {
-			customCursor = null;
-		}
-
-	}
 
 	public static void addnewlocationHub(LocationsHub newloc,int x,int y) {
 
@@ -599,7 +644,7 @@ public class MainExplorationView implements Screen {
 		//Note we draw this here because its in the background and should appear behind the other elements
 		//Each render is sort of like a "layer" and appears in the order they are rendered
 		//regardless of 3d positions within that layer
-		background.updateAnimatedBacks(delta);
+		the3dscene.updateAnimatedBacks(delta);
 		ModelManagment.updateObjectMovementAndFrames(delta);//--
 		
 		//we start other updates
@@ -613,14 +658,7 @@ public class MainExplorationView implements Screen {
 		
 		//update any scans and their  bars
 		ScanManager.update(delta);
-		
-		if (debugCamera.active){
-			background.modelBatch.begin( debugCamera);
-		} else {
-			background.modelBatch.begin( camera);
-		}
-		
-		
+
 		//match mouseLight to mouse location
 		Vector2 currentMouseOnStage = ME.getCurrentStageCursorPosition();		
 		mouseLight.position.x = currentMouseOnStage.x;
@@ -628,13 +666,21 @@ public class MainExplorationView implements Screen {
 		//z? intensity?
 		///////////
 		
+		if (debugCamera.active){
+			the3dscene.modelBatch.begin( debugCamera);
+		} else {
+			the3dscene.modelBatch.begin( camera);
+		}
+		
+		
+		
 		
 		//rcontext.begin();
 		//testdefaultShader.begin(camera, rcontext);		
-		background.modelBatch.render(ModelManagment.allBackgroundInstances);
+		the3dscene.modelBatch.render(ModelManagment.allBackgroundInstances);
 		
 		//testdefaultShader.end();
-		background.modelBatch.end();	
+		the3dscene.modelBatch.end();	
 		
 		//rcontext.end();		
 		//testshader.begin();
@@ -655,16 +701,16 @@ public class MainExplorationView implements Screen {
 		//background.modelBatch.getRenderContext().setBlending(true, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		//background.modelBatch.getRenderContext().setCullFace(GL20.GL_FRONT);
 		if (debugCamera.active){
-			background.modelBatch.begin( debugCamera);
+			the3dscene.modelBatch.begin( debugCamera);
 		} else {
-			background.modelBatch.begin( camera);
+			the3dscene.modelBatch.begin( camera);
 		}
 		//rcontext.begin();
 		//testdefaultShader.begin(camera, rcontext);		
-		background.modelBatch.render(ModelManagment.allForgroundInstances);
+		the3dscene.modelBatch.render(ModelManagment.allForgroundInstances);
 		
 		//testdefaultShader.end();
-		background.modelBatch.end();	
+		the3dscene.modelBatch.end();	
 		//background.modelBatch.getRenderContext().end();
 
 		//  game.batch.setProjectionMatrix(camera.combined);
@@ -709,6 +755,24 @@ public class MainExplorationView implements Screen {
 			
 			if (touchStartedAt.dst2(currentLoc)>5){				
 				ModelManagment.fireDragStartOnAll();				
+			}
+			
+			//if holding a item we should move it under the cursor
+			//(currently prevents drops working for some reason?!
+			//PROBABLY due to the item itself being hit on the upclick rather then whats under it)
+			if (STMemory.isHoldingItem()){
+				//	Ray ray = ME.getCurrentStageCursorRay(); //note: optimization might be possible for this ray function. We shouldnt get the ray again if it already has been got this frame
+				//STMemory.currentlyHeldNEW.show();
+				Vector2 cp = ME.getCurrentCursorScreenPosition();
+				//Vector3 holdPosition= new Vector3(cursorPositionOnStage.x,cursorPositionOnStage.y,100f); //100 
+				Vector3 holdPosition=  MainExplorationView.camera.getDisplacementForScreenCoOrdinates(cp.x, cp.y, 300f); //300 is expiremental holding position
+				
+				PosRotScale cameraRelativePos = new PosRotScale(holdPosition);
+				PosRotScale newposition = MainExplorationView.camera.transState.copy().displaceBy(cameraRelativePos);
+								
+				
+				STMemory.currentlyHeldNEW.setTransform(newposition);
+				
 			}
 			
 			
@@ -927,7 +991,7 @@ public class MainExplorationView implements Screen {
 		}
 		
 		//if not in production we display the position
-		if (ME.currentMode != GameMode.Production){
+		if (ME.currentGameMode != GameMode.Production){
 			ME.font.draw( ME.interfaceSpriteBatch, "x:: " + currentPos.x+" y:: " + currentPos.y+" z::"+ currentPos.z, 10,25);
 		}
 		
@@ -1086,7 +1150,7 @@ public class MainExplorationView implements Screen {
 		dropSound.dispose();
 		rainMusic.dispose();
 
-		background.dispose();
+		the3dscene.dispose();
 
 	}
 	

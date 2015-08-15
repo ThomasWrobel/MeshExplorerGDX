@@ -158,6 +158,8 @@ public class GlowingSquareShader implements Shader {
 
 		this.camera = camera;
 		this.context = context;
+		
+		
 		//update time
 		time = time+ Gdx.graphics.getDeltaTime();
 
@@ -171,8 +173,14 @@ public class GlowingSquareShader implements Shader {
 		// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);   	 
 		context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-		context.setDepthTest(GL20.GL_LESS);    	
-
+		context.setDepthTest(GL20.GL_LESS); 
+	//	context.setDepthTest(GL20.GL_GREATER);    	
+			
+	//	if (){
+		//	context.setDepthTest(GL20.GL_NONE);   
+		//}
+		
+		
 		//lower for additive
 		// context.setBlending(true,GL20.GL_ONE ,GL20.GL_ONE);    	  
 		// context.setDepthTest(GL20.GL_DEPTH_TEST);    	
@@ -184,15 +192,15 @@ public class GlowingSquareShader implements Shader {
 
 	@Override
 	public void render (Renderable renderable) {  
+		
 		//set the variable for the objects world transform to be passed to the shader
-
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
 
 
 		GlowingSquareAttribute squareStyle = (GlowingSquareAttribute)renderable.material.get(GlowingSquareAttribute.ID);
-		Color back = squareStyle.backColor.cpy();
+		Color back = squareStyle.backColor.cpy(); //squareStyle can be null at this point for some reason?
 		Color core = squareStyle.coreColor.cpy();
-		//Color glow = squareStyle.glowColor.cpy();
+		
 
 		BlendingAttribute blending = ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type));
 		if (blending!=null){

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -17,6 +18,7 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
+import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 /**
  * provides togglable shortcuts for various game functions such as going home, activating the concept gun, or opening the inventory
  * 
@@ -39,8 +41,8 @@ public class NewGUIBar extends VerticalPanel {
 	InterfaceButton myContents = new InterfaceButton("My  Data",false); //not visible unless we have data (will be removed in favor of temp memory)
 	InterfaceButton mySTMemory = new InterfaceButton("My STMem",false); //not visible unless we have data (new temp memory)
 
-	InterfaceButton myLinks =    new InterfaceButton("My Links",true);
-	InterfaceButton myEmails =   new InterfaceButton("My Emails",true);
+//	InterfaceButton myLinks =    new InterfaceButton("My Links",true);
+//	InterfaceButton myEmails =   new InterfaceButton("My Emails",true);
 	boolean pinned = false; //are we pinned to the interface 		
 
 	/**
@@ -198,7 +200,42 @@ public class NewGUIBar extends VerticalPanel {
 		
 		setToDefaultPosition();
 		
+		setZIndex(100);
+		
 	}
+	
+	
+	/**
+	 * adds a z index override and sets it to the supplied value
+	 * use clear to revert to natural ordering
+	 * @param opacity
+	 */
+	public void setZIndex(int index){
+		//get the material from the model
+		Material infoBoxsMaterial = this.getMaterial();
+		infoBoxsMaterial.set(new ZIndexAttribute(index));
+		
+	}
+	
+	/**
+	 * adds a z index override and sets it to the supplied value
+	 * use clear to revert to natural ordering
+	 * @param opacity
+	 */
+	public void clearZIndex(int index){
+		//get the material from the model
+		Material infoBoxsMaterial =this.getMaterial();	
+		infoBoxsMaterial.remove(ZIndexAttribute.ID);
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
 	private void setToDefaultPosition() {
 		Gdx.app.log(logstag, "setting tyo default position");
 		this.setToScale(new Vector3(0.4f,0.4f,0.4f));

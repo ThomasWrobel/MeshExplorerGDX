@@ -313,7 +313,7 @@ public class Label extends LabelBase {
 							glyph.width, 
 							glyph.height);
 
-			    	Gdx.app.log(logstag,"___ "+glyph.toString()+" glyph.xadvance:"+glyph.xadvance+" w:"+glyph.width);	
+			   // 	Gdx.app.log(logstag,"___ "+glyph.toString()+" glyph.xadvance:"+glyph.xadvance+" w:"+glyph.width);	
 		    	
 		    	//	Gdx.app.log(logstag,"___g:"+g.toString());
 		    		runstring=runstring+glyph.toString();
@@ -725,6 +725,11 @@ public class Label extends LabelBase {
 	
 		infoBoxsMaterial.set( ColorAttribute.createDiffuse(labelBackColor));
 		
+	}
+	
+	
+	public Material getTextMaterial(){
+		return this.getMaterial(LABEL_MATERIAL);
 	}
 
 	

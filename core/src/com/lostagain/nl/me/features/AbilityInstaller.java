@@ -22,6 +22,7 @@ import com.lostagain.nl.GWTish.ComplexPanel;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
+import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
@@ -69,6 +70,24 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 		super.getStyle().clearBorderColor();
 		super.setPadding(9f);
 		
+		//NOTE: at some point it might be nice to make this whole panel a drop target for the conceptobjects
+		//but for this we will need to make sure it doesnt block specific drops on the slot as well
+		
+		//super.setAsHitable(true);
+		/*
+		super.addMouseUpHandler(new MouseUpHandler() {			
+			@Override
+			public void onMouseUp() {
+				Gdx.app.log(logstag,"_-(fireTouchUp)-_");
+				
+				if (STMemory.isHoldingItem()){
+					
+					Gdx.app.log(logstag,"_-(mouse up while holding:"+STMemory.currentlyHeldNEW.itemsnode.getPLabel()+")-_");
+					 
+					installRequested(STMemory.currentlyHeldNEW.itemsnode);
+				}
+			}
+		});*/
 		
 		this.parenthub=locationHub;
 		
@@ -85,8 +104,6 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 		});
 		
 		//position widgets
-		float hw = width/2;
-		float hh = height/2;
 		
 		//PosRotScale titlePosition = new PosRotScale(hw - (title.getScaledWidth()/2),-15f,3f);
 		//attachThis(title, titlePosition);
@@ -113,6 +130,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 
 		
 		add(feedbackBar);
+		RunningSoftwareLabel.setMaxWidth((width-30f)*(1.0f/0.6f)); //max width doesnt yet take into account scaleing
 		
 		RunningSoftwareLabel.getStyle().clearBackgroundColor();
 		updateInstalledLabel();
@@ -180,8 +198,18 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 			installInventory(ability);
 		}
 		if (types.contains(StaticSSSNodes.conceptgun)){
-			//its a type of concept gun
-			installConceptGun(ability);
+			if (PlayersData.playersGUI!=null){
+			//its a type of concept gun and we already have a GUI
+				installConceptGun(ability);
+			} else {
+			//else complain we have no GUI
+				slot.ejectConcept(); //ejects it 
+				feedback.getStyle().setColor(Color.RED);
+				feedback.setText("ConceptGun Requires GUI to be installed!");
+				//should reset after a period
+				resetFeedbackAfterPause(3f);
+			}
+			
 		}
 		if (types.contains(StaticSSSNodes.decoder)){
 			//its a type of language decoder
@@ -435,8 +463,20 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 			
 		}
 	}
+	/*
+	@Override
+	public void fireTouchUp() {
+		Gdx.app.log(logstag,"_-(fireTouchUp)-_");
+		
+		if (STMemory.isHoldingItem()){
+			
+			Gdx.app.log(logstag,"_-(mouse up while holding:"+STMemory.currentlyHeldNEW.itemsnode.getPLabel()+")-_");
+			 
+			onDrop(STMemory.currentlyHeldNEW);
+			 
+		}
 	
-	
+	}*/
 	
 	
 	@Override

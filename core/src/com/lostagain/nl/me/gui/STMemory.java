@@ -135,10 +135,12 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		
 		currentlyHeldNEW=object;
 		
+		currentlyHeldNEW.setAsHitable(false); //no hitting while held;
+		
 		//temp we might want to truely attach it to the camera rather then switching the cursor image?
 		//not sure which is better here theres many pros and cons to both
-	    MainExplorationView.setCursor(currentlyHeldNEW.getObjectsTexture());
-	    
+	//    MainExplorationView.setCursor(currentlyHeldNEW.getObjectsTexture());
+	   ME.setCursorToHolding();
 	    
 
 			lastTime = TimeUtils.millis();
@@ -206,8 +208,8 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			// save this as a new texture
 		    Texture texture = new Texture(currentlyHeld.getDrawable());
 		    */
-		    MainExplorationView.setCursor(currentlyHeld.imagesTextureWithMipMaps);
-		    
+		   // MainExplorationView.setCursor(currentlyHeld.imagesTextureWithMipMaps);
+		    ME.setCursorToHolding();
 		    
 
 		lastTime = TimeUtils.millis();
@@ -228,7 +230,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		if (LastHeld>500 || overrideDelay)
 		{
 			//set cursor to none
-			MainExplorationView.setCursor(null);
+			ME.setCursorToDefault();
 			
 			if (currentlyHeld!=null){
 				//dump on ground where cursor is
@@ -242,7 +244,10 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			if (currentlyHeldNEW!=null){
 				//dump on ground where cursor is
 				dropItemToGround(currentlyHeldNEW);			
-			
+				
+				//set as clickable again (shouldnt be while held)
+				currentlyHeldNEW.setAsHitable(true);
+				
 				//remove currently held
 				currentlyHeldNEW=null;
 			}
@@ -355,9 +360,9 @@ public class STMemory extends Table implements DataObjectDropTarget {
 				
 				
 				currentlyHeld = null;			
-				MainExplorationView.setCursor(null);
 				
-				
+
+				ME.setCursorToDefault();
 			
 			}
 	
@@ -383,7 +388,16 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		
 		public static void clearCurrentlyHeld(){
 			currentlyHeld=null;
+			//set as clickable again (shouldn't be while held)
+			if (currentlyHeldNEW!=null){
+				currentlyHeldNEW.setAsHitable(true);
+			}
+			
 			currentlyHeldNEW=null;
+			
+
+			ME.setCursorToDefault();
+			
 		}
 		
 		static public void holdItem(ConceptObject objectsnode) {

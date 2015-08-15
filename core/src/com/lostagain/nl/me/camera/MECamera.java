@@ -86,6 +86,9 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		super.attachThis(mainOverlay, new PosRotScale(0f, 0f, -115f));
 		super.attachThis(background,  new PosRotScale(0f, 0f, -80f)); //note; thanks to draw order shenanigans, the background will be drawn behind everything regardless of distance.
 		
+		//background.hide(); //disable background for now
+		mainOverlay.hide(); //disable overlay for now
+		
 		//add the default visualizer to help show where the camera is
 		ModelManagment.addmodel(cameraVisualiserCube,ModelManagment.RenderOrder.infrontStage);		
 		
@@ -294,7 +297,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		Vector3 intersection = new Vector3();
 		Intersector.intersectRayPlane(ray, testplane, intersection);
 	
-		Gdx.app.log(logstag,"intersection:"+intersection.x+" , "+intersection.y);
+		//Gdx.app.log(logstag,"intersection:"+intersection.x+" , "+intersection.y);
 		
 		return intersection;
 	}

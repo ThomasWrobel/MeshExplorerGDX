@@ -10,44 +10,45 @@ import com.lostagain.nl.GWTish.ComplexPanel.VerticalAlignment;
 
 public class HorizontalPanel extends CellPanel {
 	final static String logstag = "GWTish.HorizontalPanel";
-	
+
 	//current stats
 	float currentTotalWidgetWidth   = 0f;
-	
+
 	VerticalAlignment DefaultAlignmentinCell = VerticalAlignment.Middle;
-	
-	
-	
+
+
+
 	/**
 	 * Creates a background and lets you position widgets vertical within it
 	 * 
 	 */
 	public HorizontalPanel() {
 		super(10,10); //default size and background
-		
-		
+
+
 	}
-	
+
 	Vector3 getNextPosition(float incomingWidth,float incomingHeight,boolean updateWidth,Widget widget){
-		
+
 		int index = contents.indexOf(widget);
-		
+
 		Alignment align = contentAlignments.get(widget);
 		if (align == null) {
 			align = new Alignment(HorizontalAlignment.Left,
 					defaultVerticalAlignment);
+			contentAlignments.put(widget, align);
 		}
-		
+
 		float newLocationX = currentTotalWidgetWidth;		
-		
+
 		float newLocationY = 0;
-		
+
 		float maxH = (largestHeightOfStoredWidgets);
 		//ensure its at least min height
 		if (maxH<MinSizY){
 			maxH=MinSizY;
 		}
-		
+
 		switch (align.vert) {
 		case Bottom:
 			newLocationY = (maxH - incomingHeight);
@@ -64,27 +65,27 @@ public class HorizontalPanel extends CellPanel {
 
 		}
 
-		
-		
+
+
 		/*
-		
+
 		if (DefaultAlignmentinCell == VerticalAlignment.Middle){
-			
-			
+
+
 			newLocationY =  (maxH - incomingHeight)/2; //center in panel
-			
-		
-			
+
+
+
 		}*/
-		
+
 		//the following option shouldnt be needed I think
 		if (updateWidth){
 			currentTotalWidgetWidth=currentTotalWidgetWidth+incomingWidth+spaceing;
 		}
-		
+
 		return new Vector3(leftPadding+newLocationX,topPadding+newLocationY,3f);
-		
-	
+
+
 	}
 
 	/**
@@ -95,60 +96,60 @@ public class HorizontalPanel extends CellPanel {
 	void repositionWidgets() {
 		Gdx.app.log(logstag,"repositionWidgets in hp");
 		//simply clear and re-add them all
-		
+
 		//reset  stats
-		
+
 		currentTotalWidgetWidth = 0f;
 		//largestWidthOfStoredWidgets = 0f;
 		//largestHeightOfStoredWidgets = 0f;
-		
-				
+
+
 		for (Widget widget : contents) {	
-			
-		//	super.removeAttachment(widget); //remove			
+
+			//	super.removeAttachment(widget); //remove			
 			internalAdd(widget); //re add
-			
+
 		}
 		Gdx.app.log(logstag,"new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
 		//update back size
 		sizeToFitContents(); 
-		
+
 	}
-	
+
 	/**
 	 * add many widgets at once 
 	 * @param widgets
 	 */
 	public void add(Widget... widgets) {
-		
+
 		for (Widget widget : widgets) {
 			super.add(widget);
 			//resize
 			Gdx.app.log(logstag,"added widget.");
 		}
-		
+
 		Gdx.app.log(logstag,"new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
 		sizeToFitContents(); 
 	}
-	
 
-	 private VerticalAlignment defaultVerticalAlignment = VerticalAlignment.Middle;
-	 
+
+	private VerticalAlignment defaultVerticalAlignment = VerticalAlignment.Middle;
+
 	/**
-	   * Sets the default horizontal alignment to be used for widgets added to this
-	   * panel. It only applies to widgets added after this property is set.
-	   * 
-	   */
-	  public void setHorizontalAlignment(VerticalAlignment align) {
-		  defaultVerticalAlignment = align;
-	  }
+	 * Sets the default horizontal alignment to be used for widgets added to this
+	 * panel. It only applies to widgets added after this property is set.
+	 * 
+	 */
+	public void setHorizontalAlignment(VerticalAlignment align) {
+		defaultVerticalAlignment = align;
+	}
 
 
-//
+	//
 	@Override
 	void sizeToFitContents() {
 		this.setSizeAs(leftPadding+currentTotalWidgetWidth+rightPadding,
-			     bottomPadding+largestHeightOfStoredWidgets+topPadding);
+				bottomPadding+largestHeightOfStoredWidgets+topPadding);
 	}
 
 }

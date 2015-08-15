@@ -12,7 +12,9 @@ import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.gui.DataObjectDropTarget;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.locationFeatures.Location;
+import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
+import com.lostagain.nl.shaders.MySorter;
 
 /**
  * Concept objects will eventually replace data objects.
@@ -72,6 +74,8 @@ public class ConceptObject extends MeshIcon {
 		itemsnode = conceptsNode;
 		
 		
+		//test the zindex
+		super.setZIndex(150);
 		
 		
 	}
@@ -115,7 +119,7 @@ public class ConceptObject extends MeshIcon {
 		 String URIName = conceptsNode.getPLabel(); //just a basic label for now
 		 String URI     = conceptsNode.getPURI();
 		
-		 
+		  
 		return new InfoBox(URIName,URI,"");
 		
 	}
@@ -147,8 +151,8 @@ public class ConceptObject extends MeshIcon {
 
 	@Override
 	public void fireTouchUp() {
-		super.fireTouchUp();
-		
+		Gdx.app.log(logstag,"_-fireTouchUp-_");		
+
 		if (objectsStatus == ConceptObjectStatus.Holding){
 			triggerPutDown();
 		}
@@ -158,6 +162,8 @@ public class ConceptObject extends MeshIcon {
 		Gdx.app.log(logstag,"____dataobject put down ");
 		 STMemory.dropHeldItem(true);
 		
+		 
+	//	 ModelManagment.mysorter.testSort(); //temp test of sort (remove)
 	}
 	
 	
@@ -184,7 +190,7 @@ public class ConceptObject extends MeshIcon {
 		this.objectsStatus = ConceptObjectStatus.Holding;
 		
 		STMemory.holdItem(this);
-		this.hide();
+		//this.hide();
 		///ensure the scene drag is disabled while we are dragging a object
 		ME.disableDrag();
 	}
@@ -192,7 +198,8 @@ public class ConceptObject extends MeshIcon {
 
 
 
-	/** returns the objects texture.
+	/**
+	 * Returns the objects texture.
 	 * Likely fairly useless unless the same shader is used to render it elsewhere.
 	 * This function is just a temp really. Probably switch the helditem function to really move the object, rather then using a cursor that looks like it**/
 	public Texture getObjectsTexture() {
@@ -200,6 +207,10 @@ public class ConceptObject extends MeshIcon {
 		Material infoBoxsMaterial = MeshIconsLabel.getMaterial("LabelMaterial");
 		
 		TextureAttribute style = ((TextureAttribute)infoBoxsMaterial.get(TextureAttribute.Diffuse));
+		
+		
+		
+		
 		
 		return style.textureDescription.texture;
 	}
@@ -217,7 +228,6 @@ public class ConceptObject extends MeshIcon {
 		this.objectsStatus=ConceptObjectStatus.OnEnviroment;
 		
 	}
-
 
 
 

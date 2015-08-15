@@ -38,6 +38,8 @@ import com.lostagain.nl.me.newmovements.NewMovementController;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.GlowingSquareShader;
 import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
+import com.lostagain.nl.shaders.MySorter;
+import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 
 /** 
  * Will become a 3d icon that can be clicked to turn into a interactive meshFeature.
@@ -125,9 +127,10 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	};
 
 
-	protected Label MeshIconsLabel;
+	public Label MeshIconsLabel;
 
 
+	
 
 	//this icons stuff
 	IconType thisIconsType = null;
@@ -375,6 +378,9 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		};
 	}
 
+	
+	
+	
 	/** 
 	 * Generates the generic icon model 
 	 * 
@@ -426,7 +432,39 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 
 	}
+	
+	/**
+	 * adds a z index override and sets it to the supplied value
+	 * use clear to revert to natural ordering
+	 * @param opacity
+	 */
+	public void setZIndex(int index){
+		//get the material from the model
+		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);		
+		//infoBoxsMaterial.set(new ZIndexAttribute(index));
+		
+		
+		Material infoBoxsMaterial2 = MeshIconsLabel.getTextMaterial();
+		//infoBoxsMaterial2.set(new ZIndexAttribute(index+1));
+		
+		
+	}
+	
+	/**
+	 * adds a z index override and sets it to the supplied value
+	 * use clear to revert to natural ordering
+	 * @param opacity
+	 */
+	public void clearZIndex(int index){
+		//get the material from the model
+		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);		
+		infoBoxsMaterial.remove(ZIndexAttribute.ID);
+		
 
+		Material infoBoxsMaterial2 = MeshIconsLabel.getMaterial();	
+		infoBoxsMaterial2.remove(ZIndexAttribute.ID);
+	}
+	
 	/**
 	 * Sets the background of this icon (and its label)
 	 * used currently as par tof its open/close animation

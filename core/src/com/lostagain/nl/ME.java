@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Quaternion;
@@ -89,13 +90,13 @@ public class ME extends Game {
 		
 	}
 	
-    public static final GameMode currentMode = GameMode.Normal;
+    public static final GameMode currentGameMode = GameMode.Developer;
 	 
     @Override
 	public void create() {
     	
     	//set up logging setting based on game mode
-    	if (currentMode == GameMode.Production ){
+    	if (currentGameMode == GameMode.Production ){
     		Gdx.app.setLogLevel(Application.LOG_NONE);
     	} else {
     		Gdx.app.setLogLevel(Application.LOG_INFO);
@@ -145,7 +146,7 @@ public class ME extends Game {
     public void setupSemanticsAndHomeDomain()
     {
     	//all off for production
-    	if (currentMode == GameMode.Production ){
+    	if (currentGameMode == GameMode.Production ){
       	  Logger.getLogger("sss").setLevel(Level.OFF);
       	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
       	  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.OFF);
@@ -777,6 +778,25 @@ public static boolean checkDatabaseIsLoaded(SSSNode linksToThisPC) {
 
 
 
+public static void setCursorToHolding(){
+	//not yet supported (need a little grab hand texture)
+	//setCursor(....);
+}
+public static void setCursorToDefault(){
+	//not yet supported (need a little grab hand texture)
+	setCursor(null);
+}
+
+
+public static void setCursor(Texture curimage){
+
+	if (curimage!=null){
+		MainExplorationView.customCursor = curimage;
+	} else {
+		MainExplorationView.customCursor = null;
+	}
+
+}
 
 //SSSIndex.getIndex(linksToThisPC.getPURI());
 

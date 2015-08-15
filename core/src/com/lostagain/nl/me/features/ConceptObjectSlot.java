@@ -79,9 +79,10 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		
 	}
 	
-	private void onDrop(ConceptObject object){
+	void onDrop(ConceptObject object){
 		onDrop(object,false);
 	}
+	
 	
 	/** fired when a object is dropped onto it **/
 	private void onDrop(ConceptObject object,boolean overrideLock){
@@ -108,7 +109,6 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		} else {
 			//clear currently held
 			STMemory.clearCurrentlyHeld();
-			 MainExplorationView.setCursor(null);
 		}
 		
 		//attach new object and store

@@ -30,6 +30,7 @@ public class VerticalPanel extends CellPanel {
 		if (align == null) {
 			align = new Alignment(defaultHorizontalAlignment,
 					VerticalAlignment.Middle);
+			contentAlignments.put(widget, align);
 		}
 
 		float newLocationX = 0;
