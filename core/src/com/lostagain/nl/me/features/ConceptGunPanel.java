@@ -132,6 +132,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 	public ConceptGunPanel() {
 		super.setPadding(15f);
 		super.setSpaceing(15f);
+		super.setAsHitable(true);
 		
 		this.setMinSize(400f, ammoSlot.getScaledHeight());
 		status.getStyle().clearBackgroundColor();
@@ -673,6 +674,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 			if (!status){
 				
 				currentLazerState = LazerState.disabled;
+				this.cancelFire();
 				
 			} else {
 				currentLazerState = LazerState.ready;
@@ -726,6 +728,11 @@ public class ConceptGunPanel extends HorizontalPanel {
 		
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public objectType getInteractionType() {
+		return objectType.Interface;
 	}
 
 

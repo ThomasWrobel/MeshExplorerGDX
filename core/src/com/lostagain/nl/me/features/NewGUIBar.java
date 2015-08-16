@@ -81,6 +81,7 @@ public class NewGUIBar extends VerticalPanel {
 					ME.disableMovementControl(true);
 					
 				} else {
+					
 					PlayersData.playersConceptGun.hide();				
 					PlayersData.playersConceptGun.setEnabled(false);
 

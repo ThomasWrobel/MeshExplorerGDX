@@ -739,7 +739,6 @@ public class Creature implements hitable , Animating {
 
 	@Override
 	public Vector3 rayHits(Ray ray) {
-				
 		Vector3 intersect = new Vector3();
 		boolean hit = Intersector.intersectRaySphere(ray, this.getCenterOnStage(), this.getRadius(), intersect);
 		if (!hit){

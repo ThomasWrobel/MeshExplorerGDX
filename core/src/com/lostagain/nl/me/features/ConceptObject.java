@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.StaticSSSNodes;
@@ -126,6 +128,13 @@ public class ConceptObject extends MeshIcon {
 
 
 
+	@Override
+	public void fireClick() {
+		if (this.objectsStatus != ConceptObjectStatus.InObject){
+			super.fireClick();
+		}
+	}
+
 
 	@Override
 	public void fireTouchDown() {		
@@ -151,7 +160,7 @@ public class ConceptObject extends MeshIcon {
 
 	@Override
 	public void fireTouchUp() {		
-		Gdx.app.log(logstag,"_-fireTouchUp-_");	
+		Gdx.app.log(logstag,"_-fireTouchUp on concept-_");	
 		if (objectsStatus == ConceptObjectStatus.Holding){
 			triggerPutDown();
 		} else {
@@ -229,6 +238,8 @@ public class ConceptObject extends MeshIcon {
 		this.objectsStatus=ConceptObjectStatus.OnEnviroment;
 		
 	}
+
+
 
 
 

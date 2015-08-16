@@ -252,7 +252,7 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 	public void fireTouchUp() {
 		super.fireTouchUp();
 		
-		//close if was not dragging dragging
+		//close if was not dragging 
 		if (!dragging){
 			parentIcon.close();
 		}
@@ -262,6 +262,7 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 		
 	}
 	boolean dragging=false;
+	
 	@Override
 	public void fireDragStart() {
 		super.fireDragStart();

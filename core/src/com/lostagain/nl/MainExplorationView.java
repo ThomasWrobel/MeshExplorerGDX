@@ -131,7 +131,12 @@ public class MainExplorationView implements Screen {
 	//static  Timer cameraTimer = new Timer();
 	//	static  Task cameraTweenTask;
 
+	
 	static boolean dragging = false;
+	/**
+	 * used to force the scene dragging to start in situations when it normally wouldn't (for example the email page allows dragging of scene even if you click on the email itself)
+	 */
+	static boolean forceDragStart = false; 
 	static  boolean coasting = false;
 
 	static private long dragstart;
@@ -173,7 +178,15 @@ public class MainExplorationView implements Screen {
 		/**
 		 * mouse or touch just went up
 		 */
-		NewTouchUp
+		NewTouchUp,
+		
+		/**
+		 * The mouse has just moved a bit since being down  **/
+		NewDrag,
+		
+		/**
+		 * The mouse has moved a bit since being down and is still being held **/
+		Dragging;
 
 	}
 
@@ -663,10 +676,6 @@ public class MainExplorationView implements Screen {
 		//update the guns animation
 		//	usersGUI.ConceptGun.update(delta);  //old
 
-		if (PlayersData.playersConceptGun!=null){
-			PlayersData.playersConceptGun.update(delta); //new gun
-		}
-
 		//update any scans and their  bars
 		ScanManager.update(delta);
 
@@ -740,7 +749,20 @@ public class MainExplorationView implements Screen {
 				currentTouchState = TouchState.NewTouchDown; //if we just touched up and then the very next frame touched down....then the user is suspiciously fast
 				break;
 			case TouchDown:
-				currentTouchState = TouchState.TouchDown; //still a touchdown!
+				currentTouchState = TouchState.TouchDown; //still a touchdown unless the mouse moved;
+				
+				
+				Vector2 currentLoc = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+				if (touchStartedAt.dst2(currentLoc)>5){							
+					currentTouchState = TouchState.NewDrag;
+				}				
+				
+				break;
+			case NewDrag:
+				currentTouchState = TouchState.Dragging; //newdrags become Dragging 
+				break;				
+			case Dragging:
+				currentTouchState = TouchState.Dragging; //do nothing
 				break;
 			}
 
@@ -751,15 +773,19 @@ public class MainExplorationView implements Screen {
 				currentTouchState = TouchState.NONE; //still none
 				break;
 			case NewTouchDown:
-				currentTouchState = TouchState.NewTouchUp; //we were touching now arnt, so its a new touchup.
+				currentTouchState = TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
 				break;
 			case NewTouchUp:
 				currentTouchState = TouchState.NONE; //now none
 				break;
 			case TouchDown:
-				currentTouchState = TouchState.NewTouchUp; //we were touching now arnt, so its a new touchup.
+				currentTouchState = TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
 				break;
-			default:
+			case NewDrag:
+				currentTouchState = TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
+				break;
+			case Dragging:
+				currentTouchState = TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
 				break;
 			}
 
@@ -771,8 +797,7 @@ public class MainExplorationView implements Screen {
 		{
 			Ray ray = ME.getCurrentStageCursorRay();
 			
-		//	MainExplorationView.touchedAModel = ModelManagment.testForHits(ray,true,true);
-			
+			Gdx.app.log(logstag,"currentTouchState:"+currentTouchState.name());
 			lastHits = ModelManagment.getHitables(ray,true,currentTouchState);
 			
 			if (lastHits.size()>0){
@@ -780,15 +805,19 @@ public class MainExplorationView implements Screen {
 			} else {
 				touchedAModel = null;
 			}
-			
+						
 			
 			Boolean fireEnabled=  !ConceptGunPanel.isDisabled();
 
+			if (PlayersData.playersConceptGun!=null){
+				PlayersData.playersConceptGun.update(delta); //update the gun in case its firing
+			}
+			
 			if (currentTouchState == TouchState.NewTouchDown){		
 				//if the concept gun is enabled we start shooting
 
 				objectType type = null;
-				//we get the interaction type here as we dont want to fire at bits of the interface
+				//we get the interaction type here as we don't want to fire at bits of the interface
 				if (touchedAModel!=null){
 					type = touchedAModel.getInteractionType();
 				}
@@ -802,11 +831,16 @@ public class MainExplorationView implements Screen {
 			}
 
 			if (currentTouchState==TouchState.NewTouchDown){
+				Gdx.app.log(logstag," new touch down");
+				
 				touchStartedAt = new Vector2(Gdx.input.getX(),Gdx.input.getY());
 
 			}
 
 			if (currentTouchState==TouchState.NewTouchUp){
+				
+				Gdx.app.log(logstag," new touch up");
+				
 				touchedAModel=null;
 				lastHits.clear();
 				ModelManagment.untouchAll(); 				
@@ -821,14 +855,16 @@ public class MainExplorationView implements Screen {
 			//if so, then we need to inform the model manager to fire any dragevents if needed (ie, for objects held)
 			//This is not the same as the scene itself being dragged. In fact they are multly exclusive
 
-			if (currentTouchState==TouchState.TouchDown){
-				Vector2 currentLoc = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+		//	if (currentTouchState==TouchState.TouchDown){
+			//	Vector2 currentLoc = new Vector2(Gdx.input.getX(),Gdx.input.getY());
 
-				if (touchStartedAt.dst2(currentLoc)>5){				
-					ModelManagment.fireDragStartOnAll();				
-				}
+			//	if (touchStartedAt.dst2(currentLoc)>5){		
+					
+			//		currentTouchState = TouchState.NewDrag;
+				//	ModelManagment.fireDragStartOnAll();	
+			//	}
 
-			}
+		//	}
 
 		} else {
 			
@@ -836,8 +872,11 @@ public class MainExplorationView implements Screen {
 			lastHits.clear();
 
 		}
-
-
+		
+		//ensure just dropped list is clear (
+		STMemory.clearJustDropedList();
+		
+		
 
 
 		if (Gdx.input.isTouched()) {
@@ -880,16 +919,16 @@ public class MainExplorationView implements Screen {
 
 			//if holding a item we should move it under the cursor
 			if (STMemory.isHoldingItem()){
-				//	Ray ray = ME.getCurrentStageCursorRay(); //note: optimization might be possible for this ray function. We shouldnt get the ray again if it already has been got this frame
+				//	Ray ray = ME.getCurrentStageCursorRay(); //note: optimization might be possible for this ray function. We shouldn't get the ray again if it already has been got this frame
 				//STMemory.currentlyHeldNEW.show();
 				Vector2 cp = ME.getCurrentCursorScreenPosition();
 				//Vector3 holdPosition= new Vector3(cursorPositionOnStage.x,cursorPositionOnStage.y,100f); //100 
-				Vector3 holdPosition=  MainExplorationView.camera.getDisplacementForScreenCoOrdinates(cp.x, cp.y, 300f); //300 is expiremental holding position
+				Vector3 holdPosition =  MainExplorationView.camera.getDisplacementForScreenCoOrdinates(cp.x, cp.y, 300f); //300 is experimental holding position
 
 				PosRotScale cameraRelativePos = new PosRotScale(holdPosition);
 				PosRotScale newposition = MainExplorationView.camera.transState.copy().displaceBy(cameraRelativePos);
 
-
+				
 				STMemory.currentlyHeldNEW.setTransform(newposition);
 
 			}
@@ -917,13 +956,14 @@ public class MainExplorationView implements Screen {
 				startdragx_exview = currentPos.x;
 				startdragy_exview = currentPos.y;
 
-			} else if (!cancelnextdragclick && (touchedAModel==null) && !movementControllDisabled) {
-
+			} else if ((!cancelnextdragclick && (touchedAModel==null) && !movementControllDisabled) || forceDragStart) {
+		
 				drag_dis_x = Gdx.input.getX()-startdragxscreen;
 				drag_dis_y = Gdx.input.getY()-startdragyscreen;
 
 				currentPos.x = startdragx_exview-drag_dis_x;
 				currentPos.y = startdragy_exview+drag_dis_y;
+				
 
 			}
 
@@ -933,7 +973,8 @@ public class MainExplorationView implements Screen {
 			Gdx.app.log(logstag,"setting drag to false click");
 			//if no longer touching stop dragging
 			dragging = false;
-
+			forceDragStart=false;
+			
 			//last displacement on mouse/touch up
 			drag_dis_x = Gdx.input.getX()-startdragxscreen;
 			drag_dis_y = Gdx.input.getY()-startdragyscreen;
@@ -1317,6 +1358,7 @@ public class MainExplorationView implements Screen {
 	public static void setAsDragging() {
 
 		dragging = true;
+		forceDragStart = true;
 		movementControllDisabled = false;
 
 		dragstart = TimeUtils.millis();

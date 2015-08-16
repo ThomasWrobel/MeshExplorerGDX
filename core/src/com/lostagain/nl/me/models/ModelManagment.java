@@ -474,6 +474,8 @@ public class ModelManagment {
 			
 		}
 		
+		Gdx.app.log(logstag,"underCursor:"+underCursor.size());
+		
 		//sort by distance
 		Collections.sort(underCursor,distanceSorter);
 		
@@ -491,17 +493,28 @@ public class ModelManagment {
 				case NONE:
 					break;
 				case NewTouchDown:
+					Gdx.app.log(logstag,"_firing touchdown on :"+object.getClass());
 					object.fireTouchDown();
 					mousedownOn.add(object);
 					break;
 				case NewTouchUp:
+
+					Gdx.app.log(logstag,"_firing touchup on :"+object.getClass());
 					object.fireTouchUp();					
 					boolean wasPreviouslyDownOn = mousedownOn.remove(object);
 					if (wasPreviouslyDownOn){
+						Gdx.app.log(logstag,"_firing click on :"+object.getClass());
 						object.fireClick();
 					}
 					break;
 				case TouchDown:
+					
+					break;
+				case NewDrag:
+					object.fireDragStart();					
+					mousedownOn.remove(object);
+					
+					
 					break;
 				}
 			}
@@ -774,14 +787,14 @@ public class ModelManagment {
 		dragStarted=false;
 	}
 
-	public static void untouchAll() {
+	public static void untouchAll() { //should be renamed we no longer fire touchup
 
-		Gdx.app.log(logstag,"_-mousedownOn size to untouch:"+mousedownOn.size);
+		//Gdx.app.log(logstag,"_-mousedownOn size to untouch:"+mousedownOn.size);
 
-		for (hitable model : mousedownOn) {
-			model.fireTouchUp();		
+		//for (hitable model : mousedownOn) {
+		//	model.fireTouchUp();		
 
-		}
+		//}
 		mousedownOn.clear();
 		//Gdx.app.log(logstag,"_----------removing md:"+mousedownOn.size);
 		//Boolean removedtest = mousedownOn.removeValue(model,true);

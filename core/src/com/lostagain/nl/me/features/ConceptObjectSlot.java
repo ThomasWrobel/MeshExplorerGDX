@@ -300,12 +300,12 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	public void fireTouchUp() {
 		Gdx.app.log(logstag,"_-(fireTouchUp)-_");
 		
-		if (STMemory.isHoldingItem()){
+		if (STMemory.wasHoldingItem()){
 			
-			Gdx.app.log(logstag,"_-(mouse up while holding:"+STMemory.currentlyHeldNEW.itemsnode.getPLabel()+")-_");
+			Gdx.app.log(logstag,"_-(mouse up was holding:"+STMemory.justDropItem.itemsnode.getPLabel()+")-_");
 			 
-			onDrop(STMemory.currentlyHeldNEW);
-			 
+			onDrop(STMemory.justDropItem);
+			STMemory.clearJustDropedList();
 		}
 	
 	}

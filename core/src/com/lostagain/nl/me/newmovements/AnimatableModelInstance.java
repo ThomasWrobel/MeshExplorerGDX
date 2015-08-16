@@ -768,7 +768,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		//new more precise distance test
 		Vector3 intersection = new Vector3();
 		boolean hit = Intersector.intersectRayBounds(ray, this.getLocalCollisionBox(), intersection);
-		Gdx.app.log(logstag,"testing for hit on object:"+hit);
+		//Gdx.app.log(logstag,"testing for hit on object:"+hit);
 		if (hit){
 			return intersection;
 		}

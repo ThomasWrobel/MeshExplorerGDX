@@ -46,6 +46,12 @@ public class STMemory extends Table implements DataObjectDropTarget {
 	
 	/** The object the player is holding Eventually this will replace the DataObject currentlyHeld above**/
 	public static ConceptObject currentlyHeldNEW;
+
+	/**
+	 * An item that was just dropped
+	 */
+	public static ConceptObject justDropItem;
+	
 	
 	int ItemLimit = 7; //can be expanded in future
 	
@@ -53,6 +59,8 @@ public class STMemory extends Table implements DataObjectDropTarget {
 	/** keeps track of the last time something is picked up.
 	 * This is to help stop missclicks dropping items straight away*/
 	private static long lastTime=0l;
+
+
 
 	//public static SSSNode currentlyHeld;
 	private float prefwidth;
@@ -135,7 +143,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		
 		currentlyHeldNEW=object;
 		
-		currentlyHeldNEW.setAsHitable(false); //no hitting while held;
+	//	currentlyHeldNEW.setAsHitable(false); //no hitting while held;
 		
 		//temp we might want to truely attach it to the camera rather then switching the cursor image?
 		//not sure which is better here theres many pros and cons to both
@@ -221,6 +229,15 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		dropHeldItem(false);
 		
 	}
+	
+	/**
+	 * should be run once per frame after a drop
+	 * The list is just to assist concept slots which should collect drops if something is dropped over them
+	 */
+	public static void clearJustDropedList(){
+		justDropItem=null;
+	}
+	
 	public static void dropHeldItem(boolean overrideDelay){
 		
 
@@ -246,7 +263,10 @@ public class STMemory extends Table implements DataObjectDropTarget {
 				dropItemToGround(currentlyHeldNEW);			
 				
 				//set as clickable again (shouldnt be while held)
-				currentlyHeldNEW.setAsHitable(true);
+				//currentlyHeldNEW.setAsHitable(true);
+				
+				//add to just droped 
+				justDropItem = currentlyHeldNEW;
 				
 				//remove currently held
 				currentlyHeldNEW=null;
@@ -377,6 +397,14 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			 removeItem(dataobject);
 		}
 		
+		
+		public static boolean wasHoldingItem(){
+			if (justDropItem==null ){
+				return false;
+			} else {
+				return true;
+			}
+		}
 		
 		public static boolean isHoldingItem(){
 			if (currentlyHeld==null && currentlyHeldNEW ==null ){
