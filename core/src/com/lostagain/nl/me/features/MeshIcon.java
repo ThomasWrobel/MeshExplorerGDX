@@ -30,6 +30,7 @@ import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.Moving;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewForward;
@@ -110,7 +111,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 
 	/** Do you need to single click or double click to open this icon?**/
-	OpenMode iconsOpenMode = OpenMode.DoubleClick;
+	OpenMode iconsOpenMode = OpenMode.SingleClick;
 
 
 	static final float defaultIconWidth  = 100f; //standard width and height of all icons
@@ -551,12 +552,19 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 	/*****/
 	@Override
-	public void fireTouchDown() {
+	public void fireClick() {
 
 		Gdx.app.log(logstag,"__touchdown on mesh icon at position="+this.getLocalCollisionBox());
 
 		if (iconsOpenMode==OpenMode.SingleClick){
-			open();
+			
+			if (currentState == FeatureState.FeatureClosed){
+				open();
+			} else if (currentState == FeatureState.FeatureOpen){
+				close();
+			}
+			
+			return;
 		}
 
 		if (iconsOpenMode==OpenMode.DoubleClick){
@@ -595,15 +603,19 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	}
 
 	@Override
-	public void fireTouchUp() {
+	public void fireTouchDown() {
 		Gdx.app.log(logstag,"_-fireTouchUp-_");
 	}
 
 
 
+	/**
+	 * does this object block whats behind it?
+	 * @return
+	 */
 	@Override
-	public boolean isBlocker() {
-		return true;
+	public objectType getInteractionType() {
+		return objectType.Blocker;
 	}
 
 	//@Override
@@ -992,8 +1004,6 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		}
 
 	}
-
-
 
 
 }

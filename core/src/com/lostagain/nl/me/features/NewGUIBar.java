@@ -18,6 +18,7 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
+import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 /**
  * provides togglable shortcuts for various game functions such as going home, activating the concept gun, or opening the inventory
@@ -57,6 +58,7 @@ public class NewGUIBar extends VerticalPanel {
 	
 	public NewGUIBar() {
 		super();
+		super.setAsHitable(true);
 		
 		getStyle().setBackgroundColor(new Color(0.1f,0.1f,0.1f,0.8f));
 		setPadding(8f);
@@ -372,6 +374,10 @@ public class NewGUIBar extends VerticalPanel {
 		}
 	}
 
+	
+	
+	
+	
 	/**
 	 * The gui doesn't really have any custom params right now.
 	 * In future we might allow different nodes to give different styles to it.
@@ -394,6 +400,12 @@ public class NewGUIBar extends VerticalPanel {
 		add(PlayersData.playersInventoryPanel);
 		
 		
+	}
+
+
+	@Override
+	public objectType getInteractionType() {
+		return objectType.Interface;
 	}
 	
 }

@@ -127,11 +127,15 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 	public float getLastHitsRange() {
 		return lastHitDistance;
 	}
-
+	/**
+	 * does this object block whats behind it?
+	 * @return
+	 */
 	@Override
-	public boolean isBlocker() {
-		return true;
+	public objectType getInteractionType() {
+		return objectType.Blocker;
 	}
+
 /*
 	@Override
 	public Vector3 rayHits(Ray ray) {

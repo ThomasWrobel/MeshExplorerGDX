@@ -14,6 +14,7 @@ import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewForward;
 import com.lostagain.nl.me.newmovements.NewMovementController;
@@ -311,10 +312,15 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 
 
 
+	/**
+	 * does this object block whats behind it?
+	 * @return
+	 */
 	@Override
-	public boolean isBlocker() {
-		return true;
+	public objectType getInteractionType() {
+		return objectType.Blocker;
 	}
+
 
 	//@Override
 	//public boolean rayHits(Ray ray) {

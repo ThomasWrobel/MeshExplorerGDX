@@ -26,6 +26,7 @@ import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NEWREPEAT;
 import com.lostagain.nl.me.newmovements.NewFaceAndMoveTo;
@@ -251,7 +252,11 @@ public class Creature implements hitable , Animating {
 	}
 
 
-
+	@Override
+	public void fireClick() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void fireTouchUp() {
@@ -720,10 +725,15 @@ public class Creature implements hitable , Animating {
 
 
 
+	/**
+	 * does this object block whats behind it?
+	 * @return
+	 */
 	@Override
-	public boolean isBlocker() {
-		return false;
+	public objectType getInteractionType() {
+		return objectType.Normal;
 	}
+
 
 
 

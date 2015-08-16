@@ -20,6 +20,7 @@ import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 
@@ -275,10 +276,15 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 		
 	}
 
+	/**
+	 * does this object block whats behind it?
+	 * @return
+	 */
 	@Override
-	public boolean isBlocker() {
-		return true; //we block stuff behind from being hit
+	public objectType getInteractionType() {
+		return objectType.Blocker;
 	}
+
 
 	
 	@Override

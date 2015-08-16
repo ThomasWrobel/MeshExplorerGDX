@@ -13,12 +13,15 @@ public interface hitable {
 	public PosRotScale getTransform();
 	public void fireTouchDown();
 	public void fireTouchUp();
+	/** fired after the touchup event provided the object was previously toucheddown on */
+	public void fireClick();
+	
 	public void fireDragStart();
 	
 	public void setLastHitsRange(float range); //set the distance squared from the shot origin to this object 
 	public float getLastHitsRange(); //returns the above
 	
-	public boolean isBlocker(); //if this blocks hits below it
+	public objectType getInteractionType(); //if this blocks hits below it
 	public Vector3 rayHits(Ray ray);
 	public Vector3 getCenterOnStage();
 	

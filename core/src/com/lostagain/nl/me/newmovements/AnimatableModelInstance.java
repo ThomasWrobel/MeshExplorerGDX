@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
 
@@ -716,7 +717,11 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		// TODO Auto-generated method stub
 		
 	}
-
+	@Override
+	public void fireClick() {
+		// TODO Auto-generated method stub
+		
+	}
 	@Override
 	public void fireDragStart() {
 		// TODO Auto-generated method stub
@@ -741,8 +746,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @return
 	 */
 	@Override
-	public boolean isBlocker() {
-		return false;
+	public objectType getInteractionType() {
+		return objectType.Normal;
 	}
 
 	/**
@@ -779,6 +784,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	protected boolean hasAttachment(AnimatableModelInstance object) {
 		return attachlist.containsKey(object);
 	}
+
+
 	
 
 }

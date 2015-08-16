@@ -22,6 +22,7 @@ import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.models.objectType;
 
 /**
  * Controls the look and status of a single link
@@ -495,10 +496,15 @@ public void setStandardLinkScanningAmount(int Percentage){
 	
 
 
+	/**
+	 * does this object block whats behind it?
+	 * @return
+	 */
 	@Override
-	public boolean isBlocker() {
-		return true;
+	public objectType getInteractionType() {
+		return objectType.Blocker;
 	}
+
 
 	//@Override
 	//public boolean rayHits(Ray ray) {

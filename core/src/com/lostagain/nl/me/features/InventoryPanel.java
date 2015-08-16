@@ -23,6 +23,7 @@ import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 
@@ -412,11 +413,15 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		Gdx.app.log(logstag,"--total slots now:"+inventorySlots.size());
 	}
 
-	//dont allow clicks to pass this
+	/**
+	 * does this object block whats behind it?
+	 * @return
+	 */
 	@Override
-	public boolean isBlocker() {
-		return true;
+	public objectType getInteractionType() {
+		return objectType.Blocker;
 	}
+
 	
 	@Override
 	public Vector3 getDefaultCameraPosition() {

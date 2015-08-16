@@ -170,7 +170,13 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 			return;
 		}
 		
+		
+		
 		//detect what ability is being installed
+		
+		
+		
+		//
 		feedback.setText("(ability accepted, please wait)");
 		
 		//process install (we should first wait for the progress bar)
@@ -190,27 +196,37 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 	private void processInstall(SSSNode ability) {
 		
 		HashSet<SSSNode> types =	ability.getAllClassesThisBelongsToo();
+		Gdx.app.log(logstag, "processInstall ability"+ability.PURI);
+		
 		//should only be one type for now
 		//but in future we could allow multi-types?
+
 		
 		if (types.contains(StaticSSSNodes.STMemoryAbility)){
 			//its a type of inventory
 			installInventory(ability);
 		}
-		if (types.contains(StaticSSSNodes.conceptgun)){
+		
+		if (types.contains(StaticSSSNodes.conceptgun)){ //NOTE: abilitys should always be subtypes of whats specified here
+			
 			if (PlayersData.playersGUI!=null){
+				Gdx.app.log(logstag, "installing conceptgun");
 			//its a type of concept gun and we already have a GUI
 				installConceptGun(ability);
 			} else {
 			//else complain we have no GUI
+				Gdx.app.log(logstag, "installing conceptgun requested but we have no gui yet");
 				slot.ejectConcept(); //ejects it 
 				feedback.getStyle().setColor(Color.RED);
 				feedback.setText("ConceptGun Requires GUI to be installed!");
 				//should reset after a period
 				resetFeedbackAfterPause(3f);
+				return;
 			}
 			
 		}
+		
+		
 		if (types.contains(StaticSSSNodes.decoder)){
 			//its a type of language decoder
 			installDecoder(ability);

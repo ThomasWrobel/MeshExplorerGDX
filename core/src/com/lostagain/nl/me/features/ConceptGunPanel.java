@@ -25,6 +25,7 @@ import com.lostagain.nl.me.models.ConceptBeam;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.ConceptBeamShader;
@@ -536,7 +537,19 @@ public class ConceptGunPanel extends HorizontalPanel {
 					Gdx.app.log(logstag, " hit check triggered! " + timeSinceLastHitCheck);					
 					hitable collision= testForHits(true);
 					
-					if (collision!=null){						
+					if (collision!=null){
+						
+						//if we hit the interface we cancel firing
+						//(at some point the firing system might be changed so this is handled in mainexploration view?)
+						if (collision.getInteractionType() == objectType.Interface)
+						{
+							//Don't fire on interface
+							this.cancelFire();
+							return;
+						}
+						
+						//else we move the fire point so it his the target rather then going though it
+						//(doesnt seem to work right now)
 						defaultZ = collision.getTransform().position.z;
 					}
 					
@@ -558,20 +571,8 @@ public class ConceptGunPanel extends HorizontalPanel {
 				 MainExplorationView.setMouseLight(this.lazer3d.getBeamColor() , 5+(15f*pulseMul));//20f should be linked to power
 
 			} else {
-				//remove lazer 
 				
-				//reset
-				//rechargeTime=totalCharge;			
-			//	MessyModelMaker.removeModelInstance(lazer);
-				
-				lazer3d.hide();				
-				 currentLazerState = LazerState.charging;
-				 
-				 
-			//	lazer=null;;
-				 
-				 //set stage light back to normal
-				 MainExplorationView.resetMouseLight();
+				cancelFire();
 				
 			}
 
@@ -600,10 +601,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 				rechargeTime=0;			
 			//	MessyModelMaker.removeModelInstance(lazer);
 
-				lazer3d.hide();
-				 currentLazerState = LazerState.charging;
-				 MainExplorationView.resetMouseLight();
-			//	lazer=null;
+				cancelFire();
 				
 				//MainExplorationView.currentPos.z = MainExplorationView.currentPos.z-5f; 
 				//MainExplorationView.CurrentZoom = MainExplorationView.CurrentZoom -0.02f; cyberman
@@ -635,6 +633,24 @@ public class ConceptGunPanel extends HorizontalPanel {
 		
 		
 		
+	}
+
+	public void cancelFire() {
+		
+		//remove lazer 
+		
+		//reset
+		//rechargeTime=totalCharge;			
+//	MessyModelMaker.removeModelInstance(lazer);
+		
+		lazer3d.hide();				
+		 currentLazerState = LazerState.charging;
+		 
+		 
+//	lazer=null;;
+		 
+		 //set stage light back to normal
+		 MainExplorationView.resetMouseLight();
 	}
 
 	private void updateRechargeBar() {

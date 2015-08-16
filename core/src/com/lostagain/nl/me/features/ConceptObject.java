@@ -68,8 +68,8 @@ public class ConceptObject extends MeshIcon {
 		//concepts are not squire, but instead have a more rectangular shape hence the size specified
 		super(getType(conceptsNode),getTitle(conceptsNode),StandardConceptWidth,StandardConceptHeight, null, createFeatureForNode(conceptsNode)); //Note; ConceptObjects dont have a parent location as they can be moved about
 		//ensure its on doubleclick to open mode, as single click is for dragging
-		//(we can of course look for mouse down/up seperately to also seperate single clicks and drags, but for now I think double click to open is more intuative anyway)
-		super.iconsOpenMode = OpenMode.DoubleClick;
+		//(we can of course look for mouse down/up separately to also seperate single clicks and drags, but for now I think double click to open is more intuative anyway)
+		super.iconsOpenMode = OpenMode.SingleClick;
 		
 		itemsnode = conceptsNode;
 		
@@ -150,11 +150,12 @@ public class ConceptObject extends MeshIcon {
 	}
 
 	@Override
-	public void fireTouchUp() {
-		Gdx.app.log(logstag,"_-fireTouchUp-_");		
-
+	public void fireTouchUp() {		
+		Gdx.app.log(logstag,"_-fireTouchUp-_");	
 		if (objectsStatus == ConceptObjectStatus.Holding){
 			triggerPutDown();
+		} else {
+			super.fireTouchUp();
 		}
 	}
 

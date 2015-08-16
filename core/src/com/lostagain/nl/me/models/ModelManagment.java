@@ -1,6 +1,8 @@
 package com.lostagain.nl.me.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -27,6 +29,7 @@ import com.badlogic.gdx.utils.ObjectSet; //NOTE: This is like a hashset but appa
 import com.lostagain.nl.ME;
 import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.MainExplorationView.TouchState;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.domain.MEDomain;
@@ -412,10 +415,118 @@ public class ModelManagment {
 
 	}
 
+	
+	/**
+	 * what was in the line of the ray the last time getHitables was run
+	 */
+	static ArrayList<hitable> underCursor = new ArrayList<hitable>();
+	
+	/** 
+	 * comparitor to sort by distance
+	 */
+	static public class OrderByDistance implements Comparator<hitable> {
+		    @Override
+		    public int compare(hitable o1, hitable o2) {
+		    	float hit1 = o1.getLastHitsRange();
+		    	float hit2 = o2.getLastHitsRange();		        
+		        return (int) (hit1 - hit2);
+		    }
+		};
+	
+		static OrderByDistance distanceSorter = new OrderByDistance();
+	
+	/**
+	 * Gets all the hitables the current ray hits.
+	 * If penetrate isn't turned on, nothing under the first blocker will be returned.
+	 * We always stop at the first interface no mater what.
+	 * 
+	 * While not returned in order, the first of the array will be the one ontop.
+	 * 
+	 * @param ray
+	 * @param hitsPenetrate
+	 * @param processHits
+	 * @return
+	 */
+	public static ArrayList<hitable> getHitables(Ray ray,boolean hitsPenetrate, TouchState applyTouchAction) {
+		
+		underCursor.clear();
+		//hitable closestNonBlockerTouched = null;	    
+		//hitable closestBlockerTouched = null;
+
+		Vector3 position = new Vector3();
+		for (hitable newInstance : hitables) {
+			
+			position = newInstance.getCenterOnStage();
+
+			//first check if it hits at all. We base this on the hitables internal tester
+			//this lets different hitables use different intersect types (ie, radius, boundingbox, polygon etc)
+			Vector3 hitPoint = newInstance.rayHits(ray);
+			if (hitPoint==null){
+				continue;
+			}
+			
+			
+
+			float dist2 = ray.origin.dst2(hitPoint);
+			newInstance.setLastHitsRange(dist2);
+			
+			underCursor.add(newInstance);				
+			
+		}
+		
+		//sort by distance
+		Collections.sort(underCursor,distanceSorter);
+		
+		ArrayList<hitable> onesHit = new ArrayList<hitable>();
+		
+		//crop to the ones on top, hitting as we go
+		for (hitable object : underCursor) {
+			
+			objectType type = object.getInteractionType();
+			onesHit.add(object);
+			
+			//fire the correct event depending on type
+			if (applyTouchAction!=null){
+				switch (applyTouchAction) {
+				case NONE:
+					break;
+				case NewTouchDown:
+					object.fireTouchDown();
+					mousedownOn.add(object);
+					break;
+				case NewTouchUp:
+					object.fireTouchUp();					
+					boolean wasPreviouslyDownOn = mousedownOn.remove(object);
+					if (wasPreviouslyDownOn){
+						object.fireClick();
+					}
+					break;
+				case TouchDown:
+					break;
+				}
+			}
+			
+			
+			
+			if (type == objectType.Interface){
+				return onesHit;
+			}
+			if (type == objectType.Blocker && !hitsPenetrate){
+				return onesHit;
+			}
+			
+			
+		}
+		
+		
+		return onesHit;
+		
+	}
+	
 	/**
 	 * 
 	 * 
-	 * New version;
+	 * version;
 	 * 
 	 * 1. Get everything under cursor
 	 *    - remember highest hitblocker
@@ -479,7 +590,7 @@ public class ModelManagment {
 
 			Gdx.app.log(logstag,"_hit "+newInstance.getClass()+" object at distance "+dist2+" position was("+position+")");
 			
-			if (newInstance.isBlocker()){
+			if (newInstance.getInteractionType() == objectType.Blocker){
 				Gdx.app.log(logstag,"(it was blocker)");
 
 			}
@@ -489,7 +600,7 @@ public class ModelManagment {
 
 
 			//if its a blocker we see if its higher then the last blocker
-			if (newInstance.isBlocker()){
+			if (newInstance.getInteractionType() == objectType.Blocker){
 
 				//if none set just continue
 				if (closestBlockerTouched==null){

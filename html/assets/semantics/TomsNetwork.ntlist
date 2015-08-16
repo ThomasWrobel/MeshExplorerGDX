@@ -9,6 +9,7 @@ ProfPPResearch rdfs:subClassOf  me:Computer.
 AlicesPc rdfs:subClassOf  me:Computer.
 TheCatsPc rdfs:subClassOf  me:Computer.
 BobsOutpost rdfs:subClassOf  me:Computer.
+BobsOutpost rdfs:label "Bobs Outpost".
 LinguisticsStore rdfs:subClassOf  me:Computer.
 MysteriousGateway rdfs:subClassOf  me:Computer. 
 
