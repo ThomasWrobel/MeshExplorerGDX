@@ -466,5 +466,10 @@ public abstract class ComplexPanel extends Widget {
 		contentAlignments.put(widget, contentAlignment);		
 	}
 
+	
+	
+	public ArrayList<Widget> getChildren() {
+		return new ArrayList<Widget>(contents);
+	}
 
 }

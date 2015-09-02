@@ -112,7 +112,7 @@ public class Element extends AnimatableModelInstance {
 	//private atm for consistency with GWT. I am not sure yet if theres any point
 	//to their whole handler system. But for the moment we will stay consistent
 	//Use the handlerrigstration and "remove" to remove a handler
-	private void removeHandler(EventHandler handler){
+	void removeHandler(EventHandler handler){
 		handlers.remove(handler);
 		//recheck if any left
 		if (handlers.size()==0 && !hitableManuallySet){ //only remove if hitable wasn't manually set elsewhere
@@ -121,70 +121,6 @@ public class Element extends AnimatableModelInstance {
 	}
 	
 	
-	//Handler interfaces and stuff (experimental)
-	//Really feeling my way here as I don't know what's needed
-	public abstract class ClickHandler extends EventHandler {
-		/** called when the element with this handler added is clicked on.
-		 * Specifically the release of the click **/
-		public abstract void onClick();
-		
-		EventType getType(){
-			return EventType.ClickEvent;
-		}
-		protected void fireHandler(){
-			onClick();
-		}
-	}
-	
-	public abstract class MouseDownHandler extends EventHandler {
-		/** called when the element with this handler added is pressed **/
-		public abstract void onMouseDown();
-		
-		EventType getType(){
-			return EventType.MouseDownEvent;
-		}
-		
-		protected void fireHandler(){
-			onMouseDown();
-		}
-	}
-		
-	public abstract class MouseUpHandler extends EventHandler {
-		/** called when the element with this handler added is pressed **/
-		public abstract void onMouseUp();
-		
-		EventType getType(){
-			return EventType.MouseUpEvent;
-		}
-		protected void fireHandler(){
-			onMouseUp();
-		}
-	}
-	
-	
-	abstract class EventHandler {
-		abstract EventType getType(); 
-		protected abstract void fireHandler(); 
-	}
-	
-	
-	static class HandlerRegistration {
-		Element handlersObject;
-		EventHandler eventHandler;
-		
-		public HandlerRegistration(Element handlersObject,
-				EventHandler eventHandler) {
-			super();
-			this.handlersObject = handlersObject;
-			this.eventHandler = eventHandler;
-		}
-
-		public void removeHandler() {
-			handlersObject.removeHandler(eventHandler);
-			
-		}
-	}
-
 	protected void fireHandlersForType(EventType eventType) {
 		
 		if (handlers.isEmpty()){

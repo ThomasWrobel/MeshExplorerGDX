@@ -32,6 +32,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.GWTish.Button;
+import com.lostagain.nl.GWTish.ClickHandler;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Image;
 import com.lostagain.nl.GWTish.Label;
@@ -61,6 +62,7 @@ import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.PosRotScale;
+import com.lostagain.nl.me.particles.exampleParticleManagement;
 import com.lostagain.nl.shaders.InvertShader;
 import com.lostagain.nl.shaders.NormalMapShader;
 
@@ -131,7 +133,7 @@ public class MainExplorationView implements Screen {
 	//static  Timer cameraTimer = new Timer();
 	//	static  Task cameraTweenTask;
 
-	
+
 	static boolean dragging = false;
 	/**
 	 * used to force the scene dragging to start in situations when it normally wouldn't (for example the email page allows dragging of scene even if you click on the email itself)
@@ -161,7 +163,7 @@ public class MainExplorationView implements Screen {
 
 	public static hitable touchedAModel = null;
 	ArrayList<hitable> lastHits = new ArrayList<hitable>();
-	
+
 	/**  mouse state (still being implemented. Will replace newtouch and newup)
 	 **/
 	public static enum TouchState {
@@ -179,11 +181,11 @@ public class MainExplorationView implements Screen {
 		 * mouse or touch just went up
 		 */
 		NewTouchUp,
-		
+
 		/**
 		 * The mouse has just moved a bit since being down  **/
 		NewDrag,
-		
+
 		/**
 		 * The mouse has moved a bit since being down and is still being held **/
 		Dragging;
@@ -448,6 +450,9 @@ public class MainExplorationView implements Screen {
 
 			addDeveloperDrops();
 
+			//also setup particle effects (test for now)
+			exampleParticleManagement.setup(camera);
+
 
 		}
 
@@ -535,14 +540,19 @@ public class MainExplorationView implements Screen {
 
 
 		//---
-		/*
-		Button tempbuttonSmaller = new Button(200,35,new Runnable(){
-			@Override
-			public void run() {
-				slotTest.setToScale(new Vector3(0.5f,0.5f,0.5f));
 
-			}			
+		Button tempbutton = new Button("test sort",new ClickHandler() {			
+			@Override
+			public void onClick() {
+				Gdx.app.log(logstag,"____debug button pressed  snapShotNextSort setting... ");
+				ModelManagment.mysorter.snapShotNextSort();
+				//ModelManagment.mysorter.testSort();
+
+			}
 		});
+
+
+		/*
 		Button tempbuttonBigger = new Button(200,35,new Runnable(){
 			@Override
 			public void run() {
@@ -551,10 +561,10 @@ public class MainExplorationView implements Screen {
 			}			
 		});*/
 
-		//tempbuttonSmaller.setToPosition(new Vector3(450f,610f,0f));
+		tempbutton.setToPosition(new Vector3(450f,610f,0f));
 		//tempbuttonBigger.setToPosition(new Vector3(450f,570f,0f));
 		//
-		//ModelManagment.addmodel(tempbuttonSmaller,ModelManagment.RenderOrder.zdecides);
+		ModelManagment.addmodel(tempbutton,ModelManagment.RenderOrder.zdecides);
 		//ModelManagment.addmodel(tempbuttonBigger,ModelManagment.RenderOrder.zdecides);
 
 
@@ -685,22 +695,28 @@ public class MainExplorationView implements Screen {
 		mouseLight.position.y = currentMouseOnStage.y;
 		//z? intensity?
 		///////////
+		boolean hasbackground = false;
+		if (hasbackground){
 
-		if (debugCamera.active){
-			the3dscene.modelBatch.begin( debugCamera);
-		} else {
-			the3dscene.modelBatch.begin( camera);
+			if (debugCamera.active){
+				the3dscene.modelBatch.begin( debugCamera);
+			} else {
+				the3dscene.modelBatch.begin( camera);
+			}
+
+
+
+
+			//rcontext.begin();
+			//testdefaultShader.begin(camera, rcontext);		
+			the3dscene.modelBatch.render(ModelManagment.allBackgroundInstances); //currently disabled
+
+
+
+			//testdefaultShader.end();
+			the3dscene.modelBatch.end();	
+
 		}
-
-
-
-
-		//rcontext.begin();
-		//testdefaultShader.begin(camera, rcontext);		
-		the3dscene.modelBatch.render(ModelManagment.allBackgroundInstances);
-
-		//testdefaultShader.end();
-		the3dscene.modelBatch.end();	
 
 		//rcontext.end();		
 		//testshader.begin();
@@ -729,6 +745,8 @@ public class MainExplorationView implements Screen {
 		//testdefaultShader.begin(camera, rcontext);		
 		the3dscene.modelBatch.render(ModelManagment.allForgroundInstances);
 
+		the3dscene.modelBatch.render(exampleParticleManagement.prepareAndGetParticleSystem());
+
 		//testdefaultShader.end();
 		the3dscene.modelBatch.end();	
 		//background.modelBatch.getRenderContext().end();
@@ -750,13 +768,13 @@ public class MainExplorationView implements Screen {
 				break;
 			case TouchDown:
 				currentTouchState = TouchState.TouchDown; //still a touchdown unless the mouse moved;
-				
-				
+
+
 				Vector2 currentLoc = new Vector2(Gdx.input.getX(),Gdx.input.getY());
 				if (touchStartedAt.dst2(currentLoc)>5){							
 					currentTouchState = TouchState.NewDrag;
 				}				
-				
+
 				break;
 			case NewDrag:
 				currentTouchState = TouchState.Dragging; //newdrags become Dragging 
@@ -796,23 +814,23 @@ public class MainExplorationView implements Screen {
 		if (currentTouchState!=TouchState.NONE)
 		{
 			Ray ray = ME.getCurrentStageCursorRay();
-			
+
 			Gdx.app.log(logstag,"currentTouchState:"+currentTouchState.name());
 			lastHits = ModelManagment.getHitables(ray,true,currentTouchState);
-			
+
 			if (lastHits.size()>0){
 				touchedAModel = lastHits.get(0);
 			} else {
 				touchedAModel = null;
 			}
-						
-			
+
+
 			Boolean fireEnabled=  !ConceptGunPanel.isDisabled();
 
 			if (PlayersData.playersConceptGun!=null){
 				PlayersData.playersConceptGun.update(delta); //update the gun in case its firing
 			}
-			
+
 			if (currentTouchState == TouchState.NewTouchDown){		
 				//if the concept gun is enabled we start shooting
 
@@ -832,19 +850,19 @@ public class MainExplorationView implements Screen {
 
 			if (currentTouchState==TouchState.NewTouchDown){
 				Gdx.app.log(logstag," new touch down");
-				
+
 				touchStartedAt = new Vector2(Gdx.input.getX(),Gdx.input.getY());
 
 			}
 
 			if (currentTouchState==TouchState.NewTouchUp){
-				
+
 				Gdx.app.log(logstag," new touch up");
-				
+
 				touchedAModel=null;
 				lastHits.clear();
 				ModelManagment.untouchAll(); 				
-				
+
 				//stop firing 
 				if (fireEnabled && PlayersData.playersConceptGun!=null){
 					PlayersData.playersConceptGun.cancelFire();
@@ -855,28 +873,28 @@ public class MainExplorationView implements Screen {
 			//if so, then we need to inform the model manager to fire any dragevents if needed (ie, for objects held)
 			//This is not the same as the scene itself being dragged. In fact they are multly exclusive
 
-		//	if (currentTouchState==TouchState.TouchDown){
+			//	if (currentTouchState==TouchState.TouchDown){
 			//	Vector2 currentLoc = new Vector2(Gdx.input.getX(),Gdx.input.getY());
 
 			//	if (touchStartedAt.dst2(currentLoc)>5){		
-					
+
 			//		currentTouchState = TouchState.NewDrag;
-				//	ModelManagment.fireDragStartOnAll();	
+			//	ModelManagment.fireDragStartOnAll();	
 			//	}
 
-		//	}
+			//	}
 
 		} else {
-			
+
 			ModelManagment.fireDragStartEnd(); 
 			lastHits.clear();
 
 		}
-		
+
 		//ensure just dropped list is clear (
 		STMemory.clearJustDropedList();
-		
-		
+
+
 
 
 		if (Gdx.input.isTouched()) {
@@ -884,9 +902,9 @@ public class MainExplorationView implements Screen {
 
 			//if (newtouch ){	
 			//if (currentTouchState == TouchState.NewTouchDown){							
-				//fire gun if not disabled
+			//fire gun if not disabled
 
-				/*
+			/*
 
 				Boolean fireEnabled= false;
 				if (PlayersData.playersConceptGun!=null){
@@ -910,9 +928,9 @@ public class MainExplorationView implements Screen {
 
 				}
 
-				 */
+			 */
 
-				//	touchStartedAt = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+			//	touchStartedAt = new Vector2(Gdx.input.getX(),Gdx.input.getY());
 
 			//}
 
@@ -928,7 +946,7 @@ public class MainExplorationView implements Screen {
 				PosRotScale cameraRelativePos = new PosRotScale(holdPosition);
 				PosRotScale newposition = MainExplorationView.camera.transState.copy().displaceBy(cameraRelativePos);
 
-				
+
 				STMemory.currentlyHeldNEW.setTransform(newposition);
 
 			}
@@ -957,13 +975,13 @@ public class MainExplorationView implements Screen {
 				startdragy_exview = currentPos.y;
 
 			} else if ((!cancelnextdragclick && (touchedAModel==null) && !movementControllDisabled) || forceDragStart) {
-		
+
 				drag_dis_x = Gdx.input.getX()-startdragxscreen;
 				drag_dis_y = Gdx.input.getY()-startdragyscreen;
 
 				currentPos.x = startdragx_exview-drag_dis_x;
 				currentPos.y = startdragy_exview+drag_dis_y;
-				
+
 
 			}
 
@@ -974,7 +992,7 @@ public class MainExplorationView implements Screen {
 			//if no longer touching stop dragging
 			dragging = false;
 			forceDragStart=false;
-			
+
 			//last displacement on mouse/touch up
 			drag_dis_x = Gdx.input.getX()-startdragxscreen;
 			drag_dis_y = Gdx.input.getY()-startdragyscreen;
@@ -1022,8 +1040,8 @@ public class MainExplorationView implements Screen {
 
 		//(touchedAModel!=null) &&
 		//if (newUp && !Gdx.input.isTouched()){
-		
-		
+
+
 		/*
 		if (currentTouchState == TouchState.NewTouchUp){	
 			Gdx.app.log(logstag,"_-released with model-_");
@@ -1063,9 +1081,9 @@ public class MainExplorationView implements Screen {
 		}
 		 */
 		//if (currentTouchState == TouchState.NONE){
-			//if (!Gdx.input.isTouched()){
-			//newtouch = true;
-			//ModelManagment.fireDragStartEnd(); 
+		//if (!Gdx.input.isTouched()){
+		//newtouch = true;
+		//ModelManagment.fireDragStartEnd(); 
 		//}
 
 		if (coasting){
@@ -1159,19 +1177,19 @@ public class MainExplorationView implements Screen {
 		//if not in production we display the position
 		if (ME.currentGameMode != GameMode.Production){
 			ME.font.draw( ME.interfaceSpriteBatch, "x:: " + currentPos.x+" y:: " + currentPos.y+" z::"+ currentPos.z+"  -"+currentTouchState.toString(), 10,25);
-			
+
 			if (lastHits.size()>0){
 				String curString = "";
 				for (hitable current : lastHits) {
 					String name = current.getClass().getSimpleName();
 					curString = curString+name+",";
 				}
-				
-				
+
+
 				ME.font.draw( ME.interfaceSpriteBatch, "="+curString, 10,40);
-				
+
 			}
-		
+
 		}
 
 		//    game.batch.draw(bucketImage, bucket.x, bucket.y);

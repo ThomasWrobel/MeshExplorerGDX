@@ -15,6 +15,7 @@ import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
+import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 
 /**
  * This is a panel designed to store concept objects
@@ -107,6 +108,21 @@ public class LinkStoreObject extends VerticalPanel implements GenericMeshFeature
 		center.z = ScreenUtils.getSuitableDefaultCameraHeight();
 		
 		return center;
+	}
+	
+	
+	
+	@Override
+	public void setZIndex(int index, String group) {
+		//set zindex of back material
+		super.getStyle().addAttributeToShader(new ZIndexAttribute(index,group));
+	
+		//but we also need to apply it to all subobjects (only a little higher!)
+		for (Widget childwidget : super.getChildren()) {
+			childwidget.getStyle().addAttributeToShader(new ZIndexAttribute(index+1,group)); //NOTE; wont work for sub-sub objects as zindex isnt part of gwtish
+		}
+		
+		
 	}
 
 }

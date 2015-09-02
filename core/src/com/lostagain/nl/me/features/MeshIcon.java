@@ -338,8 +338,10 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		//	super.attachThis(assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z+vertDisplacement));
 		super.attachThis(assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-pivotDisplacement.x,-pivotDisplacement.y,-pivotDisplacement.z+vertDisplacement));
 
-
-
+		//feature needs zindex attribute set if this icon has had one set
+		if (this.baseZindex>-1){
+			assocatiedFeature.setZIndex(baseZindex+1,Zindexgroup);
+		}
 		//we need to keep track of any size changes on the associated feature to recache the above if needed
 
 		Gdx.app.log(logstag,"adding size change monitor");
@@ -434,19 +436,61 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 	}
 	
+	
 	/**
-	 * adds a z index override and sets it to the supplied value
+	 * the base zindex
+	 * sub objects should be higher then this (like anything attached)
+	 */
+	int baseZindex = -1; //not set
+	String Zindexgroup = "";
+	/**
+	 * adds a z index override and sets it to the supplied values.
+	 * It then should render "larger index ontop of smaller" within the same group
+	 * Use "global" as the group to ignore grouping and ordering over every other index
+	 *  
 	 * use clear to revert to natural ordering
 	 * @param opacity
 	 */
-	public void setZIndex(int index){
+	public void setZIndex(int index, String group){
+		baseZindex  = index;
+		Zindexgroup = group;
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);		
-		//infoBoxsMaterial.set(new ZIndexAttribute(index));
+		infoBoxsMaterial.set(new ZIndexAttribute(index,group));
 		
 		
 		Material infoBoxsMaterial2 = MeshIconsLabel.getTextMaterial();
-		//infoBoxsMaterial2.set(new ZIndexAttribute(index+1));
+		infoBoxsMaterial2.set(new ZIndexAttribute(index+1,group));
+		
+		//if theres a attachment
+		if (this.assocatiedFeature!=null){
+			assocatiedFeature.setZIndex(baseZindex+1,Zindexgroup);
+			
+		}
+	}
+	
+	
+	static int uniqueNamesGeneratedCount = 0;
+	String uniqueIconName = "";
+	/**
+	 * used to ID this mesh icon on the scene.
+	 * In future this might be refractored elsewhere if more things need it.
+	 * Name formula is;
+	 * 
+	 * IconType.labelName + _ + currentCountOfTimesThisFunctionCalled
+	 * @return
+	 */
+	public String getUniqueName(){
+		
+		if (uniqueIconName.isEmpty()){
+			//generate one
+			uniqueNamesGeneratedCount ++;
+			uniqueIconName = thisIconsType.getLabelName()+"_"+uniqueNamesGeneratedCount;
+			return uniqueIconName;
+		} else {
+			return uniqueIconName;
+		}
+		
 		
 		
 	}

@@ -74,7 +74,8 @@ public class LocationHub extends MeshIcon {
 		basicS.a = 0.5f;
 		super.setBackgroundColour(basicS); //temp
 		LocationsNode = locationsNode;
-
+		super.setZIndex(150,super.getUniqueName()); 
+		
 
 	}
 
@@ -253,7 +254,7 @@ public class LocationHub extends MeshIcon {
 			//});
 
 			HubsFeatures.put(linkedLinkStore,newIcon);
-
+			newIcon.setZIndex(150,super.getUniqueName()); 
 		} else {
 			linkedLinkStore.clearLinks();
 		}
@@ -419,6 +420,8 @@ public class LocationHub extends MeshIcon {
 
 			HubsFeatures.put(linkedConceptDataStore,newIcon);
 
+			newIcon.setZIndex(150,super.getUniqueName()); 
+			
 			Gdx.app.log(logstag,"HubsFeatures:"+HubsFeatures.values());
 		}
 
@@ -442,8 +445,10 @@ public class LocationHub extends MeshIcon {
 
 			linkedAbilityInstaller = new AbilityInstaller(this); //create a new data store object linked to this location
 			final MeshIcon newIcon = new MeshIcon(IconType.AbilityInstaller, parentLocation, linkedAbilityInstaller);
-
+			
 			HubsFeatures.put(linkedAbilityInstaller,newIcon);
+			
+			newIcon.setZIndex(150,super.getUniqueName()); 
 
 			Gdx.app.log(logstag,"HubsFeatures:"+HubsFeatures.values());
 		}
@@ -459,7 +464,9 @@ public class LocationHub extends MeshIcon {
 			final MeshIcon newIcon = new MeshIcon(IconType.AbilityStore, parentLocation, linkedAbilityDataStore);
 
 			HubsFeatures.put(linkedAbilityDataStore,newIcon);
-
+			
+			newIcon.setZIndex(150,super.getUniqueName()); 
+			
 			Gdx.app.log(logstag,"HubsFeatures:"+HubsFeatures.values());
 		}
 

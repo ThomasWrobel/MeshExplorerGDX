@@ -116,6 +116,15 @@ interface GenericMeshFeature extends IsAnimatableModelInstance {
 	 * @return
 	 */
 	Vector3 getDefaultCameraPosition();
+
+	
+	/**
+	 * overrides the natural order render of elements on screen
+	 * things with higher zindex should render higher then things with lower within the same group
+	 * @param i
+	 */
+	void setZIndex(int i, String zindexGroup);
+	
 	
 	
 	//abstract void fadeIn(float duration,Runnable runAfterFadeIn);

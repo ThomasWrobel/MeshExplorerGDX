@@ -46,7 +46,7 @@ public class StaticSSSNodes {
 
 	//nodes used in ability's
 	public static final SSSNode Capacity = SSSNode.createSSSNode("Capacity", ME.INTERNALNS+"Capacity", ME.INTERNALNS);
-	public static final SSSNode Integer = SSSNode.createSSSNode("Capacity", ME.INTERNALNS+"Capacity", ME.INTERNALNS);
+	public static final SSSNode Integer = SSSNode.createSSSNode("Integer", ME.INTERNALNS+"Integer", ME.INTERNALNS);
 	
 	public static final SSSNode Seven = SSSNode.createSSSNode("7", ME.INTERNALNS+"Seven", ME.INTERNALNS,new SSSNode[]{Integer});
 	public static final SSSNode  Nine = SSSNode.createSSSNode("9", ME.INTERNALNS+"Nine", ME.INTERNALNS,new SSSNode[]{Integer});

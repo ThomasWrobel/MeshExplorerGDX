@@ -59,7 +59,7 @@ public class PlayersData {
 	//the location of the computer on the grid
 	public static int homelocationX=0; //200
 	public static int homelocationY=0;//500
-	public static int homelocationZ=0;//cant be anything else
+	public static int homelocationZ=0;//Can't be anything else
 
 	
 	
@@ -76,7 +76,7 @@ public class PlayersData {
 	/**
 	 * Below is all the players panels and features
 	 * These are collected over the game, and reloaded from save games
-	 * Each one might have many possible parameters, which are determained by its precise SSSNode's propertys.
+	 * Each one might have many possible parameters, which are determined by its precise SSSNode's propertys.
 	 * ie.
 	 * A basic inventory has 7 slots (Capacity:7)
 	 * A expanded one has nine (Capcity:9)
@@ -340,13 +340,13 @@ public class PlayersData {
 	/**
 	 * Sets the specified node as running. Node should be a bit of software, and on the players machine already.
 	 * Existing running software of the same type should probably be removed before triggering this.
-	 * Note; this will fire a hub regeneration. This is currently inefficiant if your doing this before a AddSoftware, as that does the same 
+	 * Note; this will fire a hub regeneration. This is currently inefficient if your doing this before a AddSoftware, as that does the same 
 	 **/
 	public static void removeSoftwareAsRunning(SSSNode ability,boolean regeneratePlayersLocation) {
 		PlayersData.playersLocationActiveSoftware.removeNodeFromThisSet(ability); 
 		//update the location
 		if (regeneratePlayersLocation){
-		homeLoc.locationsNEWHub.reGenerateLocationContents();
+			homeLoc.locationsNEWHub.reGenerateLocationContents();
 		}
 	}
 	
@@ -367,7 +367,37 @@ public class PlayersData {
 		return allSoftwareNames;
 		
 	}
-
+	
+	
+	public static void loadPlayersGame(String filename){
+		
+		//clear all existing player data
+		//player data has a unique URI to identify where it came from.
+		//we use this URI to remove it
+		
+		//simply load the players ntindex file to load its new data
+		//ensuring we use the unique player URI as the source of this new information
+		
+		//tell the interface to refresh
+			
+		
+		
+		
+	}
+	
+	/**
+	 * save the players game to the requested filename/path
+	 * @param filename
+	 **/
+	public static void savePlayersGame(String filename){
+		
+		//get all the common property sets that effect the player
+		//and the players location
+		
+		
+		
+		
+	}
 
 	
 	

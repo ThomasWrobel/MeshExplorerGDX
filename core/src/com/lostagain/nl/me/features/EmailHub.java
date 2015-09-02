@@ -42,6 +42,7 @@ public class EmailHub extends MeshIcon {
 
 		OpenHeightDisplacement = 2f; //we dont raise as high as other things. (this way emails go ontop of the hub even when the hub is open)
 		
+		super.setZIndex(150,super.getUniqueName()); 
 		
 	}
 

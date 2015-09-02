@@ -14,6 +14,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.GWTish.Button;
+import com.lostagain.nl.GWTish.ClickHandler;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.models.ModelManagment;
@@ -216,7 +217,7 @@ public class NewGUIBar extends VerticalPanel {
 	public void setZIndex(int index){
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial();
-		infoBoxsMaterial.set(new ZIndexAttribute(index));
+		infoBoxsMaterial.set(new ZIndexAttribute(index,"NewGUI"));
 		
 	}
 	

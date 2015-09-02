@@ -2,6 +2,7 @@ package com.lostagain.nl.GWTish;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute.presetTextStyle;
@@ -123,7 +124,21 @@ public class Style {
 		}
 		
 	}
+	
+	
+	
+	/**
+	 * Sets the background color
+	 * @param opacity
+	 */
+	public void addAttributeToShader(Attribute attribute){		
 
+			objectsMaterial.set( attribute);
+		
+		
+	}
+	
+	
 	/**
 	 * FOR TESTING ONLY, don't use
 	 * @return

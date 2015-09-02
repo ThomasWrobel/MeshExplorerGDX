@@ -18,6 +18,7 @@ public class AbilityStoreObject extends ConceptStoreObject {
 		super.getStyle().clearBorderColor();
 		
 		TitleLabel.setText("Ability Store:");
+		
 	}
 
 }

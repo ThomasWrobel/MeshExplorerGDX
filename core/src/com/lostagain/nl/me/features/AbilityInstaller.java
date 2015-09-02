@@ -29,6 +29,7 @@ import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
+import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 
 /**
  * Provides one slot that lets the player install features to their GUI or location
@@ -503,5 +504,21 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 		
 		return center;
 	}
+
+	@Override
+	public void setZIndex(int index, String group) {
+		Gdx.app.log(logstag,"_-(ability "+group+" )-_");
+		
+		//set zindex of back material
+		super.getStyle().addAttributeToShader(new ZIndexAttribute(index,group));
+	
+		//but we also need to apply it to all subobjects (only a little higher!)
+		for (Widget childwidget : super.getChildren()) {
+			childwidget.getStyle().addAttributeToShader(new ZIndexAttribute(index+1,group)); //NOTE; wont work for sub-sub objects as zindex isn't part of gwtish
+		}
+		
+		
+	}
+		
 
 }

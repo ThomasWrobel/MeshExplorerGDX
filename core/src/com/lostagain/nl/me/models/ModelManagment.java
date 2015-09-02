@@ -207,7 +207,7 @@ public class ModelManagment {
 		//	 MyShaderProvider myshaderprovider = new MyShaderProvider();
 
 		mysorter = new MySorter();
-		modelBatch = new ModelBatch(myshaderprovider);
+		modelBatch = new ModelBatch(myshaderprovider,mysorter);
 		
 		//First we add one object at the center with a defaultshader used
 		// Its VERY important to use a defaultshader object as the first thing created, else
