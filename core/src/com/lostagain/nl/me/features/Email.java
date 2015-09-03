@@ -23,7 +23,7 @@ import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
-import com.lostagain.nl.shaders.DistanceFieldShader;
+import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
 import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 
 /**
@@ -54,7 +54,7 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 		
 		this.add(emailContents);
 		
-		emailContents.getStyle().setTextStyle(DistanceFieldShader.DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+		emailContents.getStyle().setTextStyle(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 		this.getStyle().clearBackgroundColor(); 
 		this.getStyle().clearBorderColor();
 		

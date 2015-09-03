@@ -5,10 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute.presetTextStyle;
-import com.lostagain.nl.shaders.GlowingSquareShader;
-import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
-import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute.presetTextStyle;
+import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
 
 /**
  * stores style parameters for Elements
@@ -20,8 +19,8 @@ public class Style {
 	Element elementWithStyle;
 	Material objectsMaterial = null;
 
-	DistanceFieldAttribute textStyle;
-	GlowingSquareAttribute glowingSquare;
+	GwtishWidgetDistanceFieldAttribute textStyle;
+	GwtishWidgetBackgroundAttribute glowingSquare;
 	
 	
 	
@@ -49,8 +48,8 @@ public class Style {
 
 		//eventually we might want to convert the second shaders functions into the first, and handle them all by one shader?
 		//(so we can have text with a border, etc)
-		textStyle     = ((DistanceFieldAttribute)objectsMaterial.get(DistanceFieldAttribute.ID));
-		glowingSquare = ((GlowingSquareShader.GlowingSquareAttribute)objectsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
+		textStyle     = ((GwtishWidgetDistanceFieldAttribute)objectsMaterial.get(GwtishWidgetDistanceFieldAttribute.ID));
+		glowingSquare = ((GwtishWidgetBackgroundAttribute)objectsMaterial.get(GwtishWidgetBackgroundAttribute.ID));
 
 
 	}
@@ -97,7 +96,7 @@ public class Style {
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		if (glowingSquare!=null){
 
-			glowingSquare.coreColor = bordercol;
+			glowingSquare.borderColour = bordercol;
 		//	glowingSquare.glowColor = bordercol;
 		}
 

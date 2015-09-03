@@ -25,6 +25,7 @@ import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
 
 /**
  * A Libgdx label that will eventually emulate most of the features of a GWT label (ish. VERY ish.)
@@ -138,11 +139,12 @@ public class Label extends LabelBase {
 		
 		newTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest does not work with DistanceField shaders
 
-		DistanceFieldAttribute textStyle = null;
-		
+		//DistanceFieldAttribute textStyle = null;
+		GwtishWidgetDistanceFieldAttribute textStyle = null;
 		
 		//if (textStyle==null){
-			textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+		//	textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+			textStyle = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 			
 		//}
 				
@@ -753,8 +755,7 @@ public class Label extends LabelBase {
 		
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);
-		
-		DistanceFieldAttribute style = ((DistanceFieldAttribute)infoBoxsMaterial.get(DistanceFieldAttribute.ID));
+		GwtishWidgetDistanceFieldAttribute style = ((GwtishWidgetDistanceFieldAttribute)infoBoxsMaterial.get(GwtishWidgetDistanceFieldAttribute.ID));
 		style.setOverall_Opacity_Multiplier(opacity);
 		
 		//Gdx.app.log(logstag,"_____________current            col:"+style.textColour);

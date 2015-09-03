@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
 import com.lostagain.nl.shaders.NormalMapShader.NormalMapShaderAttribute;
 
 
@@ -87,13 +86,15 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		if (renderable.material.has(TextureNoiseShader.TextureNoiseAttribute.ID)){
 			return new TextureNoiseShader(renderable);		
 		}	
-		if (renderable.material.has(GlowingSquareAttribute.ID)){
+		if (renderable.material.has(GwtishWidgetBackgroundAttribute.ID)){
 			return new GlowingSquareShader();
 		}
 		if (renderable.material.has(NormalMapShaderAttribute.ID)){
 			return new NormalMapShader(renderable);
 		}
-		
+		if (renderable.material.has(GwtishWidgetDistanceFieldAttribute.ID)){
+			return new GwtishWidgetShader();
+		}
 		
 		//------------------------------------------------------------------------------------------------------
 		//------------------------------------------------------------------------------------------------------

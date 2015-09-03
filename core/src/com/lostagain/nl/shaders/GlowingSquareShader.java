@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -34,7 +33,7 @@ public class GlowingSquareShader implements Shader {
 	int u_time;
 	int u_resolution;
 
-	int u_pixel_step;
+	//int u_pixel_step;
 
 	int u_glowWidth;
 	int u_glowColor;
@@ -44,76 +43,6 @@ public class GlowingSquareShader implements Shader {
 
 
 	private float time;
-
-
-	///------------------
-	// Create a custom attribute, see https://github.com/libgdx/libgdx/wiki/Material-and-environment
-	// See also: http://blog.xoppa.com/using-materials-with-libgdx/
-	/**
-	 * The presence of this parameter will cause the ConceptBeamShader to be used
-	 * */
-	public static class GlowingSquareAttribute extends Attribute {
-		public final static String Alias = "GlowingSquareAttribute";
-		public final static long ID = register(Alias);
-
-		public float glowWidth;
-		public Color backColor;
-		public Color coreColor;
-		//public Color glowColor;
-
-
-		/**
-		 * The presence of this parameter will cause the ConceptBeamShader to be used
-		 * @param width - width of beam
-		 * @param  glowColor - its color
-		 * @param corecolor - color of its core (normally white for a intense glow at the middle of the beam)
-		 */
-		public GlowingSquareAttribute (final float glowWidth,final Color backColor, final Color coreColor ) {
-
-			super(ID);
-			this.glowWidth = glowWidth;
-			this.backColor = backColor.cpy();
-			this.coreColor = coreColor.cpy();
-			//this.glowColor = glowColor.cpy();
-
-		}
-
-		@Override
-		public Attribute copy () {
-			return new GlowingSquareAttribute(glowWidth,backColor,coreColor);
-		}
-
-		@Override
-		protected boolean equals (Attribute other) {
-			if (
-					(((GlowingSquareAttribute)other).glowWidth == glowWidth) &&
-				//	(((GlowingSquareAttribute)other).glowColor == glowColor) &&
-					(((GlowingSquareAttribute)other).backColor == backColor) &&
-					(((GlowingSquareAttribute)other).coreColor == coreColor) 
-					)
-
-			{
-				return true;
-
-			}
-			return false;
-		}
-
-		@Override
-		public int compareTo(Attribute o) {
-
-			//Ensuring attribute we are comparing too is the same type, if not we truth
-			if (type != o.type) return type < o.type ? -1 : 1; //if not the same type and less then we return -1 else we return 1
-
-			//if they are the same type we continue	
-			double otherwidth = ((GlowingSquareAttribute)o).glowWidth; //just picking width here arbitarily for the moment
-			//not sure yet when draw order will be important for glowing square backgrounds
-
-
-			return glowWidth == otherwidth ? 0 : (glowWidth < otherwidth ? -1 : 1);
-
-		}
-	}	
 
 
 	@Override
@@ -136,7 +65,7 @@ public class GlowingSquareShader implements Shader {
 		u_projViewTrans = program.getUniformLocation("u_projViewTrans");
 		u_worldTrans    = program.getUniformLocation("u_worldTrans");
 		u_time          = program.getUniformLocation("u_time"); 
-		u_pixel_step    = program.getUniformLocation("u_pixel_step");
+		//u_pixel_step    = program.getUniformLocation("u_pixel_step");
 		u_resolution    = program.getUniformLocation("u_resolution");
 
 		//square style
@@ -197,9 +126,9 @@ public class GlowingSquareShader implements Shader {
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
 
 
-		GlowingSquareAttribute squareStyle = (GlowingSquareAttribute)renderable.material.get(GlowingSquareAttribute.ID);
+		GwtishWidgetBackgroundAttribute squareStyle = (GwtishWidgetBackgroundAttribute)renderable.material.get(GwtishWidgetBackgroundAttribute.ID);
 		Color back = squareStyle.backColor.cpy(); //squareStyle can be null at this point for some reason?
-		Color core = squareStyle.coreColor.cpy();
+		Color core = squareStyle.borderColour.cpy();
 		
 
 		BlendingAttribute blending = ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type));
@@ -207,11 +136,11 @@ public class GlowingSquareShader implements Shader {
 
 			float opacity = blending.opacity;
 
-
 			back.a = back.a * opacity;
 			core.a = core.a * opacity;
 			//glow.a = glow.a * opacity;
 		}
+		
 
 		program.setUniformf(u_glowWidth, squareStyle.glowWidth);  	 
 		program.setUniformf(u_backColor, back);
@@ -231,7 +160,7 @@ public class GlowingSquareShader implements Shader {
 	public void setSizeUniform(float w, float h) {
 
 		program.setUniformf(u_resolution, w,h);
-		program.setUniformf(u_pixel_step,(1/w), (1/h));
+		//program.setUniformf(u_pixel_step,(1/w), (1/h));
 		
 
 
@@ -250,7 +179,7 @@ public class GlowingSquareShader implements Shader {
 	@Override
 	public boolean canRender (Renderable instance) {
 
-		if (instance.material.has(GlowingSquareAttribute.ID)){
+		if (instance.material.has(GwtishWidgetBackgroundAttribute.ID)){
 			return true;
 		}
 

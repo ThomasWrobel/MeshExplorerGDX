@@ -14,8 +14,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector2;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
-import com.lostagain.nl.shaders.GlowingSquareShader;
-import com.lostagain.nl.shaders.GlowingSquareShader.GlowingSquareAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
 
 /**
  * This will approximate a similar function as GWTs Widget class does
@@ -30,7 +29,7 @@ public class Widget extends Element {
 	
 	static Material DefaultWhiteBackground = new Material(SHADERFORBACKGROUND,
 			   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
-			   new GlowingSquareShader.GlowingSquareAttribute(1f,Color.WHITE,Color.RED));
+			   new GwtishWidgetBackgroundAttribute(1f,Color.WHITE,Color.RED,1.0f));
 	
 	
 	
