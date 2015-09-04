@@ -17,7 +17,7 @@ float radius = 3.0;
 // Background color
 //vec4 bgColor = vec4(0.0, 0.0, 0.0, 0.5);
 
-//user style data
+//background style data
 varying float v_glowWidth; 
 varying vec4  v_backColor;
 varying vec4  v_coreColor;

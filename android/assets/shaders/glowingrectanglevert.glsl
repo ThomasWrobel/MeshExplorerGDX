@@ -23,7 +23,7 @@ uniform float u_glowWidth;
 uniform vec4  u_backColor;
 uniform vec4  u_coreColor;
 uniform vec4  u_glowColor;
-uniform vec2  u_pixel_step;
+//uniform vec2  u_pixel_step;
 uniform vec2  u_resolution;
 
 //in
@@ -32,15 +32,19 @@ attribute vec3 a_position;
 attribute vec2 a_texCoord0;
 //attribute vec2 a_texCoord;
 //attribute vec2 texCoord;
-attribute vec4 Color;
+//attribute vec4 Color;
 
 //"out" varyings to our fragment shader
-varying vec4 vColor;
-varying vec2 fPosition;
-varying vec2 pixel_step;
-varying vec2 iResolution;
+//varying vec4 vColor;
 
-//style data
+//varying vec2 pixel_step;
+
+
+//bacground shapeing data
+varying vec2 iResolution;
+varying vec2 fPosition;
+
+//background style data
 varying float v_glowWidth; 
 varying vec4  v_backColor;
 varying vec4  v_coreColor;
@@ -50,7 +54,7 @@ varying vec4  v_glowColor;
 
 void main() {
 
-    vColor = Color;
+   // vColor = Color;
     fPosition = a_texCoord0;
     iResolution = u_resolution;
     
@@ -60,7 +64,7 @@ void main() {
    v_coreColor=u_coreColor;
    v_glowColor=u_glowColor;
     
-    pixel_step = u_pixel_step;
+   // pixel_step = u_pixel_step;
     
     gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);
 	
