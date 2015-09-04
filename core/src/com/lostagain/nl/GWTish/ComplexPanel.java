@@ -471,5 +471,26 @@ public abstract class ComplexPanel extends Widget {
 	public ArrayList<Widget> getChildren() {
 		return new ArrayList<Widget>(contents);
 	}
+	
+	@Override
+	/**
+	 * sets the index on this and all child objects.
+	 * child objects get index+1
+	 * @param index  - higher valued objects go infront of lower objects
+	 * @param group  - things in the same group get ordered next to eachother according to index value 
+	 */
+	public void setZIndex(int index, String group) {
+		Gdx.app.log(logstag,"_-(setZIndex "+group+" )-_");
+		
+		//set zindex of back material
+		super.setZIndex(index,group);
+	
+		//but we also need to apply it to all subobjects (only a little higher!)
+		for (Widget childwidget : contents) {
+			childwidget.setZIndex(index+1,group); 
+		}
+		
+		
+	}
 
 }

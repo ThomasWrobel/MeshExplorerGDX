@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.GWTish.ZIndexAttribute;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
@@ -39,7 +40,6 @@ import com.lostagain.nl.me.newmovements.NewMovementController;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
 import com.lostagain.nl.shaders.MySorter;
-import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 
 /** 
  * Will become a 3d icon that can be clicked to turn into a interactive meshFeature.
@@ -203,6 +203,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		//if a feature is added and removed, this one will be displayed as the default
 		defaultAssociatedFeature = this.assocatiedFeature;
 
+		
 		setupAssociatedFeature();
 
 
@@ -232,7 +233,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 		MeshIconsLabel = new Label(name);
 		MeshIconsLabel.setLabelBackColor(Color.CLEAR);
-
+		//MeshIconsLabel.getStyle().clearBackgroundColor();
+		
 		//we also need to scale the label to fit as it might be too long
 		if ((MeshIconsLabel.getWidth()+(LabelMargin*2))>w){
 			//10/5
@@ -255,6 +257,9 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		super.attachThis(MeshIconsLabel, new PosRotScale(-labelCenter.x,-labelCenter.y,5f)); //hover above a bit
 
 
+		//mesh icons have a default zindex of 150
+		this.setZIndex(150, this.getUniqueName());
+		
 
 	}
 
@@ -442,6 +447,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	 */
 	int baseZindex = -1; //not set
 	String Zindexgroup = "";
+	
 	/**
 	 * adds a z index override and sets it to the supplied values.
 	 * It then should render "larger index ontop of smaller" within the same group
@@ -456,8 +462,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);		
 		infoBoxsMaterial.set(new ZIndexAttribute(index,group));
-		
-		
+				
 		Material infoBoxsMaterial2 = MeshIconsLabel.getTextMaterial();
 		infoBoxsMaterial2.set(new ZIndexAttribute(index+1,group));
 		

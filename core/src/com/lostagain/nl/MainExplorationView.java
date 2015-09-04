@@ -487,7 +487,7 @@ public class MainExplorationView implements Screen {
 		for (SSSNode node : developerDropList) {
 
 			ConceptObject coTest = new ConceptObject(node);
-			coTest.setToPosition(new Vector3(266f,100f+(y*50),0f));
+			coTest.setToPosition(new Vector3(366f,100f+(y*50),0f));
 			ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
 			y++;
 

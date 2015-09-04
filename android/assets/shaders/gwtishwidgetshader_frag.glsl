@@ -34,7 +34,7 @@ varying vec4 v_color;
 varying vec2 vTexCoord;
 
 varying vec4 v_textColor;
-varying vec4 v_backColor;
+//varying vec4 v_backColor;
 
 
 
@@ -329,6 +329,7 @@ void main() {
 	}
 	
 	
+	vec4 v_backColor = vec4(0.0,0.0,0.0,0.0);
 	
 	//if theres a background colour or a border colour, then we get the backcolor for this particular spot
 	if ( v_backBackColor!= vec4(0.0,0.0,0.0,0.0) || v_backCoreColor!= vec4(0.0,0.0,0.0,0.0)  ){

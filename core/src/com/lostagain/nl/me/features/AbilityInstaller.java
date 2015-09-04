@@ -17,8 +17,8 @@ import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
-import com.lostagain.nl.GWTish.Widget;
 import com.lostagain.nl.GWTish.ComplexPanel;
+import com.lostagain.nl.GWTish.ZIndexAttribute;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
@@ -29,7 +29,6 @@ import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
-import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 
 /**
  * Provides one slot that lets the player install features to their GUI or location
@@ -41,7 +40,7 @@ import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 public class AbilityInstaller extends VerticalPanel implements GenericMeshFeature,Animating {
 	private static final String STANDARD_FEEDBACK_MESSAGE = "(please drop an ability onto the slot)";
 
-	final static String logstag = "ME.AbilityInstaller";
+	public final static String logstag = "ME.AbilityInstaller";
 
 	static int width  = 380;
 	static int height = 250;
@@ -503,21 +502,6 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 		center.z = ScreenUtils.getSuitableDefaultCameraHeight();
 		
 		return center;
-	}
-
-	@Override
-	public void setZIndex(int index, String group) {
-		Gdx.app.log(logstag,"_-(ability "+group+" )-_");
-		
-		//set zindex of back material
-		super.getStyle().addAttributeToShader(new ZIndexAttribute(index,group));
-	
-		//but we also need to apply it to all subobjects (only a little higher!)
-		for (Widget childwidget : super.getChildren()) {
-			childwidget.getStyle().addAttributeToShader(new ZIndexAttribute(index+1,group)); //NOTE; wont work for sub-sub objects as zindex isn't part of gwtish
-		}
-		
-		
 	}
 		
 

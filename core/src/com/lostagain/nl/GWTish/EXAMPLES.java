@@ -65,6 +65,9 @@ public class EXAMPLES {
 		exampleLabel.getStyle().setBackgroundColor(Color.BLUE);
 		exampleLabel.getStyle().setBorderColor(Color.WHITE);
 		
+		
+		
+		
 		return exampleLabel;
 	}
 	

@@ -145,7 +145,7 @@ public class Label extends LabelBase {
 		//if (textStyle==null){
 		//	textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 		textStyle = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
-
+		
 		//}
 
 
@@ -153,7 +153,7 @@ public class Label extends LabelBase {
 		Material mat = 	new Material(LABEL_MATERIAL,	
 				TextureAttribute.createDiffuse(newTexture),
 				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
-				ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
+			//	ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
 				textStyle);
 
 
@@ -722,11 +722,14 @@ public class Label extends LabelBase {
 	 */
 	public void setLabelBackColor(Color labelBackColor) {
 		//	labelBackColor = Color.PINK; //TEMP during testing. Currently another shader bug - the background colour isn't being used correctly for the transparancy, its only effecting the shadows blending
-		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);		
+		//Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);		
 		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
 
-		infoBoxsMaterial.set( ColorAttribute.createDiffuse(labelBackColor));
+		//infoBoxsMaterial.set( ColorAttribute.createDiffuse(labelBackColor));
 
+		
+		super.getStyle().setBackgroundColor(labelBackColor);
+		
 	}
 
 
@@ -737,22 +740,12 @@ public class Label extends LabelBase {
 
 	@Override
 	public void setOpacity(float opacity){
-		//super.setOpacity(opacity);
+		
 
-		//Material infoBoxsMaterial = this.getMaterial("LabelMaterial");	
+		super.setOpacity(opacity);
+		
 
-		/*
-		if (infoBoxsMaterial.has(BlendingAttribute.Type)){
-			((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = 0.1f;
-		} else {
-			BlendingAttribute blend = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.1f);
-			infoBoxsMaterial.set(blend);
-
-		}*/
-
-
-
-
+/*
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);
 		GwtishWidgetDistanceFieldAttribute style = ((GwtishWidgetDistanceFieldAttribute)infoBoxsMaterial.get(GwtishWidgetDistanceFieldAttribute.ID));
@@ -761,21 +754,15 @@ public class Label extends LabelBase {
 		//Gdx.app.log(logstag,"_____________current            col:"+style.textColour);
 		//Gdx.app.log(logstag,"_____________current shadow     col:"+style.shadowColour);
 		//Gdx.app.log(logstag,"_____________current glowColour col:"+style.glowColour);
-		/*
-	   style.outlineColour.a = opacity; //this doesn't work right in shader ...hmm...we also shouldn't overwrite like this anyway
-
-		  style.textColour.a = opacity; //as they might have deliberately seperate opacitys even when fully visible
-		  style.glowColour.a = opacity;
-		style.shadowColour.a = opacity;
-		 */
+	
 
 
-		//NOTE: This backgrounds color shouldn't be set directly like this, as it might not be 100% opacity to start with
 		//ColorAttribute background = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
 		//background.color.a = opacity;
 		BlendingAttribute backgroundOpacity = ((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type));
 		backgroundOpacity.opacity = opacity;
 		//	Gdx.app.log(logstag,"_____________opacity:"+opacity);
+		*/
 	}
 
 	public void setMaxWidth(float maxWidth) {

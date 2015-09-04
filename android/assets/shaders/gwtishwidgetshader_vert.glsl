@@ -30,7 +30,7 @@ uniform mat4 u_projViewTrans;
 uniform mat4 u_projTrans; //new
 
 uniform vec4 u_textColor;
-uniform vec4 u_backColor;
+//uniform vec4 u_backColor;
 
 //glow
 uniform vec4  u_glowColor;
@@ -65,7 +65,7 @@ varying vec4 v_color;
 varying vec2 vTexCoord;
 
 varying vec4 v_textColor;
-varying vec4 v_backColor;
+//varying vec4 v_backColor;
 
 
 //glow
@@ -116,7 +116,7 @@ void main() {
 	v_colorFlag=u_colorFlag;
 	
   //Colours!!
-   v_backColor = u_backColor;
+ //  v_backColor = u_backColor;
    
    
     v_color = a_color;

@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 // Create a custom attribute, see https://github.com/libgdx/libgdx/wiki/Material-and-environment
 // See also: http://blog.xoppa.com/using-materials-with-libgdx/
 /**
- * The presence of this parameter will cause the ConceptBeamShader to be used
+ * Controlls the background of all widgets.
+ * This controlls the background and border.
+ * NOTE: This overrides any ColorAttribute setting for the background. Use this .backColor to pick a background ONLY
  * */
 public class GwtishWidgetBackgroundAttribute extends Attribute {
 	public final static String Alias = "GwtishWidgetBackgroundAttribute";
@@ -30,18 +32,35 @@ public class GwtishWidgetBackgroundAttribute extends Attribute {
 	 * The presence of this parameter will cause the ConceptBeamShader to be used
 	 * @param width - width of beam
 	 * @param  glowColor - its color
-	 * @param corecolor - color of its core (normally white for a intense glow at the middle of the beam)
+	 * @param  borderColour - color of its core (normally white for a intense glow at the middle of the beam)
 	 */
-	public GwtishWidgetBackgroundAttribute (final float glowWidth,final Color backColor, final Color coreColor , final float cornerRadius) {
+	public GwtishWidgetBackgroundAttribute (final float glowWidth,final Color backColor, final Color borderColour , final float cornerRadius) {
 
 		super(ID);
 		this.glowWidth = glowWidth;
 		this.backColor = backColor.cpy();
-		this.borderColour = coreColor.cpy();
+		this.borderColour = borderColour.cpy();
 		this.cornerRadius=cornerRadius;
 
 	}
 
+	public float Overall_Opacity_Multiplier = 1f;
+	
+	public float getOverall_Opacity_Multiplier() {
+		return Overall_Opacity_Multiplier;
+	}
+	
+	/**
+	 * This value will be multiplied by the alpha channel of any get...Color() method used.
+	 * The idea is to use it as a temp value to allow BlendingAttribute opacity to effect the text in the shader too.
+	 * REMEMBER TO RESET THIS VALUE TO 1 BY DEFAULT IF NO BLENDING IS SET
+	 * @param overall_Opacity_Multiplier
+	 **/
+	public void setOverall_Opacity_Multiplier(float overall_Opacity_Multiplier) {
+		Overall_Opacity_Multiplier = overall_Opacity_Multiplier;
+	}
+	
+	
 	@Override
 	public Attribute copy () {
 		return new GwtishWidgetBackgroundAttribute(glowWidth,backColor,borderColour,cornerRadius);
@@ -50,11 +69,11 @@ public class GwtishWidgetBackgroundAttribute extends Attribute {
 	@Override
 	protected boolean equals (Attribute other) {
 		if (
-				(((GwtishWidgetBackgroundAttribute)other).glowWidth == glowWidth) &&
+				(((GwtishWidgetBackgroundAttribute)other).glowWidth == glowWidth      ) &&
 				(((GwtishWidgetBackgroundAttribute)other).cornerRadius == cornerRadius) &&
-				(((GwtishWidgetBackgroundAttribute)other).backColor == backColor) &&
+				(((GwtishWidgetBackgroundAttribute)other).backColor == backColor      ) &&
 				(((GwtishWidgetBackgroundAttribute)other).borderColour == borderColour) 
-				)
+			)
 
 		{
 			return true;
@@ -77,4 +96,22 @@ public class GwtishWidgetBackgroundAttribute extends Attribute {
 		return glowWidth == otherwidth ? 0 : (glowWidth < otherwidth ? -1 : 1);
 
 	}
+
+	public Color getBackColor() {
+		
+		Color effectiveBackColour = backColor.cpy();
+		effectiveBackColour.a = effectiveBackColour.a * Overall_Opacity_Multiplier;
+		
+		return effectiveBackColour;
+	}
+
+	public Color getBorderColour() {
+		Color effectiveBorderColour = borderColour.cpy();
+		effectiveBorderColour.a = effectiveBorderColour.a * Overall_Opacity_Multiplier;
+		
+		return effectiveBorderColour;
+	}
+
+	
+	
 }

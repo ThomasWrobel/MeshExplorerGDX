@@ -20,7 +20,6 @@ import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.ToggleButton;
 import com.lostagain.nl.GWTish.VerticalPanel;
-import com.lostagain.nl.GWTish.Widget;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.Animating;
@@ -28,7 +27,6 @@ import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
-import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 
 /**
  * Experimental inventory class
@@ -433,18 +431,5 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		center.z = ScreenUtils.getSuitableDefaultCameraHeight();
 		
 		return center;
-	}
-
-	@Override
-	public void setZIndex(int index, String group) {
-		//set zindex of back material
-		super.getStyle().addAttributeToShader(new ZIndexAttribute(index,group));
-	
-		//but we also need to apply it to all subobjects (only a little higher!)
-		for (Widget childwidget : super.getChildren()) {
-			childwidget.getStyle().addAttributeToShader(new ZIndexAttribute(index+1,group)); //NOTE; wont work for sub-sub objects as zindex isnt part of gwtish
-		}
-		
-		
 	}
 }

@@ -236,6 +236,12 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 	}
 
 
+	/**
+	 * This value will be multiplied by the alpha channel of any get...Color() method used.
+	 * The idea is to use it as a temp value to allow BlendingAttribute opacity to effect the text in the shader too.
+	 * REMEMBER TO RESET THIS VALUE TO 1 BY DEFAULT IF NO BLENDING IS SET
+	 * @param overall_Opacity_Multiplier
+	 */
 	public void setOverall_Opacity_Multiplier(float overall_Opacity_Multiplier) {
 		Overall_Opacity_Multiplier = overall_Opacity_Multiplier;
 	}

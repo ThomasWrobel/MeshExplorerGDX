@@ -17,10 +17,10 @@ import com.lostagain.nl.GWTish.Button;
 import com.lostagain.nl.GWTish.ClickHandler;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.GWTish.ZIndexAttribute;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.me.models.objectType;
-import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 /**
  * provides togglable shortcuts for various game functions such as going home, activating the concept gun, or opening the inventory
  * 

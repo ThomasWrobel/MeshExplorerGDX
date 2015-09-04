@@ -5,7 +5,6 @@ import java.util.HashMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultRenderableSorter;
@@ -16,71 +15,12 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.Widget;
+import com.lostagain.nl.GWTish.ZIndexAttribute;
 import com.lostagain.nl.me.features.ConceptObject;
 import com.lostagain.nl.shaders.InvertShader.InvertAttribute;
 import com.lostagain.nl.shaders.PrettyNoiseShader.PrettyNoiseShaderAttribute;
 
 public class MySorter extends DefaultRenderableSorter {
-	
-	/**
-	 * Lets us override the normal draw order. Things with positive zindex go infront of natural ordering
-	 * negative goes behind
-	 * @author Tom
-	 */
-	public static class ZIndexAttribute extends Attribute {
-		
-		public final static String Alias = "ZIndexAttribute";
-		public final static long ID = register(Alias);		
-		
-		int zIndex = 0;
-		/**
-		 * we only compare to the same group, unless the group is "GLOBAL"
-		 */
-		String group = "";
-		/**
-		 * The presence of this parameter will override the normakl draw order
-		 */
-		public ZIndexAttribute (int zindex,String group ) {		
-			super(ID);				
-			this.zIndex=zindex;
-			this.group = group;
-		}
-
-		@Override
-		public Attribute copy () {
-			return new ZIndexAttribute(zIndex,group);
-		}
-
-		@Override
-		protected boolean equals (Attribute other) {				
-			if (
-				(((ZIndexAttribute)other).zIndex == zIndex) &&
-				(((ZIndexAttribute)other).group.equalsIgnoreCase(group))
-			   )
-			{				
-				return true;
-			}
-				return false;
-		}
-		
-		@Override
-		public int compareTo(Attribute o) {
-
-			Gdx.app.log("zindex", "co_z..");
-			
-			if (o.type == ID ){
-				
-				
-				int co_z = ((ZIndexAttribute)o).zIndex;
-				
-				Gdx.app.log("zindex", "co_z="+co_z+","+zIndex);
-				
-				return co_z-zIndex;						
-			}
-			
-		    return 0;		        
-		}
-	}	
 	
 	/**
 	 * used to snapshot all the objects being sorted

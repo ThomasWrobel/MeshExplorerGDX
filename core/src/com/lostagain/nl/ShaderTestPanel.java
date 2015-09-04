@@ -9,7 +9,6 @@ import com.lostagain.nl.GWTish.Image;
 import com.lostagain.nl.me.models.ModelManagment;
 import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
 import com.lostagain.nl.shaders.NormalMapShader;
-import com.lostagain.nl.shaders.MySorter.ZIndexAttribute;
 
 /**
  * a group of images purely to test shaders

@@ -103,7 +103,7 @@ public class Widget extends Element {
 	
 	
 	/**
-	 * Sets the opacity of the background
+	 * Sets the opacity of the background (which will include text as well if this is a Label)
 	 * @param opacity
 	 */
 	public void setOpacity(float opacity){		
@@ -111,8 +111,12 @@ public class Widget extends Element {
 	//	Gdx.app.log(logstag,"______________setOpacity:"+opacity);
 		
 		//get the material from the model
-		Material infoBoxsMaterial = getMaterial();
-		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;	
+		//Material infoBoxsMaterial = getMaterial();
+		//((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;	
+		
+		this.getStyle().setOpacity(opacity);
+		
+		
 	}
 	
 	
@@ -330,7 +334,7 @@ public class Widget extends Element {
 		this.alignment = alignment;
 
 		Gdx.app.log(logstag,"______________getWidth"+this.getWidth());
-		setSizeAs(this.getWidth(),this.getHeight()); //we should check if before/after it matchs
+		setSizeAs(this.getWidth(),this.getHeight()); //we should check if before/after it matches
 
 		Gdx.app.log(logstag,"______________getWidth"+this.getWidth());
 		
@@ -344,6 +348,10 @@ public class Widget extends Element {
 	
 	protected void setParent(Widget parentWidget) {
 		this.parentWidget=parentWidget;
+	}
+	
+	public void setZIndex(int index, String group) {
+		getStyle().setZIndex(index,group);
 	}
 	
 

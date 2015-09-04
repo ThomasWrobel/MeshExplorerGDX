@@ -2,8 +2,10 @@ package com.lostagain.nl.GWTish;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute.presetTextStyle;
 import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
@@ -20,7 +22,7 @@ public class Style {
 	Material objectsMaterial = null;
 
 	GwtishWidgetDistanceFieldAttribute textStyle;
-	GwtishWidgetBackgroundAttribute glowingSquare;
+	GwtishWidgetBackgroundAttribute    backStyle;
 	
 	
 	
@@ -45,13 +47,12 @@ public class Style {
 	public Style(Element elementWithStyle,Material mat) {
 		this.objectsMaterial=mat;
 		this.elementWithStyle=elementWithStyle;
-
-		//eventually we might want to convert the second shaders functions into the first, and handle them all by one shader?
-		//(so we can have text with a border, etc)
+		
+		//shaders controlled by two attributes;
 		textStyle     = ((GwtishWidgetDistanceFieldAttribute)objectsMaterial.get(GwtishWidgetDistanceFieldAttribute.ID));
-		glowingSquare = ((GwtishWidgetBackgroundAttribute)objectsMaterial.get(GwtishWidgetBackgroundAttribute.ID));
-
-
+		backStyle     = ((GwtishWidgetBackgroundAttribute)objectsMaterial.get(GwtishWidgetBackgroundAttribute.ID));
+		//(one of these might be null, if so they will be created and added on demand)
+		
 	}
 
 	/**
@@ -125,16 +126,16 @@ public class Style {
 	 * @param bordercol
 	 */
 	public void setBorderColor(Color bordercol) {
-
+		createBackgroundAttributeIfNeeded();
 	//	Gdx.app.log(logstag,"_________setting bordercoll:"+bordercol);
 
 		//get the material from the model
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
-		if (glowingSquare!=null){
+		//if (backStyle!=null){
 
-			glowingSquare.borderColour = bordercol;
+			backStyle.borderColour = bordercol;
 		//	glowingSquare.glowColor = bordercol;
-		}
+	//	}
 
 	}
 
@@ -143,22 +144,60 @@ public class Style {
 	 * @param opacity
 	 */
 	public void setBackgroundColor(Color backcol){		
-
+		createBackgroundAttributeIfNeeded();
 
 		//Gdx.app.log(logstag,"______________backcol:"+backcol);
 
 		//get the material from the model
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
-		if (glowingSquare!=null){
+		//if (backStyle!=null){
 			//	GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)objectsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
-			glowingSquare.backColor = backcol;
-		}
+			backStyle.backColor = backcol;
+		//}
 		
-		if (textStyle!=null){
-			objectsMaterial.set( ColorAttribute.createDiffuse(backcol));
-		}
+	//	if (textStyle!=null){
+	//		objectsMaterial.set( ColorAttribute.createDiffuse(backcol));
+	//	}
 		
 	}
+	
+	private void createBackgroundAttributeIfNeeded() {
+		if (backStyle==null){
+			backStyle =  new GwtishWidgetBackgroundAttribute(1f,Color.CLEAR,Color.CLEAR,1.0f);
+			this.addAttributeToShader(backStyle);
+		}
+	}
+
+	/**
+	 * Sets the opacity of this widget.
+	 * Specifically it adds a blendering style with the opacity set
+	 * 
+	 * This opacity will be used in the shader to effect both the backcolour and text colour without altering their colour setting
+	 * (ie, if there colour is only 0.5 opacity anyway, then setting the opacity to 1.0 means it will still be 0.5 opacity)
+	 * 
+	 * @param opacity
+	 */
+	public void setOpacity(float opacity) {
+
+		
+		this.addAttributeToShader(new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,opacity));
+		
+	}
+	
+	
+	
+	/**
+	 * Sets z-index value and groupname
+	 * 
+	 * @param opacity
+	 */
+	public void setZIndex(int index, String group) {
+
+			objectsMaterial.set( new ZIndexAttribute(index+1,group) );
+		
+		
+	}
+	
 	
 	
 	
@@ -209,7 +248,7 @@ public class Style {
 	//layout related styles
 	//-------------------
 	//-------------------
-//ref; http://grepcode.com/file/repo1.maven.org/maven2/com.google.gwt/gwt-user/2.0.4/com/google/gwt/dom/client/Style.java
+	//ref; http://grepcode.com/file/repo1.maven.org/maven2/com.google.gwt/gwt-user/2.0.4/com/google/gwt/dom/client/Style.java
 	
 	/**
 	 * Enum for the text-align property.

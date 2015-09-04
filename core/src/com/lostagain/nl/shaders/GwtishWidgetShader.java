@@ -55,7 +55,7 @@ public class GwtishWidgetShader implements Shader {
 
 	int a_colorFlag;
 	int u_textColour;
-	int u_backColour;
+	//int u_backColour;
 
 	int u_pixel_step;
 	int u_resolution;
@@ -114,7 +114,7 @@ public class GwtishWidgetShader implements Shader {
 		u_resolution  =  program.getUniformLocation("u_resolution");
 		//text and back color
 		u_textColour =  program.getUniformLocation("u_textColor");
-		u_backColour =  program.getUniformLocation("u_backColor");
+		//u_backColour =  program.getUniformLocation("u_backColor");
 
 		//glow
 		u_textGlowColor = program.getUniformLocation("u_glowColor");
@@ -183,11 +183,13 @@ public class GwtishWidgetShader implements Shader {
 
 
 		//GWTish widgets are controlled by two style attributes
-		//A distance field shader for text styleing
+		//A distance field shader for text styling
 		GwtishWidgetDistanceFieldAttribute textStyleData = (GwtishWidgetDistanceFieldAttribute)renderable.material.get(GwtishWidgetDistanceFieldAttribute.ID);
 		//And a background shader which lets us have curved corners in the background
 		GwtishWidgetBackgroundAttribute backgroundParameters = (GwtishWidgetBackgroundAttribute)renderable.material.get(GwtishWidgetBackgroundAttribute.ID);
 		//(one of these attributes may be null, but not both)
+		
+		
 		
 		//if textStyleData is null, we assume the null dataset for it
 		if (textStyleData==null){
@@ -209,20 +211,39 @@ public class GwtishWidgetShader implements Shader {
 
 		}
 
-		//back color comes from diffuse	
-		ColorAttribute ColAttribute = ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse));
-		Color backcolor = Color.CLEAR; //default clear back color
-		if (ColAttribute!=null){
-			backcolor = ColAttribute.color.cpy();
-		}
+		//Back color used to come from diffuse (this is being removed)
+		//ColorAttribute ColAttribute = ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse));
+		//Color backcolor = Color.CLEAR; //default clear back color
+		//if (ColAttribute!=null){
+		//	backcolor = ColAttribute.color.cpy();
+		//}
+		//--------------------
 		
 		//and we multiply it by the opacity
 		BlendingAttribute backgroundOpacity = ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type));
 		if (backgroundOpacity!=null){
-			backcolor.a = backcolor.a*backgroundOpacity.opacity; //Temp. Really Blending should effect everything, not just the background
+			
+		//	backcolor.a = backcolor.a*backgroundOpacity.opacity;                    // Temp.Really Blending should effect everything, not just the background
+			
+			if (textStyleData!=null){
+				textStyleData.setOverall_Opacity_Multiplier(backgroundOpacity.opacity);
+			}
+			if (backgroundParameters!=null){
+				backgroundParameters.setOverall_Opacity_Multiplier(backgroundOpacity.opacity);
+			}
+			
+		} else {
+			
+			if (textStyleData!=null){
+				textStyleData.setOverall_Opacity_Multiplier(1f);
+			}
+			
+			if (backgroundParameters!=null){
+				backgroundParameters.setOverall_Opacity_Multiplier(1f);
+			}
+			
 		}
 
-		
 		
 		
 		// Color textColour = Color.ORANGE;
@@ -240,7 +261,7 @@ public class GwtishWidgetShader implements Shader {
 
 
 		//text ans back color
-		program.setUniformf(u_backColour, backcolor); //back color is redundant now we have GwtishWidgetBackgroundAttribute as well
+		//program.setUniformf(u_backColour, backcolor); //back color is redundant now we have GwtishWidgetBackgroundAttribute as well
 		program.setUniformf(u_textColour, textColour);  
 
 		//glow
@@ -272,9 +293,9 @@ public class GwtishWidgetShader implements Shader {
 			
 		} else {
 			
-			program.setUniformf(u_backGlowWidth, backgroundParameters.glowWidth);  	 
-			program.setUniformf(u_backBackColor, backgroundParameters.backColor);
-			program.setUniformf(u_backCoreColor, backgroundParameters.borderColour); 
+			program.setUniformf(u_backGlowWidth,    backgroundParameters.glowWidth   );  	 
+			program.setUniformf(u_backBackColor,    backgroundParameters.getBackColor()   );
+			program.setUniformf(u_backCoreColor,    backgroundParameters.getBorderColour()); 
 			program.setUniformf(u_backCornerRadius, backgroundParameters.cornerRadius); 
 		
 			
