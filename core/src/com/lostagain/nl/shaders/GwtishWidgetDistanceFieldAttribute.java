@@ -8,11 +8,15 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 	public final static String Alias = "GwtishWidgetDistanceFieldAttribute";
 	public final static long ID = register(Alias);
 
-	public Color textColour          = Color.CLEAR;
+	/**
+	 * If clear is specified for the text colour,outline colour, glow and shader colour, then the text rendering
+	 * is disabled completely. This should be used if you just wish to use the background shader on GWTish widgets
+	 */
+	public Color textColour          = Color.WHITE;
 	public float width               = 0; //cant yet work out how best to make this work in the shader
 	
-	public float outlinerInnerLimit  = 10f; //Arbitrarily big size for no outline
-	public float outlinerOuterLimit  = 10f; //Arbitrarily big size for no outline
+	public float outlinerInnerLimit  = 10f; //Arbitrarily big size for no outline 0.2 is a good default
+	public float outlinerOuterLimit  = 10f; //Arbitrarily big size for no outline 0.05 for default v_outlinerOuterLimit
 	public Color outlineColour       = Color.CLEAR;
 	
 	public float glowSize            = 0.0f; //size of glow (values above 1 will look strange)
@@ -27,6 +31,7 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 	
 	//enum help manage preset styles
 	public enum presetTextStyle {
+		NULL_DONTRENDERTEXT ( 1,Color.CLEAR ,10,10,Color.CLEAR,0   ,Color.CLEAR, Color.CLEAR,-0.6f,0.6f,0.3f),
 		
 		standardWithShadow ( 1,Color.BLACK ,10,10,Color.CLEAR,0   ,Color.CLEAR, Color.BLACK,-0.6f,0.6f,0.3f),
 		standardWithRedGlow(1f,Color.BLACK ,10,10,Color.CLEAR,0.7f,Color.RED  , Color.BLACK,   0f,  0f,  0f),

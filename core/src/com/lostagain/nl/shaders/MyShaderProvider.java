@@ -87,7 +87,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 			return new TextureNoiseShader(renderable);		
 		}	
 		if (renderable.material.has(GwtishWidgetBackgroundAttribute.ID)){
-			return new GlowingSquareShader();
+			return new GwtishWidgetShader();
 		}
 		if (renderable.material.has(NormalMapShaderAttribute.ID)){
 			return new NormalMapShader(renderable);

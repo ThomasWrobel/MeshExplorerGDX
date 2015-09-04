@@ -181,10 +181,22 @@ public class GwtishWidgetShader implements Shader {
 		float w = renderable.mesh.calculateBoundingBox().getWidth();
 		float h = renderable.mesh.calculateBoundingBox().getHeight();
 
-		//Gdx.app.log(logstag, "element size w= "+w+",h="+h);
 
+		//GWTish widgets are controlled by two style attributes
+		//A distance field shader for text styleing
 		GwtishWidgetDistanceFieldAttribute textStyleData = (GwtishWidgetDistanceFieldAttribute)renderable.material.get(GwtishWidgetDistanceFieldAttribute.ID);
-
+		//And a background shader which lets us have curved corners in the background
+		GwtishWidgetBackgroundAttribute backgroundParameters = (GwtishWidgetBackgroundAttribute)renderable.material.get(GwtishWidgetBackgroundAttribute.ID);
+		//(one of these attributes may be null, but not both)
+		
+		//if textStyleData is null, we assume the null dataset for it
+		if (textStyleData==null){
+			textStyleData = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
+			//note; 
+			//this is currently not very efficient - we should have a flag system for "no text" rather then needing COLOR 0,0,0,0 to be set on all color settings  
+		}
+		
+		
 
 		//	Gdx.app.log(logstag, "glowColour:"+textStyleData.glowColour);
 		setSizeUniform(w,h);
@@ -197,15 +209,22 @@ public class GwtishWidgetShader implements Shader {
 
 		}
 
-		//back color comes from diffuse
-		Color backcolor = ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse)).color.cpy();
-
+		//back color comes from diffuse	
+		ColorAttribute ColAttribute = ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse));
+		Color backcolor = Color.CLEAR; //default clear back color
+		if (ColAttribute!=null){
+			backcolor = ColAttribute.color.cpy();
+		}
+		
 		//and we multiply it by the opacity
 		BlendingAttribute backgroundOpacity = ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type));
 		if (backgroundOpacity!=null){
 			backcolor.a = backcolor.a*backgroundOpacity.opacity; //Temp. Really Blending should effect everything, not just the background
 		}
 
+		
+		
+		
 		// Color textColour = Color.ORANGE;
 		// if (renderable.material.has(ColorAttribute.Diffuse)){	    		     		
 		//text from attribute
@@ -215,13 +234,13 @@ public class GwtishWidgetShader implements Shader {
 
 		// } else {
 		//if not we assume default text color
-		//	 program.setUniformf(a_colorFlag,0);    	 //this would give colour based on texture	 
+		//	 program.setUniformf(a_colorFlag,0);    	 //this would give color based on texture	 
 
 		/// }
 
 
 		//text ans back color
-		program.setUniformf(u_backColour, backcolor); 
+		program.setUniformf(u_backColour, backcolor); //back color is redundant now we have GwtishWidgetBackgroundAttribute as well
 		program.setUniformf(u_textColour, textColour);  
 
 		//glow
@@ -243,22 +262,21 @@ public class GwtishWidgetShader implements Shader {
 
 
 
-		//background
-		GwtishWidgetBackgroundAttribute backgroundParameters = (GwtishWidgetBackgroundAttribute)renderable.material.get(GwtishWidgetBackgroundAttribute.ID);
-
-		if (backgroundParameters!=null){
-			//temp
+		
+		if (backgroundParameters==null){
+			//(if no background specified its just transparent)	 	
+			program.setUniformf(u_backGlowWidth,    0f);  	 
+			program.setUniformf(u_backBackColor,    Color.CLEAR);
+			program.setUniformf(u_backCoreColor,    Color.CLEAR); 
+			program.setUniformf(u_backCornerRadius, 1f); 
+			
+		} else {
+			
 			program.setUniformf(u_backGlowWidth, backgroundParameters.glowWidth);  	 
 			program.setUniformf(u_backBackColor, backgroundParameters.backColor);
 			program.setUniformf(u_backCoreColor, backgroundParameters.borderColour); 
 			program.setUniformf(u_backCornerRadius, backgroundParameters.cornerRadius); 
-		} else {
-			
-			//(if no background specified its just transparent)	 	
-			program.setUniformf(u_backGlowWidth, 0f);  	 
-			program.setUniformf(u_backBackColor, Color.CLEAR);
-			program.setUniformf(u_backCoreColor, Color.CLEAR); 
-			program.setUniformf(u_backCornerRadius, 1f); 
+		
 			
 		}
 
@@ -292,11 +310,10 @@ public class GwtishWidgetShader implements Shader {
 	@Override
 	public boolean canRender (Renderable instance) {
 
-		if (instance.material.has(GwtishWidgetDistanceFieldAttribute.ID)){
+		if (instance.material.has(GwtishWidgetDistanceFieldAttribute.ID) || instance.material.has(GwtishWidgetBackgroundAttribute.ID)){
 			return true;
 		}
 
-		//	Gdx.app.log(logstag, "testing if noiseshader can render:"+shaderenum.toString());
 		return false;
 
 

@@ -84,6 +84,42 @@ public class Style {
 		}
 
 	}
+	
+	public void setTextGlowColor(Color col) {
+		if (textStyle!=null){
+			
+			Gdx.app.log(logstag,"_________setting glow color to:"+col);
+			
+			textStyle.glowColour.set(col);
+		}
+	}
+	public void setTextGlowSize(float size) {
+		if (textStyle!=null){
+			
+			Gdx.app.log(logstag,"_________setting glow size to:"+size);
+			
+			textStyle.glowSize= size;
+		}
+	}
+	public void setTextOutineLimits(float inner,float outer ) {
+		if (textStyle!=null){
+			
+			Gdx.app.log(logstag,"_________setting inner limit to:"+inner);			
+			textStyle.outlinerInnerLimit = inner;
+			Gdx.app.log(logstag,"_________setting outer limit to:"+outer);			
+			textStyle.outlinerOuterLimit = outer;
+		}
+	}
+	public void setTextOutlineColor(Color col) {
+		if (textStyle!=null){
+			
+			Gdx.app.log(logstag,"_________setting outline color to:"+col);
+			
+			textStyle.outlineColour.set(col); 
+		}
+	}
+	
+	
 	/**
 	 * only works with GlowingSquareAttribute shaders right now
 	 * @param bordercol
@@ -212,6 +248,8 @@ public class Style {
 		this.textAlignment = textAlignment;
 		layoutStyleChanged();
 	}
+
 	
+
 
 }

@@ -116,23 +116,6 @@ public class HorizontalPanel extends CellPanel {
 
 	}
 
-	/**
-	 * add many widgets at once 
-	 * @param widgets
-	 */
-	public void add(Widget... widgets) {
-
-		for (Widget widget : widgets) {
-			super.add(widget);
-			//resize
-			Gdx.app.log(logstag,"added widget.");
-		}
-
-		Gdx.app.log(logstag,"new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
-		sizeToFitContents(); 
-	}
-
-
 	private VerticalAlignment defaultVerticalAlignment = VerticalAlignment.Middle;
 
 	/**

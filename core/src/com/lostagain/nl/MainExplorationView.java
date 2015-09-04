@@ -33,6 +33,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.GWTish.Button;
 import com.lostagain.nl.GWTish.ClickHandler;
+import com.lostagain.nl.GWTish.EXAMPLES;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Image;
 import com.lostagain.nl.GWTish.Label;
@@ -568,21 +569,35 @@ public class MainExplorationView implements Screen {
 		//ModelManagment.addmodel(tempbuttonBigger,ModelManagment.RenderOrder.zdecides);
 
 
-		//inventory test
-		//InventoryPanel testInventory = new InventoryPanel();
-		//testInventory.setToPosition(new Vector3(320f,985f,0f));
-		//ModelManagment.addmodel(testInventory,ModelManagment.RenderOrder.zdecides);
+		//GWTish Tests
+		final Label exampleLabel = EXAMPLES.getLabelExample();
+		exampleLabel.setToPosition(new Vector3(1000f,0f,0f));
+		ModelManagment.addmodel(exampleLabel,ModelManagment.RenderOrder.zdecides);
+		
+		final Label exampleLabel2 = EXAMPLES.getLabelExampleGreenGlow();
+		exampleLabel2.setToPosition(new Vector3(1000f,-40f,0f));
+		ModelManagment.addmodel(exampleLabel2,ModelManagment.RenderOrder.zdecides);
+		
+		final Label exampleLabel3 = EXAMPLES.getLabelExampleFunky();
+		exampleLabel3.setToPosition(new Vector3(1000f,-80f,0f));
+		ModelManagment.addmodel(exampleLabel3,ModelManagment.RenderOrder.zdecides);
+		
+		final Label exampleLabel4 = EXAMPLES.getLabelExampleLong();
+		exampleLabel4.setToPosition(new Vector3(1000f,-130f,0f));
+		ModelManagment.addmodel(exampleLabel4,ModelManagment.RenderOrder.zdecides);
+		
+		final HorizontalPanel exampleHP = EXAMPLES.getHorizontalPanelExample();
+		exampleHP.setToPosition(new Vector3(1000f,-490f,0f));
+		ModelManagment.addmodel(exampleHP,ModelManagment.RenderOrder.zdecides);
+		
+		
 
-		/*
-		Image testImage = new Image(Gdx.files.internal("data/rock.png")); // //   diffuseMap        = new Texture(Gdx.files.internal("data/rock.png")); (rocktexture test)
-		testImage.setToPosition(new Vector3(100f,230f,50f));
-
-		ModelManagment.addmodel(testImage,ModelManagment.RenderOrder.zdecides);
-
-		Texture rockNormals = new Texture(Gdx.files.internal("data/rock_n.png"));
-		testImage.setShaderAttribute(new NormalMapShader.NormalMapShaderAttribute(rockNormals),false); 
-		 */
-		//--
+		final VerticalPanel exampleComposit = EXAMPLES.getMixedExample();
+		exampleComposit.setToPosition(new Vector3(1000f,-600f,0f));
+		ModelManagment.addmodel(exampleComposit,ModelManagment.RenderOrder.zdecides);
+		//---------------------------
+		
+		
 
 		ShaderTestPanel shaderTests = new ShaderTestPanel();
 		shaderTests.setToScale(new Vector3(0.2f,0.2f,0.2f));

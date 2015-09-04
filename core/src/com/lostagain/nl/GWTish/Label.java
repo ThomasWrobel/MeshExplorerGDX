@@ -39,7 +39,7 @@ public class Label extends LabelBase {
 	public static final String LABEL_MATERIAL = "LabelMaterial";
 
 	String contents = "TextNotSetError";
-	
+
 
 	final static String logstag = "ME.Label";
 
@@ -48,14 +48,14 @@ public class Label extends LabelBase {
 
 	Model labelModel = null;
 
-	
+
 
 	//setup
 	Boolean setup = false;
 
 	//defaults
 	BitmapFont defaultFont;
-	
+
 	/** default scale factor of the text **/
 	float ModelScale = 1.0f;
 
@@ -68,29 +68,29 @@ public class Label extends LabelBase {
 		 * Expands variably with new lines, but wraps to the width
 		 */
 		ExpandHeightMaxWidth,
-		
+
 	}
 
 	SizeMode labelsSizeMode = SizeMode.ExpandXYToFit;
 	float maxWidth = -1; //default for no max
-	
+
 	//Texture currentTexture = null;
 	//boolean modelNeedsUpdate = true;
 
 	//Style data (mostly controlled by shader)
-	static private Color defaultBackColour = Color.WHITE;
+	static private Color defaultBackColour = Color.CLEAR;
 
 	public Label (String contents,float MaxWidth){ //note; this one doesn't seem to work with centralize correctly yet? hmm..
 		super(generateObjectData(true, true, contents, SizeMode.ExpandHeightMaxWidth,MaxWidth));
-		
+
 		super.setStyle(getMaterial(LABEL_MATERIAL));
 		this.maxWidth = MaxWidth;
-			this.contents=contents;
-				
-			if (!setup){
-				firstTimeSetUp();
-				setup=true;
-			}
+		this.contents=contents;
+
+		if (!setup){
+			firstTimeSetUp();
+			setup=true;
+		}
 	}
 
 	/**
@@ -106,12 +106,12 @@ public class Label extends LabelBase {
 		super.setStyle(this.getMaterial(LABEL_MATERIAL));
 		this.maxWidth = -1;
 		this.contents=contents;
-			
+
 		if (!setup){
 			firstTimeSetUp();
 			setup=true;
 		}
-		
+
 		//currentTexture  =null; //null tells it to regenerate
 		//modelNeedsUpdate=true;
 
@@ -128,145 +128,145 @@ public class Label extends LabelBase {
 	 **/
 	private static backgroundAndCursorObject generateObjectData(boolean regenTexture,boolean regenMaterial,String contents,SizeMode labelsSizeMode, float maxWidth ) {
 		TextureAndCursorObject textureData = null;
-		
-		
-		
+
+
+
 		if (regenTexture){			
 			textureData = generateTexture(labelsSizeMode, contents,maxWidth,TextAlign.CENTER); //center default			
 		}
-		
+
 		Texture newTexture = textureData.textureItself;
-		
+
 		newTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest does not work with DistanceField shaders
 
 		//DistanceFieldAttribute textStyle = null;
 		GwtishWidgetDistanceFieldAttribute textStyle = null;
-		
+
 		//if (textStyle==null){
 		//	textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
-			textStyle = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
-			
-		//}
-				
-			
-		
-		Material mat = 	new Material(LABEL_MATERIAL,	
-									 TextureAttribute.createDiffuse(newTexture),
-									 new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
-									 ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
-									 textStyle);
+		textStyle = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 
-		
+		//}
+
+
+
+		Material mat = 	new Material(LABEL_MATERIAL,	
+				TextureAttribute.createDiffuse(newTexture),
+				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
+				ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
+				textStyle);
+
+
 		//we get the size from the generated material
 		float sizeX = newTexture.getWidth();
 		float sizeY = newTexture.getHeight();
-		
-		
+
+
 		//Gdx.app.log(logstag,"______________text glow col is: "+teststyle.glowColour);
 		//Gdx.app.log(logstag,"______________generating rect of "+LabelWidth+","+LabelHeight);
-		
+
 		//Note the *1 is the scale. We have scale 1 by default, duh.
 		Model newModel = Widget.generateBackground(sizeX, sizeY, mat, MODELALIGNMENT.TOPLEFT);
-		
-				
-				//ModelMaker.createRectangle(0, 0, sizeX*1,sizeY*1, 0, mat); 
 
-		
+
+		//ModelMaker.createRectangle(0, 0, sizeX*1,sizeY*1, 0, mat); 
+
+
 		backgroundAndCursorObject setupData = new backgroundAndCursorObject(newModel,0,0);
-		
-		
+
+
 		return setupData;
-		
-		
+
+
 	}
 
 
 	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, float sizeratio,float maxWidth,TextAlign align) {
 
-		
 
-		
-	  //  BitmapFontData data = DefaultStyles.standdardFont.getData();
 
-	    GlyphLayout layout = new GlyphLayout();	    
-	    //layout.setText(DefaultStyles.standdardFont, text);
-	    
-	    //if maxWidth is zero or -1 then we dynamically work it out instead
-	    if (maxWidth<1){
-	    	layout.setText(DefaultStyles.standdardFont, text);
-	    	maxWidth = layout.width;
-	    }	    
-	    
-	    Gdx.app.log(logstag,text+"__"+text+"_layout width:"+maxWidth);
-	    Gdx.app.log(logstag,text+"___layout line height:"+DefaultStyles.standdardFont.getLineHeight());
-		  
-	    //convert from text align to layout align
-	    int layoutAlignment = Align.center;
-	    
-	    switch (align) {
+
+		//  BitmapFontData data = DefaultStyles.standdardFont.getData();
+
+		GlyphLayout layout = new GlyphLayout();	    
+		//layout.setText(DefaultStyles.standdardFont, text);
+
+		//if maxWidth is zero or -1 then we dynamically work it out instead
+		if (maxWidth<1){
+			layout.setText(DefaultStyles.standdardFont, text);
+			maxWidth = layout.width;
+		}	    
+
+		Gdx.app.log(logstag,text+"__"+text+"_layout width:"+maxWidth);
+		Gdx.app.log(logstag,text+"___layout line height:"+DefaultStyles.standdardFont.getLineHeight());
+
+		//convert from text align to layout align
+		int layoutAlignment = Align.center;
+
+		switch (align) {
 		case CENTER:
-			 layoutAlignment = Align.center;
+			layoutAlignment = Align.center;
 			break;
 		case JUSTIFY:		    
-		    Gdx.app.log(logstag,"___JUSTIFY NOT SUPPORTED. DEFAULTING TO CENTER");
+			Gdx.app.log(logstag,"___JUSTIFY NOT SUPPORTED. DEFAULTING TO CENTER");
 			layoutAlignment = Align.center;
 			break;
 		case LEFT:
-			 layoutAlignment = Align.left;
+			layoutAlignment = Align.left;
 			break;
 		case RIGHT:
-			 layoutAlignment = Align.right;
+			layoutAlignment = Align.right;
 			break;
 		default:
-			 layoutAlignment = Align.center;
+			layoutAlignment = Align.center;
 			break;
 		}
-	    
-	    
-	    
-	  layout.setText(DefaultStyles.standdardFont, text, Color.BLACK, maxWidth, layoutAlignment, true); //cant centralize without width
-	  
-	
-	  
-	  
-	  
-	 //   float currentWidth  = layout.width;
-	 //   float currentHeight = layout.height;
-	    /*
+
+
+
+		layout.setText(DefaultStyles.standdardFont, text, Color.BLACK, maxWidth, layoutAlignment, true); //cant centralize without width
+
+
+
+
+
+		//   float currentWidth  = layout.width;
+		//   float currentHeight = layout.height;
+		/*
 	    for (GlyphRun grun : layout.runs) {
-	    	
+
 	    	Gdx.app.log(logstag,"______________run width:"+grun.width+" at "+grun.y);	
 	    	String runstring = "";
-	    	
+
 	    	for (Glyph g : grun.glyphs) {
-	    	
+
 	    	//	Gdx.app.log(logstag,"___g:"+g.toString());
 	    		runstring=runstring+g.toString();
-	    		
+
 			}
 	    	Gdx.app.log(logstag,"___runstring:"+runstring);
-	    	
-	    	
-	    	
-		}
-*/
-	    
-	//	Gdx.app.log(logstag,"______________predicted size = "+currentWidth+","+currentHeight);
-		
-	//	TextureAndCursorObject textureDAta = generateTexture( text, 0, 0,  sizeratio, true,maxWidth); //note zeros as size isn't used
 
-	  
-	  
-	  
+
+
+		}
+		 */
+
+		//	Gdx.app.log(logstag,"______________predicted size = "+currentWidth+","+currentHeight);
+
+		//	TextureAndCursorObject textureDAta = generateTexture( text, 0, 0,  sizeratio, true,maxWidth); //note zeros as size isn't used
+
+
+
+
 		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, DefaultStyles.standdardFont); //note zeros as size isn't used
-	
+
 		//Note; in order to scale text to fit in other modes we still render at the native size, but dont effect the mesh size
-		  //the texture will then auto-scale into the space
-		 
-		  //
-		
-		
-		
+		//the texture will then auto-scale into the space
+
+		//
+
+
+
 		return textureDAta;
 
 	}
@@ -280,65 +280,65 @@ public class Label extends LabelBase {
 	 * @return
 	 **/
 	static public TextureAndCursorObject generateTexture_fromLayout(GlyphLayout layout, BitmapFont standdardFont){
-				
+
 		//create according to predicted size (in future add padding option to texture?)
-	    int currentWidth  = (int) layout.width;
-	    int currentHeight = (int) (layout.height+standdardFont.getCapHeight()); //not sure if cap  height is correct
-	    
-	    Pixmap textPixmap = new Pixmap(currentWidth, currentHeight, Format.RGBA8888);
-	    
+		int currentWidth  = (int) layout.width;
+		int currentHeight = (int) (layout.height+standdardFont.getCapHeight()); //not sure if cap  height is correct
+
+		Pixmap textPixmap = new Pixmap(currentWidth, currentHeight, Format.RGBA8888);
+
 		BitmapFontData data = standdardFont.getData();  //need optional font too, should match whats used in layout
 		Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0])); //as pixmap
-		
+
 		//now loop over each run of letters. 
 		for (GlyphRun grun : layout.runs) {
-			
-		    	String runstring = "";
-		    	float currentRunX=0;
-		    	//now draw each letter
-		    	Gdx.app.log(logstag,"_________grun="+grun.x+","+grun.y+" ");
-		    	int i =0;
-		    	for (Glyph glyph : grun.glyphs) {
-		    		
-		    		float advance = grun.xAdvances.get(i);
-		    		i++;
-		    		currentRunX=currentRunX   +   advance    ; //1 should not be needed
-		    		
-		    		textPixmap.drawPixmap(
-					    	fontPixmap,
-							glyph.srcX,
-							glyph.srcY, 
-							glyph.width, 
-							glyph.height,
-							(int)grun.x + glyph.xoffset + (int)currentRunX,
-							(int)grun.y + glyph.yoffset,//+(TILE_HEIGHT - (cheight)) / 2,						
-							glyph.width, 
-							glyph.height);
 
-			   // 	Gdx.app.log(logstag,"___ "+glyph.toString()+" glyph.xadvance:"+glyph.xadvance+" w:"+glyph.width);	
-		    	
-		    	//	Gdx.app.log(logstag,"___g:"+g.toString());
-		    		runstring=runstring+glyph.toString();
-		    		
-				}
-		    	if (grun.glyphs.size>0){
-		    		float advance = grun.xAdvances.get(i);
-		    		i++;
-		    		currentRunX=currentRunX+advance;
-		    		Gdx.app.log(logstag,"______________last run width:"+grun.width+" drawn was till "+currentRunX);	
-		    	}
-		    	//Gdx.app.log(logstag,"___runstring drawen:"+runstring);
-		    	
-		    	
-		    	
+			String runstring = "";
+			float currentRunX=0;
+			//now draw each letter
+			Gdx.app.log(logstag,"_________grun="+grun.x+","+grun.y+" ");
+			int i =0;
+			for (Glyph glyph : grun.glyphs) {
+
+				float advance = grun.xAdvances.get(i);
+				i++;
+				currentRunX=currentRunX   +   advance    ; //1 should not be needed
+
+				textPixmap.drawPixmap(
+						fontPixmap,
+						glyph.srcX,
+						glyph.srcY, 
+						glyph.width, 
+						glyph.height,
+						(int)grun.x + glyph.xoffset + (int)currentRunX,
+						(int)grun.y + glyph.yoffset,//+(TILE_HEIGHT - (cheight)) / 2,						
+						glyph.width, 
+						glyph.height);
+
+				// 	Gdx.app.log(logstag,"___ "+glyph.toString()+" glyph.xadvance:"+glyph.xadvance+" w:"+glyph.width);	
+
+				//	Gdx.app.log(logstag,"___g:"+g.toString());
+				runstring=runstring+glyph.toString();
+
 			}
-		 
-		 PixmapAndCursorObject pixmapAndCursor = new PixmapAndCursorObject(textPixmap, currentWidth, currentHeight);
-		 
-			
-		 return new TextureAndCursorObject(new Texture(pixmapAndCursor.textureItself),pixmapAndCursor.Cursor.x,pixmapAndCursor.Cursor.y);
-		 
-		
+			if (grun.glyphs.size>0){
+				float advance = grun.xAdvances.get(i);
+				i++;
+				currentRunX=currentRunX+advance;
+				Gdx.app.log(logstag,"______________last run width:"+grun.width+" drawn was till "+currentRunX);	
+			}
+			//Gdx.app.log(logstag,"___runstring drawen:"+runstring);
+
+
+
+		}
+
+		PixmapAndCursorObject pixmapAndCursor = new PixmapAndCursorObject(textPixmap, currentWidth, currentHeight);
+
+
+		return new TextureAndCursorObject(new Texture(pixmapAndCursor.textureItself),pixmapAndCursor.Cursor.x,pixmapAndCursor.Cursor.y);
+
+
 	}
 
 
@@ -348,28 +348,28 @@ public class Label extends LabelBase {
 	static public TextureAndCursorObject generateTextureNormal(String text,int TITLE_WIDTH,int TITLE_HEIGHT, float sizeratio) {
 
 		TextureAndCursorObject textureDAta = generateTexture( text, TITLE_WIDTH, TITLE_HEIGHT,  sizeratio,false,-1);
-		
+
 		return textureDAta;
 	}
 
 	static public TextureAndCursorObject generateTexture(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit, float maxWidth) {
-		 
+
 		PixmapAndCursorObject data = generatePixmap(text, DefaultWidth, DefaultHeight, sizeratio, expandSizeToFit,maxWidth);
-					
-		
-		
+
+
+
 		return new TextureAndCursorObject(new Texture(data.textureItself),data.Cursor.x,data.Cursor.y);
 	}
-	
+
 	static public PixmapAndCursorObject generatePixmap(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit, float maxWidth) {
 
 		//if maxWidth = -1 then theres no max width
-		
+
 		String Letters    = text;
 		Pixmap textPixmap = new Pixmap(DefaultWidth, DefaultHeight, Format.RGBA8888);
 
 		if (!expandSizeToFit){
-			
+
 			textPixmap = new Pixmap(DefaultWidth, DefaultHeight, Format.RGBA8888);
 
 		} else {
@@ -382,7 +382,7 @@ public class Label extends LabelBase {
 		//	textPixmap.drawRectangle(3, 3, TITLE_WIDTH-3, TITLE_HEIGHT-3);
 
 		BitmapFontData data = DefaultStyles.standdardFont.getData(); //new BitmapFontData(Gdx.files.internal(data.imagePaths[0]), true);
-	
+
 		Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0]));
 
 		// draw the character onto our base pixmap
@@ -406,11 +406,11 @@ public class Label extends LabelBase {
 		int destX = 0;
 		int destY = 0;
 		int cheight = 0;
-		
+
 		//the bottom right corner of the texture map thats used
 		int biggestX = 0;
 		int biggestY = 0;
-		
+
 		for (int i = 0; i < Letters.length(); i++) {
 
 			Glyph glyph = data.getGlyph(Letters.charAt(i));
@@ -419,7 +419,7 @@ public class Label extends LabelBase {
 				Gdx.app.log(logstag,"_______(current glyph not valid not in character set, setting glyph to space)");
 				glyph=data.getGlyph(' '); //temp
 
-				
+
 			}
 
 
@@ -429,8 +429,8 @@ public class Label extends LabelBase {
 			int yglyphoffset = (int) (glyph.yoffset * scaledown);
 
 			destX = 0+currentX+glyph.xoffset;
-		
-			
+
+
 			//Gdx.app.log(logstag,"Letters.charAt(i)="+Letters.charAt(i));
 
 			if (Letters.charAt(i) == '\n' || (destX>maxWidth && maxWidth!=-1) ){
@@ -441,14 +441,14 @@ public class Label extends LabelBase {
 				destX=glyph.xoffset;
 				lastremainder=0;
 				//Gdx.app.log(logstag,"______________adding line. (yp now="+yp+") next char is:"+Letters.charAt(i));
-				
+
 				//we skip \n as we don't want to really write that
 				if (Letters.charAt(i) == '\n'){
 					continue;
 				}
 				//---
 			}
-			
+
 			destY = 0+(yp+(yglyphoffset ));
 
 
@@ -473,7 +473,7 @@ public class Label extends LabelBase {
 			} else {
 				cbiggestX = textPixmap.getWidth();
 			}
-			
+
 			if (expandSizeToFit && (biggestY>textPixmap.getHeight())){
 				Gdx.app.log(logstag,"______________y ("+cbiggestY+") out of range, having to make canvas bigger");
 				//we just double the Y size, as we are cropping later anyway
@@ -482,13 +482,13 @@ public class Label extends LabelBase {
 			} else {
 				cbiggestY = textPixmap.getHeight();
 			}
-			
+
 			if (hadToEnlarge){
 				textPixmap = sizePixmapTo(textPixmap, cbiggestX, cbiggestY);
 			}
 			//--------------------
-			
-			
+
+
 			textPixmap.drawPixmap(
 					fontPixmap,
 					glyph.srcX,
@@ -518,8 +518,8 @@ public class Label extends LabelBase {
 			Gdx.app.log(logstag,"______________final cropped size="+biggestX+","+biggestY);
 
 			textPixmap = sizePixmapTo(textPixmap, biggestX, biggestY);
-			
-		//	LabelNativeWidth  = biggestX;
+
+			//	LabelNativeWidth  = biggestX;
 			//LabelNativeHeight = biggestY;
 
 		}
@@ -547,38 +547,38 @@ public class Label extends LabelBase {
 	//public void setDistanceFieldAttribute(DistanceFieldAttribute style){
 	//	textStyle = style;
 	//}
-	
-/*
+
+	/*
 	private Model createModel() {
 
 		if (currentTexture==null){
 			regenerateTexture(labelsSizeMode, contents);
-			
+
 		}
 
 
 		currentTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest does not work with DistanceField shaders
-		
+
 		if (textStyle==null){
 			textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 		}
-				
-		
-		
+
+
+
 		Material mat = 	new Material("LabelMaterial",
 									 TextureAttribute.createDiffuse(currentTexture),			
 									 ColorAttribute.createDiffuse(defaultBackColour),
 									 textStyle);
 
-		
-		
+
+
 		//Gdx.app.log(logstag,"______________text glow col is: "+teststyle.glowColour);
 		//Gdx.app.log(logstag,"______________generating rect of "+LabelWidth+","+LabelHeight);
 		//
 		labelModel = ModelMaker.createRectangle(0, 0, LabelNativeWidth*this.ModelScale,LabelNativeHeight*this.ModelScale, 0, mat); 
 
 		labelInstance = new AnimatableModelInstance(labelModel);
-		
+
 	//	DistanceFieldAttribute textStyleData = (DistanceFieldAttribute)mat.get(DistanceFieldAttribute.ID);
 	//	Gdx.app.log(logstag,"______________text glow col is2: "+textStyleData.glowColour);
 		//Matrix4 newmatrix = new Matrix4();
@@ -586,15 +586,15 @@ public class Label extends LabelBase {
 		//labelInstance.transform.mul(newmatrix);
 
 		//labelInstance.userData = MyShaderProvider.shadertypes.distancefield;
-		
+
 		modelNeedsUpdate = false;
-		
+
 		return labelModel;
 
 	}
-	*/
-	
-	
+	 */
+
+
 	/**
 	 * Sets the text and regenerates the texture 
 	 * Also doesn't remember cursor position. This is needed if we want to correctly ADD text to the texture in future, rather then recreating it all
@@ -602,39 +602,39 @@ public class Label extends LabelBase {
 	 **/
 	public void setText(String text){
 		this.contents=text;
-		
-				
-		regenerateTexture(text);
-		
-	
-		
 
-		
+
+		regenerateTexture(text);
+
+
+
+
+
 	}
 
 	private void regenerateTexture(String text) {
 		TextAlign align = this.getStyle().getTextAlignment();
-		
+
 		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,maxWidth,align); //-1 is the default max width which means "any size"
-		
+
 
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
 
 		Texture newTexture = textureAndData.textureItself;
-		
-		
-				
+
+
+
 		//if (textStyle==null){
-			//textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
-		
+		//textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+
 		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));	
-			//  TextureAttribute.createDiffuse(NewTexture.textureItself)	,	
+		//  TextureAttribute.createDiffuse(NewTexture.textureItself)	,	
 		// ColorAttribute.createDiffuse(defaultBackColour)
 		infoBoxsMaterial.set(TextureAttribute.createDiffuse(newTexture));
 
 		float x = textureAndData.textureItself.getWidth();
 		float y = textureAndData.textureItself.getHeight();
-		
+
 		Gdx.app.log(logstag,"_________setting text to;"+text+" size:"+x+","+y);
 
 		switch (labelsSizeMode) {
@@ -657,21 +657,21 @@ public class Label extends LabelBase {
 	 */
 	public void setTextScale(float scale){
 		ModelScale = scale;
-		
+
 		//currentTexture  =null; //null tells it to regenerate
 		//modelNeedsUpdate=true;
-		
+
 	}
 
 	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents, float maxWidth,TextAlign align) {
-		
-		
-		
+
+
+
 		TextureAndCursorObject NewTexture = null;
-		
-		
+
+
 		switch (labelsSizeMode) {
-		
+
 		case ExpandXYToFit:
 			Gdx.app.log(logstag,"______________generating expand to fit text ");
 			NewTexture = generatePixmapExpandedToFit(contents,1f,-1,align); //-1 = no max width
@@ -684,11 +684,11 @@ public class Label extends LabelBase {
 		default:
 			NewTexture = generateTextureNormal(contents,LabelNativeWidth, LabelNativeHeight,1f);
 			break;
-	
+
 		}
-		
+
 		NewTexture.textureItself.setFilter(TextureFilter.Linear, TextureFilter.Linear);//ensure mipmaping is disabled, else distance field shaders wont work
-		
+
 		return NewTexture;
 	}
 
@@ -704,10 +704,10 @@ public class Label extends LabelBase {
 
 
 
-	
 
 
-	
+
+
 	//
 	//
 	//--------------
@@ -721,43 +721,43 @@ public class Label extends LabelBase {
 	 * @param labelBackColor
 	 */
 	public void setLabelBackColor(Color labelBackColor) {
-	//	labelBackColor = Color.PINK; //TEMP during testing. Currently another shader bug - the background colour isn't being used correctly for the transparancy, its only effecting the shadows blending
+		//	labelBackColor = Color.PINK; //TEMP during testing. Currently another shader bug - the background colour isn't being used correctly for the transparancy, its only effecting the shadows blending
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);		
 		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
-	
+
 		infoBoxsMaterial.set( ColorAttribute.createDiffuse(labelBackColor));
-		
+
 	}
-	
-	
+
+
 	public Material getTextMaterial(){
 		return this.getMaterial(LABEL_MATERIAL);
 	}
 
-	
+
 	@Override
 	public void setOpacity(float opacity){
 		//super.setOpacity(opacity);
-		
+
 		//Material infoBoxsMaterial = this.getMaterial("LabelMaterial");	
-		
+
 		/*
 		if (infoBoxsMaterial.has(BlendingAttribute.Type)){
 			((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = 0.1f;
 		} else {
 			BlendingAttribute blend = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,0.1f);
 			infoBoxsMaterial.set(blend);
-			
+
 		}*/
-		
-		
-		
-		
+
+
+
+
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);
 		GwtishWidgetDistanceFieldAttribute style = ((GwtishWidgetDistanceFieldAttribute)infoBoxsMaterial.get(GwtishWidgetDistanceFieldAttribute.ID));
 		style.setOverall_Opacity_Multiplier(opacity);
-		
+
 		//Gdx.app.log(logstag,"_____________current            col:"+style.textColour);
 		//Gdx.app.log(logstag,"_____________current shadow     col:"+style.shadowColour);
 		//Gdx.app.log(logstag,"_____________current glowColour col:"+style.glowColour);
@@ -767,15 +767,15 @@ public class Label extends LabelBase {
 		  style.textColour.a = opacity; //as they might have deliberately seperate opacitys even when fully visible
 		  style.glowColour.a = opacity;
 		style.shadowColour.a = opacity;
-		*/
-		
-		
+		 */
+
+
 		//NOTE: This backgrounds color shouldn't be set directly like this, as it might not be 100% opacity to start with
 		//ColorAttribute background = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
 		//background.color.a = opacity;
 		BlendingAttribute backgroundOpacity = ((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type));
 		backgroundOpacity.opacity = opacity;
-	//	Gdx.app.log(logstag,"_____________opacity:"+opacity);
+		//	Gdx.app.log(logstag,"_____________opacity:"+opacity);
 	}
 
 	public void setMaxWidth(float maxWidth) {
@@ -787,15 +787,15 @@ public class Label extends LabelBase {
 	@Override
 	public void layoutStyleChanged() {
 		super.layoutStyleChanged();
-		
+
 		regenerateTexture(contents);
 	}
 
-	
 
-	
-	
-	
-	
+
+
+
+
+
 
 }
