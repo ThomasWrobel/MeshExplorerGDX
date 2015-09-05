@@ -162,12 +162,23 @@ public class Style {
 	}
 	
 	private void createBackgroundAttributeIfNeeded() {
+		
 		if (backStyle==null){
 			backStyle =  new GwtishWidgetBackgroundAttribute(1f,Color.CLEAR,Color.CLEAR,1.0f);
 			this.addAttributeToShader(backStyle);
 		}
+		
 	}
-
+	
+	private void createTextAttributeIfNeeded() {
+		
+		if (textStyle==null){			
+			textStyle  = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+			addAttributeToShader(textStyle);			
+		}
+		
+	}
+	
 	/**
 	 * Sets the opacity of this widget.
 	 * Specifically it adds a blendering style with the opacity set
@@ -263,8 +274,11 @@ public class Style {
 	  
 	  TextAlign textAlignment = TextAlign.LEFT;
 	  
-	
-	
+	  float PaddingLeft = 0f;
+	  float PaddingTop  = 0f;
+	  float PaddingRight = 0f;
+	  float PaddingBottom  = 0f;
+	  
 	/**
 	 * should be fired when any style related to layout is changed.
 	 * ie. text alignment,padding etc
@@ -288,6 +302,35 @@ public class Style {
 		layoutStyleChanged();
 	}
 
+	/**
+	 * Sets this widgets left padding.
+	 * This will set the shader to render any text inwards by this amount, as well as setting the left padding variable 
+	 * 
+	 * Unit is assumed to be the world units of your stage
+	 * 
+	 * @param Left
+	 **/
+	public void setPaddingLeft(float Left){
+		PaddingLeft = Left;
+		
+		createTextAttributeIfNeeded();
+		textStyle.paddingLeft = Left;
+		layoutStyleChanged();
+	}
+	
+	/**	 
+	 * Unit is assumed to be the world units of your stage
+	 * This will set the shader to render any text inwards by this amount, as well as setting the top padding variable 
+	 *
+	 * @param Top
+	 **/
+	public void setPaddingTop(float Top){
+		PaddingTop = Top;
+		
+		createTextAttributeIfNeeded();
+		textStyle.paddingTop = Top;
+		layoutStyleChanged();
+	}
 	
 
 

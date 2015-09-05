@@ -13,7 +13,7 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 	 * is disabled completely. This should be used if you just wish to use the background shader on GWTish widgets
 	 */
 	public Color textColour          = Color.WHITE;
-	public float width               = 0; //cant yet work out how best to make this work in the shader
+	public float width               = 0; //Can't yet work out how best to make this work in the shader
 	
 	public float outlinerInnerLimit  = 10f; //Arbitrarily big size for no outline 0.2 is a good default
 	public float outlinerOuterLimit  = 10f; //Arbitrarily big size for no outline 0.05 for default v_outlinerOuterLimit
@@ -27,6 +27,19 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 	public float shadowBlur          = 0.0f;
 	public Color shadowColour        = Color.CLEAR;
 	
+	/**
+	 * Will be used to displace the text image from the top left corner of the shader	 * 
+	 */
+	public float paddingLeft = 0.0f;
+	/**
+	 * Will be used to displace the text image from the top left corner of the shader	 * 
+	 */
+	public float paddingTop = 0.0f;
+	
+	/**
+	 * Temp variable only. Controls a multiplier factor for opacity that applys to all Get statements of colour componants (like getTextColor)
+	 * This should be reset to 1 in most situations.
+	 */
 	public float Overall_Opacity_Multiplier = 1f;
 	
 	//enum help manage preset styles
@@ -267,6 +280,22 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 		effectiveShadowColour.a = effectiveShadowColour.a * Overall_Opacity_Multiplier;
 		return effectiveShadowColour;
 	}
+
+
+	/**
+	 * Sets the displacement from the top/left of the widget where this text will be rendered.
+	 * Note; Should be kept in-sync with the widgets own padding, to ensure the widgets size correctly reflects
+	 * the padding (ie, not cropped)
+	 * 
+	 * @param paddingX
+	 * @param paddingY
+	 */
+	public void setPaddingX(float paddingX,float paddingY) {
+		this.paddingLeft = paddingX;
+		this.paddingTop = paddingY;
+	}
+
+
 	
 	
 	

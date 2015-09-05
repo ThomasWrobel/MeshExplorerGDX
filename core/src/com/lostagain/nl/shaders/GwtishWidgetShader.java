@@ -57,8 +57,13 @@ public class GwtishWidgetShader implements Shader {
 	int u_textColour;
 	//int u_backColour;
 
-	int u_pixel_step;
+	int u_texture_pixel_step;
 	int u_resolution;
+	int u_sizeDiff;
+	
+	//padding
+	int u_textPaddingX;
+	int u_textPaddingY;
 	
 	//glow
 	int  u_textGlowColor;
@@ -110,12 +115,18 @@ public class GwtishWidgetShader implements Shader {
 
 		a_colorFlag =  program.getUniformLocation("u_colorFlag");
 
-		u_pixel_step =  program.getUniformLocation("u_pixel_step");
+		u_texture_pixel_step =  program.getUniformLocation("u_pixel_step");
 		u_resolution  =  program.getUniformLocation("u_resolution");
+		u_sizeDiff=  program.getUniformLocation("u_sizeDiff");
 		//text and back color
 		u_textColour =  program.getUniformLocation("u_textColor");
 		//u_backColour =  program.getUniformLocation("u_backColor");
-
+		
+		//padding
+		u_textPaddingX = program.getUniformLocation("u_textPaddingX");
+		u_textPaddingY = program.getUniformLocation("u_textPaddingY");
+		
+		
 		//glow
 		u_textGlowColor = program.getUniformLocation("u_glowColor");
 		u_textGlowSize  = program.getUniformLocation("u_glowSize"); //size of glow (values above 1 will look strange)
@@ -201,7 +212,7 @@ public class GwtishWidgetShader implements Shader {
 		
 
 		//	Gdx.app.log(logstag, "glowColour:"+textStyleData.glowColour);
-		setSizeUniform(w,h);
+		setSizeUniform(w,h,textStyleData.paddingLeft,textStyleData.paddingTop);
 
 
 		if (renderable.material.get(TextureAttribute.Diffuse)!=null){
@@ -264,6 +275,10 @@ public class GwtishWidgetShader implements Shader {
 		//program.setUniformf(u_backColour, backcolor); //back color is redundant now we have GwtishWidgetBackgroundAttribute as well
 		program.setUniformf(u_textColour, textColour);  
 
+		//displacements
+		program.setUniformf(u_textPaddingX,textStyleData.paddingLeft);
+		program.setUniformf(u_textPaddingY,textStyleData.paddingTop);
+		
 		//glow
 		program.setUniformf(u_textGlowColor,textStyleData.getGlowColour());
 		program.setUniformf(u_textGlowSize ,textStyleData.glowSize); //size of glow (values above 1 will look strange)
@@ -310,11 +325,27 @@ public class GwtishWidgetShader implements Shader {
 				renderable.meshPartSize);
 	}
 
-	public void setSizeUniform(float w, float h) {
-
-		program.setUniformf(u_pixel_step,(1/w), (1/h));
+	public void setSizeUniform(float w, float h,float paddingLeft, float paddingTop) {
 
 		program.setUniformf(u_resolution, w,h);
+
+
+		//we also need the difference in size between the total widget size and the size of the text on it
+		//This is expressed as a ratio
+	    float sizeDiffX = w / (w-paddingLeft);
+	    float sizeDiffY = h / (h-paddingTop);
+	    
+	    program.setUniformf(u_sizeDiff,sizeDiffX, sizeDiffY);
+
+
+		//NOTE: this is the pixel step of the texture.
+		//The widget might be much larger, w/h ONLY be the effective size of the text on the widget,ignoring any padding.
+		//for this reason we subtract the padding first
+
+		w = w - paddingLeft; //in future right as well;
+		h = h - paddingTop;  //and bottom
+		
+		program.setUniformf(u_texture_pixel_step,(1/w), (1/h));
 	}
 
 	@Override

@@ -20,6 +20,7 @@ precision mediump float;
 //vec2 pixel_step = vec2(1/width, 1/height);  
 varying vec2 pixel_step;
     
+uniform vec2 u_sizeDiff;
 
 //
 //float fwidth = abs(dx) + abs(dy);     
@@ -36,7 +37,9 @@ varying vec2 vTexCoord;
 varying vec4 v_textColor;
 //varying vec4 v_backColor;
 
-
+//padding
+varying float v_textPaddingX;
+varying float v_textPaddingY;
 
 //glow
 varying vec4  v_glowColor;
@@ -98,7 +101,7 @@ float radius = v_backCornerRadius;
 //WORKAROUND if fwidth/above extension is not supported
 //http://stackoverflow.com/questions/22442304/glsl-es-dfdx-dfdy-analog
 float myFunc(vec2 p){
-return p.x*p.x - p.y; // that's our function. We want derivative from it.
+	return p.x*p.x - p.y; // that's our function. We want derivative from it.
 }
 
 //These things are to get around the fwidth function being missing on some GPUs
@@ -273,6 +276,10 @@ vec4 getStyledText()
     	float xo = vTexCoord.x -(v_shadowXDisplacement * pixel_step.x);//v_shadowXDisplacement;
     	float yo = vTexCoord.y -(v_shadowYDisplacement * pixel_step.y);//;
     	
+    	//ensure inside texture still, else do nothing
+    	  if (xo>0.0 && yo>0.0 ) {
+     
+    	
     	//the alpha of the incoming texture acts as the distance from inside a letter to outside
  		float sdist = texture2D(u_texture, vec2(xo,yo)).a;
  		
@@ -291,8 +298,9 @@ vec4 getStyledText()
     		    newCol = (newCol * newCol.a) + (shadowCol * (1.0-newCol.a));
     		  
     		    newCol.a = newalpha;
-    			
     			//newCol.a = shadowCol.a + newCol.a ;
+				}
+    			
     	
     }
     
@@ -304,9 +312,31 @@ vec4 getStyledText()
 void main() {
 
 
+	//if theres padding the co-ordinates need to be scalled down by the paddings step size
+	float paddingXstepSize = (v_textPaddingX * pixel_step.x);
+    float paddingYstepSize = (v_textPaddingY * pixel_step.y);
     
+    //now we need to scale down the TexCoord by the size difference between that and the resolution
+    //(as the TexCoords should NOT including padding size)    
+     vTexCoord.x =  vTexCoord.x * u_sizeDiff.x;    
+     vTexCoord.y =  vTexCoord.y *  u_sizeDiff.y;
     
+   //alter by padding to get padded co-ordinates
+   vTexCoord.x = vTexCoord.x - paddingXstepSize;
+   vTexCoord.y = vTexCoord.y - paddingYstepSize;
+   
+   
+   
+   //if either of the co-ordinates are now less then zero we set the text color settings to nothing
+   if (vTexCoord.x<0.0 || vTexCoord.y<0.0 ) {
+     	v_textColor   = vec4(0.0,0.0,0.0,0.0);
+     	v_outColor    = vec4(0.0,0.0,0.0,0.0);
+     	v_glowColor   = vec4(0.0,0.0,0.0,0.0);
+     	//	v_shadowColour= vec4(0.0,0.0,0.0,0.0);  //shadow has a slightly different tollerance so its dealt with in its generation
     
+	}
+    
+   
     
 	//mix with back colour	
     

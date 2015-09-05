@@ -32,6 +32,9 @@ uniform mat4 u_projTrans; //new
 uniform vec4 u_textColor;
 //uniform vec4 u_backColor;
 
+uniform float u_textPaddingX;
+uniform float u_textPaddingY;
+
 //glow
 uniform vec4  u_glowColor;
 uniform float u_glowSize; //size of glow (values above 1 will look strange)
@@ -67,6 +70,9 @@ varying vec2 vTexCoord;
 varying vec4 v_textColor;
 //varying vec4 v_backColor;
 
+//padding
+varying float v_textPaddingX;
+varying float v_textPaddingY;
 
 //glow
 varying vec4  v_glowColor;
@@ -120,22 +126,28 @@ void main() {
    
    
     v_color = a_color;
-    vTexCoord = a_texCoord0;
     
-//glow
-v_glowColor = u_glowColor;
-v_glowSize  = u_glowSize; //size of glow (values above 1 will look strange)
-		
-//outline
-v_outColor           = u_outColor;
-v_outlinerInnerLimit = u_outlinerInnerLimit; 
-v_outlinerOuterLimit = u_outlinerOuterLimit; 
+    vTexCoord = a_texCoord0;
+        
+    pixel_step = u_pixel_step;
+    
 
-//shadow
-v_shadowXDisplacement = u_shadowXDisplacement;
-v_shadowYDisplacement = u_shadowYDisplacement;
-v_shadowBlur          = u_shadowBlur;
-v_shadowColour        = u_shadowColour;
+
+	
+	//glow
+	v_glowColor = u_glowColor;
+	v_glowSize  = u_glowSize; //size of glow (values above 1 will look strange)
+		
+	//outline
+	v_outColor           = u_outColor;
+	v_outlinerInnerLimit = u_outlinerInnerLimit; 
+	v_outlinerOuterLimit = u_outlinerOuterLimit; 
+
+	//shadow
+	v_shadowXDisplacement = u_shadowXDisplacement;
+	v_shadowYDisplacement = u_shadowYDisplacement;
+	v_shadowBlur          = u_shadowBlur;
+	v_shadowColour        = u_shadowColour;
     
     
     //background
@@ -147,14 +159,24 @@ v_shadowColour        = u_shadowColour;
   	iResolution = u_resolution;
   	fPosition = a_texCoord0;
     
-  	
+
     
-    pixel_step = u_pixel_step;
    // v_usesDiffuseColor =  a_usesDiffuseColor;
   	v_textColor = u_textColor;
   	
+    //padding
+    v_textPaddingX = u_textPaddingX;
+    v_textPaddingY = u_textPaddingY;
     
+    
+    
+	
+	
   	v_diffuseUV = u_diffuseUVTransform.xy + a_texCoord0 * u_diffuseUVTransform.zw;
+  	
+  	    
+
+     
   
     gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);
 }

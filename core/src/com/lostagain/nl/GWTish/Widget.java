@@ -212,7 +212,17 @@ public class Widget extends Element {
 		
 		
 	}
+	
+	//Sets the object's size. This size does not include padding, which will be added automatically to get the final size	
 	public void setSizeAs(float newWidth, float newHeight) {
+		Gdx.app.log(logstag,"_________newWidth:"+"("+getStyle().PaddingLeft+","+newWidth+","+getStyle().PaddingRight+")");		
+		Gdx.app.log(logstag,"_________newHeight:"+"("+getStyle().PaddingTop+","+newHeight+","+getStyle().PaddingBottom+")");
+		
+		//adjust for padding
+		newWidth  = getStyle().PaddingLeft+newWidth+getStyle().PaddingRight;
+		newHeight = getStyle().PaddingTop+newHeight+getStyle().PaddingBottom;
+		
+
 		
 		//we first get the offset 
 		Vector2 offset =  getOffsetForSize(newWidth, newHeight,alignment);
@@ -231,8 +241,9 @@ public class Widget extends Element {
 	 * @param newWidth
 	 * @param newHeight
 	 */
-	public void setSizeAs(float newWidth, float newHeight,float offsetX,float offsetY) {
+	private void setSizeAs(float newWidth, float newHeight,float offsetX,float offsetY) {
 
+		//
 		
 		//ensure not smaller then minimum
 		if (newWidth<this.MinSizX){

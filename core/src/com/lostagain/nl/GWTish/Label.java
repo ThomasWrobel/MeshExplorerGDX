@@ -78,12 +78,14 @@ public class Label extends LabelBase {
 	//boolean modelNeedsUpdate = true;
 
 	//Style data (mostly controlled by shader)
-	static private Color defaultBackColour = Color.CLEAR;
+//	static private Color defaultBackColour = Color.CLEAR;
 
 	public Label (String contents,float MaxWidth){ //note; this one doesn't seem to work with centralize correctly yet? hmm..
 		super(generateObjectData(true, true, contents, SizeMode.ExpandHeightMaxWidth,MaxWidth));
 
 		super.setStyle(getMaterial(LABEL_MATERIAL));
+		
+		labelsSizeMode = SizeMode.ExpandHeightMaxWidth;
 		this.maxWidth = MaxWidth;
 		this.contents=contents;
 
@@ -132,7 +134,7 @@ public class Label extends LabelBase {
 
 
 		if (regenTexture){			
-			textureData = generateTexture(labelsSizeMode, contents,maxWidth,TextAlign.CENTER); //center default			
+			textureData = generateTexture(labelsSizeMode, contents,maxWidth,TextAlign.LEFT); //left default			
 		}
 
 		Texture newTexture = textureData.textureItself;
@@ -621,8 +623,9 @@ public class Label extends LabelBase {
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
 
 		Texture newTexture = textureAndData.textureItself;
-
-
+		
+		infoBoxsMaterial.set(TextureAttribute.createDiffuse(newTexture));
+ 
 
 		//if (textStyle==null){
 		//textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
@@ -630,7 +633,7 @@ public class Label extends LabelBase {
 		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));	
 		//  TextureAttribute.createDiffuse(NewTexture.textureItself)	,	
 		// ColorAttribute.createDiffuse(defaultBackColour)
-		infoBoxsMaterial.set(TextureAttribute.createDiffuse(newTexture));
+		
 
 		float x = textureAndData.textureItself.getWidth();
 		float y = textureAndData.textureItself.getHeight();
@@ -649,12 +652,14 @@ public class Label extends LabelBase {
 			break;
 		}
 	}
+	
+	/*
 	/**
 	 * A scaleing factor that will enlarge of shrink the text relative to the standard font size.
 	 * NOTE: this does not scale the internal texture size. As we are using a distance field font, it should look sharp at all distances anyway.
 	 * Scaleing would not help.
 	 * @param text
-	 */
+	 
 	public void setTextScale(float scale){
 		ModelScale = scale;
 
@@ -662,6 +667,7 @@ public class Label extends LabelBase {
 		//modelNeedsUpdate=true;
 
 	}
+	*/
 
 	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents, float maxWidth,TextAlign align) {
 
@@ -776,6 +782,10 @@ public class Label extends LabelBase {
 		super.layoutStyleChanged();
 
 		regenerateTexture(contents);
+		
+		Gdx.app.log(logstag," size now::"+this.getWidth()+","+this.getHeight());
+		
+		
 	}
 
 

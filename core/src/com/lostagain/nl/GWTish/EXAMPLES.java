@@ -65,8 +65,9 @@ public class EXAMPLES {
 		exampleLabel.getStyle().setBackgroundColor(Color.BLUE);
 		exampleLabel.getStyle().setBorderColor(Color.WHITE);
 		
-		
-		
+		exampleLabel.getStyle().setPaddingLeft(150f);
+		exampleLabel.getStyle().setPaddingTop(50f);
+	//	exampleLabel.getStyle().setTextAlignment(Style.TextAlign.CENTER);
 		
 		return exampleLabel;
 	}
