@@ -2,8 +2,12 @@ package com.lostagain.nl.me.models;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -45,7 +49,7 @@ import com.lostagain.nl.shaders.ConceptBeamShader;
  * 
  * **/
 public class ConceptBeam extends AnimatableModelInstance {
-	
+	final static String logstag = "ME.ConceptBeam";
 	 //defaults (may change, but then the model will need adjusting or maybe dumped and recreated?)
 	static float  defaultWidth = 60f;
 	static float  defaultLength = 700f;
@@ -69,9 +73,11 @@ public class ConceptBeam extends AnimatableModelInstance {
 		
 		Model impactPointmodel = ModelMaker.createRectangle(-hw,-hh,hw,hh,0, getStandardImpactMaterial());		//when setting up we get the default material	
 		impactPoint = new AnimatableModelInstance(impactPointmodel);
-		impactPoint.setInheritedRotation(false); //stop the rotation changing as the beam angle changes. For now all the games objects are aligned upwards so the impact should too
-		this.attachThis(impactPoint, new PosRotScale(0f,0f,-1f));
 		
+		impactPoint.setInheritedRotation(false); //stop the rotation changing as the beam angle changes. For now all the games objects are aligned upwards so the impact should too
+		
+		//this.attachThis(impactPoint, new PosRotScale(0f,0f,-1f));
+		this.attachThis(impactPoint, new PosRotScale(0f,defaultLength,0f));
 	}
 
 	
@@ -93,6 +99,71 @@ public class ConceptBeam extends AnimatableModelInstance {
 		float hw = width/2f;		
 		Model beammodel = ModelMaker.createRectangle(-hw,0,hw,length,0, getStandardBeamMaterial());		//when setting up we get the default material	
 		return beammodel;
+	}
+	
+	public void setLength(float length) {
+		
+		//the		
+		Mesh IconsMesh = this.model.meshes.get(0);
+		
+		final VertexAttribute posAttr = IconsMesh.getVertexAttribute(Usage.Position);
+		final int offset = posAttr.offset / 4;
+		final int numComponents = posAttr.numComponents;
+		final int numVertices = IconsMesh.getNumVertices();
+		final int vertexSize = IconsMesh.getVertexSize() / 4;
+	
+		final float[] vertices = new float[numVertices * vertexSize];
+		IconsMesh.getVertices(vertices);
+		int idx = offset;
+		
+		//the offsetX and offsetY determine where the pivot of the mesh is (ie, the 0,0 point of its creation)
+		float offsetX = defaultWidth/2f;
+		float offsetY = 0;
+		
+		float w = defaultWidth-offsetX;
+		float h = length-offsetY;
+		
+		//centerl
+		//float newSizeArray[] = new float[] { -hw,-hh,0,
+		//									  hw,-hh,0,
+		//									  hw,hh,0,
+		//									 -hw,hh,0 };
+		//
+		
+		float newSizeArray[] = new float[] { -offsetX,-offsetY,0,
+											  w,-offsetY,0,
+											  w,h,0,
+											 -offsetX,h,0 };
+				
+		//can be optimized latter by pre-calcing the size ratio and just multiply
+		for (int i = 0; i < 12; i=i+3) {
+			
+			
+			//currently just scale up a bit
+			vertices[idx    ] = newSizeArray[i];
+			vertices[idx + 1] = newSizeArray[i+1];
+			vertices[idx + 2] = newSizeArray[i+2];
+			
+			idx += vertexSize;
+		}
+		
+		
+		IconsMesh.setVertices(vertices);
+
+		Gdx.app.log(logstag," old size::"+this.getWidth()+","+this.getHeight());
+		
+		//recalc bounding box if theres one
+		wasResized();
+
+		Gdx.app.log(logstag," new size::"+this.getWidth()+","+this.getHeight());
+		
+		this.updateAtachment(impactPoint, new PosRotScale(0f,length,0f));
+		
+		//ensure things attached are repositioned
+		updateAllAttachedObjects();
+		
+		
+
 	}
 	
 

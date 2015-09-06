@@ -75,17 +75,64 @@ public abstract class ComplexPanel extends Widget {
 		
 		
 		
-		float topPadding    = 0f;
-		float bottomPadding = 0f;
-		float leftPadding   = 0f;
-		float rightPadding  = 0f;
+	//	private float topPadding    = 0f;
+	//	private float bottomPadding = 0f;
+	///	private float leftPadding   = 0f;
+	//	private float rightPadding  = 0f;		
+				
 		public void setPadding (float padding){
-			topPadding = padding;
-			bottomPadding = padding;
-			leftPadding = padding;
-			rightPadding = padding;
+			setTopPadding(padding);
+			setBottomPadding(padding);
+			setLeftPadding(padding);
+			setRightPadding(padding);
 		}
-		//--------------------------------------------------------------------
+		
+		
+		float getRightPadding() {			
+			return this.getStyle().PaddingRight;			
+		}
+
+
+		void setRightPadding(float rightPadding) {
+			this.getStyle().setPaddingRight(rightPadding);
+			//this.rightPadding = rightPadding;
+		}
+
+
+		float getLeftPadding() {
+			return this.getStyle().PaddingLeft;
+		}
+
+
+		void setLeftPadding(float leftPadding) {
+			this.getStyle().setPaddingLeft(leftPadding);
+			//this.leftPadding = leftPadding;
+		}
+
+
+		float getBottomPadding() {
+			return this.getStyle().PaddingBottom;
+		}
+
+
+		void setBottomPadding(float bottomPadding) {
+		//	this.bottomPadding = bottomPadding;
+			this.getStyle().setPaddingBottom(bottomPadding);
+		}
+
+
+		float getTopPadding() {
+			return this.getStyle().PaddingTop;
+		}
+
+		void setTopPadding(float topPadding) {
+			this.getStyle().setPaddingTop(topPadding);
+		}
+
+
+
+
+	//--------------------------------------------------------------------
 	public ComplexPanel(float sizeX, float sizeY, MODELALIGNMENT align) {
 		super(sizeX, sizeY, align);
 
@@ -258,6 +305,16 @@ public abstract class ComplexPanel extends Widget {
 	
 	
 	public boolean add(Widget widget) {
+		
+		//if we have a zindex, the child should be +1 automatically
+		if (this.getStyle().hasZIndex()){
+			
+			int zindex = this.getStyle().getZIndexValue();
+			String groupname = this.getStyle().getZIndexGroupName();
+			widget.getStyle().setZIndex(zindex+1, groupname);
+			
+			
+		}
 		
 		return insert(widget,contents.size()+1);
 		

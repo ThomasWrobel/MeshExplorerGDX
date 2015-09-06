@@ -74,7 +74,9 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 
 		String labelName = "";
-		Color iconColor;
+		Color iconColor = null; 
+		
+		
 		IconType(){
 			this("");
 		}
@@ -265,10 +267,13 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 
 	/**
-	 * sets the background color to the default for this icon type
+	 * sets the background color to the default for this icon type if its not null else no-op
 	 */
 	public void setToDefaultBackColour() {
-		setBackgroundColour(this.thisIconsType.getIconColour());
+		//setBackgroundColour(this.thisIconsType.getIconColour());
+		if (thisIconsType.getIconColour()!=null){
+			setBackgroundColour(thisIconsType.getIconColour());
+		}
 	}
 
 	//NOTE: associated features should only be tied to one meshicon.
@@ -521,10 +526,11 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	 * @param opacity
 	 */
 	public void setBackgroundColour(Color bak){
+		
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);
 		GwtishWidgetBackgroundAttribute attribute = ((GwtishWidgetBackgroundAttribute)infoBoxsMaterial.get( GwtishWidgetBackgroundAttribute.ID));
-		attribute.backColor = bak;
+		attribute.backColor.set(bak);
 
 
 	}

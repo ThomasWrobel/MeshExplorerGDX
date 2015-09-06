@@ -79,6 +79,9 @@ public interface IsAnimatableModelInstance {
 	/** Sets this model to lookat the target models vector3 location **/
 	public abstract void lookAt(AnimatableModelInstance target, Vector3 Axis);
 
+	/** Sets this model to lookat the target vector3 location **/
+	public abstract void lookAt(Vector3 target, Vector3 Axis);
+	
 	/** 
 	 * Method to find the axis-angle between this AnimatableModelInstances and another relative to the xAxis (1,0,0)
 	 * 
@@ -95,6 +98,8 @@ public interface IsAnimatableModelInstance {
 	public abstract Quaternion getAngleTo(AnimatableModelInstance target,
 			Vector3 Axis);
 
+	public abstract Quaternion getAngleTo(Vector3 target, Vector3 Axis);
+	
 	public abstract Set<AnimatableModelInstance> getAttachments();
 
 	public abstract void setInheritedPosition(boolean inheritedPosition);
@@ -113,6 +118,8 @@ public interface IsAnimatableModelInstance {
 	 * @return
 	 */
 	public abstract boolean isVisible();
+
+
 	
 
 

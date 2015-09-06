@@ -63,6 +63,8 @@ public class Style {
 	 */
 	public void setColor(Color col){
 
+		nullParameterCheck(col);
+		
 		if (textStyle!=null){
 			
 			Gdx.app.log(logstag,"_________setting color to:"+col);
@@ -126,6 +128,9 @@ public class Style {
 	 * @param bordercol
 	 */
 	public void setBorderColor(Color bordercol) {
+		
+		nullParameterCheck(bordercol);
+		
 		createBackgroundAttributeIfNeeded();
 	//	Gdx.app.log(logstag,"_________setting bordercoll:"+bordercol);
 
@@ -143,22 +148,34 @@ public class Style {
 	 * Sets the background color
 	 * @param opacity
 	 */
-	public void setBackgroundColor(Color backcol){		
+	public void setBackgroundColor(Color backcol){	
+		
+		nullParameterCheck(backcol);
+		
+		
 		createBackgroundAttributeIfNeeded();
 
+		
+		
 		//Gdx.app.log(logstag,"______________backcol:"+backcol);
 
 		//get the material from the model
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		//if (backStyle!=null){
 			//	GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)objectsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
-			backStyle.backColor = backcol;
+			backStyle.backColor.set(backcol);
 		//}
 		
 	//	if (textStyle!=null){
 	//		objectsMaterial.set( ColorAttribute.createDiffuse(backcol));
 	//	}
 		
+	}
+
+	private void nullParameterCheck(Color backcol) {
+		if (backcol==null){
+			Gdx.app.log(logstag,"colour can not be null",new Throwable("null specified for backcolour, this will break shader rendering"));
+		}
 	}
 	
 	private void createBackgroundAttributeIfNeeded() {
@@ -173,7 +190,8 @@ public class Style {
 	private void createTextAttributeIfNeeded() {
 		
 		if (textStyle==null){			
-			textStyle  = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+			//if we are creating one automatically on demand, everything is set to clear
+			textStyle  = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
 			addAttributeToShader(textStyle);			
 		}
 		
@@ -181,7 +199,7 @@ public class Style {
 	
 	/**
 	 * Sets the opacity of this widget.
-	 * Specifically it adds a blendering style with the opacity set
+	 * Specifically it adds a blending style with the opacity set
 	 * 
 	 * This opacity will be used in the shader to effect both the backcolour and text colour without altering their colour setting
 	 * (ie, if there colour is only 0.5 opacity anyway, then setting the opacity to 1.0 means it will still be 0.5 opacity)
@@ -209,8 +227,33 @@ public class Style {
 		
 	}
 	
+	public boolean hasZIndex() {
+		return objectsMaterial.has(ZIndexAttribute.ID);		
+	}
 	
+	/**
+	 * returns -1 if no zindex set
+	 * @return
+	 */
+	public int getZIndexValue() {
+		
+		if (hasZIndex()){
+			return ((ZIndexAttribute)objectsMaterial.get(ZIndexAttribute.ID)).zIndex;
+			
+		}
+		
+		return -1;
+	}
+
 	
+	public String getZIndexGroupName() {
+		
+		if (hasZIndex()){
+			return ((ZIndexAttribute)objectsMaterial.get(ZIndexAttribute.ID)).group;
+		}
+		
+		return null;		
+	}
 	
 	/**
 	 * Sets the background color
@@ -332,6 +375,36 @@ public class Style {
 		layoutStyleChanged();
 	}
 	
+	/**
+	 * Sets this widgets Right padding.
+	 * This will set the shader to render any text inwards by this amount, as well as setting the left padding variable 
+	 * 
+	 * Unit is assumed to be the world units of your stage
+	 * 
+	 * @param Right
+	 **/
+	public void setPaddingRight(float Right){
+		PaddingRight = Right;
+		
+		createTextAttributeIfNeeded();
+		//textStyle.paddingLeft = Left;
+		layoutStyleChanged();
+	}
+	
+	/**	 
+	 * Unit is assumed to be the world units of your stage
+	 * This will set the shader to render any text inwards by this amount, as well as setting the top padding variable 
+	 *
+	 * @param Bottom
+	 **/
+	public void setPaddingBottom(float Bottom){
+		PaddingBottom = Bottom;
+		
+		createTextAttributeIfNeeded();
+		//textStyle.paddingTop = Top;
+		layoutStyleChanged();
+	}
+
 
 
 }

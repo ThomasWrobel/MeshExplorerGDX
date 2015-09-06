@@ -68,7 +68,7 @@ public class VerticalPanel extends CellPanel {
 		Gdx.app.log(logstag, index + " adding incomingHeight: "
 				+ incomingHeight + " total=" + currentTotalWidgetHeight);
 
-		return new Vector3(leftPadding + newLocationX, topPadding
+		return new Vector3(getLeftPadding() + newLocationX, getTopPadding()
 				+ newLocationY, 3f);
 
 	}
@@ -111,8 +111,8 @@ public class VerticalPanel extends CellPanel {
 
 	@Override
 	void sizeToFitContents() {
-		setSizeAs(leftPadding + largestWidthOfStoredWidgets + rightPadding,
-				bottomPadding + currentTotalWidgetHeight + topPadding);
+		setSizeAs(getLeftPadding() + largestWidthOfStoredWidgets + getRightPadding(),
+				getBottomPadding() + currentTotalWidgetHeight + getTopPadding());
 	}
 
 }

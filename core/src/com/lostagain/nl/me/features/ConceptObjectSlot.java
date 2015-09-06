@@ -284,7 +284,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	}
 
 
-	/** can be overrideden by classes that extend this to allow selective objects to be addable  **/
+	/** Can be overridden by classes that extend this to allow selective objects to be addable  **/
 	public boolean willAccept(ConceptObject object){
 		return true;
 	}
@@ -300,11 +300,13 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	public void fireTouchUp() {
 		Gdx.app.log(logstag,"_-(fireTouchUp)-_");
 		
-		if (STMemory.wasHoldingItem()){
+		ConceptObject holding = STMemory.getCurrentlyOrRecentlyHeld();
+		
+		if (holding!=null){
 			
-			Gdx.app.log(logstag,"_-(mouse up was holding:"+STMemory.justDropItem.itemsnode.getPLabel()+")-_");
+			Gdx.app.log(logstag,"_-(mouse up was/is holding:"+holding.itemsnode.getPLabel()+")-_");
 			 
-			onDrop(STMemory.justDropItem);
+			onDrop(holding);
 			STMemory.clearJustDropedList();
 		}
 	

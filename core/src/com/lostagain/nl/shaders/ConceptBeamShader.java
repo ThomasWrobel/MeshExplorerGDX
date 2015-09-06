@@ -163,7 +163,8 @@ public class ConceptBeamShader implements Shader {
     	  context.setBlending(true,GL20.GL_ONE ,GL20.GL_ONE);    	  
     	  context.setDepthTest(GL20.GL_DEPTH_TEST);    	
     	  context.setDepthTest(GL20.GL_DEPTH_BUFFER_BIT);    	    	  
-          context.setCullFace(GL20.GL_BACK);
+         // context.setCullFace(GL20.GL_BACK);// (no culling for now, beam visible both sides)
+    	 context.setCullFace(GL20.GL_NONE);// (no culling for now, beam visible both sides)
           
     	  
     }

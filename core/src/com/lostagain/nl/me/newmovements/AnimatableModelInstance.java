@@ -553,7 +553,12 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		Quaternion angle = getAngleTo(target,Axis);			
 		setToRotation(angle);			
 	}
-
+	
+	@Override
+	public void lookAt(Vector3 target, Vector3 Axis){			
+		Quaternion angle = getAngleTo(target,Axis);			
+		setToRotation(angle);			
+	}
 	/* (non-Javadoc)
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getAngleTo(com.lostagain.nl.me.newmovements.AnimatableModelInstance)
 	 */
@@ -565,13 +570,18 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	/* (non-Javadoc)
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getAngleTo(com.lostagain.nl.me.newmovements.AnimatableModelInstance, com.badlogic.gdx.math.Vector3)
 	 */
-
 	@Override
 	public Quaternion getAngleTo(AnimatableModelInstance target, Vector3 Axis) {
+		return getAngleTo(target.transState.position, Axis);
+	}
+	
+	@Override
+	public Quaternion getAngleTo(Vector3 target, Vector3 Axis) {
 
 		Vector3 thisPoint   = this.transState.position.cpy();
-		Vector3 targetPoint = target.transState.position.cpy();
-
+		//Vector3 targetPoint = target.transState.position.cpy();
+		Vector3 targetPoint = target.cpy();
+				
 		//get difference (which is the same as target relative to 0,0,0 if this point was 0,0,0)
 		targetPoint.sub(thisPoint);			
 		targetPoint.nor();

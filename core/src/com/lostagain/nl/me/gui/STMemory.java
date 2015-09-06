@@ -266,6 +266,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 				//currentlyHeldNEW.setAsHitable(true);
 				
 				//add to just droped 
+				Gdx.app.log(logstag,"added to just dropped variable");
 				justDropItem = currentlyHeldNEW;
 				
 				//remove currently held
@@ -411,6 +412,19 @@ public class STMemory extends Table implements DataObjectDropTarget {
 				return false;
 			} else {
 				return true;
+			}
+		}
+		
+		
+		
+		
+		public static ConceptObject getCurrentlyOrRecentlyHeld(){
+			if (currentlyHeldNEW != null ){
+				return currentlyHeldNEW;
+			} else if (justDropItem != null ){
+				return justDropItem;
+			} else {
+				return null;
 			}
 		}
 		

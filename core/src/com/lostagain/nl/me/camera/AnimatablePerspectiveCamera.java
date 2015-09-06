@@ -196,7 +196,12 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 		attachlist.put(object, lazerbeamdisplacement);
 
 	}
-
+	
+	@Override
+	public Quaternion getAngleTo(Vector3 target, Vector3 Axis) {
+		return getAngleTo(target, Axis);
+	}
+	
 	@Override
 	public Quaternion getAngleTo(AnimatableModelInstance target) {
 		return  getAngleTo(target, new Vector3(1,0,0));
@@ -465,7 +470,17 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 		Quaternion angle = getAngleTo(target,Axis);			
 		setToRotation(angle);			
 	}
+	
+	
+	@Override
+	public void lookAt(Vector3 target, Vector3 Axis) {
+		Quaternion angle = getAngleTo(target,Axis);			
+		setToRotation(angle);	
+	}
+	
 
+
+	
 	public PosRotScale getAttachmentsPoint(AnimatableModelInstance object){
 		return attachlist.get(object);
 	}
@@ -489,4 +504,6 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	public BoundingBox getLocalCollisionBox(boolean onceOnly) {
 		return null;
 	}
+
+
 }

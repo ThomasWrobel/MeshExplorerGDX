@@ -242,7 +242,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 		
 		this.setToScale(new Vector3(0.4f,0.4f,0.4f));
 		
-		MainExplorationView.camera.attachThisRelativeToScreen(this,147,0,240f); //a little behind the rest of the interface
+		MainExplorationView.camera.attachThisRelativeToScreen(this,160,0,240f); //a little behind the rest of the interface
 		
 		
 		this.pinned=true;
@@ -326,9 +326,12 @@ public class ConceptGunPanel extends HorizontalPanel {
 		
 		//--------------
 		//update its position and look at.
-		lazer3d.setToPosition(new Vector3(cursor_on_stage.x,cursor_on_stage.y,0));
-		lazer3d.lookAt(MECamera.FirePoint,new Vector3(0,1,0)); //at the moment its the visualizer cube, in future we need a gun shotty shotty point.
-
+	//	lazer3d.setToPosition(new Vector3(cursor_on_stage.x,cursor_on_stage.y,1f));
+	//	lazer3d.lookAt(MECamera.FirePoint,new Vector3(0,1,0)); //at the moment its the visualizer cube, in future we need a gun shotty shotty point.
+	
+		lazer3d.setToPosition(MECamera.FirePoint.getCenterOnStage());
+		lazer3d.lookAt(new Vector3(cursor_on_stage.x,cursor_on_stage.y,1f),new Vector3(0,1,0));
+		
 		//Tell the beam its been fired
 		lazer3d.beamFired(FireFrequency);
 		//--------------
@@ -550,7 +553,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 						}
 						
 						//else we move the fire point so it his the target rather then going though it
-						//(doesnt seem to work right now)
+						//(Doesn't seem to work right now)
 						defaultZ = collision.getTransform().position.z;
 					}
 					
@@ -559,11 +562,34 @@ public class ConceptGunPanel extends HorizontalPanel {
 
 				///Update the new 3d lazer;
 				Vector2 fromPointStage = ME.getCurrentStageCursorPosition(); 
-				lazer3d.setToPosition(new Vector3(fromPointStage.x,fromPointStage.y,defaultZ));
-				lazer3d.lookAt(MECamera.FirePoint,new Vector3(0,1,0)); //at the moment its the visualizer cube, in future we need a gun shotty shotty point.
+				Vector3 fromPointCamera = MECamera.FirePoint.getCenterOnStage(); 
+				Vector3 targetPoint = new Vector3(fromPointStage.x,fromPointStage.y,defaultZ);
+
+				lazer3d.setToPosition(fromPointCamera);
+				lazer3d.lookAt(targetPoint,new Vector3(0,1,0));
+				
+				float length = targetPoint.sub(fromPointCamera).len();
+				
+				lazer3d.setLength(length);
+				
+				
+				
+				//urg...how to make it face the right way if culling is on??
+				//its NOT;				
+				//0,1,0
+				//0,-1,0
+				//0,1,1
+				//0,1,-1
+				//1,1,0
+				//1,0,0
+				
+				
+				//old reverse;
+				//lazer3d.setToPosition(new Vector3(fromPointStage.x,fromPointStage.y,defaultZ));
+				//lazer3d.lookAt(MECamera.FirePoint,new Vector3(0,1,0)); //at the moment its the visualizer cube, in future we need a gun shotty shotty point.
 					
 				float pulseMul = (timeSinceLastHitCheck/(1/FireFrequency)); //0-1?
-				pulseMul = 1+((float) Math.sin(pulseMul * Math.PI*2)); //add 1 and deviding by two ensures we stay positive
+				pulseMul = 1+((float) Math.sin(pulseMul * Math.PI*2)); //add 1 and dividing by two ensures we stay positive
 				pulseMul=pulseMul/2;
 				
 						//Math.sin(rechargeTime/(1/FireFrequency));

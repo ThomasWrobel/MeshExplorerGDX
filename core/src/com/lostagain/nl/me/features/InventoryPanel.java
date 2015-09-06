@@ -373,7 +373,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		ArrayList<Color> col = DefaultStyles.getColorsFromNode(ability);
 		
 		if (col!=null && !col.isEmpty()){
-			//Colors found, so we should set our colour;
+			//Colors found, so we should set our color;
 			this.getStyle().setBackgroundColor(col.get(0));//just use first for now
 			
 			

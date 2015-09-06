@@ -824,6 +824,9 @@ public class MainExplorationView implements Screen {
 
 		}
 
+		if (PlayersData.playersConceptGun!=null){
+			PlayersData.playersConceptGun.update(delta); //update the gun in case its firing or recharging
+		}
 
 		//now we are touchstate is anything but none we get a ray for it
 		if (currentTouchState!=TouchState.NONE)
@@ -842,10 +845,7 @@ public class MainExplorationView implements Screen {
 
 			Boolean fireEnabled=  !ConceptGunPanel.isDisabled();
 
-			if (PlayersData.playersConceptGun!=null){
-				PlayersData.playersConceptGun.update(delta); //update the gun in case its firing
-			}
-
+		
 			if (currentTouchState == TouchState.NewTouchDown){		
 				//if the concept gun is enabled we start shooting
 
@@ -876,7 +876,7 @@ public class MainExplorationView implements Screen {
 
 				touchedAModel=null;
 				lastHits.clear();
-				ModelManagment.untouchAll(); 				
+				ModelManagment.untouchAll(); 	//ensures it clears			
 
 				//stop firing 
 				if (fireEnabled && PlayersData.playersConceptGun!=null){

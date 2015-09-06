@@ -83,7 +83,7 @@ public class HorizontalPanel extends CellPanel {
 			currentTotalWidgetWidth=currentTotalWidgetWidth+incomingWidth+spaceing;
 		}
 
-		return new Vector3(leftPadding+newLocationX,topPadding+newLocationY,3f);
+		return new Vector3(getLeftPadding()+newLocationX,getTopPadding()+newLocationY,3f);
 
 
 	}
@@ -131,8 +131,8 @@ public class HorizontalPanel extends CellPanel {
 	//
 	@Override
 	void sizeToFitContents() {
-		this.setSizeAs(leftPadding+currentTotalWidgetWidth+rightPadding,
-				bottomPadding+largestHeightOfStoredWidgets+topPadding);
+		this.setSizeAs(getLeftPadding()+currentTotalWidgetWidth+getRightPadding(),
+				getBottomPadding()+largestHeightOfStoredWidgets+getTopPadding());
 	}
 
 }

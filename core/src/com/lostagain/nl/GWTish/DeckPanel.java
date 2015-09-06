@@ -178,7 +178,7 @@ public class DeckPanel extends ComplexPanel {
 
 		}
 
-		return new Vector3(leftPadding+newLocationX,topPadding+newLocationY,(5f+10f*index));//widgets are stacked 5 apart vertically
+		return new Vector3(getLeftPadding()+newLocationX,getTopPadding()+newLocationY,(5f+10f*index));//widgets are stacked 5 apart vertically
 		
 		//return new Vector3(cx-(incomingWidth/2),cy-(incomingHeight/2),(5f+10f*index)); //widgets are stacked 5 apart vertically
 	}
@@ -197,7 +197,7 @@ public class DeckPanel extends ComplexPanel {
 
 	@Override
 	void sizeToFitContents() {
-		this.setSizeAs(leftPadding+largestWidthOfStoredWidgets+rightPadding,bottomPadding+this.largestHeightOfStoredWidgets+topPadding);
+		this.setSizeAs(getLeftPadding()+largestWidthOfStoredWidgets+getRightPadding(),getBottomPadding()+this.largestHeightOfStoredWidgets+getTopPadding());
 
 	}
 

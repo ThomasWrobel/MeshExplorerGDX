@@ -60,9 +60,10 @@ public class NewGUIBar extends VerticalPanel {
 	public NewGUIBar() {
 		super();
 		super.setAsHitable(true);
+		super.setZIndex(1000, "GUIBAR");
 		
 		getStyle().setBackgroundColor(new Color(0.1f,0.1f,0.1f,0.8f));
-		setPadding(8f);
+		setPadding(4f);
 				
 		//set up the button handlers
 		myCGun.addClickHandler(new ClickHandler() {			
@@ -204,16 +205,15 @@ public class NewGUIBar extends VerticalPanel {
 		
 		setToDefaultPosition();
 		
-		setZIndex(100);
+		//setZIndex(100);
 		
 	}
 	
-	
+	/*
 	/**
 	 * adds a z index override and sets it to the supplied value
 	 * use clear to revert to natural ordering
 	 * @param opacity
-	 */
 	public void setZIndex(int index){
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial();
@@ -221,11 +221,9 @@ public class NewGUIBar extends VerticalPanel {
 		
 	}
 	
-	/**
 	 * adds a z index override and sets it to the supplied value
 	 * use clear to revert to natural ordering
 	 * @param opacity
-	 */
 	public void clearZIndex(int index){
 		//get the material from the model
 		Material infoBoxsMaterial =this.getMaterial();	
@@ -233,7 +231,7 @@ public class NewGUIBar extends VerticalPanel {
 		
 		
 	}
-	
+	*/
 	
 	
 	
