@@ -19,10 +19,10 @@ import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.MySorter;
 
 /**
- * Concept objects will eventually replace data objects.
+ * Concept objects are the new data objects.
  * 
  * They are the visual representation of a concept. They can be dragged about, placed into the inventory, or used on other objects.
- * Enemys can drop them.
+ * Enemy's can drop them.
  * Some of them can even be opened up to reveal new functions and features - such as emails, links, locked data etc.
  * 
  * Essentially they are the heart of the game.
@@ -30,6 +30,7 @@ import com.lostagain.nl.shaders.MySorter;
  * @author Tom
  *
  */
+
 public class ConceptObject extends MeshIcon {
 
 	final static String logstag = "ME.ConceptObject";

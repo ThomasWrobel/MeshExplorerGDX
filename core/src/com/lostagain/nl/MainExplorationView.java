@@ -567,9 +567,14 @@ public class MainExplorationView implements Screen {
 		//
 		ModelManagment.addmodel(tempbutton,ModelManagment.RenderOrder.zdecides);
 		//ModelManagment.addmodel(tempbuttonBigger,ModelManagment.RenderOrder.zdecides);
-
+		
 
 		//GWTish Tests
+		final Label exampleFixedLabel = EXAMPLES.getLabelExampleFixedSize();
+		exampleFixedLabel.setToPosition(new Vector3(1000f,110f,0f));
+		ModelManagment.addmodel(exampleFixedLabel,ModelManagment.RenderOrder.zdecides);
+		
+		
 		final Label exampleLabel = EXAMPLES.getLabelExample();
 		exampleLabel.setToPosition(new Vector3(1000f,0f,0f));
 		ModelManagment.addmodel(exampleLabel,ModelManagment.RenderOrder.zdecides);

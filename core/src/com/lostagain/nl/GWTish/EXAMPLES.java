@@ -12,7 +12,8 @@ import com.lostagain.nl.GWTish.ComplexPanel.HorizontalAlignment;
  */
 public class EXAMPLES {
 	
-	
+
+	final static String logstag = "ME.EXAMPLES";
 	public static Label getLabelExample(){
 		
 		//At its most basic, labels can be constructed like this;
@@ -67,6 +68,28 @@ public class EXAMPLES {
 		
 		exampleLabel.getStyle().setPaddingLeft(150f);
 		exampleLabel.getStyle().setPaddingTop(50f);
+	//	exampleLabel.getStyle().setTextAlignment(Style.TextAlign.CENTER);
+		
+		return exampleLabel;
+	}
+	
+	
+	public static Label getLabelExampleFixedSize(){
+		
+		//At its most basic, labels can be constructed like this;
+		Label exampleLabel = new Label("(fit to size)",200,450);
+		
+	///	Gdx.app.log(logstag,"  PaddingLeft:"+exampleLabel.getStyle().PaddingLeft);
+	//	Gdx.app.log(logstag,"  PaddingRight:"+exampleLabel.getStyle().PaddingRight);
+	
+		
+		//The size will auto-fit the string given, according to a default size of the current font
+		
+		exampleLabel.getStyle().setBackgroundColor(Color.BLUE);
+		exampleLabel.getStyle().setBorderColor(Color.RED);
+		
+	//	exampleLabel.getStyle().setPaddingLeft(150f);
+	//	exampleLabel.getStyle().setPaddingTop(50f);
 	//	exampleLabel.getStyle().setTextAlignment(Style.TextAlign.CENTER);
 		
 		return exampleLabel;

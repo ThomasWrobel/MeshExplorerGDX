@@ -20,7 +20,7 @@ import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
  */
 public class LabelBase extends Widget {
 	
-	Model labelInstance = null; //temp instance (ventually we will extend it directly)
+	//Model labelInstance = null; //temp instance (ventually we will extend it directly)
 	
 
 	//First we create a few static class's
@@ -28,14 +28,23 @@ public class LabelBase extends Widget {
 	
 	//needed so we can create and pass both with one augment
 	static class backgroundAndCursorObject {
+		
 		Model object = null; 
 		
 		Vector2 Cursor = new Vector2();
+
+		Vector2 textureSize = null;
+
 		public backgroundAndCursorObject(Model labelInstance,
-				int i, int j) {			
+				int i, int j, Vector2 textureSize) {		
+			
 			object = labelInstance;
+			
 			Cursor.x = i;
-			Cursor.y = j;			
+			Cursor.y = j;		
+						
+			this.textureSize = textureSize;
+			
 		}
 	}
 	
@@ -72,14 +81,15 @@ public class LabelBase extends Widget {
 		
 	//Current writing statistics
 	Vector2 Cursor = null;
-	
-	
+
+	Vector2 textureSize = null;
 	
 	public LabelBase(backgroundAndCursorObject setupData){
 		super(setupData.object);
-		labelInstance = setupData.object;
-		this.Cursor = setupData.Cursor;
 		
+	//	labelInstance = setupData.object;
+		this.Cursor = setupData.Cursor;
+		this.textureSize = setupData.textureSize;		
 	}
 	
 	

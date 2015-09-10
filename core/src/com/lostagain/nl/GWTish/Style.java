@@ -51,8 +51,15 @@ public class Style {
 		//shaders controlled by two attributes;
 		textStyle     = ((GwtishWidgetDistanceFieldAttribute)objectsMaterial.get(GwtishWidgetDistanceFieldAttribute.ID));
 		backStyle     = ((GwtishWidgetBackgroundAttribute)objectsMaterial.get(GwtishWidgetBackgroundAttribute.ID));
+	
 		//(one of these might be null, if so they will be created and added on demand)
-		
+
+		GwtishWidgetDistanceFieldAttribute materialAccordingToStyle = (GwtishWidgetDistanceFieldAttribute) mat.get(GwtishWidgetDistanceFieldAttribute.ID);
+		if (materialAccordingToStyle!=null){
+			Gdx.app.log(logstag, "3fitarea set as:"+materialAccordingToStyle.textScaleing ); 
+		} else {
+			Gdx.app.log(logstag, "no textstyle set" ); 
+		}
 	}
 
 	/**
@@ -181,6 +188,7 @@ public class Style {
 	private void createBackgroundAttributeIfNeeded() {
 		
 		if (backStyle==null){
+			Gdx.app.log(logstag,"_________(creating default background shader attribute)");
 			backStyle =  new GwtishWidgetBackgroundAttribute(1f,Color.CLEAR,Color.CLEAR,1.0f);
 			this.addAttributeToShader(backStyle);
 		}
@@ -190,6 +198,8 @@ public class Style {
 	private void createTextAttributeIfNeeded() {
 		
 		if (textStyle==null){			
+
+			Gdx.app.log(logstag,"_________(creating default text shader attribute)");
 			//if we are creating one automatically on demand, everything is set to clear
 			textStyle  = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
 			addAttributeToShader(textStyle);			

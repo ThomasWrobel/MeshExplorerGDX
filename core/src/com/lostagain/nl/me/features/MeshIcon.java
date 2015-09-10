@@ -49,7 +49,8 @@ import com.lostagain.nl.shaders.MySorter;
  *  
  *  They extend AnimatableModelInstance so we can animated them latter if we wish 
  * **/
-public class MeshIcon extends AnimatableModelInstance  implements  Animating,Moving {
+//AnimatableModelInstance
+public class MeshIcon extends Label  implements  Animating,Moving {
 
 	private static final String ICON_MATERIAL = "IconMaterial";
 
@@ -100,6 +101,8 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 			return iconColor;
 		}
 	}
+	
+	Color CurrentLabelColour = Color.WHITE.cpy();
 
 
 	public enum OpenMode {
@@ -184,23 +187,25 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	 * @param assocatiedfeature
 	 */
 
-
-
 	//----------------------------------------------------
 	public MeshIcon(IconType type,Location parentLocation,GenericMeshFeature assocatiedfeature) {	
 		this(type,null,defaultIconWidth,defaultIconHeight,parentLocation,assocatiedfeature);
 	}
+	
 	/** 
 	 * Creates a icon of the specified type.
 	 * The idea is this is placed relative to the parent location (or rather the parent locations infoIcon which should always be at the center)
 	 *  
 	 * **/
 	public MeshIcon(IconType type,String specificName,float w,float h,Location parentLocation,GenericMeshFeature assocatiedfeature) {		
-		super(generateBackgroundModel(w,h));
-
+	//	super(generateBackgroundModel(w,h));
+		super(getIconsDisplayName(type,specificName),w,h,MODELALIGNMENT.CENTER);
+		
+		
 		thisIconsType = type;
 		this.parentLocation = parentLocation;
 		this.assocatiedFeature = assocatiedfeature;
+		
 		//store the currentAssociatedFeature as the default as well.
 		//if a feature is added and removed, this one will be displayed as the default
 		defaultAssociatedFeature = this.assocatiedFeature;
@@ -215,7 +220,11 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 		IconsDefaultVertexs = new float[thisMesh.getNumVertices() * thisMesh.getVertexSize()];
 		model.meshes.get(0).getVertices(IconsDefaultVertexs);
 
+		//default style
+		this.getStyle().setBorderColor(Color.WHITE);
+		this.getStyle().setBackgroundColor(Color.BLUE);
 
+		
 		//set the icon color if not default
 		if (type.getIconColour()!=null){
 			setBackgroundColour(type.getIconColour());
@@ -224,6 +233,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 
 
+		/*
 		//Now create a new label and attach it too ourselves
 		String name = "";
 		if (specificName==null){
@@ -235,8 +245,7 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 		MeshIconsLabel = new Label(name);
 		MeshIconsLabel.setLabelBackColor(Color.CLEAR);
-		//MeshIconsLabel.getStyle().clearBackgroundColor();
-		
+	
 		//we also need to scale the label to fit as it might be too long
 		if ((MeshIconsLabel.getWidth()+(LabelMargin*2))>w){
 			//10/5
@@ -252,12 +261,13 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 
 		Vector3 labelCenter = MeshIconsLabel.getPivotsDisplacementFromCenterOfBoundingBox();
+		*/
 		//AnimatableModelInstance internalModel = MeshIconsLabel.getModel();
-		super.setAsHitable(true);
-
+	
 		//Note; we dont need to take margin into account as we are position center relative to center
-		super.attachThis(MeshIconsLabel, new PosRotScale(-labelCenter.x,-labelCenter.y,5f)); //hover above a bit
+		//super.attachThis(MeshIconsLabel, new PosRotScale(-labelCenter.x,-labelCenter.y,5f)); //hover above a bit
 
+		super.setAsHitable(true);
 
 		//mesh icons have a default zindex of 150
 		this.setZIndex(150, this.getUniqueName());
@@ -266,6 +276,26 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	}
 
 
+	/**
+	 * gets the name that should be displayed on this icon 
+	 * @param type
+	 * @param specificName
+	 * @return
+	 */
+	private static String getIconsDisplayName(IconType type, String specificName) {
+		
+		String name = "";
+		if (specificName==null){
+			name = type.getLabelName();
+		} else {
+			name=specificName;
+		}
+		
+		//any needed changes to length etc go here
+		//name=name...
+		
+		return name;
+	}
 	/**
 	 * sets the background color to the default for this icon type if its not null else no-op
 	 */
@@ -464,13 +494,17 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	public void setZIndex(int index, String group){
 		baseZindex  = index;
 		Zindexgroup = group;
+		super.getStyle().setZIndex(index, group);
+		
+		/*
 		//get the material from the model
+	
 		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);		
 		infoBoxsMaterial.set(new ZIndexAttribute(index,group));
 				
 		Material infoBoxsMaterial2 = MeshIconsLabel.getTextMaterial();
 		infoBoxsMaterial2.set(new ZIndexAttribute(index+1,group));
-		
+		*/
 		//if theres a attachment
 		if (this.assocatiedFeature!=null){
 			assocatiedFeature.setZIndex(baseZindex+1,Zindexgroup);
@@ -528,11 +562,14 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 	public void setBackgroundColour(Color bak){
 		
 		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);
-		GwtishWidgetBackgroundAttribute attribute = ((GwtishWidgetBackgroundAttribute)infoBoxsMaterial.get( GwtishWidgetBackgroundAttribute.ID));
-		attribute.backColor.set(bak);
+	//	Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);
+	//	GwtishWidgetBackgroundAttribute attribute = ((GwtishWidgetBackgroundAttribute)infoBoxsMaterial.get( GwtishWidgetBackgroundAttribute.ID));
+	//	attribute.backColor.set(bak);
 
-
+		this.getStyle().setBackgroundColor(bak);
+		
+		
+		
 	}
 
 	/** triggers the icon to open showing its contents (assocatiedFeature) **/
@@ -860,20 +897,11 @@ public class MeshIcon extends AnimatableModelInstance  implements  Animating,Mov
 
 		IconsMesh.setVertices(vertices);
 
-		//fade label
-		MeshIconsLabel.setOpacity(1-alpha);
-
-
-		//start position of vertexs
-
-		//end position of vertexs;
-
-		//alpha between the two as the target;
-
-
-
-		//update this icon		
-		//this.setOpacity(1-Opacity); //we fade out as the other fades in!
+		//fade the label
+	//	MeshIconsLabel.setOpacity(1-alpha);
+		Color fadedCol = CurrentLabelColour.cpy();
+		fadedCol.a = (1-alpha);
+		this.getStyle().setColor(fadedCol);
 
 
 	}

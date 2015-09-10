@@ -27,17 +27,30 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 	public float shadowBlur          = 0.0f;
 	public Color shadowColour        = Color.CLEAR;
 	
+	public enum TextScalingMode {
+		natural,fitarea,fitPreserveRatio
+	}
+	
+	
+	/**
+	 * The relationship between the text and the size of the model.
+	 * Do we scale it to fit or not?
+	 * ("Fit" in this case means its dimensions match the area of the model minus the area of the padding)
+	 */
+	public TextScalingMode textScaleing = TextScalingMode.natural;
+	
 	/**
 	 * Will be used to displace the text image from the top left corner of the shader	 * 
 	 */
 	public float paddingLeft = 0.0f;
+	
 	/**
 	 * Will be used to displace the text image from the top left corner of the shader	 * 
 	 */
 	public float paddingTop = 0.0f;
 	
 	/**
-	 * Temp variable only. Controls a multiplier factor for opacity that applys to all Get statements of colour componants (like getTextColor)
+	 * Temp variable only. Controls a multiplier factor for opacity that applys to all Get statements of colour components (like getTextColor)
 	 * This should be reset to 1 in most situations.
 	 */
 	public float Overall_Opacity_Multiplier = 1f;
@@ -139,7 +152,10 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 			Color shadowColour,
 			float shadowXDisplacement, 
 			float shadowYDisplacement,
-			float shadowBlur 
+			float shadowBlur, 
+			float paddingTop,
+			float paddingLeft,
+			TextScalingMode textScaleing
 			) {
 		
 		super(ID);
@@ -154,7 +170,10 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 		this.shadowXDisplacement = shadowXDisplacement;
 		this.shadowYDisplacement = shadowYDisplacement;
 		this.shadowBlur = shadowBlur;
-		this.shadowColour = shadowColour.cpy();;
+		this.shadowColour = shadowColour.cpy();
+		this.paddingTop = paddingTop;
+		this.paddingLeft =paddingLeft;
+		this.textScaleing=textScaleing;
 	}
 	/**
 	 * The presence of this parameter will cause the DistanceFieldAttribute to be used
@@ -199,7 +218,10 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 				 shadowColour,
 				 shadowXDisplacement, 
 				 shadowYDisplacement,
-				 shadowBlur );
+				 shadowBlur,
+				 paddingTop,
+				 paddingLeft,
+				 textScaleing);
 		
 	}
 
@@ -218,7 +240,12 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 			(((GwtishWidgetDistanceFieldAttribute)other).shadowColour == shadowColour)  &&
 			(((GwtishWidgetDistanceFieldAttribute)other).shadowXDisplacement == shadowXDisplacement) &&
 			(((GwtishWidgetDistanceFieldAttribute)other).shadowYDisplacement == shadowYDisplacement)  &&
-			(((GwtishWidgetDistanceFieldAttribute)other).shadowBlur == shadowBlur) 
+			(((GwtishWidgetDistanceFieldAttribute)other).shadowBlur == shadowBlur) &&
+			(((GwtishWidgetDistanceFieldAttribute)other).paddingTop == paddingTop) &&
+			(((GwtishWidgetDistanceFieldAttribute)other).paddingLeft == paddingLeft) &&
+			(((GwtishWidgetDistanceFieldAttribute)other).textScaleing == textScaleing) 
+			
+			
 			)
 		
 		{
@@ -292,7 +319,12 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 	 */
 	public void setPaddingX(float paddingX,float paddingY) {
 		this.paddingLeft = paddingX;
-		this.paddingTop = paddingY;
+		this.paddingTop  = paddingY;
+	}
+
+
+	public void setTextScaleing(TextScalingMode textScaleing) {
+		this.textScaleing = textScaleing;
 	}
 
 

@@ -570,7 +570,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 				
 				float length = targetPoint.sub(fromPointCamera).len();
 				
-				lazer3d.setLength(length);
+				lazer3d.setLength(length-10f); //little above
 				
 				
 				

@@ -3,9 +3,11 @@ package com.lostagain.nl.GWTish;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
+import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
 
 /**
  * This will approximate a similar function as GWTs Element class does.
@@ -27,7 +29,7 @@ public class Element extends AnimatableModelInstance {
 	
 	
 	/**
-	 *  returns the style object which will controll a small fraction of
+	 *  returns the style object which will control a small fraction of
 	 *  the functionality that true GWT styles do.
 	 *  Specifically this is currently for a few style options on text labels.
 	 * @return 
@@ -39,7 +41,15 @@ public class Element extends AnimatableModelInstance {
 
 
 	public void setStyle(Material material) {
+		
 		objectsStyle=new Style(this,material);
+		
+		
+		GwtishWidgetDistanceFieldAttribute materialAccordingToStyle = (GwtishWidgetDistanceFieldAttribute) material.get(GwtishWidgetDistanceFieldAttribute.ID);
+		if (materialAccordingToStyle!=null){
+			Gdx.app.log(logstag, "4fitarea set as:"+materialAccordingToStyle.textScaleing ); 
+		}
+		
 	}
 	
 	//============

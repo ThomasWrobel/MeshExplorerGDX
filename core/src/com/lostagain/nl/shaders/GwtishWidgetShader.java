@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute.TextScalingMode;
 
 /**
  * The goal of this shader is to combine the features of the distancefieldshader with the glowingrectangle background shader
@@ -60,11 +61,11 @@ public class GwtishWidgetShader implements Shader {
 	int u_texture_pixel_step;
 	int u_resolution;
 	int u_sizeDiff;
-	
+
 	//padding
 	int u_textPaddingX;
 	int u_textPaddingY;
-	
+
 	//glow
 	int  u_textGlowColor;
 	int  u_textGlowSize  ; //size of glow (values above 1 will look strange)
@@ -121,12 +122,12 @@ public class GwtishWidgetShader implements Shader {
 		//text and back color
 		u_textColour =  program.getUniformLocation("u_textColor");
 		//u_backColour =  program.getUniformLocation("u_backColor");
-		
+
 		//padding
 		u_textPaddingX = program.getUniformLocation("u_textPaddingX");
 		u_textPaddingY = program.getUniformLocation("u_textPaddingY");
-		
-		
+
+
 		//glow
 		u_textGlowColor = program.getUniformLocation("u_glowColor");
 		u_textGlowSize  = program.getUniformLocation("u_glowSize"); //size of glow (values above 1 will look strange)
@@ -144,7 +145,7 @@ public class GwtishWidgetShader implements Shader {
 
 		//background
 		//square style
-		
+
 		u_backGlowWidth     = program.getUniformLocation("u_backGlowWidth"); 
 		u_backBackColor     = program.getUniformLocation("u_backBackColor"); 
 		u_backCoreColor     = program.getUniformLocation("u_backCoreColor");  		
@@ -199,28 +200,118 @@ public class GwtishWidgetShader implements Shader {
 		//And a background shader which lets us have curved corners in the background
 		GwtishWidgetBackgroundAttribute backgroundParameters = (GwtishWidgetBackgroundAttribute)renderable.material.get(GwtishWidgetBackgroundAttribute.ID);
 		//(one of these attributes may be null, but not both)
-		
-		
-		
+
+
+
 		//if textStyleData is null, we assume the null dataset for it
 		if (textStyleData==null){
 			textStyleData = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
 			//note; 
 			//this is currently not very efficient - we should have a flag system for "no text" rather then needing COLOR 0,0,0,0 to be set on all color settings  
+			
+			//distance field attribute shader should also have a texture to go with it
+			
 		}
-		
-		
-
-		//	Gdx.app.log(logstag, "glowColour:"+textStyleData.glowColour);
-		setSizeUniform(w,h,textStyleData.paddingLeft,textStyleData.paddingTop);
 
 
 		if (renderable.material.get(TextureAttribute.Diffuse)!=null){
 
 			Texture distanceFieldTextureMap = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
 			program.setUniformi(u_sampler2D, context.textureBinder.bind(distanceFieldTextureMap));    		    		 
+	
+			//Not we need to supply the pixel step of the texture as this is different to the overall one
+			float tw = distanceFieldTextureMap.getWidth();
+			float th = distanceFieldTextureMap.getHeight();
+			
+			//depending on sizemode though, we might still want to use the models size - thus stretching the texture
+		
+			if (textStyleData.textScaleing.equals(TextScalingMode.fitarea)){
+				 tw = w;
+				 th = h;
+				 
 
+				//	Gdx.app.log(logstag, "fitarea detected in shader. size set as:"+tw+","+th); 
+					
+			} else if (textStyleData.textScaleing.equals(TextScalingMode.fitPreserveRatio)){
+				
+			//	boolean textureWidthTooBig  = false;
+			//	boolean textureHeightTooBig = false;
+			//	float textureHeightToWidth  = th / tw; 
+				
+				
+				float scale = Math.min(w/tw, h/th);
+				tw = scale*tw;
+				th = scale*th;
+				
+				
+				/*
+				if (tw>w){
+					textureWidthTooBig = true;
+				}
+				if (th>h){
+					textureHeightTooBig = true;					
+				}
+				
+				//Scaling will depending on which we are scaling
+				if (textureHeightTooBig && textureWidthTooBig){
+					//we need to find which is more oversized
+					float diffX = tw-w;
+					float diffY = th-h;
+					
+					if (diffX>diffY){
+						//x needs more scaleing so we set tw to w
+						//and scale th to match
+						tw=w;
+						th =  textureHeightToWidth* w;
+					} else {
+						//y needs more scaleing so we set th to h
+						//and scale tw to match
+						tw = (1/textureHeightToWidth) * h;
+						th = h;
+					}
+					
+				} 
+				
+				
+				if (textureWidthTooBig){
+					
+					//texture height becomes ratio x renderable width
+					th = textureHeightToWidth* w;
+					//texture width  becomes renderable width
+					tw = w;
+				}
+				
+				if (textureHeightTooBig){
+					
+					//texture width becomes ratio x renderable height
+					tw = (1/textureHeightToWidth) * h;
+					//texture height  becomes renderable width
+					th = h;
+				}
+				
+			
+				*/
+				
+
+				//Gdx.app.log(logstag, "textScaleing detected in shader. size set as:"+tw+","+th); 
+				
+				
+			}
+			
+			program.setUniformf(u_texture_pixel_step,(1/tw), (1/th));
+
+			//we also supply the ratio between the image and the overall model size
+			//this lets us have a texture at a arbitary position within the models shader
+			float sizeDiffX = w / tw;
+			float sizeDiffY = h / th;
+
+			program.setUniformf(u_sizeDiff,sizeDiffX, sizeDiffY);
 		}
+		
+		
+		//	Gdx.app.log(logstag, "glowColour:"+textStyleData.glowColour);
+		setSizeUniform(w,h);//,textStyleData.paddingLeft,textStyleData.paddingTop
+
 
 		//Back color used to come from diffuse (this is being removed)
 		//ColorAttribute ColAttribute = ((ColorAttribute)renderable.material.get(ColorAttribute.Diffuse));
@@ -229,34 +320,34 @@ public class GwtishWidgetShader implements Shader {
 		//	backcolor = ColAttribute.color.cpy();
 		//}
 		//--------------------
-		
+
 		//and we multiply it by the opacity
 		BlendingAttribute backgroundOpacity = ((BlendingAttribute)renderable.material.get(BlendingAttribute.Type));
 		if (backgroundOpacity!=null){
-			
-		//	backcolor.a = backcolor.a*backgroundOpacity.opacity;                    // Temp.Really Blending should effect everything, not just the background
-			
+
+			//	backcolor.a = backcolor.a*backgroundOpacity.opacity;                    // Temp.Really Blending should effect everything, not just the background
+
 			if (textStyleData!=null){
 				textStyleData.setOverall_Opacity_Multiplier(backgroundOpacity.opacity);
 			}
 			if (backgroundParameters!=null){
 				backgroundParameters.setOverall_Opacity_Multiplier(backgroundOpacity.opacity);
 			}
-			
+
 		} else {
-			
+
 			if (textStyleData!=null){
 				textStyleData.setOverall_Opacity_Multiplier(1f);
 			}
-			
+
 			if (backgroundParameters!=null){
 				backgroundParameters.setOverall_Opacity_Multiplier(1f);
 			}
-			
+
 		}
 
-		
-		
+
+
 		// Color textColour = Color.ORANGE;
 		// if (renderable.material.has(ColorAttribute.Diffuse)){	    		     		
 		//text from attribute
@@ -278,7 +369,7 @@ public class GwtishWidgetShader implements Shader {
 		//displacements
 		program.setUniformf(u_textPaddingX,textStyleData.paddingLeft);
 		program.setUniformf(u_textPaddingY,textStyleData.paddingTop);
-		
+
 		//glow
 		program.setUniformf(u_textGlowColor,textStyleData.getGlowColour());
 		program.setUniformf(u_textGlowSize ,textStyleData.glowSize); //size of glow (values above 1 will look strange)
@@ -298,26 +389,26 @@ public class GwtishWidgetShader implements Shader {
 
 
 
-		
+
 		if (backgroundParameters==null){
 			//(if no background specified its just transparent)	 	
 			program.setUniformf(u_backGlowWidth,    0f);  	 
 			program.setUniformf(u_backBackColor,    Color.CLEAR);
 			program.setUniformf(u_backCoreColor,    Color.CLEAR); 
 			program.setUniformf(u_backCornerRadius, 1f); 
-			
+
 		} else {
-			
+
 			program.setUniformf(u_backGlowWidth,    backgroundParameters.glowWidth   );  	 
 			program.setUniformf(u_backBackColor,    backgroundParameters.getBackColor()   );
 			program.setUniformf(u_backCoreColor,    backgroundParameters.getBorderColour()); 
 			program.setUniformf(u_backCornerRadius, backgroundParameters.cornerRadius); 
-		
-			
+
+
 		}
 
-		
-		
+
+
 
 		renderable.mesh.render(program,
 				renderable.primitiveType,
@@ -325,27 +416,27 @@ public class GwtishWidgetShader implements Shader {
 				renderable.meshPartSize);
 	}
 
-	public void setSizeUniform(float w, float h,float paddingLeft, float paddingTop) {
-
+	public void setSizeUniform(float w, float h) {
+		//,float paddingLeft, float paddingTop)
 		program.setUniformf(u_resolution, w,h);
 
 
 		//we also need the difference in size between the total widget size and the size of the text on it
 		//This is expressed as a ratio
-	    float sizeDiffX = w / (w-paddingLeft);
-	    float sizeDiffY = h / (h-paddingTop);
-	    
-	    program.setUniformf(u_sizeDiff,sizeDiffX, sizeDiffY);
+		//   float sizeDiffX = w / (w-paddingLeft);
+		//    float sizeDiffY = h / (h-paddingTop);
+
+		//   program.setUniformf(u_sizeDiff,sizeDiffX, sizeDiffY);
 
 
 		//NOTE: this is the pixel step of the texture.
 		//The widget might be much larger, w/h ONLY be the effective size of the text on the widget,ignoring any padding.
 		//for this reason we subtract the padding first
 
-		w = w - paddingLeft; //in future right as well;
-		h = h - paddingTop;  //and bottom
-		
-		program.setUniformf(u_texture_pixel_step,(1/w), (1/h));
+		//	w = w - paddingLeft; //in future right as well;
+		//	h = h - paddingTop;  //and bottom
+
+		//program.setUniformf(u_texture_pixel_step,(1/w), (1/h));
 	}
 
 	@Override
