@@ -277,7 +277,7 @@ vec4 getStyledText()
     	float yo = vTexCoord.y -(v_shadowYDisplacement * pixel_step.y);//;
     	
     	//ensure inside texture still, else do nothing
-    	  if (xo>0.0 && yo>0.0 ) {
+    	  if (xo>0.0 && yo>0.0 && xo<1.0 && yo<1.0  ) {
      
     	
     	//the alpha of the incoming texture acts as the distance from inside a letter to outside
@@ -318,7 +318,7 @@ void main() {
     
     //now we need to scale down the TexCoord by the size difference between that and the resolution
     //(as the TexCoords should NOT including padding size)    
-     vTexCoord.x =  vTexCoord.x * u_sizeDiff.x;    
+     vTexCoord.x =  vTexCoord.x *  u_sizeDiff.x;    
      vTexCoord.y =  vTexCoord.y *  u_sizeDiff.y;
     
    //alter by padding to get padded co-ordinates
@@ -327,8 +327,9 @@ void main() {
    
    
    
-   //if either of the co-ordinates are now less then zero we set the text color settings to nothing
-   if (vTexCoord.x<0.0 || vTexCoord.y<0.0 ) {
+   //if either of the co-ordinates are now less then zero or greater then the limits we set the text color settings to nothing
+   if (vTexCoord.x<0.0 || vTexCoord.y<0.0 || vTexCoord.x>1.0 || vTexCoord.y>1.0 ) {
+   
      	v_textColor   = vec4(0.0,0.0,0.0,0.0);
      	v_outColor    = vec4(0.0,0.0,0.0,0.0);
      	v_glowColor   = vec4(0.0,0.0,0.0,0.0);

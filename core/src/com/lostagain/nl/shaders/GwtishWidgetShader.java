@@ -213,7 +213,12 @@ public class GwtishWidgetShader implements Shader {
 			
 		}
 
-
+		//sometimes extra padding has to be added when scaling
+		//this is because we centralize by default when the scaling has resulted in extra space either vertically or horizontally.
+		//maybe in future we have other options?
+		float textScale_height_pad = 0;
+		float textScale_width_pad  = 0;	
+		
 		if (renderable.material.get(TextureAttribute.Diffuse)!=null){
 
 			Texture distanceFieldTextureMap = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
@@ -223,80 +228,33 @@ public class GwtishWidgetShader implements Shader {
 			float tw = distanceFieldTextureMap.getWidth();
 			float th = distanceFieldTextureMap.getHeight();
 			
-			//depending on sizemode though, we might still want to use the models size - thus stretching the texture
-		
+			//depending on sizemode though, we might still want to use the models size - thus stretching the texture		
 			if (textStyleData.textScaleing.equals(TextScalingMode.fitarea)){
+				
 				 tw = w;
-				 th = h;
-				 
-
+				 th = h;				 
 				//	Gdx.app.log(logstag, "fitarea detected in shader. size set as:"+tw+","+th); 
 					
 			} else if (textStyleData.textScaleing.equals(TextScalingMode.fitPreserveRatio)){
 				
-			//	boolean textureWidthTooBig  = false;
-			//	boolean textureHeightTooBig = false;
-			//	float textureHeightToWidth  = th / tw; 
-				
-				
 				float scale = Math.min(w/tw, h/th);
+				
 				tw = scale*tw;
 				th = scale*th;
 				
-				
-				/*
-				if (tw>w){
-					textureWidthTooBig = true;
-				}
-				if (th>h){
-					textureHeightTooBig = true;					
-				}
-				
-				//Scaling will depending on which we are scaling
-				if (textureHeightTooBig && textureWidthTooBig){
-					//we need to find which is more oversized
-					float diffX = tw-w;
-					float diffY = th-h;
+				//autopad the smaller dimension to centralize
+				if (th<h){
+					//pad height
+					textScale_height_pad = (h-th)/2;					
 					
-					if (diffX>diffY){
-						//x needs more scaleing so we set tw to w
-						//and scale th to match
-						tw=w;
-						th =  textureHeightToWidth* w;
-					} else {
-						//y needs more scaleing so we set th to h
-						//and scale tw to match
-						tw = (1/textureHeightToWidth) * h;
-						th = h;
-					}
-					
-				} 
-				
-				
-				if (textureWidthTooBig){
-					
-					//texture height becomes ratio x renderable width
-					th = textureHeightToWidth* w;
-					//texture width  becomes renderable width
-					tw = w;
 				}
-				
-				if (textureHeightTooBig){
-					
-					//texture width becomes ratio x renderable height
-					tw = (1/textureHeightToWidth) * h;
-					//texture height  becomes renderable width
-					th = h;
+				if (tw<w){
+					//pad width
+					textScale_width_pad = (w-tw)/2;					
 				}
-				
-			
-				*/
-				
-
-				//Gdx.app.log(logstag, "textScaleing detected in shader. size set as:"+tw+","+th); 
-				
 				
 			}
+			
 			
 			program.setUniformf(u_texture_pixel_step,(1/tw), (1/th));
 
@@ -367,8 +325,8 @@ public class GwtishWidgetShader implements Shader {
 		program.setUniformf(u_textColour, textColour);  
 
 		//displacements
-		program.setUniformf(u_textPaddingX,textStyleData.paddingLeft);
-		program.setUniformf(u_textPaddingY,textStyleData.paddingTop);
+		program.setUniformf(u_textPaddingX, textScale_width_pad+textStyleData.paddingLeft);
+		program.setUniformf(u_textPaddingY, textScale_height_pad+textStyleData.paddingTop);
 
 		//glow
 		program.setUniformf(u_textGlowColor,textStyleData.getGlowColour());
