@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.lostagain.nl.GWTish.Widget.MODELALIGNMENT;
+import com.lostagain.nl.GWTish.Management.ZIndexGroup;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 
 
@@ -310,7 +311,7 @@ public abstract class ComplexPanel extends Widget {
 		if (this.getStyle().hasZIndex()){
 			
 			int zindex = this.getStyle().getZIndexValue();
-			String groupname = this.getStyle().getZIndexGroupName();
+			ZIndexGroup groupname = this.getStyle().getZIndexGroup();
 			widget.getStyle().setZIndex(zindex+1, groupname);
 			
 			
@@ -319,6 +320,7 @@ public abstract class ComplexPanel extends Widget {
 		return insert(widget,contents.size()+1);
 		
 	}
+	
 	
 	/**
 	 * Adds a widget below the current ones.

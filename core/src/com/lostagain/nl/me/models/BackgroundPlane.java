@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
-import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
+import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.MyShaderProvider;
@@ -63,7 +63,7 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 		//calculate its bounding box
 		recalculateBoundingBox();
 		
-		ModelManagment.addmodel(this, RenderOrder.behindStage);
+		ModelManagment_old.addmodel(this, RenderOrder.behindStage);
 	//	ModelManagment.addHitable(this);
 		this.setAsHitable(true);
 		

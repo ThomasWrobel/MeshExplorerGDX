@@ -17,9 +17,9 @@ import com.lostagain.nl.GWTish.Button;
 import com.lostagain.nl.GWTish.ClickHandler;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
-import com.lostagain.nl.GWTish.ZIndexAttribute;
-import com.lostagain.nl.me.models.ModelManagment;
-import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
+import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
+import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
 import com.lostagain.nl.me.models.objectType;
 /**
  * provides togglable shortcuts for various game functions such as going home, activating the concept gun, or opening the inventory
@@ -320,7 +320,7 @@ public class NewGUIBar extends VerticalPanel {
 			
 			this.isVisible=isVisible;
 			
-			ModelManagment.addmodel(this, RenderOrder.zdecides);
+			ModelManagment_old.addmodel(this, RenderOrder.zdecides);
 			setUpStyle();
 			if (isVisible){
 				this.show();

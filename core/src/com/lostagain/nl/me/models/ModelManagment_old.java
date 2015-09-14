@@ -38,9 +38,9 @@ import com.lostagain.nl.shaders.ConceptBeamShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.shaders.MySorter;
 
-public class ModelManagment {
+public class ModelManagment_old {
 
-	private static String logstag="ME.ModelManagment";
+	private static String logstag="ME.ModelManagment old";
 
 	/** All the 3d models that appear BEHIND the sprite ones **/
 	public static ObjectSet<ModelInstance> allBackgroundInstances = new ObjectSet<ModelInstance>();
@@ -282,7 +282,7 @@ public class ModelManagment {
 		//ModelManagment.addmodel(centermaker,RenderOrder.infrontStage);
 
 		if (ME.currentGameMode!=GameMode.Production){
-			ModelManagment.addmodel(beamtest,RenderOrder.infrontStage);
+			ModelManagment_old.addmodel(beamtest,RenderOrder.infrontStage);
 			//	ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
 
 			addTestModels();
@@ -411,7 +411,7 @@ public class ModelManagment {
 		lookAtTester.setToPosition(new Vector3 (500,500,0));
 
 
-		ModelManagment.addmodel(lookAtTester,RenderOrder.infrontStage);
+		ModelManagment_old.addmodel(lookAtTester,RenderOrder.infrontStage);
 
 	}
 
@@ -422,7 +422,7 @@ public class ModelManagment {
 	static ArrayList<hitable> underCursor = new ArrayList<hitable>();
 	
 	/** 
-	 * comparitor to sort by distance
+	 * Comparator to sort by distance
 	 */
 	static public class OrderByDistance implements Comparator<hitable> {
 		    @Override

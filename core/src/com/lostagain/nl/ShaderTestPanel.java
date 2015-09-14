@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Image;
-import com.lostagain.nl.me.models.ModelManagment;
-import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
+import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
 import com.lostagain.nl.shaders.NormalMapShader;
 
 /**
@@ -67,7 +67,7 @@ public class ShaderTestPanel extends HorizontalPanel {
 
 		Texture normals = new Texture(Gdx.files.internal(normalLoc));
 		testBrickImage.setShaderAttribute(new NormalMapShader.NormalMapShaderAttribute(normals),false); 
-		ModelManagment.addmodel(testBrickImage, RenderOrder.infrontStage);
+		ModelManagment_old.addmodel(testBrickImage, RenderOrder.infrontStage);
 		add(testBrickImage);		
 
 

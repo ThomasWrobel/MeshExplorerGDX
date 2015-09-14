@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
+import com.lostagain.nl.GWTish.Management.ZIndexGroup;
 import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute.presetTextStyle;
 import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
 import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
@@ -74,7 +76,7 @@ public class Style {
 		
 		if (textStyle!=null){
 			
-			Gdx.app.log(logstag,"_________setting color to:"+col);
+			//Gdx.app.log(logstag,"_________setting color to:"+col);
 			
 			textStyle.textColour.set(col);
 		}
@@ -237,6 +239,18 @@ public class Style {
 		
 	}
 	
+	/**
+	 * Sets z-index value and groupname
+	 * 
+	 * @param opacity
+	 */
+	public void setZIndex(int index, ZIndexGroup group) {
+
+			objectsMaterial.set( new ZIndexAttribute(index+1,group) );
+		
+	}
+	
+	
 	public boolean hasZIndex() {
 		return objectsMaterial.has(ZIndexAttribute.ID);		
 	}
@@ -256,7 +270,8 @@ public class Style {
 	}
 
 	
-	public String getZIndexGroupName() {
+	
+	public ZIndexGroup getZIndexGroup() {
 		
 		if (hasZIndex()){
 			return ((ZIndexAttribute)objectsMaterial.get(ZIndexAttribute.ID)).group;

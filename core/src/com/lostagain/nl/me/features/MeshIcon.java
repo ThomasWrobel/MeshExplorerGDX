@@ -22,17 +22,17 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.GWTish.Label;
-import com.lostagain.nl.GWTish.ZIndexAttribute;
+import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.ModelManagment_old;
 import com.lostagain.nl.me.models.Moving;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectType;
-import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
+import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewForward;
 import com.lostagain.nl.me.newmovements.NewMovement;
@@ -466,13 +466,19 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 	 * @param opacity
 	 */
 	public void setOpacity(float opacity){
+		
+		super.getStyle().setOpacity(opacity);
+		
+		
+		
 		//get the material from the model
+		/*
 		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);
 		((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
 
 		MeshIconsLabel.setOpacity(opacity);
 
-
+*/
 	}
 	
 	
@@ -730,7 +736,7 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 
 		//ModelManagment.addmodel(this, RenderOrder.zdecides);
 		this.show();
-		ModelManagment.addAnimating(this);
+		ModelManagment_old.addAnimating(this);
 		this.runAfterFadeIn= runAfterFadeIn;
 
 		this.assocatiedFeature.show();
@@ -744,7 +750,7 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 		currentState = FeatureState.disapearing;
 		Opacity = 1f;
 		timeIntoFade=0f;
-		ModelManagment.addAnimating(this);
+		ModelManagment_old.addAnimating(this);
 		this.runAfterFadeOut= runAfterFadeOut;
 
 		this.show();
@@ -771,7 +777,7 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 			Opacity = ratio;
 			if (ratio>1){
 				Opacity = 1;
-				ModelManagment.removeAnimating(this);
+				ModelManagment_old.removeAnimating(this);
 				//recalc size (for bounding box)
 				currentState = FeatureState.FeatureOpen;
 				wasResized();
@@ -787,7 +793,7 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 			Opacity = 1-ratio;
 			if (ratio>1){
 				Opacity = 0;
-				ModelManagment.removeAnimating(this);
+				ModelManagment_old.removeAnimating(this);
 				//recalc size (for bounding box)				
 				currentState = FeatureState.FeatureClosed;
 				this.assocatiedFeature.hide();				
@@ -804,13 +810,13 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 			Opacity = 0f;
 			this.assocatiedFeature.hide();
 			this.show();
-			ModelManagment.removeAnimating(this);
+			ModelManagment_old.removeAnimating(this);
 			Gdx.app.log(logstag,"currentState is:"+currentState);
 			return;
 		case FeatureOpen:
 
 			Opacity = 1f;
-			ModelManagment.removeAnimating(this);
+			ModelManagment_old.removeAnimating(this);
 			Gdx.app.log(logstag,"currentState is :"+currentState);
 			break;
 
@@ -1004,7 +1010,7 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 
 			attachThis(Linksline, new PosRotScale(0,0,-25f)); //a little behind this icon to allow movement a bit
 
-			ModelManagment.addmodel(Linksline,ModelManagment.RenderOrder.zdecides);
+			ModelManagment_old.addmodel(Linksline,ModelManagment_old.RenderOrder.zdecides);
 
 		}
 
@@ -1071,7 +1077,7 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 
 		}
 
-		ModelManagment.addMoving(this);
+		ModelManagment_old.addMoving(this);
 
 	}
 	@Override
@@ -1082,7 +1088,7 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 
 		if (!movementController.isMoving()){
 
-			ModelManagment.removeMoving(this);
+			ModelManagment_old.removeMoving(this);
 		}
 
 	}

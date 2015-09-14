@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.lostagain.nl.me.models.MessyModelMaker;
-import com.lostagain.nl.me.models.ModelManagment;
-import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
+import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.shaders.PrettyBackground;
@@ -35,7 +35,7 @@ public class CameraBackground extends AnimatableModelInstance {
 		materials.get(0).set( new PrettyBackground.PrettyBackgroundAttribute());		
 		
 
-		ModelManagment.addmodel(this,ModelManagment.RenderOrder.behindStage);
+		ModelManagment_old.addmodel(this,ModelManagment_old.RenderOrder.behindStage);
 		
 		
 	}

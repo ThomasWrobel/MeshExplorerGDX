@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.ModelManagment_old;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewMoveTo;
 import com.lostagain.nl.me.newmovements.NewMovementController;
@@ -90,7 +90,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		mainOverlay.hide(); //disable overlay for now
 		
 		//add the default visualizer to help show where the camera is
-		ModelManagment.addmodel(cameraVisualiserCube,ModelManagment.RenderOrder.infrontStage);		
+		ModelManagment_old.addmodel(cameraVisualiserCube,ModelManagment_old.RenderOrder.infrontStage);		
 		
 		PosRotScale camVisPlacement = new PosRotScale(0f,0f,0f);
 		camVisPlacement.setToRotation(1, 0, 0, 180); //rotate it so one axis points forward
@@ -101,7 +101,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		
 		//fire point in future should be setup by the concept gun
 		super.attachThis(FirePoint, new PosRotScale(0f, 100f, -115f));
-		ModelManagment.addmodel(FirePoint,ModelManagment.RenderOrder.infrontStage);
+		ModelManagment_old.addmodel(FirePoint,ModelManagment_old.RenderOrder.infrontStage);
 		
 		
 		
@@ -138,9 +138,9 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	 */
 	public void removeAllDefaultAttachments(){
 						
-		ModelManagment.removeModel(mainOverlay);
-		ModelManagment.removeModel(background);
-		ModelManagment.removeModel(cameraVisualiserCube);
+		ModelManagment_old.removeModel(mainOverlay);
+		ModelManagment_old.removeModel(background);
+		ModelManagment_old.removeModel(cameraVisualiserCube);
 		
 	}
 

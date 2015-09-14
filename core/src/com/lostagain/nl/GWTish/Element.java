@@ -45,10 +45,7 @@ public class Element extends AnimatableModelInstance {
 		objectsStyle=new Style(this,material);
 		
 		
-		GwtishWidgetDistanceFieldAttribute materialAccordingToStyle = (GwtishWidgetDistanceFieldAttribute) material.get(GwtishWidgetDistanceFieldAttribute.ID);
-		if (materialAccordingToStyle!=null){
-			Gdx.app.log(logstag, "4fitarea set as:"+materialAccordingToStyle.textScaleing ); 
-		}
+	
 		
 	}
 	

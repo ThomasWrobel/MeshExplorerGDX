@@ -58,8 +58,8 @@ import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.models.MessyModelMaker;
-import com.lostagain.nl.me.models.ModelManagment;
-import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
+import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.PosRotScale;
@@ -202,7 +202,7 @@ public class MainExplorationView implements Screen {
 
 
 	//Controls the 3d background
-	public static  ModelManagment the3dscene = new ModelManagment();
+	public static  ModelManagment_old the3dscene = new ModelManagment_old();
 
 
 
@@ -488,7 +488,7 @@ public class MainExplorationView implements Screen {
 
 			ConceptObject coTest = new ConceptObject(node);
 			coTest.setToPosition(new Vector3(366f,100f+(y*50),0f));
-			ModelManagment.addmodel(coTest,ModelManagment.RenderOrder.zdecides);
+			ModelManagment_old.addmodel(coTest,ModelManagment_old.RenderOrder.zdecides);
 			y++;
 
 		}
@@ -537,7 +537,7 @@ public class MainExplorationView implements Screen {
 		//slot 
 		final ConceptObjectSlot slotTest = new ConceptObjectSlot();
 		slotTest.setToPosition(new Vector3(250f,250f,0f));
-		ModelManagment.addmodel(slotTest,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(slotTest,ModelManagment_old.RenderOrder.zdecides);
 
 
 		//---
@@ -546,7 +546,10 @@ public class MainExplorationView implements Screen {
 			@Override
 			public void onClick() {
 				Gdx.app.log(logstag,"____debug button pressed  snapShotNextSort setting... ");
-				ModelManagment.mysorter.snapShotNextSort();
+				//ModelManagment_old.mysorter.snapShotNextSort();
+				
+				ModelManagment_old.mysorter.testSort();
+				
 				//ModelManagment.mysorter.testSort();
 
 			}
@@ -565,41 +568,41 @@ public class MainExplorationView implements Screen {
 		tempbutton.setToPosition(new Vector3(450f,610f,0f));
 		//tempbuttonBigger.setToPosition(new Vector3(450f,570f,0f));
 		//
-		ModelManagment.addmodel(tempbutton,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(tempbutton,ModelManagment_old.RenderOrder.zdecides);
 		//ModelManagment.addmodel(tempbuttonBigger,ModelManagment.RenderOrder.zdecides);
 		
 
 		//GWTish Tests
 		final Label exampleFixedLabel = EXAMPLES.getLabelExampleFixedSize();
 		exampleFixedLabel.setToPosition(new Vector3(1000f,110f,0f));
-		ModelManagment.addmodel(exampleFixedLabel,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(exampleFixedLabel,ModelManagment_old.RenderOrder.zdecides);
 		
 		
 		final Label exampleLabel = EXAMPLES.getLabelExample();
 		exampleLabel.setToPosition(new Vector3(1000f,0f,0f));
-		ModelManagment.addmodel(exampleLabel,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(exampleLabel,ModelManagment_old.RenderOrder.zdecides);
 		
 		final Label exampleLabel2 = EXAMPLES.getLabelExampleGreenGlow();
 		exampleLabel2.setToPosition(new Vector3(1000f,-40f,0f));
-		ModelManagment.addmodel(exampleLabel2,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(exampleLabel2,ModelManagment_old.RenderOrder.zdecides);
 		
 		final Label exampleLabel3 = EXAMPLES.getLabelExampleFunky();
 		exampleLabel3.setToPosition(new Vector3(1000f,-80f,0f));
-		ModelManagment.addmodel(exampleLabel3,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(exampleLabel3,ModelManagment_old.RenderOrder.zdecides);
 		
 		final Label exampleLabel4 = EXAMPLES.getLabelExampleLong();
 		exampleLabel4.setToPosition(new Vector3(1000f,-130f,0f));
-		ModelManagment.addmodel(exampleLabel4,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(exampleLabel4,ModelManagment_old.RenderOrder.zdecides);
 		
 		final HorizontalPanel exampleHP = EXAMPLES.getHorizontalPanelExample();
 		exampleHP.setToPosition(new Vector3(1000f,-490f,0f));
-		ModelManagment.addmodel(exampleHP,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(exampleHP,ModelManagment_old.RenderOrder.zdecides);
 		
 		
 
 		final VerticalPanel exampleComposit = EXAMPLES.getMixedExample();
 		exampleComposit.setToPosition(new Vector3(1000f,-600f,0f));
-		ModelManagment.addmodel(exampleComposit,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(exampleComposit,ModelManagment_old.RenderOrder.zdecides);
 		//---------------------------
 		
 		
@@ -607,7 +610,7 @@ public class MainExplorationView implements Screen {
 		ShaderTestPanel shaderTests = new ShaderTestPanel();
 		shaderTests.setToScale(new Vector3(0.2f,0.2f,0.2f));
 		shaderTests.setToPosition(new Vector3(100f,430f,40f));	
-		ModelManagment.addmodel(shaderTests,ModelManagment.RenderOrder.infrontStage);
+		ModelManagment_old.addmodel(shaderTests,ModelManagment_old.RenderOrder.infrontStage);
 	}
 
 
@@ -628,7 +631,7 @@ public class MainExplorationView implements Screen {
 	//	MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y);
 	public static void addnewlocationHub(LocationHub newloc,int x,int y) {
 		newloc.setToPosition(new Vector3(x,y,0));
-		ModelManagment.addmodel(newloc,RenderOrder.zdecides);
+		ModelManagment_old.addmodel(newloc,RenderOrder.zdecides);
 	}
 
 
@@ -699,7 +702,7 @@ public class MainExplorationView implements Screen {
 		//Each render is sort of like a "layer" and appears in the order they are rendered
 		//regardless of 3d positions within that layer
 		the3dscene.updateAnimatedBacks(delta);
-		ModelManagment.updateObjectMovementAndFrames(delta);//--
+		ModelManagment_old.updateObjectMovementAndFrames(delta);//--
 
 		//we start other updates
 
@@ -729,7 +732,7 @@ public class MainExplorationView implements Screen {
 
 			//rcontext.begin();
 			//testdefaultShader.begin(camera, rcontext);		
-			the3dscene.modelBatch.render(ModelManagment.allBackgroundInstances); //currently disabled
+			the3dscene.modelBatch.render(ModelManagment_old.allBackgroundInstances); //currently disabled
 
 
 
@@ -763,7 +766,7 @@ public class MainExplorationView implements Screen {
 		}
 		//rcontext.begin();
 		//testdefaultShader.begin(camera, rcontext);		
-		the3dscene.modelBatch.render(ModelManagment.allForgroundInstances);
+		the3dscene.modelBatch.render(ModelManagment_old.allForgroundInstances);
 
 		the3dscene.modelBatch.render(exampleParticleManagement.prepareAndGetParticleSystem());
 
@@ -839,7 +842,7 @@ public class MainExplorationView implements Screen {
 			Ray ray = ME.getCurrentStageCursorRay();
 
 			Gdx.app.log(logstag,"currentTouchState:"+currentTouchState.name());
-			lastHits = ModelManagment.getHitables(ray,true,currentTouchState);
+			lastHits = ModelManagment_old.getHitables(ray,true,currentTouchState);
 
 			if (lastHits.size()>0){
 				touchedAModel = lastHits.get(0);
@@ -881,7 +884,7 @@ public class MainExplorationView implements Screen {
 
 				touchedAModel=null;
 				lastHits.clear();
-				ModelManagment.untouchAll(); 	//ensures it clears			
+				ModelManagment_old.untouchAll(); 	//ensures it clears			
 
 				//stop firing 
 				if (fireEnabled && PlayersData.playersConceptGun!=null){
@@ -906,7 +909,7 @@ public class MainExplorationView implements Screen {
 
 		} else {
 
-			ModelManagment.fireDragStartEnd(); 
+			ModelManagment_old.fireDragStartEnd(); 
 			lastHits.clear();
 
 		}

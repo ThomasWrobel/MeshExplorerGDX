@@ -23,7 +23,7 @@ import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.Animating;
-import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.ModelManagment_old;
 import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
@@ -247,7 +247,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	private void collapse(){
 		durationIntoCollapseAnimation = 0f;
 		collapsedState = DisclosureState.Collapsing;
-		ModelManagment.addAnimating(this);
+		ModelManagment_old.addAnimating(this);
 		/*
 		for (ConceptObjectSlot slot : inventorySlots) {
 			remove(slot);	
@@ -261,7 +261,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	private void expand(){
 		durationIntoCollapseAnimation = 0f; //instantly appearing works, but when we reset the time to do it gradully it goes wrong scale-wise...hmm
 		collapsedState = DisclosureState.Expanding;
-		ModelManagment.addAnimating(this);
+		ModelManagment_old.addAnimating(this);
 		
 	//assumes none are yet added
 		/*
@@ -339,7 +339,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 			} else if (collapsedState==DisclosureState.Collapsing){
 				collapsedState=DisclosureState.Collapsed;	
 			}
-			ModelManagment.removeAnimating(this);
+			ModelManagment_old.removeAnimating(this);
 		}
 		
 		

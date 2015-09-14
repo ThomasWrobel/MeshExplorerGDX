@@ -77,7 +77,7 @@ public class EXAMPLES {
 	public static Label getLabelExampleFixedSize(){
 		
 		//At its most basic, labels can be constructed like this;
-		Label exampleLabel = new Label("(fit to size)",200,450);
+		Label exampleLabel = new Label("(fit\n to\n size)\n",200,450);
 		
 	///	Gdx.app.log(logstag,"  PaddingLeft:"+exampleLabel.getStyle().PaddingLeft);
 	//	Gdx.app.log(logstag,"  PaddingRight:"+exampleLabel.getStyle().PaddingRight);

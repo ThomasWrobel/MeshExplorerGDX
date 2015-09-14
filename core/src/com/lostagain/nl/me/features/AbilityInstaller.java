@@ -18,7 +18,7 @@ import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.ComplexPanel;
-import com.lostagain.nl.GWTish.ZIndexAttribute;
+import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
@@ -26,7 +26,7 @@ import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
-import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.ModelManagment_old;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 
@@ -184,7 +184,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 		
 		//set bar animation going (installs at end of it)
 		currentlyInstalling = true;
-		ModelManagment.addAnimating(this);
+		ModelManagment_old.addAnimating(this);
 		queuedInstall = ability;
 		 currentlyIntoInstall = 0f;
 		 
@@ -273,7 +273,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 			
 			ConceptGunPanel newConceptGun = new ConceptGunPanel();
 			newConceptGun.setToPosition(new Vector3(350f,1185f,0f));
-			ModelManagment.addmodel(newConceptGun,ModelManagment.RenderOrder.zdecides);
+			ModelManagment_old.addmodel(newConceptGun,ModelManagment_old.RenderOrder.zdecides);
 		
 			PlayersData.playersConceptGun = newConceptGun;
 			
@@ -319,7 +319,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 				
 					NewGUIBar newGui = new NewGUIBar();
 					//newGui.setToPosition(new Vector3(350f,1185f,0f));
-					ModelManagment.addmodel(newGui,ModelManagment.RenderOrder.zdecides);
+					ModelManagment_old.addmodel(newGui,ModelManagment_old.RenderOrder.zdecides);
 				
 					PlayersData.playersGUI = newGui;
 					
@@ -364,7 +364,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 			InventoryPanel inventory = new InventoryPanel();
 		
 			inventory.setToPosition(new Vector3(350f,1185f,0f));
-			ModelManagment.addmodel(inventory,ModelManagment.RenderOrder.zdecides);
+			ModelManagment_old.addmodel(inventory,ModelManagment_old.RenderOrder.zdecides);
 		
 			PlayersData.playersInventoryPanel = inventory;
 			
@@ -473,7 +473,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 				currentlyInstalling = false;
 				currentlyIntoInstall=0f;
 				installerBar.setValue(0);
-				ModelManagment.removeAnimating(this);
+				ModelManagment_old.removeAnimating(this);
 				queuedInstall = null;
 			}
 			

@@ -11,8 +11,8 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.IconType;
 import com.lostagain.nl.me.locationFeatures.Location;
-import com.lostagain.nl.me.models.ModelManagment;
-import com.lostagain.nl.me.models.ModelManagment.RenderOrder;
+import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
 
 /**
  * A centerpoint for emails, with individual emails appearing in spokes around it.
@@ -67,7 +67,7 @@ public class EmailHub extends MeshIcon {
 		emailIcon.OpenHeightDisplacement = 30f; //bit higher then normal
 		
 		emailPage.setParentMeshIcon(emailIcon);
-		ModelManagment.addmodel(emailIcon, RenderOrder.zdecides);
+		ModelManagment_old.addmodel(emailIcon, RenderOrder.zdecides);
 		
 		emailIcon.hide();		
 		DirectEmails.add(emailIcon);

@@ -42,7 +42,7 @@ import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.models.ConceptBeam;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.models.ModelManagment;
+import com.lostagain.nl.me.models.ModelManagment_old;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
@@ -430,7 +430,7 @@ public class ConceptGun  extends WidgetGroup {
 			//lazer3d = new AnimatableModelInstance(newlazermodel);
 			
 			lazer3d = new ConceptBeam();
-			ModelManagment.addmodel(lazer3d,ModelManagment.RenderOrder.infrontStage);
+			ModelManagment_old.addmodel(lazer3d,ModelManagment_old.RenderOrder.infrontStage);
 			//hide by default
 			lazer3d.hide();
 	}
@@ -449,7 +449,7 @@ public class ConceptGun  extends WidgetGroup {
 		//Ray ray = MainExplorationView.camera.getPickRay(currentCursor.x, currentCursor.y);
 		
 		Ray ray = ME.getCurrentStageCursorRay();
-		MainExplorationView.touchedAModel = ModelManagment.testForHits(ray,true,processHits);
+		MainExplorationView.touchedAModel = ModelManagment_old.testForHits(ray,true,processHits);
 		
 		if (MainExplorationView.touchedAModel!=null){
 			Gdx.app.log(logstag,"_-(hit at least one thing)-_");

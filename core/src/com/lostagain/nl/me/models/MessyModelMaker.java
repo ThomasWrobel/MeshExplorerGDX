@@ -95,7 +95,7 @@ public class MessyModelMaker {
 			
 		}
 		
-		ModelManagment.addmodel(newmodel,ModelManagment.RenderOrder.zdecides);	
+		ModelManagment_old.addmodel(newmodel,ModelManagment_old.RenderOrder.zdecides);	
 		return giveAnimatedNoiseTextureToRectangle(newmodel);
 	}
 	
@@ -103,7 +103,7 @@ public class MessyModelMaker {
 		
 		
 		ModelInstance newmodel  = new ModelInstance(createRectangleAt(x, y,z, w,h,  Color.BLACK, mat));
-		ModelManagment.addmodel(newmodel,ModelManagment.RenderOrder.zdecides);		
+		ModelManagment_old.addmodel(newmodel,ModelManagment_old.RenderOrder.zdecides);		
 		
 		return newmodel;
 	}
@@ -137,7 +137,7 @@ public class MessyModelMaker {
 	public static void removeModelInstance(ModelInstance model){
 		
 		
-		ModelManagment.removeModel(model);
+		ModelManagment_old.removeModel(model);
 		
 		animatedbacks.remove(model);
 		
@@ -170,7 +170,7 @@ public class MessyModelMaker {
 
 		lines.add(newline);
 		//instances.add(newline);
-		ModelManagment.addmodel(newline,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(newline,ModelManagment_old.RenderOrder.zdecides);
 		
 		//lines.add(newlinetop);
 		//instances.add(newlinetop);
@@ -727,7 +727,7 @@ public class MessyModelMaker {
 	public static void addToBackground(ModelInstance modelinstance) {
 
 		
-		ModelManagment.addmodel(modelinstance,ModelManagment.RenderOrder.zdecides);
+		ModelManagment_old.addmodel(modelinstance,ModelManagment_old.RenderOrder.zdecides);
 		
 	}
 	
