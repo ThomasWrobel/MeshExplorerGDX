@@ -546,16 +546,16 @@ public class MainExplorationView implements Screen {
 			@Override
 			public void onClick() {
 				Gdx.app.log(logstag,"____debug button pressed  snapShotNextSort setting... ");
-				//ModelManagment_old.mysorter.snapShotNextSort();
+				ModelManagment_old.mysorter.snapShotNextSort();
 				
-				ModelManagment_old.mysorter.testSort();
+				//ModelManagment_old.mysorter.testSort();
 				
 				//ModelManagment.mysorter.testSort();
 
 			}
 		});
 
-
+		
 		/*
 		Button tempbuttonBigger = new Button(200,35,new Runnable(){
 			@Override

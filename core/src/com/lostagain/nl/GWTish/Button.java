@@ -50,6 +50,13 @@ public class Button extends Widget {
 		
 		setupCaption(caption);
 		
+		//for testing
+		//in future we need a way to get a unique name for the zIndex group
+		//Also change the set function to set everything attached to Zindex +1 as a option
+		setZIndex(1, "testbutton");
+		Caption.setZIndex(2, "testbutton");
+		
+		
 		this.setAsHitable(true);
 		super.getStyle().setBackgroundColor(Color.GRAY);
 		
@@ -67,6 +74,8 @@ public class Button extends Widget {
 		PosRotScale captionPosition = new PosRotScale(5f,5f,3f);
 		
 		this.attachThis(Caption, captionPosition);
+		
+		
 	}
 
 	

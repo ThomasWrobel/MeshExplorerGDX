@@ -1,5 +1,6 @@
 package com.lostagain.nl.shaders;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
@@ -64,12 +65,12 @@ public class MySorter extends DefaultRenderableSorter {
 			Gdx.app.log("zindex", "____snapping___");
 			preSortSnapshot =  new Array<Renderable>(renderables);
 		}
-
+		camera=usethiscamera;
 		super.sort(usethiscamera, renderables); //first normal sort
 	//	customSorter(renderables); //then swap any z-indexs which are wrongly placed
 
 
-		//camera=usethiscamera;
+		
 		//customSorter(usethiscamera, renderables);
 
 		if (snapshotNextSort){
@@ -79,6 +80,83 @@ public class MySorter extends DefaultRenderableSorter {
 		}
 	}
 
+	
+	@Override
+	public int compare (final Renderable o1, final Renderable o2) {
+		
+		final boolean b1 = o1.material.has(BlendingAttribute.Type) && ((BlendingAttribute)o1.material.get(BlendingAttribute.Type)).blended;
+		final boolean b2 = o2.material.has(BlendingAttribute.Type) && ((BlendingAttribute)o2.material.get(BlendingAttribute.Type)).blended;
+		if (b1 != b2){ //if one of them isn't blended and the other one is
+			
+			return b1 ? 1 : -1; 
+		}
+		
+		//Comment from libgdx;
+		// FIXME implement better sorting algorithm
+		// final boolean same = o1.shader == o2.shader && o1.mesh == o2.mesh && (o1.lights == null) == (o2.lights == null) &&
+		// o1.material.equals(o2.material);
+		//-----
+				o1.worldTransform.getTranslation(tmpV1);
+				o2.worldTransform.getTranslation(tmpV2);
+				//First we work out the distances to the camera (or, rather distance squared - we only need relative order so its a waste
+				//to do the squareroute to get the real distance. Internally that dst2 compared is just doing pythagoras)
+				
+				int o1distance = (int)(1000f * camera.position.dst2(tmpV1));
+				int o2distance = (int)(1000f * camera.position.dst2(tmpV2));
+				
+				
+				
+		//now look for zindex groups
+		ZIndexAttribute o1zindex   = ((ZIndexAttribute)o1.material.get(ZIndexAttribute.ID));
+		ZIndexAttribute o2zindex   = ((ZIndexAttribute)o2.material.get(ZIndexAttribute.ID));
+		
+		//if either has a zindex and a canonical distance we use that as its distance
+		if (o1zindex!=null){
+			//if the distance of this group hasnt been set we set it
+			if (o1zindex.group.drawOrderDistance==-1){
+				o1zindex.group.drawOrderDistance = o1distance;
+			} else {
+				//else we use the distance from the group
+				//(we ignore the "real" distance from this point on, the groups own order takes over)
+				o1distance = o1zindex.group.drawOrderDistance;
+			}
+		}
+		if (o2zindex!=null){
+			//if the distance of this group hasnt been set we set it
+			if (o2zindex.group.drawOrderDistance==-1){
+				o2zindex.group.drawOrderDistance = o2distance;
+			} else {
+				//else we use the distance from the group
+				//(we ignore the "real" distance from this point on, the groups own order takes over)
+				o2distance = o2zindex.group.drawOrderDistance;
+			}
+		}
+		
+		//if, however, we are both zindexs of the same group, we use the internal order instead of distance
+		if (o1zindex!=null && o2zindex!=null && (o1zindex.group == o2zindex.group)){
+			return o1zindex.zIndex - o2zindex.zIndex;
+		}
+		
+		
+		final float dst = o1distance - o2distance;
+		final int result = dst < 0 ? -1 : (dst > 0 ? 1 : 0);
+		return b1 ? -result : result;
+	}
+
+	
+	
+	private void newCustomSorter(Array<Renderable> resultList) {
+		
+		//if neither are zindex then normal sort
+		
+		//if one is a zindex and it has a canonical distance already, we replace its distance with that one and sort as normal
+		//if it does not have a canonic distance we sort as normal, but we also set the canonical distance
+		
+		//if both are zindex's in the same group then distances should match. Therefor we use their group position instead
+		//(only do this after we confirm all similizindex stuff gets grouped)
+		
+		
+	}
 
 	private void customSorter(Array<Renderable> resultList) {
 		Gdx.app.log("zindex", "____customSort trigger___");
@@ -403,18 +481,66 @@ public class MySorter extends DefaultRenderableSorter {
 	}
 
 	public void testSort(){
+		Array<Renderable> renderables = new Array<Renderable>();
+		
+		int numberOfTestObjects = 20;
+		
+		for (int i = 0; i < numberOfTestObjects; i++) {
+			//create object
+			Widget newWidget  = new Widget(11f,11f);
+			
+			//give it a random position
+			float x = (float) (Math.random()*50);
+			float y = (float) (Math.random()*50);
+			float z = (float) (Math.random()*50);
+			Vector3 newpos = new Vector3(x,y,z);
+			newWidget.setToPosition(newpos);	
+			
+			//give it a material (random if z-index or not)
+			int ranGroupNum = (int) (Math.random()*3);
+			newWidget.getMaterial().set(new ZIndexAttribute(i,"testgroup"+ranGroupNum));
+			//(for the moment everything is the same position in the group, 20)
+			
+			//add its renderable to the renderable array
+			Renderable nr   = new Renderable();
+			newWidget.getRenderable(nr);
+			nr.userData = "object "+i;
+			
+			renderables.add(nr);
+			
+		}
 
-
+		/*
 		Widget testWidget1  = new Widget(11f,11f);
+		Widget testWidget2  = new Widget(11f,11f);
 	//	ConceptObject testWidget2 = new ConceptObject(StaticSSSNodes.ability);   //new Widget(11f,11f);
 		Widget testWidget3  = new Widget(11f,11f);
 		Widget testWidget4  =  new Widget(11f,11f);
 		Widget testWidget5  = new Widget(11f,11f);
 		Widget testWidget6  = new Widget(11f,11f);
 
+		//add to array
+		ArrayList<Widget> testWidgets = new ArrayList<Widget>();
+		testWidgets.add(testWidget1);
+		testWidgets.add(testWidget2);
+		testWidgets.add(testWidget3);
+		testWidgets.add(testWidget4);
+		testWidgets.add(testWidget5);
+		testWidgets.add(testWidget6);		
+		
+		//give them random positions in z
+		for (Widget cw : testWidgets) {
+			float x = (float) (Math.random()*50);
+			float y = (float) (Math.random()*50);
+			float z = (float) (Math.random()*50);
+			Vector3 newpos = new Vector3(x,y,z);
+			cw.setToPosition(newpos);	
+			
+		}
+		
 
 		testWidget1.getMaterial().set(new ZIndexAttribute(20,"testgroupA"));
-		//testWidget2.getMaterial().set(new ZIndexAttribute(1,"testgroup"));
+		testWidget2.getMaterial().set(new ZIndexAttribute(1,"testgroupA"));
 		testWidget3.getMaterial().set(new ZIndexAttribute(1,"testgroupB"));
 		//testWidget4
 		testWidget5.getMaterial().set(new ZIndexAttribute(10,"testgroupB"));
@@ -425,13 +551,13 @@ public class MySorter extends DefaultRenderableSorter {
 		testWidget1.getRenderable(one);
 		one.userData = "object one";
 
-		//Renderable two   = new Renderable();
-		///testWidget2.getRenderable(two);
-		//two.userData = "object two (c)";
+		Renderable two   = new Renderable();
+		testWidget2.getRenderable(two);
+		two.userData = "object two (c)";
 
 		Renderable three = new Renderable();
 		testWidget3.getRenderable(three);
-		three.userData = "object three (cl)";
+		three.userData = "object three ";
 
 		Renderable four = new Renderable();
 		testWidget4.getRenderable(four);
@@ -448,28 +574,28 @@ public class MySorter extends DefaultRenderableSorter {
 		Array<Renderable> renderables = new Array<Renderable>();
 		renderables.add(four);
 		renderables.add(one);
-		//renderables.add(two);
+		renderables.add(two);
 		renderables.add(three);
 		renderables.add(five);
 		renderables.add(six);
-		debugtest(renderables);
+	
 		
-		Gdx.app.log("zindex", "_____________________________________________(groups are:)___");
+	//	Gdx.app.log("zindex", "_____________________________________________(groups are:)___");
 		
-		for (ZIndexGroup group : ZIndexGroup.AllZIndexGroups.values()) {
+	//	for (ZIndexGroup group : ZIndexGroup.AllZIndexGroups.values()) {
 			
 
-			Gdx.app.log("zindex", "_________group:"+group.group_id+" size:"+group.size);
+	//		Gdx.app.log("zindex", "_________group:"+group.group_id+" elements:"+group.size);
 			
-		}
-		
+	//	}*/
+		debugtest(renderables);
 
 		Gdx.app.log("zindex", "_____________________________________________(sorting)___");
 		//this.sort(MainExplorationView.camera,renderables);
 		camera=MainExplorationView.camera;
 		
 		super.sort(camera, renderables); //first normal sort
-		customSorter(renderables); //then swap any z-indexs which are wrongly placed
+	//	customSorter(renderables); //then swap any z-indexs which are wrongly placed
 
 		Gdx.app.log("zindex", "______________________________________________(sort done)___");
 
@@ -494,14 +620,13 @@ public class MySorter extends DefaultRenderableSorter {
 
 				int zindex1  = ((ZIndexAttribute)renderable.material.get(ZIndexAttribute.ID)).zIndex;
 				ZIndexGroup group = ((ZIndexAttribute)renderable.material.get(ZIndexAttribute.ID)).group;
-				Gdx.app.log("zindex","name="+name+ " (zindex = "+zindex1+" , "+group.group_id+")");
+				Gdx.app.log("zindex","name="+name+ " (zindex = "+zindex1+" , "+group.group_id+" DISTANCE:"+group.drawOrderDistance+")");
 
 
 
 			} else {
-				//figure out if z-index is in there somewhere
 
-				Gdx.app.log("zindex", "name="+name +" shader("+renderable.material.id+")");
+				Gdx.app.log("zindex", "no zindex name="+name +" shader("+renderable.material.id+")");
 
 			}
 

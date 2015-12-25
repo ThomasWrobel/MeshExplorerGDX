@@ -5,10 +5,22 @@ import java.util.HashMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * Everything in the same ZIndexGroup is considered equal distance from the camera
+ * Things, instead, use the internal position in the group to determain what gets drawn ontop
+ * 
+ * @author darkflame
+ *
+ */
 public class ZIndexGroup extends Array<ZIndexAttribute> {
 	
 	public String group_id = ""; //the identifier for the group, currently a string
+	
+	//not used in future;
 	public int drawOrderPosition  = -1; //the position of the earliest element in the draw order. -1 for unordered.
+	
+	//new method;
+	public int drawOrderDistance  = -1; //the canonical distance of this group. -1 for not known yet. 
 	
 	public static HashMap<String,ZIndexGroup> AllZIndexGroups = new HashMap<String,ZIndexGroup>();
 
@@ -66,7 +78,8 @@ public class ZIndexGroup extends Array<ZIndexAttribute> {
 	
 	public static void clearAllDrawOrderPositions(){
 		for (ZIndexGroup group : AllZIndexGroups.values()) {
-			group.drawOrderPosition = -1;
+		//	group.drawOrderPosition = -1;
+			group.drawOrderDistance = -1;
 			
 		}
 	}
