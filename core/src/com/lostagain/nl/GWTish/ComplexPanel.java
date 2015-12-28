@@ -333,6 +333,8 @@ public abstract class ComplexPanel extends Widget {
 		int atIndex = beforeIndex-1;
 		
 		if (contents.contains(widget)){
+			Gdx.app.log(logstag,"______________already contains widget");
+			
 			//do nothing as its already contained
 			return false;			
 		}
@@ -531,10 +533,13 @@ public abstract class ComplexPanel extends Widget {
 		return new ArrayList<Widget>(contents);
 	}
 	
+	
 	@Override
 	/**
 	 * sets the index on this and all child objects.
-	 * child objects get index+1
+	 * child objects get index+1, unless we are in a DeckPanel subclass, in which case
+	 * they should get index+n where n increases based on their position in the deck.
+	 * 
 	 * @param index  - higher valued objects go infront of lower objects
 	 * @param group  - things in the same group get ordered next to eachother according to index value 
 	 */
@@ -547,9 +552,7 @@ public abstract class ComplexPanel extends Widget {
 		//but we also need to apply it to all subobjects (only a little higher!)
 		for (Widget childwidget : contents) {
 			childwidget.setZIndex(index+1,group); 
-		}
-		
-		
+		}				
 	}
 
 }

@@ -234,7 +234,7 @@ public class Style {
 	 */
 	public void setZIndex(int index, String group) {
 
-			objectsMaterial.set( new ZIndexAttribute(index+1,group) );
+			objectsMaterial.set( new ZIndexAttribute(index,group) );
 		
 		
 	}

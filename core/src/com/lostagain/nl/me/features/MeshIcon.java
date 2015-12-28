@@ -50,7 +50,7 @@ import com.lostagain.nl.shaders.MySorter;
  *  They extend AnimatableModelInstance so we can animated them latter if we wish 
  * **/
 //AnimatableModelInstance
-public class MeshIcon extends Label  implements  Animating,Moving {
+public class MeshIcon extends Label implements  Animating,Moving {
 
 	private static final String ICON_MATERIAL = "IconMaterial";
 
@@ -103,7 +103,7 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 	}
 	
 	Color CurrentLabelColour = Color.WHITE.cpy();
-
+	Color CurrentLabelShadowColour = Color.BLACK.cpy();
 
 	public enum OpenMode {
 		SingleClick,DoubleClick
@@ -332,7 +332,7 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 
 
 		/** objects are attached slightly above the icon, as this helps with blending issues**/
-		float vertDisplacement = 15f;
+		float vertDisplacement = 1f;
 
 
 		//We need to work out the size of the associatedFeature, and use that to create new mesh vertex co-ordinates
@@ -521,6 +521,7 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 	
 	static int uniqueNamesGeneratedCount = 0;
 	String uniqueIconName = "";
+	
 	/**
 	 * used to ID this mesh icon on the scene.
 	 * In future this might be refractored elsewhere if more things need it.
@@ -908,7 +909,10 @@ public class MeshIcon extends Label  implements  Animating,Moving {
 		Color fadedCol = CurrentLabelColour.cpy();
 		fadedCol.a = (1-alpha);
 		this.getStyle().setColor(fadedCol);
-
+		Color fadedShadow = CurrentLabelShadowColour.cpy();
+		fadedShadow.a = (1-alpha);		
+		this.getStyle().setShadowColor(fadedShadow);
+		
 
 	}
 

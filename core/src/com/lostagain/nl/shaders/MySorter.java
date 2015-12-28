@@ -106,13 +106,13 @@ public class MySorter extends DefaultRenderableSorter {
 				
 				
 				
-		//now look for zindex groups
+		//now look for z-index groups
 		ZIndexAttribute o1zindex   = ((ZIndexAttribute)o1.material.get(ZIndexAttribute.ID));
 		ZIndexAttribute o2zindex   = ((ZIndexAttribute)o2.material.get(ZIndexAttribute.ID));
 		
-		//if either has a zindex and a canonical distance we use that as its distance
+		//if either has a z-index and a canonical distance we use that as its distance
 		if (o1zindex!=null){
-			//if the distance of this group hasnt been set we set it
+			//if the distance of this group hasn't been set we set it
 			if (o1zindex.group.drawOrderDistance==-1){
 				o1zindex.group.drawOrderDistance = o1distance;
 			} else {
@@ -132,13 +132,34 @@ public class MySorter extends DefaultRenderableSorter {
 			}
 		}
 		
-		//if, however, we are both zindexs of the same group, we use the internal order instead of distance
+		//if, however, we are both z-indexes of the same group, we use the internal order instead of distance
 		if (o1zindex!=null && o2zindex!=null && (o1zindex.group == o2zindex.group)){
 			return o1zindex.zIndex - o2zindex.zIndex;
 		}
 		
+		final float dst = o1distance - o2distance;	
 		
-		final float dst = o1distance - o2distance;
+		//if, weirdly, the distances are equal but one isnt a zindex, we put the zindex ontop
+		//the goal is to get zindexs together in the order list, we should leave no possibility's
+		//for other objects inbetween zindexs of the same group		
+		if (dst==0){
+			if (o1zindex!=null && o2zindex==null){
+				return -1;			
+			}
+			if (o2zindex!=null && o1zindex==null){
+				return 1;			
+			}
+			//if they both don't have a group we don't change anything
+			if (o1zindex==null && o2zindex==null){
+				final int result = dst < 0 ? -1 : (dst > 0 ? 1 : 0);
+				return b1 ? -result : result;
+			}
+			//if the distances are equal but the zindex groups are different, we put use the name of the group to determine what goes ontop
+			if (o1zindex.group!=o2zindex.group){
+				return o1zindex.group.group_id.compareTo(o2zindex.group.group_id);
+			}
+		}
+		
 		final int result = dst < 0 ? -1 : (dst > 0 ? 1 : 0);
 		return b1 ? -result : result;
 	}

@@ -365,5 +365,20 @@ public class Widget extends Element {
 		getStyle().setZIndex(index,group);
 	}
 	
+	
+	
+	static int uniqueNamesGeneratedCount = 0;
+	/**
+	 * Gets a unique string identifier for a group IP.
+	 * IDs are generated simple with a counter that goes up for each one generated
+	 * 
+	 * @param prefix - a prefix for the ID
+	 * @return
+	 */
+	static public String generateUniqueGroupID(String prefix){
+		uniqueNamesGeneratedCount++;				
+		return prefix+uniqueNamesGeneratedCount;
+		
+	}
 
 }

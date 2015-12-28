@@ -1,5 +1,6 @@
 package com.lostagain.nl.GWTish;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.GWTish.ComplexPanel.Alignment;
@@ -80,14 +81,26 @@ public class DeckPanel extends ComplexPanel {
 	public void showWidget(int index) {
 		showWidget(index,true);
 	}
-	/**
-	 * 
+	public void showWidget(Widget selected) {
+		showWidget(selected,true);
+	}
+	
+	/** 
 	 * @param index
 	 * @param hideOthers - hide other widgets
 	 */
 	public void showWidget(int index,boolean hideOthers) {
 
-		Widget selected= contents.get(index);
+		Widget selected = contents.get(index);
+		showWidget(selected,hideOthers);
+	}
+
+	public void showWidget(Widget selected,boolean hideOthers) {
+		if (selected==null || !contents.contains(selected)){
+			Gdx.app.log(logstag,"_widget not on panel, cant show/hide");			
+			return;			
+		}
+		
 		selected.show();
 
 		if (hideOthers){
@@ -99,8 +112,8 @@ public class DeckPanel extends ComplexPanel {
 			}
 		}
 	}
-
-
+	
+	
 	@Override
 	Vector3 getNextPosition(float incomingWidth, float incomingHeight, boolean b,Widget widget) {
 		int index = contents.indexOf(widget);
@@ -178,10 +191,38 @@ public class DeckPanel extends ComplexPanel {
 
 		}
 
-		return new Vector3(getLeftPadding()+newLocationX,getTopPadding()+newLocationY,(5f+10f*index));//widgets are stacked 5 apart vertically
+		return new Vector3(getLeftPadding()+newLocationX,getTopPadding()+newLocationY,(1f+index));//widgets used to be  stacked 5 apart vertically  (5f+10f*index)
 		
 		//return new Vector3(cx-(incomingWidth/2),cy-(incomingHeight/2),(5f+10f*index)); //widgets are stacked 5 apart vertically
 	}
+	
+	
+	//Override to give alternative to normal zindex setting
+	@Override
+	/**
+	 * sets the index on this and all child objects.
+	 * child objects get index+1, unless we are in a DeckPanel subclass, in which case
+	 * they should get index+n where n increases based on their position in the deck.
+	 * 
+	 * @param index  - higher valued objects go infront of lower objects
+	 * @param group  - things in the same group get ordered next to eachother according to index value 
+	 */
+	public void setZIndex(int index, String group) {
+		Gdx.app.log(logstag,"_-(setZIndex "+group+","+index+" )-_");
+		
+		//set zindex of back material
+		getStyle().setZIndex(index,group);
+		
+		//but we also need to apply it to all subobjects (only a little higher!)
+		int n=1;
+		for (Widget childwidget : contents) {
+			
+			Gdx.app.log(logstag,"_-( child now; "+group+","+(index+n)+" )-_");			
+			childwidget.setZIndex(index+n,group); 
+			n++;
+		}				
+	}
+	
 
 	private VerticalAlignment defaultVerticalAlignment = VerticalAlignment.Middle;
 

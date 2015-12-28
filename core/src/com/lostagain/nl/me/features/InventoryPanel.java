@@ -18,7 +18,7 @@ import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.ClickHandler;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
-import com.lostagain.nl.GWTish.ToggleButton;
+import com.lostagain.nl.GWTish.ToggleButton_old;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
@@ -78,7 +78,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	//widgets
 	ArrayList<ConceptObjectSlot> inventorySlots = new ArrayList<ConceptObjectSlot>();
 	Label Title = new Label("Inventory /\\");	
-	ToggleButton pinButton;
+	ToggleButton_old pinButton;
 	
 	
 	public InventoryPanel(){
