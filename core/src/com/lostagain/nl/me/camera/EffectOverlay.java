@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.lostagain.nl.me.models.MessyModelMaker;
-import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.shaders.NoiseShader;
@@ -35,7 +35,7 @@ public class EffectOverlay extends AnimatableModelInstance {
 							//  new NoiseShader.NoiseShaderAttribute(false,Color.ORANGE));		
 		//userData = MyShaderProvider.shadertypes.noise; 
 
-		ModelManagment_old.addmodel(this,ModelManagment_old.RenderOrder.infrontStage);
+		GWTishModelManagement.addmodel(this,GWTishModelManagement.RenderOrder.infrontStage);
 		
 	}
 

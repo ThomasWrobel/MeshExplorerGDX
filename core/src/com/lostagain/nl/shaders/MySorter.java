@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultRenderableSorter;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.OrderedMap;
@@ -66,11 +67,21 @@ public class MySorter extends DefaultRenderableSorter {
 			preSortSnapshot =  new Array<Renderable>(renderables);
 		}
 		camera=usethiscamera;
+		
+		//need to reset positions if camera moved
+		ZIndexGroup.clearAllDrawOrderPositions(); //might be a better way to do this (that is, clear all the positions back to default for the next sort)
+		
+		//precalcute zindex
+		//not used yet
+		//in future I cam considering having the distances to the lowest zindex in each group pre-calculated
+		//This makes the lowest widget the "canonical distance" rather then the first in the renderable list
+		//This might make things more predictable in regards to draw order
+		//ZIndexGroup.calculateAllZIndexGroupDistances(usethiscamera);
+		
+		
 		super.sort(usethiscamera, renderables); //first normal sort
 	//	customSorter(renderables); //then swap any z-indexs which are wrongly placed
-
-
-		
+	
 		//customSorter(usethiscamera, renderables);
 
 		if (snapshotNextSort){
@@ -96,8 +107,15 @@ public class MySorter extends DefaultRenderableSorter {
 		// final boolean same = o1.shader == o2.shader && o1.mesh == o2.mesh && (o1.lights == null) == (o2.lights == null) &&
 		// o1.material.equals(o2.material);
 		//-----
+		
+			
+			// getCenterOfBoundingBox().mul(getMatrixTransform());
+			
+		
 				o1.worldTransform.getTranslation(tmpV1);
 				o2.worldTransform.getTranslation(tmpV2);
+				
+				
 				//First we work out the distances to the camera (or, rather distance squared - we only need relative order so its a waste
 				//to do the squareroute to get the real distance. Internally that dst2 compared is just doing pythagoras)
 				
@@ -112,8 +130,18 @@ public class MySorter extends DefaultRenderableSorter {
 		
 		//if either has a z-index and a canonical distance we use that as its distance
 		if (o1zindex!=null){
+				
+			
+			
 			//if the distance of this group hasn't been set we set it
 			if (o1zindex.group.drawOrderDistance==-1){
+				
+				//get a more accurate distance based on the center of the bounding box
+				o1.meshPart.update();
+				tmpV1.set((o1.meshPart.center).mul(o1.worldTransform));			
+				 o1distance = (int)(1000f * camera.position.dst2(tmpV1));
+				
+				
 				o1zindex.group.drawOrderDistance = o1distance;
 			} else {
 				//else we use the distance from the group
@@ -122,8 +150,21 @@ public class MySorter extends DefaultRenderableSorter {
 			}
 		}
 		if (o2zindex!=null){
-			//if the distance of this group hasnt been set we set it
+			
+		
+				//	o2.meshPart.update();
+		//	tmpV2.sub(o2.meshPart.center);
+		//	 o2distance = (int)(1000f * camera.position.dst2(tmpV2));
+			
+			//if the distance of this group hasn't been set we set it
 			if (o2zindex.group.drawOrderDistance==-1){
+				
+				//get a more accurate distance based on the center of the bounding box
+				o2.meshPart.update();
+				tmpV2.set((o2.meshPart.center).mul(o2.worldTransform));			
+				 o2distance = (int)(1000f * camera.position.dst2(tmpV2));
+				 
+				
 				o2zindex.group.drawOrderDistance = o2distance;
 			} else {
 				//else we use the distance from the group
@@ -134,7 +175,7 @@ public class MySorter extends DefaultRenderableSorter {
 		
 		//if, however, we are both z-indexes of the same group, we use the internal order instead of distance
 		if (o1zindex!=null && o2zindex!=null && (o1zindex.group == o2zindex.group)){
-			return o1zindex.zIndex - o2zindex.zIndex;
+			return (o1zindex.zIndex - o2zindex.zIndex);
 		}
 		
 		final float dst = o1distance - o2distance;	
@@ -143,6 +184,7 @@ public class MySorter extends DefaultRenderableSorter {
 		//the goal is to get zindexs together in the order list, we should leave no possibility's
 		//for other objects inbetween zindexs of the same group		
 		if (dst==0){
+			
 			if (o1zindex!=null && o2zindex==null){
 				return -1;			
 			}

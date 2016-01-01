@@ -1,24 +1,31 @@
+//classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+//classpath 'com.android.tools.build:gradle:1.0.0'
+      
 buildscript {
     repositories {
         mavenCentral()
         mavenLocal()
         jcenter()
     }
-    dependencies {
+    dependencies {      
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'org.robovm:robovm-gradle-plugin:1.12.0'
     }
 }
 
+       //gdxVersion = '1.7.0' 
+      //roboVMVersion = '1.9.0
+      
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
     version = '1.0'
     ext {
-        appName = 'MeshExplorerV2'
-        gdxVersion = '1.7.0' 
-        roboVMVersion = '1.9.0' 
+        appName = 'MeshExplorerV2' 
+        gdxVersion = '1.7.2'
+        roboVMVersion = '1.12.0'
     }
 
     repositories {

@@ -17,7 +17,8 @@ import com.lostagain.nl.me.newmovements.IsAnimatableModelInstance;
  * @author Tom
  *
  */
-// SomeClass<T extends Fragment & SomeInterface>
+
+public // SomeClass<T extends Fragment & SomeInterface>
 interface GenericMeshFeature extends IsAnimatableModelInstance {
 	
 	//private MeshIcon associatedIcon;

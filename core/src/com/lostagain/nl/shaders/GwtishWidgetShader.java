@@ -146,14 +146,15 @@ public class GwtishWidgetShader implements Shader {
 		//background
 		//square style
 
+		Gdx.app.log(logstag, "(now the background ones....");
 		u_backGlowWidth     = program.getUniformLocation("u_backGlowWidth"); 
 		u_backBackColor     = program.getUniformLocation("u_backBackColor"); 
 		u_backCoreColor     = program.getUniformLocation("u_backCoreColor");  		
 		u_backGlowColor     = program.getUniformLocation("u_backGlowColor"); 
 		u_backCornerRadius  = program.getUniformLocation("u_backCornerRadius"); 
 
-		Gdx.app.log(logstag, "(now the background ones....");
 
+		Gdx.app.log(logstag, "....)");
 
 
 	}
@@ -172,14 +173,16 @@ public class GwtishWidgetShader implements Shader {
 		this.context = context;
 
 		program.begin();
+		
 		//the the variable for the cameras projectino to be passed to the shader
 		program.setUniformMatrix(u_projViewTrans, camera.combined);
 
 		// context.setDepthTest(GL20.GL_LEQUAL);    	  
 		//context.setCullFace(GL20.GL_BACK);
-
+		
 		context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
 		context.setDepthTest(GL20.GL_LESS);    		
+		
 		//	context.setDepthTest(GL20.GL_NONE);    	
 		//	context.setDepthTest(GL20.GL_GREATER); 
 	}
@@ -190,10 +193,12 @@ public class GwtishWidgetShader implements Shader {
 		//set the variable for the objects world transform to be passed to the shader
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
 
-		float w = renderable.mesh.calculateBoundingBox().getWidth();
-		float h = renderable.mesh.calculateBoundingBox().getHeight();
+		//float w = renderable.mesh.calculateBoundingBox().getWidth();
+		//float h = renderable.mesh.calculateBoundingBox().getHeight();
 
-
+		float w = renderable.meshPart.mesh.calculateBoundingBox().getWidth();
+		float h = renderable.meshPart.mesh.calculateBoundingBox().getHeight();
+		
 		//GWTish widgets are controlled by two style attributes
 		//A distance field shader for text styling
 		GwtishWidgetDistanceFieldAttribute textStyleData = (GwtishWidgetDistanceFieldAttribute)renderable.material.get(GwtishWidgetDistanceFieldAttribute.ID);
@@ -367,11 +372,13 @@ public class GwtishWidgetShader implements Shader {
 
 
 
-
+		 renderable.meshPart.render(program);
+		 
+	    	/*	 pre 1.7.1 https://github.com/libgdx/libgdx/pull/3483
 		renderable.mesh.render(program,
 				renderable.primitiveType,
 				renderable.meshPartOffset,
-				renderable.meshPartSize);
+				renderable.meshPartSize); */
 	}
 
 	public void setSizeUniform(float w, float h) {

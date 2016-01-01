@@ -174,11 +174,14 @@ public class ConceptBeamImpactShader implements Shader {
 		program.setUniformf(u_beamcolour, beamStyle.beamcolor);//testAttr.width
 		program.setUniformf(u_corecolour, beamStyle.corecolor);//testAttr.width
 		program.setUniformf(u_shotFrequency, beamStyle.shotFrequency);
-
+		
+		renderable.meshPart.render(program);
+		
+		/* pre 1.7.1;
 		renderable.mesh.render(program,
 				renderable.primitiveType,
 				renderable.meshPartOffset,
-				renderable.meshPartSize);
+				renderable.meshPartSize);*/
 	}
 
 	@Override

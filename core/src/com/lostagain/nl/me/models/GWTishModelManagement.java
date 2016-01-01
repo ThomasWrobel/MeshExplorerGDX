@@ -22,23 +22,23 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array; //NOTE: This is like an arraylist but better optimized for libgdx stuff
 import com.badlogic.gdx.utils.ObjectSet; //NOTE: This is like a hashset but apparently is better optimized for libgdx stuff
-import com.lostagain.nl.ME;
-import com.lostagain.nl.ME.GameMode;
+import com.lostagain.nl.GameMode;
 import com.lostagain.nl.MainExplorationView;
-import com.lostagain.nl.MainExplorationView.TouchState;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.domain.MEDomain;
+import com.lostagain.nl.me.models.GWTishModelManagement.TouchState;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.ConceptBeamShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.shaders.MySorter;
 
-public class ModelManagment_old {
+public class GWTishModelManagement {
 
 	private static String logstag="ME.ModelManagment old";
 
@@ -49,10 +49,10 @@ public class ModelManagment_old {
 	public static ObjectSet<ModelInstance> allForgroundInstances = new ObjectSet<ModelInstance>();
 
 	public static MyShaderProvider myshaderprovider = new MyShaderProvider();
-	ModelBuilder modelBuilder = new ModelBuilder();
+	
 
-
-	public ModelBatch modelBatch;
+	
+	public static ModelBatch modelBatch;
 	
 	public static MySorter mysorter;
 
@@ -88,7 +88,7 @@ public class ModelManagment_old {
 	 * If Z is less then the stage Z 5 its behind
 	 * If its more then 5its in front
 	  If adding a AnimatableModelInstance we also check all its attachments are added too **/
-	public static void addmodel(AnimatableModelInstance model, RenderOrder order) {	
+	public static void addmodel(AnimatableModelInstance model, GWTishModelManagement.RenderOrder order) {	
 
 		addmodel((ModelInstance)model,order); //note we cast so as to call the non-AnimatableModelInstance specific method below
 
@@ -107,10 +107,10 @@ public class ModelManagment_old {
 	 * You can also  it chooses if its a background or foreground object based on its Z position
 	 * If Z is less then the stage Z 5 its behind
 	 * If its more then 5its in front**/
-	public static void addmodel(ModelInstance model, RenderOrder order) {	
+	public static void addmodel(ModelInstance model, GWTishModelManagement.RenderOrder order) {	
 		
 		//temp test putting it all in front of the stage while we test material based ordering
-		order = RenderOrder.infrontStage;		
+		order = GWTishModelManagement.RenderOrder.infrontStage;		
 		
 	
 		//ignore if present already
@@ -125,12 +125,12 @@ public class ModelManagment_old {
 		
 		Gdx.app.log(logstag,"z = "+Z);
 
-		if (order == RenderOrder.behindStage){
+		if (order == GWTishModelManagement.RenderOrder.behindStage){
 			allBackgroundInstances.add(model);
 			return;
 		}
 
-		if (order == RenderOrder.infrontStage){
+		if (order == GWTishModelManagement.RenderOrder.infrontStage){
 			allForgroundInstances.add(model);
 			return;
 		}
@@ -149,22 +149,30 @@ public class ModelManagment_old {
 	 * @param model
 	 * @return 
 	 */
-	public static RenderOrder removeModel(ModelInstance model) {		
+	public static GWTishModelManagement.RenderOrder removeModel(ModelInstance model) {		
 		Boolean wasInForground = allBackgroundInstances.remove(model);
 
 		if (wasInForground){
-			return RenderOrder.behindStage;			
+			return GWTishModelManagement.RenderOrder.behindStage;			
 		}
 
 		Boolean wasInBackground= allForgroundInstances.remove(model);
 
 		if (wasInBackground){
-			return RenderOrder.infrontStage;			
+			return GWTishModelManagement.RenderOrder.infrontStage;			
 		}
 
 		return null;
 	}
 
+
+	/** the current state of mouse or touch **/
+	public static GWTishModelManagement.TouchState currentTouchState = GWTishModelManagement.TouchState.NONE;
+
+	public static Vector2 touchStartedAt = null;
+
+	
+	
 	/**
 	 * tests the sort order of foreground objects
 	 * @param deltatime
@@ -198,7 +206,9 @@ public class ModelManagment_old {
 
 
 	}
-	public void setup(){
+	
+	//TODO: maybe this should be static?
+	static public void setup(){
 
 		// String vert = Gdx.files.internal("shaders/test.vertex.glsl").readString();//"shaders/distancefield.vert"
 		// String frag = Gdx.files.internal("shaders/test.fragment.glsl").readString();
@@ -245,8 +255,8 @@ public class ModelManagment_old {
 
 		ModelInstance beamtest = ModelMaker.createRectangleAt(500, 1000, 30, 200, 200, Color.BLACK, beamShader); // new ModelInstance(model1); 
 
-		Renderable renderableWithAttribute = new Renderable();
-		beamtest.getRenderable(renderableWithAttribute);
+	//	Renderable renderableWithAttribute = new Renderable();
+	//	beamtest.getRenderable(renderableWithAttribute);
 
 		//	Boolean defaultCanRender = test.canRender(renderableWithAttribute);
 
@@ -259,6 +269,7 @@ public class ModelManagment_old {
 
 		//The following was a test of how the domains colour range should look. Re-enable during testing.
 
+		/*
 		Pixmap colourMapAsPixMap = MEDomain.getHomeDomain().getDomainsColourMap().getPixMap(200, 200);
 		//Pixmap colourMapAsPixMap = MessyModelMaker.createNoiseImage(200, 200);
 
@@ -276,13 +287,15 @@ public class ModelManagment_old {
 
 
 		ModelInstance colortest = ModelMaker.createRectangleAt(0, 900, 130, 200, 200, Color.BLACK, testmaterial3); 
-
+*/
 
 
 		//ModelManagment.addmodel(centermaker,RenderOrder.infrontStage);
 
-		if (ME.currentGameMode!=GameMode.Production){
-			ModelManagment_old.addmodel(beamtest,RenderOrder.infrontStage);
+		
+		
+		if (GameMode.currentGameMode!=GameMode.Production){
+			GWTishModelManagement.addmodel(beamtest,GWTishModelManagement.RenderOrder.infrontStage);
 			//	ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
 
 			addTestModels();
@@ -396,7 +409,7 @@ public class ModelManagment_old {
 		// environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 	}
 
-	private void addTestModels() {
+	private static void addTestModels() {
 
 		Material blue = new Material
 				(
@@ -406,12 +419,14 @@ public class ModelManagment_old {
 						ColorAttribute.createDiffuse(Color.BLUE)
 						);
 
+		ModelBuilder modelBuilder = new ModelBuilder();
+
 		Model lookAtTesterm =  modelBuilder.createXYZCoordinates(95f, blue, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		lookAtTester = new AnimatableModelInstance(lookAtTesterm);
 		lookAtTester.setToPosition(new Vector3 (500,500,0));
+		
 
-
-		ModelManagment_old.addmodel(lookAtTester,RenderOrder.infrontStage);
+		GWTishModelManagement.addmodel(lookAtTester,GWTishModelManagement.RenderOrder.infrontStage);
 
 	}
 
@@ -433,6 +448,34 @@ public class ModelManagment_old {
 		    }
 		};
 	
+		/**  mouse state (still being implemented. Will replace newtouch and newup)
+	 **/
+	public static enum TouchState {
+		/** screen is not touched or mouse is not down **/
+		NONE,
+		/**
+		 * the mouse has just gone down or the screen has just been touced
+		 */
+		NewTouchDown,
+		/**
+		 * screen is being touched or mouse is down
+		 */
+		TouchDown,
+		/**
+		 * mouse or touch just went up
+		 */
+		NewTouchUp,
+	
+		/**
+		 * The mouse has just moved a bit since being down  **/
+		NewDrag,
+	
+		/**
+		 * The mouse has moved a bit since being down and is still being held **/
+		Dragging;
+	
+	}
+
 		static OrderByDistance distanceSorter = new OrderByDistance();
 	
 	/**
@@ -447,7 +490,7 @@ public class ModelManagment_old {
 	 * @param processHits
 	 * @return
 	 */
-	public static ArrayList<hitable> getHitables(Ray ray,boolean hitsPenetrate, TouchState applyTouchAction) {
+	public static ArrayList<hitable> getHitables(Ray ray,boolean hitsPenetrate, GWTishModelManagement.TouchState applyTouchAction) {
 		
 		underCursor.clear();
 		//hitable closestNonBlockerTouched = null;	    
@@ -474,7 +517,7 @@ public class ModelManagment_old {
 			
 		}
 		
-		Gdx.app.log(logstag,"underCursor:"+underCursor.size());
+	//	Gdx.app.log(logstag,"underCursor:"+underCursor.size());
 		
 		//sort by distance
 		Collections.sort(underCursor,distanceSorter);
@@ -828,6 +871,78 @@ public class ModelManagment_old {
 		//should point from camera updated each frame		
 		//	MECamera.angleTest.lookAt(lookAtTester);
 
+
+	}
+
+
+	public static void updateTouchState() {
+
+		//new touch system
+		//first we update the state if needed based on what it was before
+		//and what it is now
+		if (Gdx.input.isTouched()) {
+			//if we are touched we look at state we were before
+			switch (GWTishModelManagement.currentTouchState) {
+			case NONE:			
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NewTouchDown; //if we wernt touching before then its a new touch!
+			
+				
+				break;
+			case NewTouchDown:
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.TouchDown; //if we previously were a new touchdown, then now we are a non-new touchdown
+								
+				//currently duplicated elsewhere in MainExplorationView				
+				Gdx.app.log(logstag," new touch down");
+				GWTishModelManagement.touchStartedAt = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+
+				
+				
+				break;
+			case NewTouchUp:
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NewTouchDown; //if we just touched up and then the very next frame touched down....then the user is suspiciously fast
+				break;
+			case TouchDown:
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.TouchDown; //still a touchdown unless the mouse moved;
+
+
+				Vector2 currentLoc = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+				if (GWTishModelManagement.touchStartedAt.dst2(currentLoc)>5){							
+					GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NewDrag;
+				}				
+
+				break;
+			case NewDrag:
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.Dragging; //newdrags become Dragging 
+				break;				
+			case Dragging:
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.Dragging; //do nothing
+				break;
+			}
+
+		} else {
+
+			switch (GWTishModelManagement.currentTouchState) {
+			case NONE:	
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NONE; //still none
+				break;
+			case NewTouchDown:
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
+				break;
+			case NewTouchUp:
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NONE; //now none
+				break;
+			case TouchDown:
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
+				break;
+			case NewDrag:
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
+				break;
+			case Dragging:
+				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
+				break;
+			}
+
+		}
 
 	}
 

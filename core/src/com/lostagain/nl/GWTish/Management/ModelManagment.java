@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
+import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 /**

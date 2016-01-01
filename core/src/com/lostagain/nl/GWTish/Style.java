@@ -106,10 +106,8 @@ public class Style {
 		}
 	}
 	public void setTextGlowSize(float size) {
-		if (textStyle!=null){
-			
-			Gdx.app.log(logstag,"_________setting glow size to:"+size);
-			
+		if (textStyle!=null){			
+			Gdx.app.log(logstag,"_________setting glow size to:"+size);			
 			textStyle.glowSize= size;
 		}
 	}
@@ -190,9 +188,12 @@ public class Style {
 	private void createBackgroundAttributeIfNeeded() {
 		
 		if (backStyle==null){
+			
 			Gdx.app.log(logstag,"_________(creating default background shader attribute)");
+			
 			backStyle =  new GwtishWidgetBackgroundAttribute(1f,Color.CLEAR,Color.CLEAR,1.0f);
 			this.addAttributeToShader(backStyle);
+			
 		}
 		
 	}
@@ -262,8 +263,7 @@ public class Style {
 	public int getZIndexValue() {
 		
 		if (hasZIndex()){
-			return ((ZIndexAttribute)objectsMaterial.get(ZIndexAttribute.ID)).zIndex;
-			
+			return ((ZIndexAttribute)objectsMaterial.get(ZIndexAttribute.ID)).zIndex;			
 		}
 		
 		return -1;
@@ -300,8 +300,10 @@ public class Style {
 		return objectsMaterial;
 	}
 	public void clearShadowColor() {
-		setShadowColor(Color.CLEAR); 
-		
+		setShadowColor(Color.CLEAR); 		
+	}
+	public void clearGlowColor() {
+		setTextGlowColor(Color.CLEAR); 		
 	}
 	public void clearBorderColor() {
 		setBorderColor(Color.CLEAR);		

@@ -147,15 +147,19 @@ public class GlowingSquareShader implements Shader {
 		program.setUniformf(u_coreColor, core);
 		//program.setUniformf(u_glowColor, glow);
 
-		float w = renderable.mesh.calculateBoundingBox().getWidth();
-		float h = renderable.mesh.calculateBoundingBox().getHeight();
-
+		//float w = renderable.mesh.calculateBoundingBox().getWidth();
+		//float h = renderable.mesh.calculateBoundingBox().getHeight();
+		float w = renderable.meshPart.mesh.calculateBoundingBox().getWidth();
+		float h = renderable.meshPart.mesh.calculateBoundingBox().getHeight();
+		
 		setSizeUniform(w,h);
-
+		 renderable.meshPart.render(program);
+		 
+	    	/*	 pre 1.7.1 https://github.com/libgdx/libgdx/pull/3483
 		renderable.mesh.render(program,
 				renderable.primitiveType,
 				renderable.meshPartOffset,
-				renderable.meshPartSize);
+				renderable.meshPartSize);*/
 	}
 	public void setSizeUniform(float w, float h) {
 

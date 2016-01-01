@@ -27,7 +27,8 @@ public class Widget extends Element {
 
 	final static String logstag = "GWTish.Widget";
 	
-	static Material DefaultWhiteBackground = new Material(SHADERFORBACKGROUND,
+	static Material DefaultWhiteBackground = new Material(
+			   SHADERFORBACKGROUND,
 			   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
 			   new GwtishWidgetBackgroundAttribute(1f,Color.CLEAR,Color.RED,1.0f));
 	

@@ -141,10 +141,10 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		return center;
 	}
 
-	//overriden just for a test
+	//Overridden just for a test
 	@Override
 	public void setZIndex(int index, String group) {
-		Gdx.app.log(logstag,"_-(setZIndex on infobox )-_");
+		Gdx.app.log(logstag,"_-(setZIndex on infobox to:"+index+","+group+")-_");
 		super.setZIndex(index, group);
 	}
 	

@@ -12,9 +12,9 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
-import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.objectType;
-import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
+import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
 
 /**
@@ -223,14 +223,14 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	}	
 
 	private void hide(boolean setlocalVisibility){		
-		currentRenderPlacement = ModelManagment_old.removeModel(this);	
+		currentRenderPlacement = GWTishModelManagement.removeModel(this);	
 		
 		if (setlocalVisibility){
 			localVisibility = false;
 		}
 		
 		//ensure its not on the hitable list
-		ModelManagment_old.removeHitable(this);
+		GWTishModelManagement.removeHitable(this);
 				
 		//we also hide things positioned relatively to this. Nothing overrides this
 		for (AnimatableModelInstance object : attachlist.keySet()) {
@@ -247,10 +247,10 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	
 	public void show(boolean setlocalVisibility){		
 		
-		ModelManagment_old.addmodel(this,currentRenderPlacement);
+		GWTishModelManagement.addmodel(this,currentRenderPlacement);
 		
 		if (Hitable){
-			ModelManagment_old.addHitable(this);
+			GWTishModelManagement.addHitable(this);
 		}
 		
 		
@@ -702,10 +702,10 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		
 		if (Hitable){
 			if (isVisible()){
-				ModelManagment_old.addHitable(this);
+				GWTishModelManagement.addHitable(this);
 			}
 		} else {
-			ModelManagment_old.removeHitable(this);
+			GWTishModelManagement.removeHitable(this);
 		}
 		
 		
@@ -787,7 +787,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 
 	protected boolean isHitable() {
 		
-		return ModelManagment_old.hitables.contains(this);
+		return GWTishModelManagement.hitables.contains(this);
 		
 	}
 

@@ -23,7 +23,7 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.locationFeatures.EmailScreen;
 import com.lostagain.nl.me.locationFeatures.Location;
-import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 
 /**
  * A location hub is the center point of any location
@@ -376,7 +376,7 @@ public class LocationHub extends MeshIcon {
 		
 
 			feature.setToPosition(newPosition);
-			ModelManagment_old.addmodel(feature,ModelManagment_old.RenderOrder.zdecides); //should only add if not already on scene
+			GWTishModelManagement.addmodel(feature,GWTishModelManagement.RenderOrder.zdecides); //should only add if not already on scene
 			
 			//link it to us
 			this.addLineTo(feature);			

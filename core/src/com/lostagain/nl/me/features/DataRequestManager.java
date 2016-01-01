@@ -10,7 +10,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.features.MeshIcon.IconType;
-import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 
 /**
  * Manages the data request screens for a single location
@@ -223,7 +223,7 @@ public class DataRequestManager {
 					int disY = (requestScreens.size()-i)*130;
 					Vector3 newpos  = new Vector3(homepos.x,homepos.y-disY,homepos.z); //NOTE: negative Y is temp while we are establishing new gui system
 					icon.setToPosition(newpos);
-					ModelManagment_old.addmodel(icon,ModelManagment_old.RenderOrder.zdecides);
+					GWTishModelManagement.addmodel(icon,GWTishModelManagement.RenderOrder.zdecides);
 
 					//hide by default unless we are the first in the chain
 					if (i>1){				

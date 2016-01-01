@@ -162,11 +162,13 @@ public class templateShader extends DefaultShader {
     	 
     	 
     	 //program.setUniformi(u_sampler2D, 0);
-    	
+    	 renderable.meshPart.render(program);
+		 
+     	/*	 pre 1.7.1 https://github.com/libgdx/libgdx/pull/3483
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,
-    	            renderable.meshPartSize);
+    	            renderable.meshPartSize);*/
     }
     
    // @Override

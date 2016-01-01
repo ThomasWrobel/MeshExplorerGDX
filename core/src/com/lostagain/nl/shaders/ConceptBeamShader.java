@@ -9,9 +9,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.lostagain.nl.shaders.MyShaderProvider.shadertypes;
 
 /**
  * This shader handles the beam that projects from the players concept gun
@@ -129,6 +127,9 @@ public class ConceptBeamShader implements Shader {
           u_corecolour = program.getUniformLocation("u_corecolour"); 
           u_beamcolour = program.getUniformLocation("u_beamcolour"); 
           u_shotFrequency = program.getUniformLocation("u_shotFrequency"); 
+          
+
+  		Gdx.app.log(logstag, "...done)");
     }
     
     @Override
@@ -182,11 +183,13 @@ public class ConceptBeamShader implements Shader {
     	 program.setUniformf(u_beamcolour, beamStyle.beamcolor);//testAttr.width
     	 program.setUniformf(u_corecolour, beamStyle.corecolor);//testAttr.width
       	 program.setUniformf(u_shotFrequency, beamStyle.shotFrequency);
-      	  
+      	 renderable.meshPart.render(program);
+		 
+     	/*	 pre 1.7.1 https://github.com/libgdx/libgdx/pull/3483
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,
-    	            renderable.meshPartSize);
+    	            renderable.meshPartSize);*/
     }
     
     @Override

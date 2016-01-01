@@ -399,10 +399,13 @@ public class DistanceFieldShader implements Shader {
     	//set the variable for the objects world transform to be passed to the shader
     	 program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
     	 
-    	 float w = renderable.mesh.calculateBoundingBox().getWidth();
-    	 float h = renderable.mesh.calculateBoundingBox().getHeight();
+    	// float w = renderable.mesh.calculateBoundingBox().getWidth();
+    	// float h = renderable.mesh.calculateBoundingBox().getHeight();
+    	 float w = renderable.meshPart.mesh.calculateBoundingBox().getWidth();
+ 		float h = renderable.meshPart.mesh.calculateBoundingBox().getHeight();
+ 		
     	 
-    	//Gdx.app.log(logstag, "element size w= "+w+",h="+h);
+    	 //Gdx.app.log(logstag, "element size w= "+w+",h="+h);
 
     	 DistanceFieldAttribute textStyleData = (DistanceFieldAttribute)renderable.material.get(DistanceFieldAttribute.ID);
     	 
@@ -463,10 +466,12 @@ public class DistanceFieldShader implements Shader {
 		 program.setUniformf(u_shadowColour,textStyleData.getShadowColour());
 		 
 		 
+		 renderable.meshPart.render(program);		 
+	    	/*	 pre 1.7.1 https://github.com/libgdx/libgdx/pull/3483		 
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,
-    	            renderable.meshPartSize);
+    	            renderable.meshPartSize);*/
     }
     
      public void setSizeUniform(float w, float h) {

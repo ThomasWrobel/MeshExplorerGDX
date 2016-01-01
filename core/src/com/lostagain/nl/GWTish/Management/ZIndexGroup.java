@@ -3,7 +3,9 @@ package com.lostagain.nl.GWTish.Management;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.Array;
+import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 /**
  * Everything in the same ZIndexGroup is considered equal distance from the camera
@@ -76,6 +78,33 @@ public class ZIndexGroup extends Array<ZIndexAttribute> {
 		return super.removeValue(value, identity);
 	}
 	
+	
+	
+	private AnimatableModelInstance getLowestModelZIndexInGroup() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	/**
+	 * Calculates the distances from all of the zindex groups to the specified camera
+	 * The distance is calculated by;
+	 * [center point of lowest item in zindex] to camera squared
+	 * Note; the result is left squared, as we only need comparative values and its a waste to route it
+	 */
+	public static void calculateAllZIndexGroupDistances(Camera camera){
+		
+		for (ZIndexGroup group : AllZIndexGroups.values()) {
+						
+			AnimatableModelInstance ani = group.getLowestModelZIndexInGroup();
+			
+				
+		}
+		
+		
+	}
+
+
 	public static void clearAllDrawOrderPositions(){
 		for (ZIndexGroup group : AllZIndexGroups.values()) {
 		//	group.drawOrderPosition = -1;

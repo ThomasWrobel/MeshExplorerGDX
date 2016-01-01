@@ -14,7 +14,7 @@ import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.gui.DataObjectDropTarget;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.locationFeatures.Location;
-import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.MySorter;
 
@@ -207,14 +207,14 @@ public class ConceptObject extends MeshIcon {
 
 
 
-
+/*
 	/**
 	 * Returns the objects texture.
 	 * Likely fairly useless unless the same shader is used to render it elsewhere.
-	 * This function is just a temp really. Probably switch the helditem function to really move the object, rather then using a cursor that looks like it**/
+	 * This function is just a temp really. Probably switch the helditem function to really move the object, rather then using a cursor that looks like it
 	public Texture getObjectsTexture() {
 
-		Material infoBoxsMaterial = MeshIconsLabel.getMaterial("LabelMaterial");
+	//	Material infoBoxsMaterial = MeshIconsLabel.getMaterial("LabelMaterial");
 		
 		TextureAttribute style = ((TextureAttribute)infoBoxsMaterial.get(TextureAttribute.Diffuse));
 		
@@ -224,7 +224,7 @@ public class ConceptObject extends MeshIcon {
 		
 		return style.textureDescription.texture;
 	}
-
+*/
 
 	public void setAsAttachedToObject(ConceptObjectSlot slot) {
 		this.storedin = slot;

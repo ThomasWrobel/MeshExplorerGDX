@@ -12,7 +12,6 @@ import com.darkflame.client.semantic.QueryEngine;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
-import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.me.features.ConceptGunPanel;
 import com.lostagain.nl.me.features.InventoryPanel;
 import com.lostagain.nl.me.features.NewGUIBar;
@@ -173,7 +172,7 @@ public class PlayersData {
 		
 		//developers get some stuff automatically
 		//wont work till inventory can add stuff like the gun automatically on first load
-		if (ME.currentGameMode == GameMode.Developer ){
+		if (GameMode.currentGameMode == GameMode.Developer ){
 			//playerslocationcontents.add(StaticSSSNodes.ConceptGun1);
 			
     	} 

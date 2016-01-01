@@ -544,13 +544,16 @@ public abstract class ComplexPanel extends Widget {
 	 * @param group  - things in the same group get ordered next to eachother according to index value 
 	 */
 	public void setZIndex(int index, String group) {
-		Gdx.app.log(logstag,"_-(setZIndex "+group+" )-_");
-		
+		Gdx.app.log(logstag,"_-(setZIndex on complexpanel to:"+index+","+group+")-_");
+	
 		//set zindex of back material
 		super.setZIndex(index,group);
 	
 		//but we also need to apply it to all subobjects (only a little higher!)
 		for (Widget childwidget : contents) {
+			
+			Gdx.app.log(logstag,"_-(setZIndex on complexpanelchild to:"+(index+1)+","+group+")-_");
+
 			childwidget.setZIndex(index+1,group); 
 		}				
 	}

@@ -12,7 +12,7 @@ import com.lostagain.nl.GWTish.Widget;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.models.Animating;
-import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
@@ -254,7 +254,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		
 		//flash red maybe?
 		rejectionAnimationPlaying = true;
-		ModelManagment_old.addAnimating(this);
+		GWTishModelManagement.addAnimating(this);
 		timeElypsed = 0;
 		
 		
@@ -400,7 +400,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 			if (timeElypsed>rejectionDuration){	
 
 				getStyle().setBackgroundColor(CurrentBackColour);
-				ModelManagment_old.removeAnimating(this);	
+				GWTishModelManagement.removeAnimating(this);	
 				rejectionAnimationPlaying=false;
 				
 			}

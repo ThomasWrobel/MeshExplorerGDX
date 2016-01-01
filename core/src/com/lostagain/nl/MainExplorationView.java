@@ -30,7 +30,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.darkflame.client.semantic.SSSNode;
-import com.lostagain.nl.ME.GameMode;
 import com.lostagain.nl.GWTish.Button;
 import com.lostagain.nl.GWTish.ClickHandler;
 import com.lostagain.nl.GWTish.EXAMPLES;
@@ -58,8 +57,8 @@ import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.models.MessyModelMaker;
-import com.lostagain.nl.me.models.ModelManagment_old;
-import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
+import com.lostagain.nl.me.models.GWTishModelManagement;
+import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.PosRotScale;
@@ -115,7 +114,7 @@ public class MainExplorationView implements Screen {
 	/** disables the users control over the movement (ie, dragging) **/
 	static boolean movementControllDisabled = false;
 
-	/** I dont know really how to use this correctly yet :-/ **/
+	/** I don't know really how to use this correctly yet :-/ **/
 	public static RenderContext rcontext;
 
 	Rectangle bucket;
@@ -160,54 +159,23 @@ public class MainExplorationView implements Screen {
 	//   boolean newtouch=true; //if a touch event has just started
 	//  boolean newUp = false; //if the next time the mouse is up represents a mouse release
 
-	Vector2 touchStartedAt = null;
-
 	public static hitable touchedAModel = null;
 	ArrayList<hitable> lastHits = new ArrayList<hitable>();
 
-	/**  mouse state (still being implemented. Will replace newtouch and newup)
-	 **/
-	public static enum TouchState {
-		/** screen is not touched or mouse is not down **/
-		NONE,
-		/**
-		 * the mouse has just gone down or the screen has just been touced
-		 */
-		NewTouchDown,
-		/**
-		 * screen is being touched or mouse is down
-		 */
-		TouchDown,
-		/**
-		 * mouse or touch just went up
-		 */
-		NewTouchUp,
-
-		/**
-		 * The mouse has just moved a bit since being down  **/
-		NewDrag,
-
-		/**
-		 * The mouse has moved a bit since being down and is still being held **/
-		Dragging;
-
-	}
-
-	/** the current state of mouse or touch **/
-	TouchState currentTouchState = TouchState.NONE;
+	
 
 
 
-	public static ShaderProgram distancefieldshader;
+	//public static ShaderProgram distancefieldshader;
 
 
 	//Controls the 3d background
-	public static  ModelManagment_old the3dscene = new ModelManagment_old();
+	public static  GWTishModelManagement the3dscene = new GWTishModelManagement();
 
 
 
 
-	//Enviromental Settings (currently just a point light linked to the mouse
+	//Environmental Settings (currently just a point light linked to the mouse
 	/**
 	 * Controlls the light source linked to the mouse.
 	 * Currently used by the normal map shader
@@ -307,7 +275,7 @@ public class MainExplorationView implements Screen {
 		camera.update(true);
 
 		Gdx.app.log(logstag,"creating background");
-		the3dscene.setup();
+		GWTishModelManagement.setup();
 
 
 		PlayersData.homeLoc = new Location(PlayersData.computersuri, PlayersData.homelocationX,PlayersData.homelocationY);
@@ -447,7 +415,7 @@ public class MainExplorationView implements Screen {
 		mouseLight.set(Color.ORANGE, 1f, 2f, 0.075f, 1f);
 
 		//more tests if on developer mode
-		if (ME.currentGameMode == ME.GameMode.Developer){
+		if (GameMode.currentGameMode == GameMode.Developer){
 
 			addDeveloperDrops();
 
@@ -488,7 +456,7 @@ public class MainExplorationView implements Screen {
 
 			ConceptObject coTest = new ConceptObject(node);
 			coTest.setToPosition(new Vector3(366f,100f+(y*50),0f));
-			ModelManagment_old.addmodel(coTest,ModelManagment_old.RenderOrder.zdecides);
+			GWTishModelManagement.addmodel(coTest,GWTishModelManagement.RenderOrder.zdecides);
 			y++;
 
 		}
@@ -537,7 +505,7 @@ public class MainExplorationView implements Screen {
 		//slot 
 		final ConceptObjectSlot slotTest = new ConceptObjectSlot();
 		slotTest.setToPosition(new Vector3(250f,250f,0f));
-		ModelManagment_old.addmodel(slotTest,ModelManagment_old.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(slotTest,GWTishModelManagement.RenderOrder.zdecides);
 
 
 		//---
@@ -546,7 +514,7 @@ public class MainExplorationView implements Screen {
 			@Override
 			public void onClick() {
 				Gdx.app.log(logstag,"____debug button pressed  snapShotNextSort setting... ");
-				ModelManagment_old.mysorter.snapShotNextSort();
+				GWTishModelManagement.mysorter.snapShotNextSort();
 				
 				//ModelManagment_old.mysorter.testSort();
 				
@@ -568,41 +536,41 @@ public class MainExplorationView implements Screen {
 		tempbutton.setToPosition(new Vector3(450f,610f,0f));
 		//tempbuttonBigger.setToPosition(new Vector3(450f,570f,0f));
 		//
-		ModelManagment_old.addmodel(tempbutton,ModelManagment_old.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(tempbutton,GWTishModelManagement.RenderOrder.zdecides);
 		//ModelManagment.addmodel(tempbuttonBigger,ModelManagment.RenderOrder.zdecides);
 		
 
 		//GWTish Tests
 		final Label exampleFixedLabel = EXAMPLES.getLabelExampleFixedSize();
 		exampleFixedLabel.setToPosition(new Vector3(1000f,110f,0f));
-		ModelManagment_old.addmodel(exampleFixedLabel,ModelManagment_old.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleFixedLabel,GWTishModelManagement.RenderOrder.zdecides);
 		
 		
 		final Label exampleLabel = EXAMPLES.getLabelExample();
 		exampleLabel.setToPosition(new Vector3(1000f,0f,0f));
-		ModelManagment_old.addmodel(exampleLabel,ModelManagment_old.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleLabel,GWTishModelManagement.RenderOrder.zdecides);
 		
 		final Label exampleLabel2 = EXAMPLES.getLabelExampleGreenGlow();
 		exampleLabel2.setToPosition(new Vector3(1000f,-40f,0f));
-		ModelManagment_old.addmodel(exampleLabel2,ModelManagment_old.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleLabel2,GWTishModelManagement.RenderOrder.zdecides);
 		
 		final Label exampleLabel3 = EXAMPLES.getLabelExampleFunky();
 		exampleLabel3.setToPosition(new Vector3(1000f,-80f,0f));
-		ModelManagment_old.addmodel(exampleLabel3,ModelManagment_old.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleLabel3,GWTishModelManagement.RenderOrder.zdecides);
 		
 		final Label exampleLabel4 = EXAMPLES.getLabelExampleLong();
 		exampleLabel4.setToPosition(new Vector3(1000f,-130f,0f));
-		ModelManagment_old.addmodel(exampleLabel4,ModelManagment_old.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleLabel4,GWTishModelManagement.RenderOrder.zdecides);
 		
 		final HorizontalPanel exampleHP = EXAMPLES.getHorizontalPanelExample();
 		exampleHP.setToPosition(new Vector3(1000f,-490f,0f));
-		ModelManagment_old.addmodel(exampleHP,ModelManagment_old.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleHP,GWTishModelManagement.RenderOrder.zdecides);
 		
 		
 
 		final VerticalPanel exampleComposit = EXAMPLES.getMixedExample();
 		exampleComposit.setToPosition(new Vector3(1000f,-600f,0f));
-		ModelManagment_old.addmodel(exampleComposit,ModelManagment_old.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleComposit,GWTishModelManagement.RenderOrder.zdecides);
 		//---------------------------
 		
 		
@@ -610,7 +578,7 @@ public class MainExplorationView implements Screen {
 		ShaderTestPanel shaderTests = new ShaderTestPanel();
 		shaderTests.setToScale(new Vector3(0.2f,0.2f,0.2f));
 		shaderTests.setToPosition(new Vector3(100f,430f,40f));	
-		ModelManagment_old.addmodel(shaderTests,ModelManagment_old.RenderOrder.infrontStage);
+		GWTishModelManagement.addmodel(shaderTests,GWTishModelManagement.RenderOrder.infrontStage);
 	}
 
 
@@ -631,7 +599,7 @@ public class MainExplorationView implements Screen {
 	//	MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y);
 	public static void addnewlocationHub(LocationHub newloc,int x,int y) {
 		newloc.setToPosition(new Vector3(x,y,0));
-		ModelManagment_old.addmodel(newloc,RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(newloc,RenderOrder.zdecides);
 	}
 
 
@@ -702,7 +670,7 @@ public class MainExplorationView implements Screen {
 		//Each render is sort of like a "layer" and appears in the order they are rendered
 		//regardless of 3d positions within that layer
 		the3dscene.updateAnimatedBacks(delta);
-		ModelManagment_old.updateObjectMovementAndFrames(delta);//--
+		GWTishModelManagement.updateObjectMovementAndFrames(delta);//--
 
 		//we start other updates
 
@@ -722,9 +690,9 @@ public class MainExplorationView implements Screen {
 		if (hasbackground){
 
 			if (debugCamera.active){
-				the3dscene.modelBatch.begin( debugCamera);
+				GWTishModelManagement.modelBatch.begin( debugCamera);
 			} else {
-				the3dscene.modelBatch.begin( camera);
+				GWTishModelManagement.modelBatch.begin( camera);
 			}
 
 
@@ -732,12 +700,12 @@ public class MainExplorationView implements Screen {
 
 			//rcontext.begin();
 			//testdefaultShader.begin(camera, rcontext);		
-			the3dscene.modelBatch.render(ModelManagment_old.allBackgroundInstances); //currently disabled
+			GWTishModelManagement.modelBatch.render(GWTishModelManagement.allBackgroundInstances); //currently disabled
 
 
 
 			//testdefaultShader.end();
-			the3dscene.modelBatch.end();	
+			GWTishModelManagement.modelBatch.end();	
 
 		}
 
@@ -760,89 +728,93 @@ public class MainExplorationView implements Screen {
 		//background.modelBatch.getRenderContext().setBlending(true, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		//background.modelBatch.getRenderContext().setCullFace(GL20.GL_FRONT);
 		if (debugCamera.active){
-			the3dscene.modelBatch.begin( debugCamera);
+			GWTishModelManagement.modelBatch.begin( debugCamera);
 		} else {
-			the3dscene.modelBatch.begin( camera);
+			GWTishModelManagement.modelBatch.begin( camera);
 		}
 		//rcontext.begin();
 		//testdefaultShader.begin(camera, rcontext);		
-		the3dscene.modelBatch.render(ModelManagment_old.allForgroundInstances);
+		GWTishModelManagement.modelBatch.render(GWTishModelManagement.allForgroundInstances);
 
-		the3dscene.modelBatch.render(exampleParticleManagement.prepareAndGetParticleSystem());
+		GWTishModelManagement.modelBatch.render(exampleParticleManagement.prepareAndGetParticleSystem());
 
 		//testdefaultShader.end();
-		the3dscene.modelBatch.end();	
+		GWTishModelManagement.modelBatch.end();	
 		//background.modelBatch.getRenderContext().end();
 
+		
+		GWTishModelManagement.updateTouchState();
+		
+		/*
 		//new touch system
 		//first we update the state if needed based on what it was before
 		//and what it is now
 		if (Gdx.input.isTouched()) {
 			//if we are touched we look at state we were before
-			switch (currentTouchState) {
+			switch (ModelManagment_old.currentTouchState) {
 			case NONE:			
-				currentTouchState = TouchState.NewTouchDown; //if we wernt touching before then its a new touch!
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.NewTouchDown; //if we wernt touching before then its a new touch!
 				break;
 			case NewTouchDown:
-				currentTouchState = TouchState.TouchDown; //if we previously were a new touchdown, then now we are a non-new touchdown
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.TouchDown; //if we previously were a new touchdown, then now we are a non-new touchdown
 				break;
 			case NewTouchUp:
-				currentTouchState = TouchState.NewTouchDown; //if we just touched up and then the very next frame touched down....then the user is suspiciously fast
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.NewTouchDown; //if we just touched up and then the very next frame touched down....then the user is suspiciously fast
 				break;
 			case TouchDown:
-				currentTouchState = TouchState.TouchDown; //still a touchdown unless the mouse moved;
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.TouchDown; //still a touchdown unless the mouse moved;
 
 
 				Vector2 currentLoc = new Vector2(Gdx.input.getX(),Gdx.input.getY());
-				if (touchStartedAt.dst2(currentLoc)>5){							
-					currentTouchState = TouchState.NewDrag;
+				if (ModelManagment_old.touchStartedAt.dst2(currentLoc)>5){							
+					ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.NewDrag;
 				}				
 
 				break;
 			case NewDrag:
-				currentTouchState = TouchState.Dragging; //newdrags become Dragging 
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.Dragging; //newdrags become Dragging 
 				break;				
 			case Dragging:
-				currentTouchState = TouchState.Dragging; //do nothing
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.Dragging; //do nothing
 				break;
 			}
 
 		} else {
 
-			switch (currentTouchState) {
+			switch (ModelManagment_old.currentTouchState) {
 			case NONE:	
-				currentTouchState = TouchState.NONE; //still none
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.NONE; //still none
 				break;
 			case NewTouchDown:
-				currentTouchState = TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
 				break;
 			case NewTouchUp:
-				currentTouchState = TouchState.NONE; //now none
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.NONE; //now none
 				break;
 			case TouchDown:
-				currentTouchState = TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
 				break;
 			case NewDrag:
-				currentTouchState = TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
 				break;
 			case Dragging:
-				currentTouchState = TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
+				ModelManagment_old.currentTouchState = ModelManagment_old.TouchState.NewTouchUp; //we were touching now are not, so its a new touchup.
 				break;
 			}
 
-		}
+		}*/
 
 		if (PlayersData.playersConceptGun!=null){
 			PlayersData.playersConceptGun.update(delta); //update the gun in case its firing or recharging
 		}
 
 		//now we are touchstate is anything but none we get a ray for it
-		if (currentTouchState!=TouchState.NONE)
+		if (GWTishModelManagement.currentTouchState!=GWTishModelManagement.TouchState.NONE)
 		{
 			Ray ray = ME.getCurrentStageCursorRay();
 
-			Gdx.app.log(logstag,"currentTouchState:"+currentTouchState.name());
-			lastHits = ModelManagment_old.getHitables(ray,true,currentTouchState);
+			Gdx.app.log(logstag,"currentTouchState:"+GWTishModelManagement.currentTouchState.name());
+			lastHits = GWTishModelManagement.getHitables(ray,true,GWTishModelManagement.currentTouchState);
 
 			if (lastHits.size()>0){
 				touchedAModel = lastHits.get(0);
@@ -854,7 +826,7 @@ public class MainExplorationView implements Screen {
 			Boolean fireEnabled=  !ConceptGunPanel.isDisabled();
 
 		
-			if (currentTouchState == TouchState.NewTouchDown){		
+			if (GWTishModelManagement.currentTouchState == GWTishModelManagement.TouchState.NewTouchDown){		
 				//if the concept gun is enabled we start shooting
 
 				objectType type = null;
@@ -871,20 +843,20 @@ public class MainExplorationView implements Screen {
 
 			}
 
-			if (currentTouchState==TouchState.NewTouchDown){
+			if (GWTishModelManagement.currentTouchState==GWTishModelManagement.TouchState.NewTouchDown){
 				Gdx.app.log(logstag," new touch down");
 
-				touchStartedAt = new Vector2(Gdx.input.getX(),Gdx.input.getY());
+				GWTishModelManagement.touchStartedAt = new Vector2(Gdx.input.getX(),Gdx.input.getY());
 
 			}
 
-			if (currentTouchState==TouchState.NewTouchUp){
+			if (GWTishModelManagement.currentTouchState==GWTishModelManagement.TouchState.NewTouchUp){
 
 				Gdx.app.log(logstag," new touch up");
 
 				touchedAModel=null;
 				lastHits.clear();
-				ModelManagment_old.untouchAll(); 	//ensures it clears			
+				GWTishModelManagement.untouchAll(); 	//ensures it clears			
 
 				//stop firing 
 				if (fireEnabled && PlayersData.playersConceptGun!=null){
@@ -909,7 +881,7 @@ public class MainExplorationView implements Screen {
 
 		} else {
 
-			ModelManagment_old.fireDragStartEnd(); 
+			GWTishModelManagement.fireDragStartEnd(); 
 			lastHits.clear();
 
 		}
@@ -1198,8 +1170,8 @@ public class MainExplorationView implements Screen {
 		}
 
 		//if not in production we display the position
-		if (ME.currentGameMode != GameMode.Production){
-			ME.font.draw( ME.interfaceSpriteBatch, "x:: " + currentPos.x+" y:: " + currentPos.y+" z::"+ currentPos.z+"  -"+currentTouchState.toString(), 10,25);
+		if (GameMode.currentGameMode != GameMode.Production){
+			ME.font.draw( ME.interfaceSpriteBatch, "x:: " + currentPos.x+" y:: " + currentPos.y+" z::"+ currentPos.z+"  -"+GWTishModelManagement.currentTouchState.toString(), 10,25);
 
 			if (lastHits.size()>0){
 				String curString = "";

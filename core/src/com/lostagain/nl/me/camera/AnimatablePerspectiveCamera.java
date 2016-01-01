@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.IsAnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;

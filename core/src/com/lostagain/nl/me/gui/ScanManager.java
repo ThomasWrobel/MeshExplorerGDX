@@ -6,7 +6,7 @@ import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
-import com.lostagain.nl.ME;
+import com.lostagain.nl.GameMode;
 import com.lostagain.nl.MainExplorationView;
 
 /**
@@ -25,7 +25,7 @@ public class ScanManager {
 	
 	/** speed total (divided by number of active scans to determine speed) 
 	 * This value might change as the player unlocks ability's ***/
-	static float maxSpeed = ME.currentGameMode.getScanSpeed(); //gets the scan speed from the games mode atm. In future this should only be how the STARTING speed is got, as the game will let the player upgrade the speed
+	static float maxSpeed = GameMode.currentGameMode.getScanSpeed(); //gets the scan speed from the games mode atm. In future this should only be how the STARTING speed is got, as the game will let the player upgrade the speed
 	
 	/** the current active scans **/
 	static ArrayList<Scan> activeScans = new ArrayList<Scan>();

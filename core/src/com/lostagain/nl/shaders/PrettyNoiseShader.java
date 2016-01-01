@@ -129,11 +129,13 @@ public class PrettyNoiseShader implements Shader {
     	//set the variable for the objects world transform to be passed to the shader
     	 program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
     	 
-    	 
+    	 renderable.meshPart.render(program);
+		 
+     	/*	 pre 1.7.1 https://github.com/libgdx/libgdx/pull/3483
     	 renderable.mesh.render(program,
     	            renderable.primitiveType,
     	            renderable.meshPartOffset,
-    	            renderable.meshPartSize);
+    	            renderable.meshPartSize);*/
     }
     
     @Override

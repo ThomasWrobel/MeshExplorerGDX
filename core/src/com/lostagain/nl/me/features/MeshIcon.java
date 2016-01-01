@@ -28,11 +28,11 @@ import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.Moving;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectType;
-import com.lostagain.nl.me.models.ModelManagment_old.RenderOrder;
+import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewForward;
 import com.lostagain.nl.me.newmovements.NewMovement;
@@ -132,7 +132,8 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	};
 
 
-	public Label MeshIconsLabel;
+	//not used
+	//public Label MeshIconsLabel;
 
 
 	
@@ -141,11 +142,13 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	IconType thisIconsType = null;
 	Location parentLocation = null;
 
-	GenericMeshFeature assocatiedFeature = null;
+	//make private
+	public GenericMeshFeature assocatiedFeature = null;
 
 	float lastHitDistance =  -1f; //no hit by default//hitables need this
 
 
+	
 
 	//various things to handle animation of appearing/disaspering
 	enum FeatureState {
@@ -366,7 +369,8 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		//Vector3 ourDisplacement =  getPivotsDisplacementFromCenterOfBoundingBox();		
 		Vector3 pivotDisplacement =  assocatiedFeature.getAnimatableModelInstance().getPivotsDisplacementFromCenterOfBoundingBox();
 
-		//Gdx.app.log(logstag,"pivotDisplacement:"+pivotDisplacement);
+		Gdx.app.log(logstag,"pivotDisplacement:"+pivotDisplacement);
+		
 		//Gdx.app.log(logstag,"ourDisplacement:"+ourDisplacement);
 
 		//Gdx.app.log(logstag,"ourCenter :"+new PosRotScale(-ourCenter.x,-ourCenter.y,-ourCenter.z+vertDisplacement));
@@ -376,7 +380,11 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 		//	super.attachThis(assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-featureCenter.x,-featureCenter.y,-featureCenter.z+vertDisplacement));
 		super.attachThis(assocatiedFeature.getAnimatableModelInstance(), new PosRotScale(-pivotDisplacement.x,-pivotDisplacement.y,-pivotDisplacement.z+vertDisplacement));
-
+		//tests
+		super.updateAllAttachedObjects();
+		Gdx.app.log(logstag,"assocatiedFeature at:"+assocatiedFeature.getAnimatableModelInstance().transState.position);
+		Gdx.app.log(logstag,"its center at:"+assocatiedFeature.getCenterOfBoundingBox().toString());
+		
 		//feature needs zindex attribute set if this icon has had one set
 		if (this.baseZindex>-1){
 			assocatiedFeature.setZIndex(baseZindex+1,Zindexgroup);
@@ -500,6 +508,9 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	public void setZIndex(int index, String group){
 		baseZindex  = index;
 		Zindexgroup = group;
+		
+		Gdx.app.log(logstag,"_-(setZIndex on meshicon to:"+index+","+group+")-_");
+		
 		super.getStyle().setZIndex(index, group);
 		
 		/*
@@ -546,18 +557,23 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	}
 	
 	/**
-	 * adds a z index override and sets it to the supplied value
-	 * use clear to revert to natural ordering
+	 * clear to revert to natural ordering
 	 * @param opacity
 	 */
-	public void clearZIndex(int index){
+	public void clearZIndex(){
 		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);		
-		infoBoxsMaterial.remove(ZIndexAttribute.ID);
-		
-
-		Material infoBoxsMaterial2 = MeshIconsLabel.getMaterial();	
-		infoBoxsMaterial2.remove(ZIndexAttribute.ID);
+		//probably should put some of this in the style
+		Material infoBoxsMaterial = this.getMaterial(ICON_MATERIAL);	
+		if (infoBoxsMaterial!=null){
+			infoBoxsMaterial.remove(ZIndexAttribute.ID);
+		}
+		/*
+		if (MeshIconsLabel!=null){			
+		Material infoBoxsMaterial2 = MeshIconsLabel.getMaterial();
+		if (infoBoxsMaterial!=null){					
+			infoBoxsMaterial2.remove(ZIndexAttribute.ID);
+		}
+		}*/
 	}
 	
 	/**
@@ -737,7 +753,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 		//ModelManagment.addmodel(this, RenderOrder.zdecides);
 		this.show();
-		ModelManagment_old.addAnimating(this);
+		GWTishModelManagement.addAnimating(this);
 		this.runAfterFadeIn= runAfterFadeIn;
 
 		this.assocatiedFeature.show();
@@ -751,7 +767,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		currentState = FeatureState.disapearing;
 		Opacity = 1f;
 		timeIntoFade=0f;
-		ModelManagment_old.addAnimating(this);
+		GWTishModelManagement.addAnimating(this);
 		this.runAfterFadeOut= runAfterFadeOut;
 
 		this.show();
@@ -778,7 +794,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 			Opacity = ratio;
 			if (ratio>1){
 				Opacity = 1;
-				ModelManagment_old.removeAnimating(this);
+				GWTishModelManagement.removeAnimating(this);
 				//recalc size (for bounding box)
 				currentState = FeatureState.FeatureOpen;
 				wasResized();
@@ -794,7 +810,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 			Opacity = 1-ratio;
 			if (ratio>1){
 				Opacity = 0;
-				ModelManagment_old.removeAnimating(this);
+				GWTishModelManagement.removeAnimating(this);
 				//recalc size (for bounding box)				
 				currentState = FeatureState.FeatureClosed;
 				this.assocatiedFeature.hide();				
@@ -811,13 +827,13 @@ public class MeshIcon extends Label implements  Animating,Moving {
 			Opacity = 0f;
 			this.assocatiedFeature.hide();
 			this.show();
-			ModelManagment_old.removeAnimating(this);
+			GWTishModelManagement.removeAnimating(this);
 			Gdx.app.log(logstag,"currentState is:"+currentState);
 			return;
 		case FeatureOpen:
 
 			Opacity = 1f;
-			ModelManagment_old.removeAnimating(this);
+			GWTishModelManagement.removeAnimating(this);
 			Gdx.app.log(logstag,"currentState is :"+currentState);
 			break;
 
@@ -1014,7 +1030,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 			attachThis(Linksline, new PosRotScale(0,0,-25f)); //a little behind this icon to allow movement a bit
 
-			ModelManagment_old.addmodel(Linksline,ModelManagment_old.RenderOrder.zdecides);
+			GWTishModelManagement.addmodel(Linksline,GWTishModelManagement.RenderOrder.zdecides);
 
 		}
 
@@ -1081,7 +1097,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 		}
 
-		ModelManagment_old.addMoving(this);
+		GWTishModelManagement.addMoving(this);
 
 	}
 	@Override
@@ -1092,7 +1108,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 		if (!movementController.isMoving()){
 
-			ModelManagment_old.removeMoving(this);
+			GWTishModelManagement.removeMoving(this);
 		}
 
 	}

@@ -24,7 +24,7 @@ import com.lostagain.nl.me.creatures.Population.destructOn;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.InfovoreAnimation;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.Moving;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.NormalMapShader;
@@ -68,7 +68,7 @@ public class BasicInfovore extends Creature implements Animating,Moving {
 		
 		
 				
-		ModelManagment_old.addMoving(this);
+		GWTishModelManagement.addMoving(this);
 		
 		
 		
@@ -208,7 +208,7 @@ public class BasicInfovore extends Creature implements Animating,Moving {
 		super.destroy();
 
 		Gdx.app.log(logstag,"removeAnimating");
-		ModelManagment_old.removeAnimating(this);
+		GWTishModelManagement.removeAnimating(this);
 		
 	}
 	

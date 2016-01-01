@@ -84,7 +84,7 @@ public class DeckPanel extends ComplexPanel {
 	public void showWidget(Widget selected) {
 		showWidget(selected,true);
 	}
-	
+
 	/** 
 	 * @param index
 	 * @param hideOthers - hide other widgets
@@ -100,7 +100,7 @@ public class DeckPanel extends ComplexPanel {
 			Gdx.app.log(logstag,"_widget not on panel, cant show/hide");			
 			return;			
 		}
-		
+
 		selected.show();
 
 		if (hideOthers){
@@ -112,8 +112,8 @@ public class DeckPanel extends ComplexPanel {
 			}
 		}
 	}
-	
-	
+
+
 	@Override
 	Vector3 getNextPosition(float incomingWidth, float incomingHeight, boolean b,Widget widget) {
 		int index = contents.indexOf(widget);
@@ -192,11 +192,11 @@ public class DeckPanel extends ComplexPanel {
 		}
 
 		return new Vector3(getLeftPadding()+newLocationX,getTopPadding()+newLocationY,(1f+index));//widgets used to be  stacked 5 apart vertically  (5f+10f*index)
-		
+
 		//return new Vector3(cx-(incomingWidth/2),cy-(incomingHeight/2),(5f+10f*index)); //widgets are stacked 5 apart vertically
 	}
-	
-	
+
+
 	//Override to give alternative to normal zindex setting
 	@Override
 	/**
@@ -209,20 +209,20 @@ public class DeckPanel extends ComplexPanel {
 	 */
 	public void setZIndex(int index, String group) {
 		Gdx.app.log(logstag,"_-(setZIndex "+group+","+index+" )-_");
-		
+
 		//set zindex of back material
 		getStyle().setZIndex(index,group);
-		
+
 		//but we also need to apply it to all subobjects (only a little higher!)
 		int n=1;
 		for (Widget childwidget : contents) {
-			
+
 			Gdx.app.log(logstag,"_-( child now; "+group+","+(index+n)+" )-_");			
 			childwidget.setZIndex(index+n,group); 
 			n++;
 		}				
 	}
-	
+
 
 	private VerticalAlignment defaultVerticalAlignment = VerticalAlignment.Middle;
 

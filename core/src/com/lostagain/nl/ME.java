@@ -68,35 +68,11 @@ public class ME extends Game {
 
 	static Location currentTargetLocation;
 	
-	/** GameMode control's mode and params for each.
-	 * Some global tweaks to the gameplay can be made here.
-	 * For now its just speed of scans, which varies based on the currentgame mode**/
-	public enum GameMode {		
-		/** production mode turns debug logs off **/
-		Production(20),
-		/** logs on, normal scan speed **/
-		Normal(20),
-		/** logs on, speeds up scans (speed controlled in ScanManager)**/
-		Developer(60);
-		
-		int ScanSpeed;		
-		GameMode(int ScanSpeed){
-			this.ScanSpeed=ScanSpeed;
-		}
-		
-		public int getScanSpeed() {
-			return ScanSpeed;
-		}
-		
-	}
-	
-    public static final GameMode currentGameMode = GameMode.Developer;
-	 
-    @Override
+	@Override
 	public void create() {
     	
     	//set up logging setting based on game mode
-    	if (currentGameMode == GameMode.Production ){
+    	if (GameMode.currentGameMode == GameMode.Production ){
     		Gdx.app.setLogLevel(Application.LOG_NONE);
     	} else {
     		Gdx.app.setLogLevel(Application.LOG_INFO);
@@ -146,7 +122,7 @@ public class ME extends Game {
     public void setupSemanticsAndHomeDomain()
     {
     	//all off for production
-    	if (currentGameMode == GameMode.Production ){
+    	if (GameMode.currentGameMode == GameMode.Production ){
       	  Logger.getLogger("sss").setLevel(Level.OFF);
       	  Logger.getLogger("sss.DemoKnowledgeBase").setLevel(Level.OFF);
       	  Logger.getLogger("sss.SSSNodesWithCommonProperty").setLevel(Level.OFF);

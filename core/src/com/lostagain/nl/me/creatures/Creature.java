@@ -24,7 +24,7 @@ import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.locationFeatures.LocationsHub;
 import com.lostagain.nl.me.models.Animating;
-import com.lostagain.nl.me.models.ModelManagment_old;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
@@ -179,8 +179,8 @@ public class Creature implements hitable , Animating {
 		
 		
 		//set to model lists
-		ModelManagment_old.addmodel(creaturemodel,ModelManagment_old.RenderOrder.zdecides);
-		ModelManagment_old.addHitable(this);
+		GWTishModelManagement.addmodel(creaturemodel,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addHitable(this);
 		//make bigger (test only)
 		//creaturemodel.transform.mul(new Matrix4().setToScaling(0.5f, 2.5f,0.5f));
 		//rotate (test only)
@@ -389,7 +389,7 @@ public class Creature implements hitable , Animating {
 		//add to animation list which updates frames based on delta
 		//the updateAnimationFrame function will remove it from this list when the animation is finished.
 		//(that is, when currentAnimationTime = the animations duration defined in its enum)
-		ModelManagment_old.addAnimating(this);
+		GWTishModelManagement.addAnimating(this);
 		
 		
 	}
@@ -481,7 +481,7 @@ public class Creature implements hitable , Animating {
 		//add to animation list which updates frames based on delta
 		//the updateAnimationFrame function will remove it from this list when the animation is finished.
 		//(that is, when currentAnimationTime = the animations duration defined in its enum)
-		ModelManagment_old.addAnimating(this);
+		GWTishModelManagement.addAnimating(this);
 				
 	}
 
@@ -529,9 +529,9 @@ public class Creature implements hitable , Animating {
 		
 		//ConceptGun.animateImpactEffect();
 		//remove from visuals
-		ModelManagment_old.removeModel(creaturemodel);
+		GWTishModelManagement.removeModel(creaturemodel);
 
-		Gdx.app.log(logstag,"_destroying model....removed:"+ModelManagment_old.removeHitable(this));
+		Gdx.app.log(logstag,"_destroying model....removed:"+GWTishModelManagement.removeHitable(this));
 		
 		
 		movementControll.clearMovement();
@@ -653,7 +653,7 @@ public class Creature implements hitable , Animating {
 			
 			currentAnimationTime=0.0f; //reset time ready for next animation
 			currentlyPlayingAnimation=CreatureAnimationType.none; //set animation playing to none
-			ModelManagment_old.removeAnimating(this);//remove it from the animation list (which is what triggers this updateanimationFrame function			
+			GWTishModelManagement.removeAnimating(this);//remove it from the animation list (which is what triggers this updateanimationFrame function			
 		}
 		
 	}
