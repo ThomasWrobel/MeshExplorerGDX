@@ -55,7 +55,7 @@ import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
-import com.lostagain.nl.me.locationFeatures.LocationsHub;
+import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
@@ -103,7 +103,7 @@ public class MainExplorationView implements Screen {
 	//Current camera settings
 	public static MECamera camera = new MECamera();
 
-	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),2000f); //note we start high up and zoom in at the start as a little intro
+	public static Vector3 currentPos = new Vector3(PlayersData.homelocationX+(LocationsHub_old.sizeX/2),PlayersData.homelocationY+(LocationsHub_old.sizeY/2),2000f); //note we start high up and zoom in at the start as a little intro
 	//public static Vector3 zoomToAtStartPos = new Vector3(PlayersData.homelocationX+(LocationsHub.sizeX/2),PlayersData.homelocationY+(LocationsHub.sizeY/2),444f); //note we start high up and zoom in at the start as a little intro
 
 	public static Float CurrentZoom = 1f;	
@@ -456,7 +456,7 @@ public class MainExplorationView implements Screen {
 
 			ConceptObject coTest = new ConceptObject(node);
 			coTest.setToPosition(new Vector3(366f,100f+(y*50),0f));
-			GWTishModelManagement.addmodel(coTest,GWTishModelManagement.RenderOrder.zdecides);
+			GWTishModelManagement.addmodel(coTest);//,GWTishModelManagement.RenderOrder.zdecides);
 			y++;
 
 		}
@@ -505,7 +505,7 @@ public class MainExplorationView implements Screen {
 		//slot 
 		final ConceptObjectSlot slotTest = new ConceptObjectSlot();
 		slotTest.setToPosition(new Vector3(250f,250f,0f));
-		GWTishModelManagement.addmodel(slotTest,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(slotTest);//,GWTishModelManagement.RenderOrder.zdecides);
 
 
 		//---
@@ -536,41 +536,41 @@ public class MainExplorationView implements Screen {
 		tempbutton.setToPosition(new Vector3(450f,610f,0f));
 		//tempbuttonBigger.setToPosition(new Vector3(450f,570f,0f));
 		//
-		GWTishModelManagement.addmodel(tempbutton,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(tempbutton);//,GWTishModelManagement.RenderOrder.zdecides);
 		//ModelManagment.addmodel(tempbuttonBigger,ModelManagment.RenderOrder.zdecides);
 		
 
 		//GWTish Tests
 		final Label exampleFixedLabel = EXAMPLES.getLabelExampleFixedSize();
 		exampleFixedLabel.setToPosition(new Vector3(1000f,110f,0f));
-		GWTishModelManagement.addmodel(exampleFixedLabel,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleFixedLabel);//,,GWTishModelManagement.RenderOrder.zdecides);
 		
 		
 		final Label exampleLabel = EXAMPLES.getLabelExample();
 		exampleLabel.setToPosition(new Vector3(1000f,0f,0f));
-		GWTishModelManagement.addmodel(exampleLabel,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleLabel);//,GWTishModelManagement.RenderOrder.zdecides);
 		
 		final Label exampleLabel2 = EXAMPLES.getLabelExampleGreenGlow();
 		exampleLabel2.setToPosition(new Vector3(1000f,-40f,0f));
-		GWTishModelManagement.addmodel(exampleLabel2,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleLabel2);//,,GWTishModelManagement.RenderOrder.zdecides);
 		
 		final Label exampleLabel3 = EXAMPLES.getLabelExampleFunky();
 		exampleLabel3.setToPosition(new Vector3(1000f,-80f,0f));
-		GWTishModelManagement.addmodel(exampleLabel3,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleLabel3);//,GWTishModelManagement.RenderOrder.zdecides);
 		
 		final Label exampleLabel4 = EXAMPLES.getLabelExampleLong();
 		exampleLabel4.setToPosition(new Vector3(1000f,-130f,0f));
-		GWTishModelManagement.addmodel(exampleLabel4,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleLabel4);//,GWTishModelManagement.RenderOrder.zdecides);
 		
 		final HorizontalPanel exampleHP = EXAMPLES.getHorizontalPanelExample();
 		exampleHP.setToPosition(new Vector3(1000f,-490f,0f));
-		GWTishModelManagement.addmodel(exampleHP,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleHP);//,GWTishModelManagement.RenderOrder.zdecides);
 		
 		
 
 		final VerticalPanel exampleComposit = EXAMPLES.getMixedExample();
 		exampleComposit.setToPosition(new Vector3(1000f,-600f,0f));
-		GWTishModelManagement.addmodel(exampleComposit,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(exampleComposit);//,GWTishModelManagement.RenderOrder.zdecides);
 		//---------------------------
 		
 		
@@ -578,12 +578,12 @@ public class MainExplorationView implements Screen {
 		ShaderTestPanel shaderTests = new ShaderTestPanel();
 		shaderTests.setToScale(new Vector3(0.2f,0.2f,0.2f));
 		shaderTests.setToPosition(new Vector3(100f,430f,40f));	
-		GWTishModelManagement.addmodel(shaderTests,GWTishModelManagement.RenderOrder.infrontStage);
+		GWTishModelManagement.addmodel(shaderTests);//,GWTishModelManagement.RenderOrder.OVERLAY);
 	}
 
 
 
-	public static void addnewlocationHub(LocationsHub newloc,int x,int y) {
+	public static void addnewlocationHub(LocationsHub_old newloc,int x,int y) {
 
 		newloc.setPosition(x,y);
 		newloc.setClip(false);
@@ -599,7 +599,7 @@ public class MainExplorationView implements Screen {
 	//	MainExplorationView.addnewlocationHub(locationsNEWHub,X, -Y);
 	public static void addnewlocationHub(LocationHub newloc,int x,int y) {
 		newloc.setToPosition(new Vector3(x,y,0));
-		GWTishModelManagement.addmodel(newloc,RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(newloc);//,RenderOrder.zdecides);
 	}
 
 
@@ -686,8 +686,6 @@ public class MainExplorationView implements Screen {
 		mouseLight.position.y = currentMouseOnStage.y;
 		//z? intensity?
 		///////////
-		boolean hasbackground = false;
-		if (hasbackground){
 
 			if (debugCamera.active){
 				GWTishModelManagement.modelBatch.begin( debugCamera);
@@ -698,16 +696,20 @@ public class MainExplorationView implements Screen {
 
 
 
+			//standard GL settings (note; can be overriden by shader)
+			//GWTishModelManagement.modelBatch.getRenderContext().setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
+			//GWTishModelManagement.modelBatch.getRenderContext().setDepthTest(GL20.GL_LESS);    		
+			
+			
 			//rcontext.begin();
 			//testdefaultShader.begin(camera, rcontext);		
-			GWTishModelManagement.modelBatch.render(GWTishModelManagement.allBackgroundInstances); //currently disabled
-
+			GWTishModelManagement.modelBatch.render(GWTishModelManagement.allStandardInstances); 
 
 
 			//testdefaultShader.end();
 			GWTishModelManagement.modelBatch.end();	
 
-		}
+		
 
 		//rcontext.end();		
 		//testshader.begin();
@@ -727,21 +729,25 @@ public class MainExplorationView implements Screen {
 		//background.modelBatch.getRenderContext().begin();
 		//background.modelBatch.getRenderContext().setBlending(true, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		//background.modelBatch.getRenderContext().setCullFace(GL20.GL_FRONT);
+		
 		if (debugCamera.active){
 			GWTishModelManagement.modelBatch.begin( debugCamera);
 		} else {
 			GWTishModelManagement.modelBatch.begin( camera);
 		}
-		//rcontext.begin();
-		//testdefaultShader.begin(camera, rcontext);		
-		GWTishModelManagement.modelBatch.render(GWTishModelManagement.allForgroundInstances);
+		
+		
+		Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT); //We clear the depth buffer so all the overlays genuinely overlay everything
+		GWTishModelManagement.modelBatch.render(GWTishModelManagement.allOverlayInstances); 
+
+		
 
 		GWTishModelManagement.modelBatch.render(exampleParticleManagement.prepareAndGetParticleSystem());
 
 		//testdefaultShader.end();
 		GWTishModelManagement.modelBatch.end();	
 		//background.modelBatch.getRenderContext().end();
-
+		
 		
 		GWTishModelManagement.updateTouchState();
 		

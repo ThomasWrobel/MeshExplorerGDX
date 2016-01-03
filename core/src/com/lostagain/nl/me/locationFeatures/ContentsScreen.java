@@ -46,7 +46,7 @@ public class ContentsScreen  extends Container<ScrollPane>  implements LocationS
 	//scroll stuff
 	final ScrollPane scroller;
 	
-	public ContentsScreen(LocationsHub parentLocationContainer, SSSNode securedBy, String contentsTitle) {
+	public ContentsScreen(LocationsHub_old parentLocationContainer, SSSNode securedBy, String contentsTitle) {
 		
 		
 		

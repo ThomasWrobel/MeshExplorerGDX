@@ -20,7 +20,7 @@ import com.lostagain.nl.GWTish.DeckPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.locationFeatures.Location;
-import com.lostagain.nl.me.locationFeatures.LocationsHub;
+import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectType;
 
@@ -299,7 +299,7 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 				}
 				
 				Gdx.app.log(logstag,"(Getting hub for SSSNode:"+hubsAlsoWithLinksSSSNode+" ");				
-				LocationsHub hubWithLink = Location.getExistingHub(hubsAlsoWithLinksSSSNode);
+				LocationsHub_old hubWithLink = Location.getExistingHub(hubsAlsoWithLinksSSSNode);
 				
 				if(hubWithLink==null){
 					//if none found to update we return

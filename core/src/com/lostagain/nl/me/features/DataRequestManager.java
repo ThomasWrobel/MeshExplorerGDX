@@ -223,7 +223,7 @@ public class DataRequestManager {
 					int disY = (requestScreens.size()-i)*130;
 					Vector3 newpos  = new Vector3(homepos.x,homepos.y-disY,homepos.z); //NOTE: negative Y is temp while we are establishing new gui system
 					icon.setToPosition(newpos);
-					GWTishModelManagement.addmodel(icon,GWTishModelManagement.RenderOrder.zdecides);
+					GWTishModelManagement.addmodel(icon);//,GWTishModelManagement.RenderOrder.zdecides);
 
 					//hide by default unless we are the first in the chain
 					if (i>1){				

@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.lostagain.nl.me.locationFeatures.LocationsHub;
+import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 public class ModelMaker {

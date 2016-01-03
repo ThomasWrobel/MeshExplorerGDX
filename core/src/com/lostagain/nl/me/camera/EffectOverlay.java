@@ -35,7 +35,7 @@ public class EffectOverlay extends AnimatableModelInstance {
 							//  new NoiseShader.NoiseShaderAttribute(false,Color.ORANGE));		
 		//userData = MyShaderProvider.shadertypes.noise; 
 
-		GWTishModelManagement.addmodel(this,GWTishModelManagement.RenderOrder.infrontStage);
+		GWTishModelManagement.addmodel(this,GWTishModelManagement.RenderOrder.OVERLAY);
 		
 	}
 

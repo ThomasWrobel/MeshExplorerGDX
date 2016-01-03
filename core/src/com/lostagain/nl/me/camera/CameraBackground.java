@@ -35,7 +35,7 @@ public class CameraBackground extends AnimatableModelInstance {
 		materials.get(0).set( new PrettyBackground.PrettyBackgroundAttribute());		
 		
 
-		GWTishModelManagement.addmodel(this,GWTishModelManagement.RenderOrder.behindStage);
+		GWTishModelManagement.addmodel(this,GWTishModelManagement.RenderOrder.STANDARD);
 		
 		
 	}

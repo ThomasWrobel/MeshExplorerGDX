@@ -134,6 +134,26 @@ public class Style {
 	 * only works with GlowingSquareAttribute shaders right now
 	 * @param bordercol
 	 */
+	public void setBorderWidth(float glowWidth) {
+		
+	//	nullParameterCheck(bordercol);
+		
+		createBackgroundAttributeIfNeeded();
+	//	Gdx.app.log(logstag,"_________setting bordercoll:"+bordercol);
+
+		//get the material from the model
+		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
+		//if (backStyle!=null){
+
+			backStyle.glowWidth = glowWidth;
+		//	glowingSquare.glowColor = bordercol;
+	//	}
+
+	}
+	/**
+	 * only works with GlowingSquareAttribute shaders right now
+	 * @param bordercol
+	 */
 	public void setBorderColor(Color bordercol) {
 		
 		nullParameterCheck(bordercol);
@@ -371,7 +391,40 @@ public class Style {
 		this.textAlignment = textAlignment;
 		layoutStyleChanged();
 	}
+	
+	/**
+	 * Experimental, this effects the shaders impression of the text size only, and doesnt
+	 * effect widget size at all
+	 */
+	public void setTextScale(float scale){
+		createTextAttributeIfNeeded();
+		textStyle.textScale = scale;				
+		//layoutStyleChanged();
+	}
 
+	/**
+	 * Sets this widgets padding on all four sides.
+	 * This will set the shader to render any text inwards by this amount, as well as setting the left padding variable 
+	 * 
+	 * Unit is assumed to be the world units of your stage
+	 * Padding should not exceed widget size/2 if size is fixed
+	 * 
+	 * @param padding
+	 **/
+	public void setPadding(float padding){
+		PaddingLeft = padding;
+		PaddingRight = padding;
+		PaddingTop = padding;
+		PaddingBottom = padding;
+			
+		
+		createTextAttributeIfNeeded();
+		textStyle.paddingLeft = padding;
+		textStyle.paddingTop = padding;
+				
+		layoutStyleChanged();
+	}
+	
 	/**
 	 * Sets this widgets left padding.
 	 * This will set the shader to render any text inwards by this amount, as well as setting the left padding variable 
@@ -430,6 +483,22 @@ public class Style {
 		createTextAttributeIfNeeded();
 		//textStyle.paddingTop = Top;
 		layoutStyleChanged();
+	}
+
+	public float getPaddingLeft() {
+		return PaddingLeft;
+	}
+
+	public float getPaddingTop() {
+		return PaddingTop;
+	}
+
+	public float getPaddingRight() {
+		return PaddingRight;
+	}
+
+	public float getPaddingBottom() {
+		return PaddingBottom;
 	}
 
 

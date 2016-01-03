@@ -16,7 +16,7 @@ import com.lostagain.nl.me.features.ConceptGunPanel;
 import com.lostagain.nl.me.features.InventoryPanel;
 import com.lostagain.nl.me.features.NewGUIBar;
 import com.lostagain.nl.me.locationFeatures.Location;
-import com.lostagain.nl.me.locationFeatures.LocationsHub;
+import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
 import com.lostagain.nl.me.objects.DataObject;
 
 public class PlayersData {

@@ -63,7 +63,7 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 		//calculate its bounding box
 		recalculateBoundingBox();
 		
-		GWTishModelManagement.addmodel(this, RenderOrder.behindStage);
+		GWTishModelManagement.addmodel(this, RenderOrder.STANDARD);
 	//	ModelManagment.addHitable(this);
 		this.setAsHitable(true);
 		

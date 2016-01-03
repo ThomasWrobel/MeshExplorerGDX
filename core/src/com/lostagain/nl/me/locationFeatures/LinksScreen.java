@@ -32,11 +32,11 @@ public class LinksScreen extends Table implements LocationScreen {
 
 	ArrayList<Link> allLinks = new ArrayList<Link>();
 
-	LocationsHub parentLocationContainer;
+	LocationsHub_old parentLocationContainer;
 	
 		
 
-	public LinksScreen(LocationsHub parentLocationContainer, SSSNode securedBy) {
+	public LinksScreen(LocationsHub_old parentLocationContainer, SSSNode securedBy) {
 		super();
 		super.setFillParent(true);
 		this.parentLocationContainer=parentLocationContainer;

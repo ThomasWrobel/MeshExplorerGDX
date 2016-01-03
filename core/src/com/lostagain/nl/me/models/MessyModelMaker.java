@@ -36,7 +36,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.lostagain.nl.me.locationFeatures.LocationsHub;
+import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.shaders.NoiseShader;
 
@@ -95,7 +95,7 @@ public class MessyModelMaker {
 			
 		}
 		
-		GWTishModelManagement.addmodel(newmodel,GWTishModelManagement.RenderOrder.zdecides);	
+		GWTishModelManagement.addmodel(newmodel);//,GWTishModelManagement.RenderOrder.zdecides);	
 		return giveAnimatedNoiseTextureToRectangle(newmodel);
 	}
 	
@@ -103,7 +103,7 @@ public class MessyModelMaker {
 		
 		
 		ModelInstance newmodel  = new ModelInstance(createRectangleAt(x, y,z, w,h,  Color.BLACK, mat));
-		GWTishModelManagement.addmodel(newmodel,GWTishModelManagement.RenderOrder.zdecides);		
+		GWTishModelManagement.addmodel(newmodel);//,GWTishModelManagement.RenderOrder.zdecides);		
 		
 		return newmodel;
 	}
@@ -144,7 +144,7 @@ public class MessyModelMaker {
 	}
 
 
-	public static ModelInstance addConnectingLine(LocationsHub From,LocationsHub To){
+	public static ModelInstance addConnectingLine(LocationsHub_old From,LocationsHub_old To){
 
 		Gdx.app.log(logstag,"___________AddConnectingLine:"+From.getWidth());
 		Gdx.app.log(logstag,"___________AddConnectingLine:"+From.isVisible());
@@ -170,7 +170,7 @@ public class MessyModelMaker {
 
 		lines.add(newline);
 		//instances.add(newline);
-		GWTishModelManagement.addmodel(newline,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(newline);//,GWTishModelManagement.RenderOrder.zdecides);
 		
 		//lines.add(newlinetop);
 		//instances.add(newlinetop);
@@ -727,7 +727,7 @@ public class MessyModelMaker {
 	public static void addToBackground(ModelInstance modelinstance) {
 
 		
-		GWTishModelManagement.addmodel(modelinstance,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(modelinstance);//,GWTishModelManagement.RenderOrder.zdecides);
 		
 	}
 	

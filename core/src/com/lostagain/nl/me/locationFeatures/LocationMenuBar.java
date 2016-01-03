@@ -23,7 +23,7 @@ public class LocationMenuBar extends VerticalGroup {
 	
 	boolean locked;
 	
-	public LocationMenuBar(final LocationsHub parentLocationContainer,Skin skin) {
+	public LocationMenuBar(final LocationsHub_old parentLocationContainer,Skin skin) {
 		super();
 		
 		//create links

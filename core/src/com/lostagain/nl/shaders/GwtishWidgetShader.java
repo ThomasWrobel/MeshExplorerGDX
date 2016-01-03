@@ -180,8 +180,12 @@ public class GwtishWidgetShader implements Shader {
 		// context.setDepthTest(GL20.GL_LEQUAL);    	  
 		//context.setCullFace(GL20.GL_BACK);
 		
+		//Standard blending;
 		context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
 		context.setDepthTest(GL20.GL_LESS);    		
+		//-------------
+		//(currently we need a way to optionally use GL_NONE for overlays
+		
 		
 		//	context.setDepthTest(GL20.GL_NONE);    	
 		//	context.setDepthTest(GL20.GL_GREATER); 
@@ -229,34 +233,71 @@ public class GwtishWidgetShader implements Shader {
 			Texture distanceFieldTextureMap = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
 			program.setUniformi(u_sampler2D, context.textureBinder.bind(distanceFieldTextureMap));    		    		 
 	
-			//Not we need to supply the pixel step of the texture as this is different to the overall one
-			float tw = distanceFieldTextureMap.getWidth();
+			//Now we need to supply the pixel step of the texture as this is different to the overall one
+			float tw = distanceFieldTextureMap.getWidth(); //add padding here?
 			float th = distanceFieldTextureMap.getHeight();
+
 			
 			//depending on sizemode though, we might still want to use the models size - thus stretching the texture		
 			if (textStyleData.textScaleing.equals(TextScalingMode.fitarea)){
+				
 				
 				 tw = w;
 				 th = h;				 
 				//	Gdx.app.log(logstag, "fitarea detected in shader. size set as:"+tw+","+th); 
 					
 			} else if (textStyleData.textScaleing.equals(TextScalingMode.fitPreserveRatio)){
+							
+				//padding totals can only, at most, be the size of the widget
+				//if they exceed it, we should take midpoint between them
+				/*
+				float totalPaddingWidth =  (textStyleData.paddingLeft*2f);
+				if (totalPaddingWidth>w){
+					totalPaddingWidth=w;
+				}
+				float totalPaddingHeight =  (textStyleData.paddingTop*2f);
+				if (totalPaddingHeight>h){
+					totalPaddingHeight=h;
+				}
+				*/
+			//	tw = tw + (totalPaddingWidth); //should also be right
+			//	th = th + (totalPaddingHeight); // should also be +bottom
 				
-				float scale = Math.min(w/tw, h/th);
+				//float scale = Math.min((w-totalPaddingWidth)/tw, (h-totalPaddingHeight)/th); //amount texture should be scaled down by
 				
+				
+				//temp experiment;
+				float scale = textStyleData.textScale;
+
+				//scale = scale/4;				
 				tw = scale*tw;
-				th = scale*th;
+				th = scale*th;				
 				
 				//autopad the smaller dimension to centralize
-				if (th<h){
+				//this might not be correct, see commented out one that will require padding information on all 4 sides
+				if (th<(h)){
 					//pad height
-					textScale_height_pad = (h-th)/2;					
+					textScale_height_pad = (((h/2)-textStyleData.paddingTop)-(th/2));					
 					
 				}
-				if (tw<w){
+				if (tw<(w)){
 					//pad width
-					textScale_width_pad = (w-tw)/2;					
+					textScale_width_pad = (((w/2)-textStyleData.paddingLeft)-(tw/2));					
 				}
+				
+				
+				//Perhaps not do this at all if there's uneven padding?
+				/*
+				if (th<(h-totalPaddingHeight)){
+					//pad height
+					textScale_height_pad = ((h-totalPaddingHeight)-th)/2;					
+					
+				}
+				if (tw<(w-totalPaddingWidth)){
+					//pad width
+					textScale_width_pad = ((w-totalPaddingWidth)-tw)/2;					
+				}
+				*/
 				
 			}
 			
@@ -264,7 +305,7 @@ public class GwtishWidgetShader implements Shader {
 			program.setUniformf(u_texture_pixel_step,(1/tw), (1/th));
 
 			//we also supply the ratio between the image and the overall model size
-			//this lets us have a texture at a arbitary position within the models shader
+			//this lets us have a texture at a arbitrary position within the models shader
 			float sizeDiffX = w / tw;
 			float sizeDiffY = h / th;
 

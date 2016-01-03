@@ -320,7 +320,7 @@ public class NewGUIBar extends VerticalPanel {
 			
 			this.isVisible=isVisible;
 			
-			GWTishModelManagement.addmodel(this, RenderOrder.zdecides);
+			GWTishModelManagement.addmodel(this);//, RenderOrder.zdecides);
 			setUpStyle();
 			if (isVisible){
 				this.show();

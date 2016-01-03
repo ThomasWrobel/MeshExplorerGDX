@@ -24,6 +24,7 @@ import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.locationFeatures.EmailScreen;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.GWTishModelManagement;
+import com.lostagain.nl.uti.HSLColor;
 
 /**
  * A location hub is the center point of any location
@@ -70,11 +71,22 @@ public class LocationHub extends MeshIcon {
 	public LocationHub(SSSNode locationsNode,Location location) {
 
 		super(IconType.LocationHub,getHubTitle(locationsNode), defaultIconWidth, defaultIconHeight, location, createDefaultFeature(locationsNode));
-		Color basicS = Color.GREEN;
-		basicS.a = 0.5f;
-		super.setBackgroundColour(basicS); //temp
+		//Color basicS = new Color(0.0f,0.3f,0.0f, 0.7f);	
+		
+	//	HSLColor darkgreen = new HSLColor(0.33f,1.0f,0.1f,0.7f);
+		
+		//basicS.a = 0.5f;		
+		//super.setBackgroundColour(darkgreen.toRGB()); //temp
+		//Color basicBorder = new Color(0.3f,1.0f,0.3f, 1.0f);
+
+		HSLColor basicBorder = new HSLColor(0.33f,1.0f,0.6f,1.0f);
+		
+		super.getStyle().setBorderColor(basicBorder.toRGB());
+		super.getStyle().setBorderWidth(0.5f);
+		
 		LocationsNode = locationsNode;
 		super.setZIndex(150,super.getUniqueName()); 
+		
 		
 
 	}
@@ -376,7 +388,7 @@ public class LocationHub extends MeshIcon {
 		
 
 			feature.setToPosition(newPosition);
-			GWTishModelManagement.addmodel(feature,GWTishModelManagement.RenderOrder.zdecides); //should only add if not already on scene
+			GWTishModelManagement.addmodel(feature);//,GWTishModelManagement.RenderOrder.zdecides); //should only add if not already on scene
 			
 			//link it to us
 			this.addLineTo(feature);			

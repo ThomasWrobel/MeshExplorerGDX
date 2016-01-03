@@ -273,7 +273,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 			
 			ConceptGunPanel newConceptGun = new ConceptGunPanel();
 			newConceptGun.setToPosition(new Vector3(350f,1185f,0f));
-			GWTishModelManagement.addmodel(newConceptGun,GWTishModelManagement.RenderOrder.zdecides);
+			GWTishModelManagement.addmodel(newConceptGun);//,GWTishModelManagement.RenderOrder.zdecides);
 		
 			PlayersData.playersConceptGun = newConceptGun;
 			
@@ -319,7 +319,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 				
 					NewGUIBar newGui = new NewGUIBar();
 					//newGui.setToPosition(new Vector3(350f,1185f,0f));
-					GWTishModelManagement.addmodel(newGui,GWTishModelManagement.RenderOrder.zdecides);
+					GWTishModelManagement.addmodel(newGui);//,GWTishModelManagement.RenderOrder.zdecides);
 				
 					PlayersData.playersGUI = newGui;
 					
@@ -364,7 +364,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 			InventoryPanel inventory = new InventoryPanel();
 		
 			inventory.setToPosition(new Vector3(350f,1185f,0f));
-			GWTishModelManagement.addmodel(inventory,GWTishModelManagement.RenderOrder.zdecides);
+			GWTishModelManagement.addmodel(inventory);//,GWTishModelManagement.RenderOrder.zdecides);
 		
 			PlayersData.playersInventoryPanel = inventory;
 			

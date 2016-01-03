@@ -40,15 +40,33 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 	public TextScalingMode textScaleing = TextScalingMode.natural;
 	
 	/**
-	 * Will be used to displace the text image from the top left corner of the shader	 * 
+	 * manually controll text scale
+	 */
+	public float textScale = 1.0f;
+	
+	
+	/**
+	 * Will be used to displace the text image from the top left corner of the shader	  
 	 */
 	public float paddingLeft = 0.0f;
 	
 	/**
-	 * Will be used to displace the text image from the top left corner of the shader	 * 
+	 * Will be used to displace the text image from the top left corner of the shader	  
 	 */
 	public float paddingTop = 0.0f;
 	
+
+	
+	public float getTextScale() {
+		return textScale;
+	}
+
+
+	public void setTextScale(float textScale) {
+		this.textScale = textScale;
+	}
+
+
 	/**
 	 * Temp variable only. Controls a multiplier factor for opacity that applys to all Get statements of colour components (like getTextColor)
 	 * This should be reset to 1 in most situations.

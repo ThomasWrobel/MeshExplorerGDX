@@ -49,7 +49,7 @@ public class CameraVisualiser extends AnimatableModelInstance {
 		
 		
 		AnimatableModelInstance objectToAttach = new AnimatableModelInstance(cube);	
-		GWTishModelManagement.addmodel(objectToAttach, RenderOrder.infrontStage);
+		GWTishModelManagement.addmodel(objectToAttach, RenderOrder.OVERLAY);
 		this.attachThis(objectToAttach, new PosRotScale(0f,0f,0f));
 		
 		

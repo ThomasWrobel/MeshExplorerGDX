@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 
 /**
  * A way to represent and manipulate colors using HSL rather then RGB.</br>
- * This could be used for many things, but for not its used in the background colormap to allow a basecolor</br>
+ * This could be used for many things, but for now its used in the background colormap to allow a basecolor</br>
  * with slight varience in hue without messing up Luminous or Saturation</br>
  *  </br>
  * Based of ; http://en.wikipedia.org/wiki/HSL_color_space.</br>

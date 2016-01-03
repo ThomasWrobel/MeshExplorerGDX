@@ -22,7 +22,7 @@ import com.lostagain.nl.me.features.ConceptObject;
 import com.lostagain.nl.me.gui.ConceptGun;
 import com.lostagain.nl.me.gui.Inventory;
 import com.lostagain.nl.me.gui.STMemory;
-import com.lostagain.nl.me.locationFeatures.LocationsHub;
+import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.hitable;
@@ -179,7 +179,7 @@ public class Creature implements hitable , Animating {
 		
 		
 		//set to model lists
-		GWTishModelManagement.addmodel(creaturemodel,GWTishModelManagement.RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(creaturemodel);//,GWTishModelManagement.RenderOrder.zdecides);
 		GWTishModelManagement.addHitable(this);
 		//make bigger (test only)
 		//creaturemodel.transform.mul(new Matrix4().setToScaling(0.5f, 2.5f,0.5f));

@@ -81,12 +81,14 @@ public class Label extends LabelBase {
 	float ModelScale = 1.0f;
 
 	enum SizeMode {
-		/** label is a fixed, specified size and everything is scaled to fit **/
+		/** label is a fixed, specified size and everything is scaled to fit.
+		 *  Padding does not increase size. **/
 		Fixed,
 		/** label expands till it contains the text **/
 		ExpandXYToFit,
 		/**
-		 * Expands variably with new lines, but wraps to the width
+		 * Expands variably with new lines, but wraps to the width.
+		 * This is somewhat like a HTML DIV with a style width specified
 		 */
 		ExpandHeightMaxWidth,
 
@@ -98,7 +100,7 @@ public class Label extends LabelBase {
 	/**
 	 * under fixed width mode this marks the maximum width of the widget. Any expansion of the text beyond it will result
 	 * in word wrapping.
-	 * under fixed mode this will be the size regardless of its its all needed or not.
+	 * Under fixed mode this will be the size regardless of its its all needed or not.
 	 */
 	float maxWidth = -1; //default for no max
 	/**
@@ -123,7 +125,7 @@ public class Label extends LabelBase {
 	 * @param contents
 	 */
 	public Label (String contents){ 
-		this(contents, -1,-1, SizeMode.ExpandXYToFit, MODELALIGNMENT.TOPLEFT); //defaults to top left alignment of pivot with no max width
+		this(contents, -1,-1, SizeMode.ExpandXYToFit, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot with no max width
 	}
 	/**
 	 * 
@@ -131,9 +133,12 @@ public class Label extends LabelBase {
 	 * @param MaxWidth
 	 */
 	public Label (String contents,float MaxWidth){ 
-		this( contents, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, MODELALIGNMENT.TOPLEFT); //defaults to top left alignment of pivot
+		this( contents, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
 	}
-	
+
+	public Label(String contents, float Width, float Height, MODELALIGNMENT modelalignment, TextAlign textalign) {
+		this( contents, Width, Height, SizeMode.Fixed, modelalignment,textalign); //defaults to top left alignment of pivot
+}
 	/**
 	 * 
 	 * @param contents
@@ -141,7 +146,7 @@ public class Label extends LabelBase {
 	 * @param MaxHeight
 	 */
 	public Label (String contents,float MaxWidth,float MaxHeight){ 
-		this( contents, MaxWidth,MaxHeight, SizeMode.Fixed, MODELALIGNMENT.TOPLEFT); //defaults to top left alignment of pivot
+		this( contents, MaxWidth,MaxHeight, SizeMode.Fixed, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
 	}
 	
 	/**
@@ -151,7 +156,7 @@ public class Label extends LabelBase {
 	 *  @param MaxHeight
 	 */
 	public Label (String contents,float Width,float Height, MODELALIGNMENT alignment){ 
-		this( contents, Width,Height, SizeMode.Fixed, alignment); 
+		this( contents, Width,Height, SizeMode.Fixed, alignment,TextAlign.LEFT); 
 	}
 	
 	/**
@@ -160,19 +165,20 @@ public class Label extends LabelBase {
 	 * @param MaxWidth
 	 */
 	public Label (String contents,float MaxWidth,MODELALIGNMENT alignment){ 
-		this( contents, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, alignment); 
+		this( contents, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, alignment,TextAlign.LEFT); 
 	}
 	/**
 	 * 
 	 * @param contents
 	 * @param MaxWidth
-	 * @param alignment
+	 * @param modelAlignement
 	 */
-	public Label (String contents,float MaxWidth,float MaxHeight, SizeMode sizeMode, MODELALIGNMENT alignment){ 
+	public Label (String contents,float MaxWidth,float MaxHeight, SizeMode sizeMode, MODELALIGNMENT modelAlignement, TextAlign textAlignment){ 
 		
-		super(generateObjectData(true, true, contents, sizeMode, MaxWidth, MaxHeight, alignment));
+		super(generateObjectData(true, true, contents, sizeMode, MaxWidth, MaxHeight, modelAlignement,textAlignment));
 		super.setStyle(getMaterial(LABEL_MATERIAL)); //no style settings will work before this is set
-		
+		this.lastUsedTextAlignment = textAlignment;
+			
 		if (!labelSetupDone){
 			firstTimeSetUp();
 			labelSetupDone=true;
@@ -247,6 +253,7 @@ public class Label extends LabelBase {
 
 
 
+	
 	/**
 	 * The object data needed on creation is just the background mesh instance and the cursor position.
 	 * This shouldn't need to be run outside the objects first creation.
@@ -258,13 +265,14 @@ public class Label extends LabelBase {
 	 * @param labelsSizeMode
 	 * @param maxWidth
 	 * @param alignment - the meshs pivot alignment
+	 * @param textAlignment 
 	 * @return
 	 */
-	private static backgroundAndCursorObject generateObjectData(boolean regenTexture,boolean regenMaterial,String contents,SizeMode labelsSizeMode, float maxWidth ,float maxHeight, MODELALIGNMENT alignment) {
+	private static backgroundAndCursorObject generateObjectData(boolean regenTexture,boolean regenMaterial,String contents,SizeMode labelsSizeMode, float maxWidth ,float maxHeight, MODELALIGNMENT alignment, TextAlign textAlignment) {
 		TextureAndCursorObject textureData = null;
-
+		
 		if (regenTexture){			
-			textureData = generateTexture(labelsSizeMode, contents,maxWidth,TextAlign.LEFT); //left default			
+			textureData = generateTexture(labelsSizeMode, contents,maxWidth,textAlignment); //left default			
 		}
 
 		Texture newTexture = textureData.textureItself;
@@ -769,7 +777,13 @@ public class Label extends LabelBase {
 		TextAlign align = this.getStyle().getTextAlignment();
 		lastUsedTextAlignment = align;
 		
-		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,maxWidth,align); //-1 is the default max width which means "any size"
+		//note; we subtract the left/right padding from maxwidth if we are on fixed size mode
+		float effectiveMaxWidth = maxWidth;
+		if (maxWidth!=-1){
+			effectiveMaxWidth = maxWidth - (this.getStyle().getPaddingLeft() + this.getStyle().getPaddingRight());
+		}
+		
+		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,effectiveMaxWidth,align); //-1 is the default max width which means "any size"
 
 
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
@@ -1020,17 +1034,83 @@ public class Label extends LabelBase {
 		labelsSizeMode = SizeMode.ExpandHeightMaxWidth;
 	}
 
-	//regenerates the texture if the style layout is changed (ie, text alignment)
+	//regenerates the texture if the style layout is changed (ie, text alignment or padding)
 	@Override
 	public void layoutStyleChanged() {
 		super.layoutStyleChanged();
 		
-		//if alignment has changed we regenerate the texture
-		//(not needed for other layout changes like padding - thats purely shader based)
-		if (this.getStyle().getTextAlignment() != lastUsedTextAlignment){
+		//If the padding has changed and we are on fixed width mode, we need to regenerate
+		//the texture to ensure its still contained within the widget
+				
+		///if (this.getStyle().getTextAlignment() != lastUsedTextAlignment){
 			regenerateTexture(contents);
 			
+		//}
+		
+			//work out a appropriate text scale for the shader so it fits
+			float widgetWidth  = this.getWidth();
+			float widgetHeight = this.getHeight();
+			float totalPaddingWidth =  (getStyle().getPaddingLeft()+getStyle().getPaddingRight());
+			if (totalPaddingWidth>widgetWidth){
+				totalPaddingWidth=widgetWidth;
+			}
+			float totalPaddingHeight =  (getStyle().getPaddingTop()+getStyle().getPaddingBottom());
+			if (totalPaddingHeight>widgetHeight){
+				totalPaddingHeight=widgetHeight;
+			}
+			float textScale = Math.min(( widgetWidth-totalPaddingWidth)/textureSize.x, (widgetHeight-totalPaddingHeight)/textureSize.y); 
+			
+			this.getStyle().setTextScale(textScale);
+			
+			
+		//the shader takes care of text positioning, but not sizing, so we need to recalculate sizes based on mode.
+		/*
+		float newTotalWidth  = -1;
+		float newTotalHeight = -1;	
+		float newTextWidth  = -1;
+		float newTextHeight = -1;	
+		
+		
+		//different behavior based on sizemode
+		switch (this.labelsSizeMode){
+		case ExpandHeightMaxWidth:
+			
+			
+			break;
+		case ExpandXYToFit:
+			
+			
+			break;
+		case Fixed:
+			//same totals as before
+			newTotalWidth  = maxWidth;
+			newTotalHeight = maxHeight;
+			
+			//new text size is the total size, minus all the padding		
+			newTextWidth  = newTotalWidth  - (getStyle().getPaddingLeft()+getStyle().getPaddingRight());
+			newTextHeight =	newTotalHeight - (getStyle().getPaddingTop()+getStyle().getPaddingBottom());
+			
+			//regenerate texture
+			regenerateTexture(contents);
+			
+			break;
+		default:
+			break;
+		
 		}
+		/**
+		 * For fixed size labels;
+
+Size is still w/h
+Label size is (w-(left+right), h-(top+bottom)
+
+For dynamic sized labels
+
+Label size is  w+(leftpadding+rightpadding), h+(top+bottom)
+Text size remains just h/w, however
+
+
+		 */
 
 		//		Gdx.app.log(logstag," size now::"+this.getWidth()+","+this.getHeight());
 		

@@ -37,7 +37,7 @@ public class EmailHub extends MeshIcon {
 	public EmailHub(LocationHub parentHub) {
 		super(IconType.EmailHub, parentHub.parentLocation, generateFeature());
 
-		super.setBackgroundColour(new Color(0.2f,0.2f,0.7f,0.88f));
+	//	super.setBackgroundColour(new Color(0.2f,0.2f,0.7f,0.88f));
 		this.parentHub=parentHub;
 
 		OpenHeightDisplacement = 2f; //we dont raise as high as other things. (this way emails go ontop of the hub even when the hub is open)
@@ -67,7 +67,7 @@ public class EmailHub extends MeshIcon {
 		emailIcon.OpenHeightDisplacement = 30f; //bit higher then normal
 		
 		emailPage.setParentMeshIcon(emailIcon);
-		GWTishModelManagement.addmodel(emailIcon, RenderOrder.zdecides);
+		GWTishModelManagement.addmodel(emailIcon);//, RenderOrder.zdecides);
 		
 		emailIcon.hide();		
 		DirectEmails.add(emailIcon);

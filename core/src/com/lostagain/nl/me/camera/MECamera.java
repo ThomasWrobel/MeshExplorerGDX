@@ -90,7 +90,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		mainOverlay.hide(); //disable overlay for now
 		
 		//add the default visualizer to help show where the camera is
-		GWTishModelManagement.addmodel(cameraVisualiserCube,GWTishModelManagement.RenderOrder.infrontStage);		
+		GWTishModelManagement.addmodel(cameraVisualiserCube,GWTishModelManagement.RenderOrder.OVERLAY);		
 		
 		PosRotScale camVisPlacement = new PosRotScale(0f,0f,0f);
 		camVisPlacement.setToRotation(1, 0, 0, 180); //rotate it so one axis points forward
@@ -101,7 +101,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 		
 		//fire point in future should be setup by the concept gun
 		super.attachThis(FirePoint, new PosRotScale(0f, 100f, -115f));
-		GWTishModelManagement.addmodel(FirePoint,GWTishModelManagement.RenderOrder.infrontStage);
+		GWTishModelManagement.addmodel(FirePoint,GWTishModelManagement.RenderOrder.OVERLAY);
 		
 		
 		

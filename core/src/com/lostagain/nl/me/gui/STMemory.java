@@ -30,6 +30,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.me.features.ConceptObject;
+import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.objects.DataObject;
 
 /** handles the various semantic objects you can carry with, either for concept gun use
@@ -142,6 +143,9 @@ public class STMemory extends Table implements DataObjectDropTarget {
 	protected static void setCurrentlyHeld(ConceptObject object) {
 		
 		currentlyHeldNEW=object;
+
+		//Make sure its on overlay mode
+		object.setAsOverlay(true);
 		
 	//	currentlyHeldNEW.setAsHitable(false); //no hitting while held;
 		
@@ -157,6 +161,7 @@ public class STMemory extends Table implements DataObjectDropTarget {
 	protected static void setCurrentlyHeld(DataObject object) {
 		
 		currentlyHeld=object;
+		
 		
 		/*
 		// 
@@ -248,7 +253,6 @@ public class STMemory extends Table implements DataObjectDropTarget {
 		{
 			//set cursor to none
 			ME.setCursorToDefault();
-			
 			if (currentlyHeld!=null){
 				//dump on ground where cursor is
 				dropItemToGround(currentlyHeld);			
@@ -259,6 +263,9 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			
 			//NEW drop function
 			if (currentlyHeldNEW!=null){
+
+				//Make sure its off overlay mode
+				currentlyHeldNEW.setAsOverlay(false);
 				//dump on ground where cursor is
 				dropItemToGround(currentlyHeldNEW);			
 				
@@ -272,6 +279,10 @@ public class STMemory extends Table implements DataObjectDropTarget {
 				//remove currently held
 				currentlyHeldNEW=null;
 			}
+			
+			
+
+		
 			
 		}
 		

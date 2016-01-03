@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.GWTish.Style.TextAlign;
 import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
@@ -40,6 +41,7 @@ import com.lostagain.nl.me.newmovements.NewMovementController;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
 import com.lostagain.nl.shaders.MySorter;
+import com.lostagain.nl.uti.HSLColor;
 
 /** 
  * Will become a 3d icon that can be clicked to turn into a interactive meshFeature.
@@ -60,23 +62,30 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 	//generic icon stuff
 	public enum IconType {
-		Email("Email",new Color(0.1f,0.1f,0.6f,0.9f)),
-		EmailHub("Email\nHub",new Color(0.11f,0.11f,0.7f,0.88f)),
-		ConceptStore("Concepts",Color.GREEN),
-		AbilityStore("Abilities",new Color(1.0f,0.3f,0.1f,0.7f)),
-		AbilityInstaller("Ability\nInstaller",new Color(1.0f,0.5f,0.1f,0.7f)),
-		LinkStore("Links",Color.PURPLE),
+	//	Email("Email",new Color(0.1f,0.1f,0.6f,0.9f)),
+		
+		Email("Email",0.6f),		
+	//	EmailHub("Email\nHub",new Color(0.11f,0.11f,0.7f,0.88f)),
+		EmailHub("Email\nHub",0.5f),
+		//ConceptStore("Concepts",Color.GREEN),
+		ConceptStore("Concepts",0.4f),
+		//AbilityStore("Abilities",new Color(1.0f,0.3f,0.1f,0.7f)),
+		AbilityStore("Abilities",0.05f),
+		//AbilityInstaller("Ability\nInstaller",new Color(1.0f,0.5f,0.1f,0.7f)),
+		AbilityInstaller("Ability\nInstaller",0.1f),
+		//LinkStore("Links",Color.PURPLE),
+		LinkStore("Links",0.8f),
 		Ability(new Color(1.0f,0.3f,0.1f,0.7f)),
 		Info,
 		Concept, //Used as a generic concept object (Note this might change when first opened and its discovered to be a email, software etc inside?)
-		LocationHub("Location\nHub"), //note the new line
+		LocationHub("Location\nHub",0.33f), //note the new line
 		RequestScreen("Sealed"),
 		OTHER;  //used as a catch all for unique features.
 
 
-		String labelName = "";
-		Color iconColor = null; 
-		
+		String labelName  = "";
+		Color iconColor   = null; 
+		Color borderColor = null; 
 		
 		IconType(){
 			this("");
@@ -84,12 +93,30 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		IconType(String label){
 			labelName=label;
 		}
-		IconType(String label,Color col){
+		/**
+		 * for consistancy of theme we now generate the colours from hues, but keep the sat and lum the same
+		 * 0.33 = green
+		 * @param label
+		 * @param hue
+		 */
+		IconType(String label,float hue){
+			HSLColor colhsl = new HSLColor(hue,1.0f,0.1f,0.8f);			
+			labelName=label;
+			iconColor = colhsl.toRGB();
+			
+			HSLColor basicBorder = new HSLColor(hue,1.0f,0.6f,1.0f);
+			borderColor = basicBorder.toRGB();
+			
+			
+		}
+		IconType(String label,Color col,Color border){
 			labelName=label;
 			iconColor = col;
+			borderColor = border;
 		}
 		IconType(Color col){
 			iconColor = col;
+			borderColor = col;
 		}
 		public String getLabelName() {
 			if (labelName.isEmpty()){
@@ -99,6 +126,9 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		}
 		public Color getIconColour() {
 			return iconColor;
+		}
+		public Color getBorderColour() {
+			return borderColor;
 		}
 	}
 	
@@ -120,8 +150,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 	static final float defaultIconWidth  = 100f; //standard width and height of all icons
 	static final float defaultIconHeight = 100f;
-	private static final float LabelMargin = 12f; //we need this as the text hovers above the icon ad thus the paralax can move iut outside the edge if we dont have plent of padding
-
+	
 	private final Runnable SizeChangeHandler = new Runnable(){
 		@Override
 		public void run() {
@@ -131,9 +160,6 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		}
 	};
 
-
-	//not used
-	//public Label MeshIconsLabel;
 
 
 	
@@ -161,6 +187,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	float timeIntoFade = 0.0f;
 	Runnable runAfterFadeIn = null;
 	Runnable runAfterFadeOut = null;
+	
 	//The default mesh vertexs of this icon
 	float[] IconsDefaultVertexs = null; //this is set on creation and lets us return to the correct geometry after resizing
 	//The  mesh vertexes of this icon when its enlarged
@@ -202,8 +229,9 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	 * **/
 	public MeshIcon(IconType type,String specificName,float w,float h,Location parentLocation,GenericMeshFeature assocatiedfeature) {		
 	//	super(generateBackgroundModel(w,h));
-		super(getIconsDisplayName(type,specificName),w,h,MODELALIGNMENT.CENTER);
+		super(getIconsDisplayName(type,specificName),w,h,MODELALIGNMENT.CENTER,TextAlign.CENTER);
 		
+		super.getStyle().setPadding(7f);
 		
 		thisIconsType = type;
 		this.parentLocation = parentLocation;
@@ -231,6 +259,10 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		//set the icon color if not default
 		if (type.getIconColour()!=null){
 			setBackgroundColour(type.getIconColour());
+			
+			super.getStyle().setBorderColor(type.getBorderColour());
+			super.getStyle().setBorderWidth(0.5f);
+			
 		}
 
 
@@ -1028,9 +1060,9 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 			Linksline.setInheritedRotation(false);
 
-			attachThis(Linksline, new PosRotScale(0,0,-25f)); //a little behind this icon to allow movement a bit
+			attachThis(Linksline, new PosRotScale(0,0,-35f)); //a little behind this icon to allow movement a bit and not to be too sensative to draw order issues
 
-			GWTishModelManagement.addmodel(Linksline,GWTishModelManagement.RenderOrder.zdecides);
+			GWTishModelManagement.addmodel(Linksline);
 
 		}
 

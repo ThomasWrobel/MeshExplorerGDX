@@ -42,7 +42,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 
 	final static String logstag = "ME.RepairScreen";
 
-	LocationsHub locationProtectedByThis;
+	LocationsHub_old locationProtectedByThis;
 
 	private SSSNode neededData;
 
@@ -92,7 +92,7 @@ public class RepairScreen extends Group  implements LocationScreen {
 
 			boolean needslayout = true;
 
-			public RepairScreen(LocationsHub parentLocationContainer, SSSNode securedBy) {
+			public RepairScreen(LocationsHub_old parentLocationContainer, SSSNode securedBy) {
 				super();
 
 				//	Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));

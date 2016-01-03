@@ -67,7 +67,7 @@ public class ShaderTestPanel extends HorizontalPanel {
 
 		Texture normals = new Texture(Gdx.files.internal(normalLoc));
 		testBrickImage.setShaderAttribute(new NormalMapShader.NormalMapShaderAttribute(normals),false); 
-		GWTishModelManagement.addmodel(testBrickImage, RenderOrder.infrontStage);
+		GWTishModelManagement.addmodel(testBrickImage);//, RenderOrder.OVERLAY);
 		add(testBrickImage);		
 
 

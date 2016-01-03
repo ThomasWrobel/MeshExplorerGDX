@@ -36,7 +36,7 @@ public class Location {
 	final static float PositionNoise = 50;
 //	private static HashMap<SSSNode, LocationHub> AllLocationNEWHubs;
 	
-	public LocationsHub locationsHub; //old being phased out
+	public LocationsHub_old locationsHub; //old being phased out
 
 	//the DataRequestManager, which manages if we are locked 
 	DataRequestManager locationsLock;
@@ -74,7 +74,7 @@ public class Location {
 	// Population creation (for each possible population)
 
 	private static final HashMap<SSSNode,LocationHub> AllLocationHubsNEW = new HashMap<SSSNode,LocationHub>();
-	private static final HashMap<SSSNode,LocationsHub> AllLocationHubs = new HashMap<SSSNode,LocationsHub>();
+	private static final HashMap<SSSNode,LocationsHub_old> AllLocationHubs = new HashMap<SSSNode,LocationsHub_old>();
 	private static final HashMap<SSSNode,Location>     AllLocations = new HashMap<SSSNode,Location>();
 
 	
@@ -226,7 +226,7 @@ public class Location {
 	/** gets an existing locationhub that is at this location sssnode. Note; hubs and locations share a common SSSNode
 	 * identifying them.
 	 * The hub is merely the "center" of the location. **/
-	public static LocationsHub getExistingHub(SSSNode hubsNode) {		
+	public static LocationsHub_old getExistingHub(SSSNode hubsNode) {		
 		return AllLocationHubs.get(hubsNode);
 	}
 	
@@ -234,7 +234,7 @@ public class Location {
 
 		Gdx.app.log(logstag, "creating hub");
 		
-		locationsHub = new LocationsHub(locationsnode);
+		locationsHub = new LocationsHub_old(locationsnode);
 		AllLocationHubs.put(locationsnode,locationsHub);
 
 		MainExplorationView.addnewlocationHub(locationsHub,X, -Y+1000); 		//new location hub system below, old one has inverted Y now to keep it out the way
@@ -455,7 +455,7 @@ public class Location {
 			Gdx.app.log(logstag, "getting unused location. Testing:"+x);
 
 			//loop over all locations, displace X if its overlaps
-			for (LocationsHub con : AllLocationHubs.values()) {
+			for (LocationsHub_old con : AllLocationHubs.values()) {
 
 				float miny = con.getY();
 				float maxy = con.getY() + con.getHeight();

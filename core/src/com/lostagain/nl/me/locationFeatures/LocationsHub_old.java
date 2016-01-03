@@ -77,7 +77,7 @@ import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.uti.MeshWorld;
 
-public class LocationsHub extends Table {
+public class LocationsHub_old extends Table {
 	final static String logstag = "ME.LocationsHub";
 	
 	public final static int sizeX = 450;
@@ -89,7 +89,7 @@ public class LocationsHub extends Table {
 	public SSSNode LocationsNode;
 
 	//this location
-	LocationsHub thisLocation = this;
+	LocationsHub_old thisLocation = this;
 	
 	//Locations name and URI cropped to fit the window
 	String displayLocation = "";
@@ -120,7 +120,7 @@ public class LocationsHub extends Table {
 	
 
 
-	public LocationsHub(SSSNode LocationsNode) {
+	public LocationsHub_old(SSSNode LocationsNode) {
 		super();
 		// add a test label
 		super.setSize(450,400);
@@ -714,8 +714,8 @@ public class LocationsHub extends Table {
 		//ensure background is positioned
 		if (backgroundObject!=null){
 			//we need to position by center so we adjust the co-ordinates by half its size
-			int x = (int) (this.getX() +(LocationsHub.sizeX/2));
-			int y = (int) (this.getY() +(LocationsHub.sizeY/2));
+			int x = (int) (this.getX() +(LocationsHub_old.sizeX/2));
+			int y = (int) (this.getY() +(LocationsHub_old.sizeY/2));
 			
 			backgroundObject.setToPosition(new Vector3(x,y,-5));
 			

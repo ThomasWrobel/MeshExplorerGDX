@@ -47,7 +47,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 
 
 	
-	public EmailScreen(LocationsHub parentLocationContainer, SSSNode securedBy) {
+	public EmailScreen(LocationsHub_old parentLocationContainer, SSSNode securedBy) {
 		
 		//super.setDebug(true);
 		super.setX(0);

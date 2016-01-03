@@ -796,6 +796,17 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	}
 
 
+	public void setAsOverlay(boolean status){
+		
+		if (status){
+			currentRenderPlacement = RenderOrder.OVERLAY;
+			GWTishModelManagement.setAsOverlay(this);			
+		} else {
+			currentRenderPlacement = RenderOrder.STANDARD;
+			GWTishModelManagement.setAsStandard(this);			
+		}
+		
+	}
 	
 
 }

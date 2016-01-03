@@ -42,11 +42,14 @@ public class GWTishModelManagement {
 
 	private static String logstag="ME.ModelManagment old";
 
-	/** All the 3d models that appear BEHIND the sprite ones **/
-	public static ObjectSet<ModelInstance> allBackgroundInstances = new ObjectSet<ModelInstance>();
+	/** All the 3d models we want to render in the standard draw order should go into this list **/
+	public static ObjectSet<ModelInstance> allStandardInstances = new ObjectSet<ModelInstance>();
 
-	/** All the 3d models that appear INFRONT of the sprite ones **/
-	public static ObjectSet<ModelInstance> allForgroundInstances = new ObjectSet<ModelInstance>();
+	/** All the 3d models that appear INFRONT of the Standard ones.
+	 * You can use this for special overlay objects - effects, interfaces, etc.
+	 * Remember fine-grain controll within grouped objects should be dealt with the Zindex attribute, not this **/
+	public static ObjectSet<ModelInstance> allOverlayInstances = new ObjectSet<ModelInstance>();
+	
 
 	public static MyShaderProvider myshaderprovider = new MyShaderProvider();
 	
@@ -74,13 +77,17 @@ public class GWTishModelManagement {
 
 
 	static public enum RenderOrder {
-		behindStage,infrontStage,zdecides
+		STANDARD,OVERLAY;//,zdecides; //zdecides not used
 	}
 
 	//test objects
 	static AnimatableModelInstance lookAtTester;
 
-
+	
+	public static void addmodel(AnimatableModelInstance model) {	
+		addmodel(model,RenderOrder.STANDARD);
+	}
+	
 	/** Adds the model to the render list.
 	 * RenderOrder determines if its rendered in front or behind the spritestage.
 	 * 
@@ -100,21 +107,23 @@ public class GWTishModelManagement {
 
 	}
 
-
+	public static void addmodel(ModelInstance model) {	
+		addmodel(model,RenderOrder.STANDARD);
+	}
 	/** Adds the model to the render list.
 	 * RenderOrder determines if its rendered in front or behind the spritestage.
 	 * 
 	 * You can also  it chooses if its a background or foreground object based on its Z position
 	 * If Z is less then the stage Z 5 its behind
 	 * If its more then 5its in front**/
-	public static void addmodel(ModelInstance model, GWTishModelManagement.RenderOrder order) {	
+	public static void addmodel(ModelInstance model, RenderOrder order) {	
 		
 		//temp test putting it all in front of the stage while we test material based ordering
-		order = GWTishModelManagement.RenderOrder.infrontStage;		
+		//order = GWTishModelManagement.RenderOrder.OVERLAY;		
 		
 	
 		//ignore if present already
-		if (allBackgroundInstances.contains(model) || allForgroundInstances.contains(model)){
+		if (allStandardInstances.contains(model) || allOverlayInstances.contains(model)){
 			Gdx.app.log(logstag,"________model already on a render list");
 			return;
 		}
@@ -125,22 +134,24 @@ public class GWTishModelManagement {
 		
 		Gdx.app.log(logstag,"z = "+Z);
 
-		if (order == GWTishModelManagement.RenderOrder.behindStage){
-			allBackgroundInstances.add(model);
+		if (order == RenderOrder.STANDARD ){
+			allStandardInstances.add(model);
 			return;
 		}
 
-		if (order == GWTishModelManagement.RenderOrder.infrontStage){
-			allForgroundInstances.add(model);
+		if (order == RenderOrder.OVERLAY){
+			allOverlayInstances.add(model);
 			return;
 		}
-
+		
+		allStandardInstances.add(model); //temp till we remove zdecides
+		
 		//depending on if we are above/below the stage position we add it accordingly		
-		if (Z<5){
-			allBackgroundInstances.add(model);
-		} else {
-			allForgroundInstances.add(model);
-		}
+		//if (Z<5){
+		//	allBackgroundInstances.add(model);
+		//} else {
+		//	allForgroundInstances.add(model);
+		//}
 
 	}
 
@@ -150,16 +161,16 @@ public class GWTishModelManagement {
 	 * @return 
 	 */
 	public static GWTishModelManagement.RenderOrder removeModel(ModelInstance model) {		
-		Boolean wasInForground = allBackgroundInstances.remove(model);
+		Boolean wasInForground = allStandardInstances.remove(model);
 
 		if (wasInForground){
-			return GWTishModelManagement.RenderOrder.behindStage;			
+			return GWTishModelManagement.RenderOrder.STANDARD;			
 		}
 
-		Boolean wasInBackground= allForgroundInstances.remove(model);
+		Boolean wasInBackground= allOverlayInstances.remove(model);
 
 		if (wasInBackground){
-			return GWTishModelManagement.RenderOrder.infrontStage;			
+			return GWTishModelManagement.RenderOrder.OVERLAY;			
 		}
 
 		return null;
@@ -295,7 +306,7 @@ public class GWTishModelManagement {
 		
 		
 		if (GameMode.currentGameMode!=GameMode.Production){
-			GWTishModelManagement.addmodel(beamtest,GWTishModelManagement.RenderOrder.infrontStage);
+			GWTishModelManagement.addmodel(beamtest,GWTishModelManagement.RenderOrder.OVERLAY);
 			//	ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
 
 			addTestModels();
@@ -426,7 +437,7 @@ public class GWTishModelManagement {
 		lookAtTester.setToPosition(new Vector3 (500,500,0));
 		
 
-		GWTishModelManagement.addmodel(lookAtTester,GWTishModelManagement.RenderOrder.infrontStage);
+		GWTishModelManagement.addmodel(lookAtTester,GWTishModelManagement.RenderOrder.OVERLAY);
 
 	}
 
@@ -873,7 +884,38 @@ public class GWTishModelManagement {
 
 
 	}
-
+	
+	/**
+	 * changes the render order of a item to "overlay"
+	 * (that is, puts it in the overlay list after taking it out of the normal list
+	 * If using a animatablemodelinstance, use its own SetASOverlay function so it stays in sycn
+	 * @param model
+	 */
+	public static void setAsOverlay(ModelInstance model){
+		
+		//only add to overlay if it was in standard anyway
+		if (allStandardInstances.remove(model)) {
+			allOverlayInstances.add(model);
+		}
+		
+		
+	}
+	/**
+	 * changes the render order of a item to "standard"
+	 * (that is, puts it in the standard list after taking it out of the ovelay list
+	 * 
+	 * If using a animatablemodelinstance, use its own SetASStandard function so it stays in sycn
+	 * @param model
+	 * 
+	 */
+	public static void setAsStandard(ModelInstance model){
+		
+		//we only add it to standard if it was in overlay
+		if (allOverlayInstances.remove(model)){
+			allStandardInstances.add(model);
+		}
+		
+	}
 
 	public static void updateTouchState() {
 

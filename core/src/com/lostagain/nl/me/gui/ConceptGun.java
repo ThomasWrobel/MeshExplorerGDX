@@ -430,7 +430,7 @@ public class ConceptGun  extends WidgetGroup {
 			//lazer3d = new AnimatableModelInstance(newlazermodel);
 			
 			lazer3d = new ConceptBeam();
-			GWTishModelManagement.addmodel(lazer3d,GWTishModelManagement.RenderOrder.infrontStage);
+			GWTishModelManagement.addmodel(lazer3d,GWTishModelManagement.RenderOrder.OVERLAY);
 			//hide by default
 			lazer3d.hide();
 	}

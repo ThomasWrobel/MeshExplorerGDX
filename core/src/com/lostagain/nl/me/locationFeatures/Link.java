@@ -444,7 +444,7 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 				}
 				
 				Gdx.app.log(logstag,"(Getting hub for SSSNode:"+hubsAlsoWithLinksSSSNode+" ");				
-				LocationsHub hubWithLink = Location.getExistingHub(hubsAlsoWithLinksSSSNode);
+				LocationsHub_old hubWithLink = Location.getExistingHub(hubsAlsoWithLinksSSSNode);
 				
 				if(hubWithLink==null){
 					//if none found to update we return
@@ -487,8 +487,8 @@ public class Link extends WidgetGroup implements GenericProgressMonitor {
 			Location newlocation =  Location.getLocation(linksToThisPC);
 			
 		
-			LocationsHub from = currentParent.parentLocationContainer;
-			LocationsHub to = newlocation.locationsHub;
+			LocationsHub_old from = currentParent.parentLocationContainer;
+			LocationsHub_old to = newlocation.locationsHub;
 			
 			//only refresh if the To and From are attached
 			if (MainExplorationView.gameStage.getActors().contains(from, true) && MainExplorationView.gameStage.getActors().contains(to, true))			
