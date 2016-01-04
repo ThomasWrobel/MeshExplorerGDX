@@ -199,7 +199,7 @@ vec4 getStyledText()
        	 	
    //float width = abs(dFdx(dist)) + abs(dFdy(dist));  //<-----------(was attempt at replacement for web, does not work)          
      
-   float width = abs(dfdx*dist) + abs(dfdx*dist);  //<-----------(was attempt at replacement for web, does not work?)          
+   float width = abs(dfdx*dist) + abs(dfdy*dist);  //<-----------(was attempt at replacement for web, does not work?)          
      
        	 	
  	 	 	// supersampled version
@@ -214,6 +214,7 @@ vec4 getStyledText()
     
     // Supersample, 4 extra points
     float dscale = 0.354; // half of 1/sqrt2; you can play with this
+    
    
    // vec2 duv = dscale * (dFdx(vTexCoord) + dFdy(vTexCoord)); //<---------------correct formula (works fine desktop)
    

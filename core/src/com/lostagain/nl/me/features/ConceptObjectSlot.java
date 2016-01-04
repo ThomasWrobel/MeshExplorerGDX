@@ -14,7 +14,7 @@ import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.models.objectType;
+import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewForward;
 import com.lostagain.nl.me.newmovements.NewMovementController;
@@ -319,8 +319,8 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	 * @return
 	 */
 	@Override
-	public objectType getInteractionType() {
-		return objectType.Blocker;
+	public objectInteractionType getInteractionType() {
+		return objectInteractionType.Blocker;
 	}
 
 

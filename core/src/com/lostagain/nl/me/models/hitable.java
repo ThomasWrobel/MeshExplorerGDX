@@ -21,7 +21,7 @@ public interface hitable {
 	public void setLastHitsRange(float range); //set the distance squared from the shot origin to this object 
 	public float getLastHitsRange(); //returns the above
 	
-	public objectType getInteractionType(); //if this blocks hits below it
+	public objectInteractionType getInteractionType(); //if this blocks hits below it
 	public Vector3 rayHits(Ray ray);
 	public Vector3 getCenterOnStage();
 	

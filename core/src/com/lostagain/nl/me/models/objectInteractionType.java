@@ -5,10 +5,10 @@ package com.lostagain.nl.me.models;
  * @author Tom
  *
  */
-public enum objectType {
+public enum objectInteractionType {
 	/** clicks and firings interact with this object **/
 	Normal,
-	/** interactions happen with this object and it blocks what's under it **/
+	/** interactions happen with this object and it blocks what's under it  **/
 	Blocker,
 	/** this object is interface only, and the gun wont fire at it **/
 	Interface

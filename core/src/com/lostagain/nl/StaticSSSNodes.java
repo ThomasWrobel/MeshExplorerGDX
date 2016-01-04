@@ -134,8 +134,11 @@ public class StaticSSSNodes {
 	public static final SSSNode atHeight =  SSSNode.createSSSNode(ME.INTERNALNS+"atHeight", ME.INTERNALNS);
 	
 	//DBPedia stuff
-		public static final SSSNode DBPediaColour =  SSSNode.createSSSNode("http://dbpedia.org/ontology/colour","http://dbpedia.org/ontology");
+	public static final SSSNode DBPediaColour =  SSSNode.createSSSNode("http://dbpedia.org/ontology/colour","http://dbpedia.org/ontology");
 	
+	public static final SSSNode DBPediaHueCoOrd = SSSNode.createSSSNode("http://dbpedia.org/ontology/hsvCoordinateHue","http://dbpedia.org/ontology");
+	 
+			//
 	
 	public void setup(){
 		

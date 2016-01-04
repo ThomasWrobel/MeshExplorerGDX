@@ -34,7 +34,7 @@ public class PlayersData {
 	static SSSNode homemessage = SSSNode.createSSSNode("\"homepc/WelcomeMessage.txt\"","semantics\\TomsNetwork.ntlist#welcomemessage", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
 	
 	 //stores the computers description
-	static SSSNode homeDisLabel = SSSNode.createSSSNode("Something bob gave me a copy of. Hope he wont get in trouble for it.","HomeLocationDiscription",ME.INTERNALNS);
+	static SSSNode homeDisLabel = SSSNode.createSSSNode("Some software Bob gave me a copy of. Hope he wont get in trouble for it.","HomeLocationDiscription",ME.INTERNALNS);
 	
 	static SSSNodesWithCommonProperty homediscription = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.DescriptionOf, computersuri, new SSSNode[]{homeDisLabel});
 	

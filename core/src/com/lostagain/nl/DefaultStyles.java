@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
+import com.lostagain.nl.uti.HSLColor;
 
 public class DefaultStyles {
 
@@ -69,7 +70,7 @@ public class DefaultStyles {
 	 * 
 	 * returns null if none found **/
 	static public ArrayList<Color> getColorsFromNode(SSSNode node){
-		
+		//http://dbpedia.org/ontology/hsvCoordinateHue
 		Gdx.app.log(logstag, " getting nodes colours ");
 		
 		ArrayList<Color> colours = new ArrayList<Color>();
@@ -80,25 +81,38 @@ public class DefaultStyles {
 
 		for (SSSNodesWithCommonProperty property : Nodeproperties) {
 
-			SSSNode currentPred = property.getCommonPrec();
+			SSSNode currentPred  = property.getCommonPrec();
 			SSSNode currentValue = property.getCommonValue();
 
+			Color newcolor=null;;
+			
 			//only color supported atm later we might search for other style related attributes?
 			if (currentPred == StaticSSSNodes.DBPediaColour){
 				newcolorstring =currentValue.getPLabel();
+
+				newcolor = getColorFromString(newcolorstring);
 			}	else {
 				continue;
 			}
-
-			Color newcolor = getColorFromString(newcolorstring);
+			
+			
+			if (currentPred == StaticSSSNodes.DBPediaHueCoOrd){
+				
+				newcolorstring = currentValue.getPLabel();
+				float huefloat = Integer.parseInt(newcolorstring)/360.0f;
+				//default color extraction from hue (might want customizable defaults in future)				
+				newcolor= new HSLColor(huefloat,1.0f,0.1f,0.8f).toRGB();			
+				
+			}	else {
+				continue;
+			}
+			
 			
 			if (newcolor!=null){
 
 				Gdx.app.error (logstag, " adding color:	 "+newcolor.toString());
 				colours.add(newcolor);
 			} else {
-
-
 				Gdx.app.error (logstag, " color not recognised:	 "+newcolorstring);
 			}
 			

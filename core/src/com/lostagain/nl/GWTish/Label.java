@@ -821,6 +821,8 @@ public class Label extends LabelBase {
 		}
 	}
 	
+	/*
+	//now handled in shader
 	private void setPaddingToPreserveTextRatio(TextAlign align, float maxWidth , float maxHeight, float textureSizeX, float textureSizeY) {
 		
 		boolean autoPadToPreserveRatio = true;
@@ -871,7 +873,7 @@ public class Label extends LabelBase {
 			
 			
 			//which is the bigger difference?
-			/*
+			/**
 			if (diffX>diffY){
 				//x needs more shrinking
 				float textureSizeRatio = textureSizeY/textureSizeX;
@@ -885,7 +887,7 @@ public class Label extends LabelBase {
 				Gdx.app.log(logstag,"______y needs more shrinking, ratio to x is"+textureSizeRatio);
 				 newX = textureSizeX*textureSizeRatio;
 				 newY = maxHeight;
-			}*/
+			}/
 			
 			float paddingX = maxWidth  - newX;
 			float paddingY = maxHeight - newY;
@@ -913,6 +915,7 @@ public class Label extends LabelBase {
 			
 		}
 	}
+	*/
 	
 	/*
 	/**
@@ -956,7 +959,7 @@ public class Label extends LabelBase {
 		}
 
 		NewTexture.textureItself.setFilter(TextureFilter.Linear, TextureFilter.Linear);//ensure mipmaping is disabled, else distance field shaders wont work
-
+		//NewTexture.textureItself.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);//ensure mipmaping is disabled, else distance field shaders wont work
 		return NewTexture;
 	}
 

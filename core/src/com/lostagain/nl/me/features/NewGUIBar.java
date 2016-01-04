@@ -20,7 +20,7 @@ import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
-import com.lostagain.nl.me.models.objectType;
+import com.lostagain.nl.me.models.objectInteractionType;
 /**
  * provides togglable shortcuts for various game functions such as going home, activating the concept gun, or opening the inventory
  * 
@@ -404,8 +404,8 @@ public class NewGUIBar extends VerticalPanel {
 
 
 	@Override
-	public objectType getInteractionType() {
-		return objectType.Interface;
+	public objectInteractionType getInteractionType() {
+		return objectInteractionType.Interface;
 	}
 	
 }

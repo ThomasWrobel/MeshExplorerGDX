@@ -132,8 +132,8 @@ public class BackgroundPlane extends AnimatableModelInstance implements hitable 
 	 * @return
 	 */
 	@Override
-	public objectType getInteractionType() {
-		return objectType.Blocker;
+	public objectInteractionType getInteractionType() {
+		return objectInteractionType.Blocker;
 	}
 
 /*

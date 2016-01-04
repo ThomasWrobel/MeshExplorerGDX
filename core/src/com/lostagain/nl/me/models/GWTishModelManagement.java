@@ -538,7 +538,7 @@ public class GWTishModelManagement {
 		//crop to the ones on top, hitting as we go
 		for (hitable object : underCursor) {
 			
-			objectType type = object.getInteractionType();
+			objectInteractionType type = object.getInteractionType();
 			onesHit.add(object);
 			
 			//fire the correct event depending on type
@@ -575,10 +575,10 @@ public class GWTishModelManagement {
 			
 			
 			
-			if (type == objectType.Interface){
+			if (type == objectInteractionType.Interface){
 				return onesHit;
 			}
-			if (type == objectType.Blocker && !hitsPenetrate){
+			if (type == objectInteractionType.Blocker && !hitsPenetrate){
 				return onesHit;
 			}
 			
@@ -657,7 +657,7 @@ public class GWTishModelManagement {
 
 			Gdx.app.log(logstag,"_hit "+newInstance.getClass()+" object at distance "+dist2+" position was("+position+")");
 			
-			if (newInstance.getInteractionType() == objectType.Blocker){
+			if (newInstance.getInteractionType() == objectInteractionType.Blocker){
 				Gdx.app.log(logstag,"(it was blocker)");
 
 			}
@@ -667,7 +667,7 @@ public class GWTishModelManagement {
 
 
 			//if its a blocker we see if its higher then the last blocker
-			if (newInstance.getInteractionType() == objectType.Blocker){
+			if (newInstance.getInteractionType() == objectInteractionType.Blocker){
 
 				//if none set just continue
 				if (closestBlockerTouched==null){

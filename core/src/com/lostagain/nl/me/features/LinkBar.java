@@ -22,7 +22,7 @@ import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
 import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.models.objectType;
+import com.lostagain.nl.me.models.objectInteractionType;
 
 /**
  * Controls the look and status of a single link
@@ -484,8 +484,7 @@ public void setStandardLinkScanningAmount(int Percentage){
 	public void fireTouchDown() {
 		Gdx.app.log(logstag,"touchdown on linkbar object:"+this.LocationsName);
 		linkClicked();
-		
-		
+				
 	}
 
 	@Override
@@ -497,12 +496,12 @@ public void setStandardLinkScanningAmount(int Percentage){
 
 
 	/**
-	 * does this object block whats behind it?
+	 * Does this object block what's behind it?
 	 * @return
 	 */
 	@Override
-	public objectType getInteractionType() {
-		return objectType.Blocker;
+	public objectInteractionType getInteractionType() {
+		return objectInteractionType.Blocker;
 	}
 
 

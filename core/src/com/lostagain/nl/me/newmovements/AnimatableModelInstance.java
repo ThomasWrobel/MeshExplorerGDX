@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.me.models.GWTishModelManagement;
-import com.lostagain.nl.me.models.objectType;
+import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
 
@@ -756,8 +756,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @return
 	 */
 	@Override
-	public objectType getInteractionType() {
-		return objectType.Normal;
+	public objectInteractionType getInteractionType() {
+		return objectInteractionType.Normal;
 	}
 
 	/**

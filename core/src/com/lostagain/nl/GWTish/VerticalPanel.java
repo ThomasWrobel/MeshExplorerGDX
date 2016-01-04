@@ -25,7 +25,7 @@ public class VerticalPanel extends CellPanel {
 			boolean updateHeight, Widget widget) {
 
 		int index = contents.indexOf(widget);
-		
+
 		Alignment align = contentAlignments.get(widget);
 		if (align == null) {
 			align = new Alignment(defaultHorizontalAlignment,
@@ -46,15 +46,18 @@ public class VerticalPanel extends CellPanel {
 
 		switch (align.horizontal) {
 		case Left:
-			newLocationX = 0;
+			newLocationX = getLeftPadding();//0;
 			break;
 		case Right:
-			newLocationX = (maxW - incomingWidth);
+			newLocationX = (maxW - incomingWidth) - getRightPadding();
 			break;
 			// default and center are the same
 		case Center:
 		default:
-			newLocationX = (maxW - incomingWidth) / 2;
+			float total = maxW + getLeftPadding() + getRightPadding();
+			
+		//	newLocationX = (maxW - incomingWidth) / 2;
+			newLocationX = getLeftPadding() +((total - incomingWidth) / 2);
 
 		}
 
@@ -68,8 +71,12 @@ public class VerticalPanel extends CellPanel {
 		Gdx.app.log(logstag, index + " adding incomingHeight: "
 				+ incomingHeight + " total=" + currentTotalWidgetHeight);
 
-		return new Vector3(getLeftPadding() + newLocationX, getTopPadding()
-				+ newLocationY, 3f);
+		return new Vector3(newLocationX, 
+				getTopPadding()	+ newLocationY, 3f);
+
+		
+		//return new Vector3(getLeftPadding() + newLocationX, 
+		//		getTopPadding()	+ newLocationY, 3f);
 
 	}
 
@@ -96,17 +103,17 @@ public class VerticalPanel extends CellPanel {
 				+ currentTotalWidgetHeight);
 
 	}
-	
-	 private HorizontalAlignment defaultHorizontalAlignment = HorizontalAlignment.Center;
-	 
-	  /**
-	   * Sets the default horizontal alignment to be used for widgets added to this
-	   * panel. It only applies to widgets added after this property is set.
-	   * 
-	   **/
-	  public void setHorizontalAlignment(HorizontalAlignment align) {
-		  defaultHorizontalAlignment = align;
-	  }
+
+	private HorizontalAlignment defaultHorizontalAlignment = HorizontalAlignment.Center;
+
+	/**
+	 * Sets the default horizontal alignment to be used for widgets added to this
+	 * panel. It only applies to widgets added after this property is set.
+	 * 
+	 **/
+	public void setHorizontalAlignment(HorizontalAlignment align) {
+		defaultHorizontalAlignment = align;
+	}
 
 
 	@Override

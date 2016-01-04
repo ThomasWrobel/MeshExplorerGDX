@@ -25,7 +25,7 @@ import com.lostagain.nl.me.models.ConceptBeam;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.models.objectType;
+import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.ConceptBeamShader;
@@ -545,7 +545,7 @@ public class ConceptGunPanel extends HorizontalPanel {
 						
 						//if we hit the interface we cancel firing
 						//(at some point the firing system might be changed so this is handled in mainexploration view?)
-						if (collision.getInteractionType() == objectType.Interface)
+						if (collision.getInteractionType() == objectInteractionType.Interface)
 						{
 							//Don't fire on interface
 							this.cancelFire();
@@ -757,8 +757,8 @@ public class ConceptGunPanel extends HorizontalPanel {
 	}
 
 	@Override
-	public objectType getInteractionType() {
-		return objectType.Interface;
+	public objectInteractionType getInteractionType() {
+		return objectInteractionType.Interface;
 	}
 
 

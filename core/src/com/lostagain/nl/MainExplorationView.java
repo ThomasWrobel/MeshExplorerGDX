@@ -60,7 +60,7 @@ import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.models.objectType;
+import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.me.particles.exampleParticleManagement;
 import com.lostagain.nl.shaders.InvertShader;
@@ -820,7 +820,11 @@ public class MainExplorationView implements Screen {
 			Ray ray = ME.getCurrentStageCursorRay();
 
 			Gdx.app.log(logstag,"currentTouchState:"+GWTishModelManagement.currentTouchState.name());
-			lastHits = GWTishModelManagement.getHitables(ray,true,GWTishModelManagement.currentTouchState);
+			
+			lastHits = GWTishModelManagement.getHitables(ray,false,GWTishModelManagement.currentTouchState); 
+			                                               //should be false
+														   //we do, however, need to dynamically change Concepts to not be blockers
+														   //when they are being held
 
 			if (lastHits.size()>0){
 				touchedAModel = lastHits.get(0);
@@ -835,13 +839,13 @@ public class MainExplorationView implements Screen {
 			if (GWTishModelManagement.currentTouchState == GWTishModelManagement.TouchState.NewTouchDown){		
 				//if the concept gun is enabled we start shooting
 
-				objectType type = null;
+				objectInteractionType type = null;
 				//we get the interaction type here as we don't want to fire at bits of the interface
 				if (touchedAModel!=null){
 					type = touchedAModel.getInteractionType();
 				}
 
-				if (fireEnabled && type != objectType.Interface ){
+				if (fireEnabled && type != objectInteractionType.Interface ){
 					//start firing gun
 					fireEnabled = PlayersData.playersConceptGun.fireAt(Gdx.input.getX(), Gdx.input.getY());		 //new gun
 

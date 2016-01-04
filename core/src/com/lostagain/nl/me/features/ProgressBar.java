@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
 import com.lostagain.nl.GWTish.Widget;
+import com.lostagain.nl.me.models.objectInteractionType;
 
 
 /**
@@ -163,10 +164,13 @@ public class ProgressBar extends Widget implements GenericProgressMonitor {
 	}
 	
 	/**
-	 * refreshs the visualisation based on the current value
+	 * Refreshes the visualization based on the current value
 	 */
 	private void refreshVisual(){
 		setCurrentWidth(getCurrentValueAsWidth());
 	}
+	
+
+
 	
 }

@@ -16,7 +16,7 @@ import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.gui.ScreenUtils;
-import com.lostagain.nl.me.models.objectType;
+import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 
@@ -192,8 +192,8 @@ public class ConceptStoreObject extends VerticalPanel implements GenericMeshFeat
 		 * @return
 		 */
 		@Override
-		public objectType getInteractionType() {
-			return objectType.Blocker;
+		public objectInteractionType getInteractionType() {
+			return objectInteractionType.Blocker;
 		}
 
 		

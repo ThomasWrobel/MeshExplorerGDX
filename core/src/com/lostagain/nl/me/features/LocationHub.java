@@ -79,10 +79,10 @@ public class LocationHub extends MeshIcon {
 		//super.setBackgroundColour(darkgreen.toRGB()); //temp
 		//Color basicBorder = new Color(0.3f,1.0f,0.3f, 1.0f);
 
-		HSLColor basicBorder = new HSLColor(0.33f,1.0f,0.6f,1.0f);
+		//HSLColor basicBorder = new HSLColor(0.33f,1.0f,0.6f,1.0f);
 		
-		super.getStyle().setBorderColor(basicBorder.toRGB());
-		super.getStyle().setBorderWidth(0.5f);
+		//super.getStyle().setBorderColor(basicBorder.toRGB());
+		//super.getStyle().setBorderWidth(0.5f);
 		
 		LocationsNode = locationsNode;
 		super.setZIndex(150,super.getUniqueName()); 
@@ -177,16 +177,16 @@ public class LocationHub extends MeshIcon {
 	private void generateLocationContents(){
 
 		//first set our back color-------------------------------------------------
-		ArrayList<Color> backcolours = DefaultStyles.getColorsFromNode(LocationsNode);				
+		ArrayList<Color> backcolours = DefaultStyles.getColorsFromNode(LocationsNode);	
+		
 		if (backcolours!=null){
-
 			Gdx.app.log(logstag,"setting backcolor to first in :"+backcolours.toString());
 			setBackgroundColour(backcolours.get(0));		
 		}
 		
 		//if we are on the players location add the installer screen
 		if (parentLocation==PlayersData.homeLoc){
-			this.addAbilityInstaller();
+			addAbilityInstaller();
 		}
 		
 		//-----------------------------------------------------------------------

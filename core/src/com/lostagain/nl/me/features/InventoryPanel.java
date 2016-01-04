@@ -24,7 +24,7 @@ import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.GWTishModelManagement;
-import com.lostagain.nl.me.models.objectType;
+import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.PosRotScale;
 
@@ -419,8 +419,8 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	 * @return
 	 */
 	@Override
-	public objectType getInteractionType() {
-		return objectType.Blocker;
+	public objectInteractionType getInteractionType() {
+		return objectInteractionType.Blocker;
 	}
 
 	

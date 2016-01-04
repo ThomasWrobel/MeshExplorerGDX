@@ -56,7 +56,7 @@ BobsOutpost me:connectedTo me:everyone.
 MysteriousGateway me:connectedTo profpp. 
 LinguisticsStore me:connectedTo ProfPPResearch. 
 
-BobsOutpost http://dbpedia.org/ontology/Colour Green.
+BobsOutpost http://dbpedia.org/ontology/hsvCoordinateHue 135.
 thecatspc http://dbpedia.org/ontology/Colour Orange.
 alicespc http://dbpedia.org/ontology/Colour Cyan.
 LinguisticsStore  http://dbpedia.org/ontology/Colour #1122AA.

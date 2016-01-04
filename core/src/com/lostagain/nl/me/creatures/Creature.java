@@ -26,7 +26,7 @@ import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.models.objectType;
+import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NEWREPEAT;
 import com.lostagain.nl.me.newmovements.NewFaceAndMoveTo;
@@ -730,8 +730,8 @@ public class Creature implements hitable , Animating {
 	 * @return
 	 */
 	@Override
-	public objectType getInteractionType() {
-		return objectType.Normal;
+	public objectInteractionType getInteractionType() {
+		return objectInteractionType.Normal;
 	}
 
 

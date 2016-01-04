@@ -32,7 +32,7 @@ import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.Moving;
 import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.models.objectType;
+import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewForward;
@@ -760,8 +760,8 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	 * @return
 	 */
 	@Override
-	public objectType getInteractionType() {
-		return objectType.Blocker;
+	public objectInteractionType getInteractionType() {
+		return objectInteractionType.Blocker; //should not be a blocker when its being held (as concept objects can be)
 	}
 
 	//@Override

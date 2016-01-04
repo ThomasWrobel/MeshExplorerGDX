@@ -18,7 +18,7 @@ import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 /***
  * 
- * An info box will be a simple box that shows two labels, one for title and one for contents.
+ * An info box will be a simple box that shows three labels, one for title, subtitle and one for contents.
  * The labels are automatically added under eachother with a set margin between the two
  * 
  * Thats it, nothing else fancy, just a bit of text aligned in the middle.
@@ -32,6 +32,9 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 	
 	Label subtitleLabel;
 	
+	float FixedWidth = 440f; //info boxs are a fixed width but if needed expand downwards
+	
+	
 	public InfoBox(String title, String subtitle ,String contents) {	
 		super();
 		super.setSpaceing(3f); //set a small spacing between elements vertically
@@ -40,16 +43,20 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		super.getStyle().clearBackgroundColor(); //set the back colour (excluding border)
 		super.getStyle().clearBorderColor();
 		
-		//add default labels
-		Label titleLabel = new Label(title);
-		super.add(titleLabel);
+		//add labels
+		float scale = 1.3f;
+		Label titleLabel = new Label(title,FixedWidth*scale);
+		titleLabel.setToScale(new Vector3(scale,scale,scale)); //title larger then normal 
 		titleLabel.setLabelBackColor(Color.CLEAR);
-
+		
+		
+		super.add(titleLabel);
+		
 		
 		if (!subtitle.isEmpty()){
-			
-			subtitleLabel = new Label(subtitle); //note; double width as we are shrinking to half the size	
-			subtitleLabel.setToScale(new Vector3(0.5f,0.5f,0.5f)); //content smaller then title
+			scale = 0.5f;
+			subtitleLabel = new Label(subtitle,FixedWidth*(1/scale)); //note; double width as we are shrinking to half the size	
+			subtitleLabel.setToScale(new Vector3(scale,scale,scale)); //subtitle smaller then title
 
 			subtitleLabel.setLabelBackColor(Color.CLEAR);
 			super.add(subtitleLabel);
@@ -58,9 +65,9 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		}
 		
 		if (!contents.isEmpty()){
-			
-			Label contentLabel = new Label(contents,450f);	
-			contentLabel.setToScale(new Vector3(0.7f,0.7f,0.7f)); //content smaller then title
+			scale = 0.7f;
+			Label contentLabel = new Label(contents,FixedWidth*(1/scale));	
+			contentLabel.setToScale(new Vector3(scale,scale,scale)); //content smaller then title
 
 			contentLabel.setLabelBackColor(Color.CLEAR);
 			super.add(contentLabel);

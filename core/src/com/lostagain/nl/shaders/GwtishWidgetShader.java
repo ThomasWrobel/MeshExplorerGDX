@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -231,6 +232,7 @@ public class GwtishWidgetShader implements Shader {
 		if (renderable.material.get(TextureAttribute.Diffuse)!=null){
 
 			Texture distanceFieldTextureMap = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
+			distanceFieldTextureMap.setFilter(TextureFilter.Linear, TextureFilter.Linear); //not needed
 			program.setUniformi(u_sampler2D, context.textureBinder.bind(distanceFieldTextureMap));    		    		 
 	
 			//Now we need to supply the pixel step of the texture as this is different to the overall one

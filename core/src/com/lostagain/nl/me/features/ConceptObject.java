@@ -15,6 +15,7 @@ import com.lostagain.nl.me.gui.DataObjectDropTarget;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.GWTishModelManagement;
+import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.MySorter;
 
@@ -172,7 +173,8 @@ public class ConceptObject extends MeshIcon {
 	public void triggerPutDown() {
 		Gdx.app.log(logstag,"____dataobject put down ");
 		 STMemory.dropHeldItem(true);
-		
+		 
+		 currentInteractionMode = objectInteractionType.Blocker;
 		 
 	}
 	
@@ -200,6 +202,9 @@ public class ConceptObject extends MeshIcon {
 		this.objectsStatus = ConceptObjectStatus.Holding;
 		
 		STMemory.holdItem(this);
+		
+		currentInteractionMode = objectInteractionType.Normal;
+		
 		//this.hide();
 		///ensure the scene drag is disabled while we are dragging a object
 		ME.disableDrag();
@@ -240,6 +245,15 @@ public class ConceptObject extends MeshIcon {
 	}
 
 
+	objectInteractionType currentInteractionMode = objectInteractionType.Blocker;
+	/**
+	 * Does this object block whats behind it?
+	 * @return
+	 */
+	@Override
+	public objectInteractionType getInteractionType() {
+		return currentInteractionMode; //should not be a blocker when its being held (as concept objects can be)
+	}
 
 
 
