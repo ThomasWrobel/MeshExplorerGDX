@@ -64,9 +64,9 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	public enum IconType {
 	//	Email("Email",new Color(0.1f,0.1f,0.6f,0.9f)),
 		
-		Email("Email",0.6f),		
+		Message("Message",0.6f),		
 	//	EmailHub("Email\nHub",new Color(0.11f,0.11f,0.7f,0.88f)),
-		EmailHub("Email\nHub",0.5f),
+		MessageHub("Message\nHub",0.5f),
 		//ConceptStore("Concepts",Color.GREEN),
 		ConceptStore("Concepts",0.4f),
 		//AbilityStore("Abilities",new Color(1.0f,0.3f,0.1f,0.7f)),
@@ -216,19 +216,20 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	 * @param parentLocation
 	 * @param assocatiedfeature
 	 */
-
 	//----------------------------------------------------
 	public MeshIcon(IconType type,Location parentLocation,GenericMeshFeature assocatiedfeature) {	
 		this(type,null,defaultIconWidth,defaultIconHeight,parentLocation,assocatiedfeature);
 	}
 	
+	public MeshIcon(IconType type,String specificName, Location parentLocation,GenericMeshFeature assocatiedfeature) {	
+		this(type,specificName,defaultIconWidth,defaultIconHeight,parentLocation,assocatiedfeature);
+	}
 	/** 
 	 * Creates a icon of the specified type.
 	 * The idea is this is placed relative to the parent location (or rather the parent locations infoIcon which should always be at the center)
 	 *  
 	 * **/
 	public MeshIcon(IconType type,String specificName,float w,float h,Location parentLocation,GenericMeshFeature assocatiedfeature) {		
-	//	super(generateBackgroundModel(w,h));
 		super(getIconsDisplayName(type,specificName),w,h,MODELALIGNMENT.CENTER,TextAlign.CENTER);
 		
 		super.getStyle().setPadding(7f);
@@ -636,7 +637,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 				//if another was open close it,unless its the email hub and we are an email
 				//as things shouldn't close their parents. (in future we might want a generic system to prevent objects from
 				//closing their parents
-				if (this.thisIconsType == IconType.Email && currentlyOpen.thisIconsType == IconType.EmailHub ){
+				if (this.thisIconsType == IconType.Message && currentlyOpen.thisIconsType == IconType.MessageHub ){
 					//do nothing
 				} else {
 					currentlyOpen.close();

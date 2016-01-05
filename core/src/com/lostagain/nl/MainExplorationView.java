@@ -741,9 +741,9 @@ public class MainExplorationView implements Screen {
 		GWTishModelManagement.modelBatch.render(GWTishModelManagement.allOverlayInstances); 
 
 		
-
+		if (GameMode.currentGameMode == GameMode.Developer){
 		GWTishModelManagement.modelBatch.render(exampleParticleManagement.prepareAndGetParticleSystem());
-
+		}
 		//testdefaultShader.end();
 		GWTishModelManagement.modelBatch.end();	
 		//background.modelBatch.getRenderContext().end();
@@ -822,9 +822,7 @@ public class MainExplorationView implements Screen {
 			Gdx.app.log(logstag,"currentTouchState:"+GWTishModelManagement.currentTouchState.name());
 			
 			lastHits = GWTishModelManagement.getHitables(ray,false,GWTishModelManagement.currentTouchState); 
-			                                               //should be false
-														   //we do, however, need to dynamically change Concepts to not be blockers
-														   //when they are being held
+			                                     
 
 			if (lastHits.size()>0){
 				touchedAModel = lastHits.get(0);

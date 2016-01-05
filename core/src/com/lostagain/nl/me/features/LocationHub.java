@@ -50,7 +50,7 @@ public class LocationHub extends MeshIcon {
 	//All the individual features we can have (stored above)
 	private ConceptStoreObject linkedConceptDataStore;
 	private AbilityStoreObject linkedAbilityDataStore;
-	private EmailHub           linkedEmailHub;
+	private MessageHub           linkedEmailHub;
 	private LinkStoreObject    linkedLinkStore;
 	//just for player
 	private AbilityInstaller linkedAbilityInstaller;
@@ -408,7 +408,7 @@ public class LocationHub extends MeshIcon {
 		if (linkedEmailHub==null){
 			Gdx.app.log(logstag,"making emailhub");
 
-			linkedEmailHub = new EmailHub(this); //create a new data store object linked to this location
+			linkedEmailHub = new MessageHub(this); //create a new data store object linked to this location
 
 			HubsFeatures.put(linkedEmailHub.assocatiedFeature,linkedEmailHub);
 

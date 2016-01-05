@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.lostagain.nl.shaders.GameBackgroundShader.GameBackgroundShaderAttribute;
 import com.lostagain.nl.shaders.NormalMapShader.NormalMapShaderAttribute;
 
 
@@ -95,7 +96,9 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		if (renderable.material.has(GwtishWidgetDistanceFieldAttribute.ID)){
 			return new GwtishWidgetShader();
 		}
-		
+		if (renderable.material.has(GameBackgroundShaderAttribute.ID)){
+			return new GameBackgroundShader(renderable);
+		}
 		//------------------------------------------------------------------------------------------------------
 		//------------------------------------------------------------------------------------------------------
 		

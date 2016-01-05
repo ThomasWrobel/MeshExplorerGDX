@@ -1,0 +1,7 @@
+Message #2
+
+Oh, I forgot, you probably need a interface as well.
+Try dragging this to your installer.
+
+-Bob
+

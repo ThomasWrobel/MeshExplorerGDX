@@ -1,5 +1,7 @@
 package com.lostagain.nl.me.features;
 
+import java.util.HashSet;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -10,13 +12,16 @@ import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackError;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackRunnable;
 import com.darkflame.client.semantic.SSSNode;
+import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
+import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.Style.TextAlign;
 import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.hitable;
@@ -34,14 +39,14 @@ import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
 public class Email extends VerticalPanel implements GenericMeshFeature {
 	final static String logstag = "ME.Email";
 	Email    parentEmail; //what this is a reply to?
-	EmailHub parentHub;
+	MessageHub parentHub;
 
 	Label emailContents;
 	
 	//temp notes;
 	//size doesn't update when email does
 	
-	public Email(EmailHub parentHub,SSSNode sssNode, SSSNode writtenIn) {
+	public Email(MessageHub parentHub,SSSNode sssNode, SSSNode writtenIn) {
 		super.setPadding(25f); //test
 		this.setAsHitable(true); //we need this to control dragging
 		
@@ -64,9 +69,40 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 		
 		Gdx.app.log(logstag,"added emailContents:"+emailContents.isVisible());	
 		
-		
 		testIfWeHaveLanguage(writtenIn);
 		getEmailContents(sssNode,writtenIn);
+		getEmailAttachments(sssNode);
+		
+		
+	}
+
+	/**
+	 * gets the atachments for this message, if theres any
+	 * currently just placed under email. Might change layout a bit in future
+	 * 
+	 * @param sssNode
+	 */
+	private void getEmailAttachments(SSSNode emailsNode) {
+		
+		
+		//get attachments
+		HashSet<SSSNode> attachedNodes = SSSNodesWithCommonProperty.getAllCurrentNodesInSetsFor(StaticSSSNodes.isOn, emailsNode);
+		
+		for (SSSNode sssNode : attachedNodes) {
+			
+			//make slot
+			ConceptObjectSlot slot = new ConceptObjectSlot();
+			slot.setCurrentMode(SlotMode.OutOnly);
+			
+			//add slot and attach node to it
+			slot.setAsCointaining(new ConceptObject(sssNode));
+						
+			//just add under for now
+			this.add(slot); 
+			
+			
+		}
+		
 		
 	}
 
@@ -135,6 +171,8 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
 	private void getEmailContents(SSSNode sssNode, SSSNode writtenIn) {
 		
 		
@@ -144,12 +182,9 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 		//set up the runnable for when the data is retrieved
 		FileCallbackRunnable runoncomplete = new FileCallbackRunnable(){
 			@Override
-			public void run(String responseData, int responseCode) {
-	
+			public void run(String responseData, int responseCode) {	
 				
-				emailContents.setText(responseData);
-				
-				
+				emailContents.setText(responseData);							
 				
 			}
 

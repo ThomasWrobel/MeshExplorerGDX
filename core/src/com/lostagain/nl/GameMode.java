@@ -12,7 +12,7 @@ public enum GameMode {
 	Developer(60);
 	
 	int ScanSpeed;
-	public static final GameMode currentGameMode = Developer;		
+	public static final GameMode currentGameMode = Production;		
 	GameMode(int ScanSpeed){
 		this.ScanSpeed=ScanSpeed;
 	}

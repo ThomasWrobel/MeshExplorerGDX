@@ -31,7 +31,11 @@ public class PlayersData {
 //	static SSSNode coin = SSSNode.createSSSNode("coin",ME.INTERNALNS+"coin", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.software});
 
 	 //default message contents semantics\TomsNetwork.ntlist
-	static SSSNode homemessage = SSSNode.createSSSNode("\"homepc/WelcomeMessage.txt\"","semantics\\TomsNetwork.ntlist#welcomemessage", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
+	static SSSNode homemessage1 = SSSNode.createSSSNode("\"homepc/WelcomeMessage.txt\"","semantics\\TomsNetwork.ntlist#welcomemessage", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
+	static SSSNode homemessage2 = SSSNode.createSSSNode("\"homepc/WelcomeMessage2.txt\"","semantics\\TomsNetwork.ntlist#welcomemessage2", ME.INTERNALNS, new SSSNode[]{StaticSSSNodes.messages});
+	
+	public static SSSNodesWithCommonProperty isAttachedToMessage2 = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, homemessage2, new SSSNode[]{StaticSSSNodes.standardgui});
+	
 	
 	 //stores the computers description
 	static SSSNode homeDisLabel = SSSNode.createSSSNode("Some software Bob gave me a copy of. Hope he wont get in trouble for it.","HomeLocationDiscription",ME.INTERNALNS);
@@ -43,7 +47,7 @@ public class PlayersData {
 	static SSSNodesWithCommonProperty playersunlocks = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.UnlockedBy, computersuri);
 	
 	//and what is currently on the players location (that is, all the players known nodes)
-	public static SSSNodesWithCommonProperty playerslocationcontents = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, computersuri, new SSSNode[]{homemessage,StaticSSSNodes.asciidecoder,StaticSSSNodes.prototype_scanner});
+	public static SSSNodesWithCommonProperty playerslocationcontents = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(StaticSSSNodes.isOn, computersuri, new SSSNode[]{homemessage1,homemessage2,StaticSSSNodes.asciidecoder,StaticSSSNodes.prototype_scanner});
 	
 	/**
 	 * All the things currently running on the players location
@@ -117,7 +121,7 @@ public class PlayersData {
 
 	public static void setup() {
 		
-		Gdx.app.log(logstag,"Home location uri="+homemessage.PURI);
+		Gdx.app.log(logstag,"Home location uri="+homemessage1.PURI);
 		
 	
 		//This perhaps should be turned into a NTList to keep the players starting information external
@@ -139,9 +143,9 @@ public class PlayersData {
 		//playerslocationcontents.addNodeToThisSet(homemessage, "local");
 		
 		
-		HashSet<SSSNodesWithCommonProperty> sets = 	SSSNodesWithCommonProperty.getCommonPropertySetsContaining(PlayersData.homemessage.PURI);
+		HashSet<SSSNodesWithCommonProperty> sets = 	SSSNodesWithCommonProperty.getCommonPropertySetsContaining(PlayersData.homemessage1.PURI);
 
-		Gdx.app.log(logstag,"________message="+PlayersData.homemessage.PURI);
+		Gdx.app.log(logstag,"________message="+PlayersData.homemessage1.PURI);
 		
 		Gdx.app.log(logstag,"sets with homemessage:"+sets.size());
 		//

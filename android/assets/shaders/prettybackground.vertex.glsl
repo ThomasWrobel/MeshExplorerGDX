@@ -16,6 +16,7 @@ attribute vec4 Color;
 varying vec4 vColor;
 varying vec2 vTexCoord;
  varying vec4 mixcolour;
+ 
 void main() {
 
     vColor = Color;
