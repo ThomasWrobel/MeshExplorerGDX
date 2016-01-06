@@ -154,7 +154,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 	}
 	
 	enum ejectStyle{
-		Finished,Rejected
+		Finished,Rejected,Instant
 	}
 	public void ejectConcept() {
 		ejectConcept(ejectStyle.Rejected);
@@ -184,6 +184,9 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 		
 		//different animation based on type of ejection
 		switch (style) {
+		case Instant:
+			//no movement
+			break;
 		case Rejected:
 			objectCurrentlyStored.setMovement(new NewForward(150,1000));
 			break;

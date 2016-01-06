@@ -441,8 +441,8 @@ public class MainExplorationView implements Screen {
 		ArrayList<SSSNode> developerDropList = new ArrayList<SSSNode>();
 		developerDropList.add(StaticSSSNodes.PrototypeConceptGun);	
 		developerDropList.add(PlayersData.computersuri);			
-		developerDropList.add(StaticSSSNodes.BasicInventory);
-		developerDropList.add(StaticSSSNodes.ExpandedInventory);
+		developerDropList.add(StaticSSSNodes.BasicSTMem);
+		developerDropList.add(StaticSSSNodes.ExpandedSTMem);
 		developerDropList.add(StaticSSSNodes.standardgui);
 		SSSNode applenode = SSSNode.getNodeByLabel("Granny Smith apple");
 		developerDropList.add(applenode);	

@@ -20,6 +20,7 @@ import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.Style.TextAlign;
+import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
@@ -36,9 +37,9 @@ import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
  * @author Tom
  *
  */
-public class Email extends VerticalPanel implements GenericMeshFeature {
+public class MessagePage extends VerticalPanel implements GenericMeshFeature {
 	final static String logstag = "ME.Email";
-	Email    parentEmail; //what this is a reply to?
+	MessagePage    parentEmail; //what this is a reply to?
 	MessageHub parentHub;
 
 	Label emailContents;
@@ -46,7 +47,7 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 	//temp notes;
 	//size doesn't update when email does
 	
-	public Email(MessageHub parentHub,SSSNode sssNode, SSSNode writtenIn) {
+	public MessagePage(MessageHub parentHub,SSSNode sssNode, SSSNode writtenIn) {
 		super.setPadding(25f); //test
 		this.setAsHitable(true); //we need this to control dragging
 		
@@ -54,8 +55,9 @@ public class Email extends VerticalPanel implements GenericMeshFeature {
 		emailContents = new Label("Loading.....");	
 		emailContents.getStyle().setColor(Color.BLACK);
 		emailContents.setToScale(new Vector3(0.7f,0.7f,0.7f));
-		
+		emailContents.getStyle().setLineHeight(33, Unit.PX);
 		this.add(emailContents);
+		
 		
 		emailContents.getStyle().setTextStyle(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 		this.getStyle().clearBackgroundColor(); 

@@ -70,7 +70,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		//ConceptStore("Concepts",Color.GREEN),
 		ConceptStore("Concepts",0.4f),
 		//AbilityStore("Abilities",new Color(1.0f,0.3f,0.1f,0.7f)),
-		AbilityStore("Abilities",0.05f),
+		AbilityStore("Ability\nCollection",0.05f),
 		//AbilityInstaller("Ability\nInstaller",new Color(1.0f,0.5f,0.1f,0.7f)),
 		AbilityInstaller("Ability\nInstaller",0.1f),
 		//LinkStore("Links",Color.PURPLE),

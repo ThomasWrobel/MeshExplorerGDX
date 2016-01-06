@@ -19,8 +19,10 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.ComplexPanel;
 import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
+import com.lostagain.nl.me.features.ConceptObjectSlot.OnDragRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
+import com.lostagain.nl.me.features.ConceptObjectSlot.ejectStyle;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.ScreenUtils;
@@ -54,7 +56,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 
 	Label feedback = new Label(STANDARD_FEEDBACK_MESSAGE);
 	
-	Label RunningSoftwareLabel = new Label("--",width-120f);
+	Label InstalledSoftwareLabel = new Label("--",width-20f);
 	
 	boolean currentlyInstalling= false;
 	float installDuration = 3.0f;
@@ -62,6 +64,9 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 	private SSSNode queuedInstall; //ability about to install.
 	
 	ProgressBar installerBar = new ProgressBar(33,0,width-80,0,installDuration,0);
+	
+	
+	VerticalPanel InstalledSoftwareList = new VerticalPanel();
 	
 	public AbilityInstaller(LocationHub locationHub) {
 		
@@ -130,15 +135,73 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 
 		
 		add(feedbackBar);
-		RunningSoftwareLabel.setMaxWidth((width-30f)*(1.0f/0.6f)); //max width doesnt yet take into account scaleing
 		
-		RunningSoftwareLabel.getStyle().clearBackgroundColor();
+		float isscale = 0.5f;
+		InstalledSoftwareLabel.setMaxWidth((width-20f)*(1.0f/isscale)); //max width doesn't yet take into account scaling
+		
+		InstalledSoftwareLabel.getStyle().clearBackgroundColor();
 		updateInstalledLabel();
-		RunningSoftwareLabel.setToScale(new Vector3(0.4f,0.4f,0.4f));
-		add(RunningSoftwareLabel);
+		InstalledSoftwareLabel.setToScale(new Vector3(isscale,isscale,isscale));
+		add(InstalledSoftwareLabel);
+		
+		add(InstalledSoftwareList);
 		
 		//attachThis(RunningSoftwareLabel, new PosRotScale(0f,-185f,3f));
 		
+		//add currently running software to software list 
+		//in future we might want to remove this and just manually install software at games startup
+		for (SSSNode software : PlayersData.getAllRunningSoftware()) {
+			final ConceptObject alreadyInstalled = new ConceptObject(software);
+			final ConceptObjectSlot newslot = new ConceptObjectSlot();
+			newslot.setAsCointaining(alreadyInstalled);
+			newslot.setCurrentMode(SlotMode.OutOnly); //out only in future to allow uninstalls
+			InstalledSoftwareList.add(newslot);
+			newslot.setOnDragRun(new OnDragRunnable() {			
+				@Override
+				public void run(ConceptObject drop) {
+					uninstall(alreadyInstalled);	
+					InstalledSoftwareList.remove(newslot);
+				}
+			});
+		}
+		
+		
+		
+	}
+	
+	
+
+	private void uninstall(ConceptObject alreadyInstalled) {
+		
+		//already removed from slot, and slot itself should be removed too
+				
+		//remove from installed lists
+		PlayersData.removeSoftwareAsRunning(alreadyInstalled.itemsnode, false);
+				
+		//update label
+		updateInstalledLabel();
+		
+		//now deal with specific uninstall if needed
+		HashSet<SSSNode> types = alreadyInstalled.itemsnode.getAllClassesThisBelongsToo();
+		Gdx.app.log(logstag, "process UnInstall ability"+alreadyInstalled.itemsnode.PURI);
+		
+		if (types.contains(StaticSSSNodes.STMemoryAbility)){
+			//its a type of inventory	
+		}
+		
+		if (types.contains(StaticSSSNodes.conceptgun)){ //NOTE: ability's should always be subtypes of whats specified here
+			
+			
+		}
+		
+		
+		if (types.contains(StaticSSSNodes.decoder)){
+			//its a type of language decoder
+		}
+		
+		if ( types.contains(StaticSSSNodes.gui)){
+			Gdx.app.log(logstag, "uninstalling gui");
+		}
 		
 	}
 
@@ -186,7 +249,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 		currentlyInstalling = true;
 		GWTishModelManagement.addAnimating(this);
 		queuedInstall = ability;
-		 currentlyIntoInstall = 0f;
+		currentlyIntoInstall = 0f;
 		 
 		
 		
@@ -248,7 +311,25 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 		updateInstalledLabel();
 		
 		//remove concept from slot now its been used to install
-		slot.ejectConcept(); //might not want to fire any negative looking "rejection" style eject
+		final ConceptObject justinstalled = slot.objectCurrentlyStored;
+		slot.ejectConcept(ejectStyle.Instant); //might not want to fire any negative looking "rejection" style eject
+		
+		//add to the list of slots (these represent installed software)
+		final ConceptObjectSlot newslot = new ConceptObjectSlot();
+		newslot.setAsCointaining(justinstalled);
+		newslot.setCurrentMode(SlotMode.OutOnly); //out only in future to allow uninstalls
+		newslot.setOnDragRun(new OnDragRunnable() {			
+			@Override
+			public void run(ConceptObject drop) {
+				uninstall(justinstalled);	
+				InstalledSoftwareList.remove(newslot);
+			}
+		});
+		InstalledSoftwareList.add(newslot);
+		
+		
+		
+		
 		
 		//tell hub to update
 		parenthub.reGenerateLocationContents();
@@ -256,7 +337,7 @@ public class AbilityInstaller extends VerticalPanel implements GenericMeshFeatur
 
 	private void updateInstalledLabel() {
 		String runningSoftwareString = PlayersData.getAllRunningSoftwareAsString();
-		RunningSoftwareLabel.setText("Currently Installed : "+runningSoftwareString);
+		InstalledSoftwareLabel.setText("Currently Installed : "+runningSoftwareString);
 		
 	}
 	

@@ -353,6 +353,12 @@ public class PlayersData {
 		}
 	}
 	
+	
+	
+	public static SSSNodesWithCommonProperty getAllRunningSoftware(){
+		return playersLocationActiveSoftware;
+	}
+	
 	/**
 	 * returns a list of all running software as a string
 	 * (currently just a temp method to help the ability installer visualize whats running.

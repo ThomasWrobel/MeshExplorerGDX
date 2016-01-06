@@ -86,12 +86,12 @@ public class StaticSSSNodes {
 
 	//memory ability (that is, the players inventory)	
 	public static final SSSNode STMemoryAbility   = SSSNode.createSSSNode("STMemoryAbility", ME.INTERNALNS+"STMemoryAbility"    , ME.INTERNALNS,new SSSNode[]{ability});
-	public static final SSSNode BasicInventory    = SSSNode.createSSSNode("BasicInventory", ME.INTERNALNS+"BasicInventory"      , ME.INTERNALNS,new SSSNode[]{STMemoryAbility});
-	public static final SSSNode ExpandedInventory = SSSNode.createSSSNode("ExpandedInventory", ME.INTERNALNS+"ExpandedInventory", ME.INTERNALNS,new SSSNode[]{STMemoryAbility});
-	//note (these lists arnt needed, its just a method to give basicinventory and expanded inventory their propertys)
-	
-	public static final SSSNodesWithCommonProperty CapcitySeven = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(Capacity, Seven, new SSSNode[]{BasicInventory});
-	 public static final SSSNodesWithCommonProperty CapcityNine = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(Capacity, Nine, new SSSNode[]{ExpandedInventory});
+	public static final SSSNode BasicSTMem    = SSSNode.createSSSNode("BasicSTMem", ME.INTERNALNS+"BasicSTMem"      , ME.INTERNALNS,new SSSNode[]{STMemoryAbility});
+	public static final SSSNode ExpandedSTMem = SSSNode.createSSSNode("ExpandedSTMem", ME.INTERNALNS+"ExpandedSTMem", ME.INTERNALNS,new SSSNode[]{STMemoryAbility});
+
+	//note (these lists arnt needed, its just a method to give basicinventory and expanded inventory their property)
+	public static final SSSNodesWithCommonProperty CapcitySeven = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(Capacity, Seven, new SSSNode[]{BasicSTMem});
+	public static final SSSNodesWithCommonProperty CapcityNine = SSSNodesWithCommonProperty.createSSSNodesWithCommonProperty(Capacity, Nine, new SSSNode[]{ExpandedSTMem});
 	
 	
 	//concept gun ability	

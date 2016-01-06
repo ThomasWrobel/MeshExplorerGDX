@@ -351,6 +351,28 @@ public class Style {
 	//-------------------
 	//ref; http://grepcode.com/file/repo1.maven.org/maven2/com.google.gwt/gwt-user/2.0.4/com/google/gwt/dom/client/Style.java
 	
+
+	/**
+	 * Enum for the style unit
+	 * PX is normally the one supported for now on Label settings, but others will hopefully be supported eventually
+	 * Dont use others for now
+	 * @author darkflame
+	 *
+	 */	
+	 public enum Unit {
+		 /** special unit used to indicate a not-set value **/
+		 NOTSET,
+		 PX,
+		 /**percentage, should be % in strings **/
+		 PCT, 
+		 MM,
+		 CM,
+		 IN,
+		 PC,
+		 PT,
+		 EX		 
+	 }
+	
 	/**
 	 * Enum for the text-align property.
 	 */
@@ -390,6 +412,31 @@ public class Style {
 	public void setTextAlignment(TextAlign textAlignment) {
 		this.textAlignment = textAlignment;
 		layoutStyleChanged();
+	}
+	
+	
+	double lineHeight   = -1;
+	Unit lineHeightUnit = Unit.NOTSET; 
+	public void setLineHeight(double value,
+            Style.Unit unit) {
+		lineHeight = value;
+		lineHeightUnit=unit;
+		layoutStyleChanged();
+		
+	}
+	/**
+	 * returns -1 if no line height has been set
+	 * @return
+	 */
+	public double getLineHeightValue(){
+		if (lineHeightUnit==Unit.NOTSET){
+			return -1;
+		}		
+		return lineHeight;		
+	}
+	
+	public Unit getLineHeightUnit(){
+		return lineHeightUnit;
 	}
 	
 	/**

@@ -70,7 +70,7 @@ public class MessageHub extends MeshIcon {
 		emailsTitle = tidyEmailTitle(emailsTitle);		
 		
 		//make new email page on a spoke from this one
-		Email    emailPage = new Email(this,sssNode, writtenIn);
+		MessagePage    emailPage = new MessagePage(this,sssNode, writtenIn);
 
 
 		MeshIcon emailIcon = new MeshIcon(IconType.Message,emailsTitle,150,50,parentLocation, emailPage);
@@ -129,6 +129,7 @@ public class MessageHub extends MeshIcon {
 		Gdx.app.log(logstag,"Angle to hub = "+ang);
 		float total_emails = DirectEmails.size();
 
+		Gdx.app.log(logstag,"total_emails = "+total_emails);
 
 		float spaceing = 40;		
 		float totalSpread = (total_emails*spaceing)-spaceing; //30 degrees each

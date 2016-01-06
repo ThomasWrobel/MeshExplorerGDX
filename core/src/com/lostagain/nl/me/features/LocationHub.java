@@ -151,7 +151,8 @@ public class LocationHub extends MeshIcon {
 	void setAsUnLocked(){
 		
 		locked = false;
-		super.setBackgroundColour(Color.GREEN);
+		//super.setBackgroundColour(Color.GREEN);
+		setToDefaultBackColour();
 		
 		//close and change contents after waiting a short delay
 		Timer.schedule(new Task() {			

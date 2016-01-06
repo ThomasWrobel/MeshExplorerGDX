@@ -20,6 +20,7 @@ import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.ToggleButton_old;
 import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.GWTish.Widget;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.Animating;
@@ -82,12 +83,13 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	
 	
 	public InventoryPanel(){
+		super.setZIndex(15, Widget.generateUniqueGroupID("InventoryPanel"));
 		
 		//Appearance
 		getStyle().setBackgroundColor(new Color(0.1f,0.1f,0.1f,0.8f));
 		setPadding(5f);
 				
-		//title		
+		//Title		
 		Title.getStyle().clearBackgroundColor();
 		Title.getStyle().setColor(new Color(0.2f,0.9f,0.2f,1.0f));
 		Title.setToScale(new Vector3(0.8f,0.8f,0.8f));

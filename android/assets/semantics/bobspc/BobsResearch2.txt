@@ -1,7 +1,6 @@
 [To: Bob]
 
 Hay Bob, I granted you access to access to this...thing...whatever this is.
-It seems to exist as a second layer to our internet. 
 Somehow it existed without anyone noticing...
 ..some sort of sub protocol.
 Anyway, I granted you access in order to test my client access ssystem.

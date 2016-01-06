@@ -18,6 +18,8 @@ public class VerticalPanel extends CellPanel {
 	public VerticalPanel() {
 
 		super(10, 10); // default size and background
+		super.setZIndex(15, Widget.generateUniqueGroupID("VerticalPanel"));
+		
 
 	}
 

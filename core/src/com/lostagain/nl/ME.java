@@ -390,13 +390,17 @@ public static void centerViewOn(Location locationcontainer, float newZ, boolean 
 	
 		
 		//add the requested location to the  array list, but only if its different from
-				//the last location.
-		Location lastlocstored =null;;
-		try {
+		//the last location.
+		Location lastlocstored =null;
+		if (!LastLocation.isEmpty()){
 			lastlocstored = ME.LastLocation.getLast();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+		
+	//	try {
+	//		lastlocstored = ME.LastLocation.getLast();
+	//	} catch (Exception e) {
+	//		e.printStackTrace();
+	//	}
 		
 		if (lastlocstored!=null && addLocationToUndo){
 			

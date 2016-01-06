@@ -175,7 +175,7 @@ public class Label extends LabelBase {
 	 */
 	public Label (String contents,float MaxWidth,float MaxHeight, SizeMode sizeMode, MODELALIGNMENT modelAlignement, TextAlign textAlignment){ 
 		
-		super(generateObjectData(true, true, contents, sizeMode, MaxWidth, MaxHeight, modelAlignement,textAlignment));
+		super(generateObjectData(true, true, contents, sizeMode, MaxWidth, MaxHeight, modelAlignement,textAlignment,null));
 		super.setStyle(getMaterial(LABEL_MATERIAL)); //no style settings will work before this is set
 		this.lastUsedTextAlignment = textAlignment;
 			
@@ -268,11 +268,11 @@ public class Label extends LabelBase {
 	 * @param textAlignment 
 	 * @return
 	 */
-	private static backgroundAndCursorObject generateObjectData(boolean regenTexture,boolean regenMaterial,String contents,SizeMode labelsSizeMode, float maxWidth ,float maxHeight, MODELALIGNMENT alignment, TextAlign textAlignment) {
+	private static backgroundAndCursorObject generateObjectData(boolean regenTexture,boolean regenMaterial,String contents,SizeMode labelsSizeMode, float maxWidth ,float maxHeight, MODELALIGNMENT alignment, TextAlign textAlignment,Style style) {
 		TextureAndCursorObject textureData = null;
 		
 		if (regenTexture){			
-			textureData = generateTexture(labelsSizeMode, contents,maxWidth,textAlignment); //left default			
+			textureData = generateTexture(labelsSizeMode, contents,maxWidth,textAlignment,style); //left default			
 		}
 
 		Texture newTexture = textureData.textureItself;
@@ -345,21 +345,43 @@ public class Label extends LabelBase {
 	}
 
 
-	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, float sizeratio, float maxWidth,TextAlign align) {
+	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, float sizeratio, float maxWidth,TextAlign align, Style stylesettings) {
 
 		//  BitmapFontData data = DefaultStyles.standdardFont.getData();
 
 		GlyphLayout layout = new GlyphLayout();	    
 		//layout.setText(DefaultStyles.standdardFont, text);
-
+		
+		BitmapFont font = DefaultStyles.standdardFont;
+				
+		if (stylesettings!=null){
+			
+			//make a copy of the font so we can customize the data
+			//probably not very efficient?
+			font = new BitmapFont(DefaultStyles.standdardFont.getData(), DefaultStyles.standdardFont.getRegion(), DefaultStyles.standdardFont.usesIntegerPositions());
+			
+			float LineHeight = (float) stylesettings.getLineHeightValue();
+			Style.Unit LineHeightUnit = stylesettings.getLineHeightUnit();
+			
+			//we only support PX and Percentage at the moment		
+			if (LineHeightUnit == Style.Unit.PX){
+				font.getData().setLineHeight(LineHeight);
+			}
+			
+			
+		}
+		
+		
+		//font.getData().setScale(1.5f); //scaling doesnt work well
+		
 		//if maxWidth is zero or -1 then we dynamically work it out instead
 		if (maxWidth<1){
-			layout.setText(DefaultStyles.standdardFont, text);
+			layout.setText(font, text);
 			maxWidth = layout.width;
 		}	    
 
 		Gdx.app.log(logstag,text+"__"+text+"_layout width:"+maxWidth);
-		Gdx.app.log(logstag,text+"___layout line height:"+DefaultStyles.standdardFont.getLineHeight());
+		Gdx.app.log(logstag,text+"___layout line height:"+font.getLineHeight());
 
 		//convert from text align to layout align
 		int layoutAlignment = Align.center;
@@ -385,7 +407,7 @@ public class Label extends LabelBase {
 
 
 
-		layout.setText(DefaultStyles.standdardFont, text, Color.BLACK, maxWidth, layoutAlignment, true); //cant centralize without width
+		layout.setText(font, text, Color.BLACK, maxWidth, layoutAlignment, true); //cant centralize without width
 
 
 
@@ -419,7 +441,7 @@ public class Label extends LabelBase {
 
 
 
-		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, DefaultStyles.standdardFont); //note zeros as size isn't used
+		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, font); //note zeros as size isn't used
 
 		//Note; in order to scale text to fit in other modes we still render at the native size, but dont effect the mesh size
 		//the texture will then auto-scale into the space
@@ -783,7 +805,7 @@ public class Label extends LabelBase {
 			effectiveMaxWidth = maxWidth - (this.getStyle().getPaddingLeft() + this.getStyle().getPaddingRight());
 		}
 		
-		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,effectiveMaxWidth,align); //-1 is the default max width which means "any size"
+		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,effectiveMaxWidth,align,this.getStyle()); //-1 is the default max width which means "any size"
 
 
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
@@ -933,7 +955,7 @@ public class Label extends LabelBase {
 	}
 	*/
 
-	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents, float maxWidth,TextAlign align) {
+	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents, float maxWidth,TextAlign align, Style style) {
 
 
 
@@ -942,18 +964,18 @@ public class Label extends LabelBase {
 
 		switch (labelsSizeMode) {
 		case ExpandHeightMaxWidth:
-			NewTexture = generatePixmapExpandedToFit(contents,1f,maxWidth,align); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,1f,maxWidth,align,style); //-1 = no max width
 			break;
 		case Fixed:			
 			//Note; the textures internal size is not related to the widgets size directly, but it needs to know
 			//the final width/height ratio in order to pad the Pixmap enough to preserve its ratio.
-			NewTexture = generatePixmapExpandedToFit(contents,1f,-1,align); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,1f,-1,align,style); //-1 = no max width
 			break;
 			//expand to fit is also the default
 		case ExpandXYToFit:
 		default:
 			Gdx.app.log(logstag,"______________generating expand to fit text ");
-			NewTexture = generatePixmapExpandedToFit(contents,1f,-1,align); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,1f,-1,align,style); //-1 = no max width
 			break;
 
 		}
