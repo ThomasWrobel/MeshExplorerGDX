@@ -26,6 +26,7 @@ import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackError;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackRunnable;
 
 
+//NOTE: No save implemented on this SSSGenericFileManager
 public class FileManager implements SSSGenericFileManager{
 	
 	static Logger Log = Logger.getLogger("sss.JavaFileManager");
@@ -300,6 +301,13 @@ public class FileManager implements SSSGenericFileManager{
 		
 		return can;
 		
+	}
+
+	@Override
+	public boolean saveTextToFile(String location, String contents, FileCallbackRunnable runoncomplete,
+			FileCallbackError runonerror) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

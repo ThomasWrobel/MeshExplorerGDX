@@ -91,12 +91,7 @@ public class DefaultStyles {
 				newcolorstring =currentValue.getPLabel();
 
 				newcolor = getColorFromString(newcolorstring);
-			}	else {
-				continue;
-			}
-			
-			
-			if (currentPred == StaticSSSNodes.DBPediaHueCoOrd){
+			}	else if (currentPred == StaticSSSNodes.DBPediaHueCoOrd){
 				
 				newcolorstring = currentValue.getPLabel();
 				float huefloat = Integer.parseInt(newcolorstring)/360.0f;

@@ -35,6 +35,7 @@ public class Image extends Widget {
 	public Image(FileHandle imageFileHandle) {	
 		this(new Texture(imageFileHandle));		
 	}
+	
 	public Image(Texture image) {		
 		super(image.getWidth(), image.getHeight());		
 		this.image = image;

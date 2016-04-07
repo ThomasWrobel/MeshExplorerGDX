@@ -535,7 +535,7 @@ public class LocationHub extends MeshIcon {
 			Gdx.app.log(logstag,"getting contents:"+contentOfMACHINE.getSourceFiles().toString());
 			Gdx.app.log(logstag,"getting contents:"+contentOfMACHINE.getLefttoLoad() );
 
-			contentOfMACHINE.getAllNodesInSet(callback2);
+			contentOfMACHINE.getAllNodesAndSubclassesInSet(callback2);
 		}
 
 

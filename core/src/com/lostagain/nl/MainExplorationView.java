@@ -66,6 +66,11 @@ import com.lostagain.nl.me.particles.exampleParticleManagement;
 import com.lostagain.nl.shaders.InvertShader;
 import com.lostagain.nl.shaders.NormalMapShader;
 
+//Note; we really need a better algothm for laying out the nodes
+//as the user explores
+//some sort of radial tree diagram
+//http://pages.cs.wisc.edu/~pavlo/thesis/print.pdf ??
+//
 /** The main exploration view, which lets them see LocationURIs 
  * **/
 public class MainExplorationView implements Screen {

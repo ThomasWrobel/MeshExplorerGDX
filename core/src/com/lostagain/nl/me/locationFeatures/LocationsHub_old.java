@@ -63,7 +63,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.darkflame.client.query.Query;
 import com.darkflame.client.semantic.QueryEngine;
-import com.darkflame.client.semantic.RawQueryUtilities;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
@@ -626,7 +625,11 @@ public class LocationsHub_old extends Table {
 			Gdx.app.log(logstag,"getting contents:"+contentOfMACHINE.getSourceFiles().toString());
 			Gdx.app.log(logstag,"getting contents:"+contentOfMACHINE.getLefttoLoad() );
 
-			contentOfMACHINE.getAllNodesInSet(callback2);
+		//	contentOfMACHINE.getAllNodesInSet(callback2);
+			contentOfMACHINE.getAllDirectNodesInSet(callback2, true); //not sure if correct this was changed from the old method above
+			
+			
+			
 		}
 
 
