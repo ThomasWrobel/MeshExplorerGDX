@@ -2,8 +2,7 @@ package com.lostagain.nl.GWTish;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.lostagain.nl.GWTish.Element.EventType;
-import com.lostagain.nl.me.newmovements.PosRotScale;
+import com.lostagain.nl.GWTish.Event.EventType;
 
 /**
  * currently just a widget that has a runnable that fires when clicked.
@@ -190,7 +189,7 @@ public class ToggleButton extends DeckPanel {
 		}
 
 		//fire handler
-		fireHandlersForType(EventType.ClickEvent);
+		fireHandlersForType(Event.EventType.ClickEvent);
 
 	}
 

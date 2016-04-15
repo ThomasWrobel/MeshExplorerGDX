@@ -12,8 +12,8 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector2;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
 
 /**

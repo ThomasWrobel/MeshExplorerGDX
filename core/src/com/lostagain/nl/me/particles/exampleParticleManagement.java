@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g3d.particles.batches.PointSpriteParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool;
-import com.lostagain.nl.me.newmovements.PosRotScale;
+import com.lostagain.nl.GWTish.PosRotScale;
 
 public class exampleParticleManagement {
 

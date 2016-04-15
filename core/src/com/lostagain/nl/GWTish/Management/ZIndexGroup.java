@@ -5,7 +5,6 @@ import java.util.HashMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.Array;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 /**
  * Everything in the same ZIndexGroup is considered equal distance from the camera

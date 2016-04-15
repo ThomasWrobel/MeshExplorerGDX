@@ -1,5 +1,6 @@
 package com.lostagain.nl.me.newmovements;
 
+import com.lostagain.nl.GWTish.PosRotScale;
 
 /**
  * A dummy movement telling the sequence to repeat

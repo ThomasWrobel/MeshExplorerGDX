@@ -18,6 +18,8 @@ import com.lostagain.nl.GWTish.Button;
 import com.lostagain.nl.GWTish.DeckPanel;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.GWTish.PosRotScale;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDragRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
@@ -26,8 +28,6 @@ import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectInteractionType;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.ConceptBeamShader;
 
 /**

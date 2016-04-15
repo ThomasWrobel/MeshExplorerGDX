@@ -10,13 +10,13 @@ import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.GWTish.PosRotScale;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.GWTishModelManagement;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewMoveTo;
 import com.lostagain.nl.me.newmovements.NewMovementController;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 
 /**
  * Home to all game camera control functions

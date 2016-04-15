@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.lostagain.nl.GWTish.Widget.MODELALIGNMENT;
 import com.lostagain.nl.GWTish.Management.ZIndexGroup;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 
 
 public abstract class ComplexPanel extends Widget {

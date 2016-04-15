@@ -8,12 +8,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 
 /**
  * This is a panel designed to store concept objects

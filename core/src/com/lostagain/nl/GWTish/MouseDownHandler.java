@@ -1,13 +1,13 @@
 package com.lostagain.nl.GWTish;
 
-import com.lostagain.nl.GWTish.Element.EventType;
+import com.lostagain.nl.GWTish.Event.EventType;
 
 public abstract class MouseDownHandler extends EventHandler {
 	/** called when the element with this handler added is pressed **/
 	public abstract void onMouseDown();
 	
-	EventType getType(){
-		return EventType.MouseDownEvent;
+	Event.EventType getType(){
+		return Event.EventType.MouseDownEvent;
 	}
 	
 	protected void fireHandler(){

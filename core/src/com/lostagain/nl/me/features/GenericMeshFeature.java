@@ -1,9 +1,9 @@
 package com.lostagain.nl.me.features;
 
 import com.badlogic.gdx.math.Vector3;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.IsAnimatableModelInstance;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
-import com.lostagain.nl.me.newmovements.IsAnimatableModelInstance;
 
 
 

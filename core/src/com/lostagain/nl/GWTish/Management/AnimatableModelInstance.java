@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.newmovements;
+package com.lostagain.nl.GWTish.Management;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
+import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
@@ -43,10 +44,10 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	RenderOrder currentRenderPlacement; //default
 
 	/** list of things attached to this object. These things will all move and rotate with it **/
-	HashMap<AnimatableModelInstance,PosRotScale> attachlist = new HashMap<AnimatableModelInstance,PosRotScale>();
+	HashMap<IsAnimatableModelInstance,PosRotScale> attachlist = new HashMap<IsAnimatableModelInstance,PosRotScale>();
 	
 	/** What THIS object is attached too, if anything **/
-	public AnimatableModelInstance parentObject = null;
+	private IsAnimatableModelInstance parentObject = null;
 	
 	
 	
@@ -86,7 +87,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	/**
 	 * Determines if we should render this icon or not.
 	 * 
-	 * NOTE: If inheriting both the parents visibility AND the local visibility have to be set to true for this object to render
+	 * NOTE: If inheriting, both the parents visibility AND the local visibility have to be set to true for this object to render
 	 * Please use "isVisible()" to check for effective visibility
 	 * @param model
 	 */	
@@ -222,7 +223,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		hide(true);
 	}	
 
-	private void hide(boolean setlocalVisibility){		
+	
+	public void hide(boolean setlocalVisibility){		
 		currentRenderPlacement = GWTishModelManagement.removeModel(this);	
 		
 		if (setlocalVisibility){
@@ -233,7 +235,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		GWTishModelManagement.removeHitable(this);
 				
 		//we also hide things positioned relatively to this. Nothing overrides this
-		for (AnimatableModelInstance object : attachlist.keySet()) {
+		for (IsAnimatableModelInstance object : attachlist.keySet()) {
 			if (object.isInheriteingVisibility()){
 				object.hide(false);
 			}
@@ -259,7 +261,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		}
 		
 		//we also show things positioned relatively to this unless they have visible false set
-		for (AnimatableModelInstance object : attachlist.keySet()) {
+		for (IsAnimatableModelInstance object : attachlist.keySet()) {
 			if (object.isInheriteingVisibility()  && object.isVisible() ){
 				object.show(false);
 			}
@@ -443,7 +445,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#attachThis(com.lostagain.nl.me.newmovements.AnimatableModelInstance, com.lostagain.nl.me.newmovements.PosRotScale)
 	 */
 	@Override
-	public void attachThis(AnimatableModelInstance objectToAttach, PosRotScale displacement){
+	public void attachThis(IsAnimatableModelInstance objectToAttach, PosRotScale displacement){
 
 		//	Gdx.app.log(logstag,"_____________________________________adding object "); 
 
@@ -453,7 +455,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 			attachlist.put(objectToAttach, displacement);
 			
 			//associate this as the parent object
-			objectToAttach.parentObject=this;
+			//objectToAttach.parentObject=this;
+			objectToAttach.setParentObject(this);
 			
 			//give it a initial update
 			updateAttachedObject(objectToAttach);
@@ -482,19 +485,21 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#removeAttachment(com.lostagain.nl.me.newmovements.AnimatableModelInstance)
 	 */
 	@Override
-	public void removeAttachment(AnimatableModelInstance objectToRemove){
+	public void removeAttachment(IsAnimatableModelInstance objectToRemove){
 		
 		if (attachlist.containsKey(objectToRemove))
 		{
 			attachlist.remove(objectToRemove);
 			//remove this as the parent object
-			objectToRemove.parentObject=null;
+			//objectToRemove.parentObject=null;
+			objectToRemove.setParentObject(null);
+			
 		}
 		
 		
 	}
 	
-	private void updateAttachedObject(AnimatableModelInstance objectToUpdate){
+	private void updateAttachedObject(IsAnimatableModelInstance objectToUpdate){
 
 		PosRotScale displacement = attachlist.get(objectToUpdate).copy();			
 		displacement.position = displacement.position.scl(transState.scale); //displacement needs to be scaled			
@@ -508,7 +513,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 
 		//Gdx.app.log(logstag,"_____________________________________updateAllAttachedObjects ="+attachlist.size()); 
 
-		for (AnimatableModelInstance object : attachlist.keySet()) {
+		for (IsAnimatableModelInstance object : attachlist.keySet()) {
 
 			
 			updateAttachedObject(object);
@@ -522,7 +527,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#updateAtachment(com.lostagain.nl.me.newmovements.AnimatableModelInstance, com.lostagain.nl.me.newmovements.PosRotScale)
 	 */
 	@Override
-	public void updateAtachment(AnimatableModelInstance object,
+	public void updateAtachment(IsAnimatableModelInstance object,
 			PosRotScale displacement) {
 
 		attachlist.put(object, displacement);
@@ -540,7 +545,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#lookAt(com.lostagain.nl.me.newmovements.AnimatableModelInstance)
 	 */
 	@Override
-	public void lookAt(AnimatableModelInstance target){			
+	public void lookAt(IsAnimatableModelInstance target){			
 		Quaternion angle = getAngleTo(target);			
 		setToRotation(angle);			
 	}
@@ -549,7 +554,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#lookAt(com.lostagain.nl.me.newmovements.AnimatableModelInstance, com.badlogic.gdx.math.Vector3)
 	 */
 	@Override
-	public void lookAt(AnimatableModelInstance target, Vector3 Axis){			
+	public void lookAt(IsAnimatableModelInstance target, Vector3 Axis){			
 		Quaternion angle = getAngleTo(target,Axis);			
 		setToRotation(angle);			
 	}
@@ -563,7 +568,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getAngleTo(com.lostagain.nl.me.newmovements.AnimatableModelInstance)
 	 */
 	@Override
-	public Quaternion getAngleTo(AnimatableModelInstance target) {
+	public Quaternion getAngleTo(IsAnimatableModelInstance target) {
 		return  getAngleTo(target, new Vector3(1,0,0));
 	}
 
@@ -571,8 +576,9 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getAngleTo(com.lostagain.nl.me.newmovements.AnimatableModelInstance, com.badlogic.gdx.math.Vector3)
 	 */
 	@Override
-	public Quaternion getAngleTo(AnimatableModelInstance target, Vector3 Axis) {
-		return getAngleTo(target.transState.position, Axis);
+	public Quaternion getAngleTo(IsAnimatableModelInstance target, Vector3 Axis) {
+		return getAngleTo(target.getTransform().position, Axis);
+	//	return getAngleTo(target.transState.position, Axis);
 	}
 	
 	@Override
@@ -608,7 +614,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getAttachments()
 	 */
 	@Override
-	public Set<AnimatableModelInstance> getAttachments() {
+	public Set<IsAnimatableModelInstance> getAttachments() {
 
 		return attachlist.keySet();
 	}
@@ -656,7 +662,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 			return;
 		} else {
 		//if our local visibility is true then we base it on the parent setting
-			if (this.parentObject.isVisible()){
+			if (this.getParentObject().isVisible()){
 				this.show(false); //NOTE the false, this is used so we dont disturb the local visibility setting
 			} else {
 				this.hide(false);
@@ -679,12 +685,12 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	public boolean isVisible() {
 		
 		//if local visibility is false, or we are not inheriting the visibility, then our localvisibility should match are visibility
-		if (parentObject==null || localVisibility==false || !inheritVisibility ){
+		if (getParentObject()==null || localVisibility==false || !inheritVisibility ){
 			return localVisibility;
 		}
 		
 		///if we are inheriting and we are not hidden then our visibility should match our parents
-		return parentObject.isVisible();
+		return getParentObject().isVisible();
 				
 	}
 
@@ -806,6 +812,20 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 			GWTishModelManagement.setAsStandard(this);			
 		}
 		
+	}
+
+	/**
+	 * @return the parentObject
+	 */
+	public IsAnimatableModelInstance getParentObject() {
+		return parentObject;
+	}
+
+	/**
+	 * @param parentObject the parentObject to set
+	 */
+	public void setParentObject(IsAnimatableModelInstance parentObject) {
+		this.parentObject = parentObject;
 	}
 	
 

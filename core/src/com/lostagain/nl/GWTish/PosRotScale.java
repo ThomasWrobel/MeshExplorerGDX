@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.newmovements;
+package com.lostagain.nl.GWTish;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Matrix4;

@@ -1,4 +1,4 @@
-package com.lostagain.nl.me.newmovements;
+package com.lostagain.nl.GWTish.Management;
 
 import java.util.Set;
 
@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.lostagain.nl.GWTish.PosRotScale;
 
 public interface IsAnimatableModelInstance {
 
@@ -34,6 +35,35 @@ public interface IsAnimatableModelInstance {
 
 	/** hides it by removing it from the render lists **/
 	public abstract void hide();
+	
+	/**
+	 * There should be a internal boolean to determine if this object "should be" visible.<br>
+	 * If there is no parent object, this object reflects if this object is visible or not.<br>
+	 * If there is a parent object, and "inherit visibility" is turned on, then both this localvisibility AND the parents<br>
+	 * actual visibility have to be true in order for this object to display.<br>
+	 * <br>
+	 * Thus normally when deliberately hiding/showing a object you also want to set the local visiblity variable. (ie, use true)<br>
+	 * However, when its being hidden just because its parent is hidden, the variable should not be set (use false)<br>
+	 * <br>
+	 * @param setlocalVisibility - should the local visibility setting also be updated<br>
+	 * @return 
+	 */
+	abstract void hide(boolean setlocalVisibility);
+	
+	/**
+	 * There should be a internal boolean to determine if this object "should be" visible.<br>
+	 * If there is no parent object, this object reflects if this object is visible or not.<br>
+	 * If there is a parent object, and "inherit visibility" is turned on, then both this localvisibility AND the parents<br>
+	 * actual visibility have to be true in order for this object to display.<br>
+	 * <br>
+	 * Thus normally when deliberately hiding/showing a object you also want to set the local visiblity variable. (ie, use true)<br>
+	 * However, when its being hidden just because its parent is hidden, the variable should not be set (use false)<br>
+	 * <br>
+	 * @param setlocalVisibility - should the local visibility setting also be updated<br>
+	 * @return 
+	 */
+	abstract void show(boolean setlocalVisibility);
+	
 
 	/**
 	 * Shows it by adding it to the render lists.
@@ -65,19 +95,19 @@ public interface IsAnimatableModelInstance {
 	 * 
 	 * Note; Displacement is not copied. Changes to the given displacement will continue to effect the objects position 
 	 * **/
-	public abstract void attachThis(AnimatableModelInstance objectToAttach,
+	public abstract void attachThis(IsAnimatableModelInstance objectToAttach,
 			PosRotScale displacement);
 
-	public abstract void removeAttachment(AnimatableModelInstance objectToRemove);
+	public abstract void removeAttachment(IsAnimatableModelInstance objectToRemove);
 
-	public abstract void updateAtachment(AnimatableModelInstance object,
+	public abstract void updateAtachment(IsAnimatableModelInstance object,
 			PosRotScale displacement);
 
 	/** Sets this model to "lookat" the target models vector3 location by aligning this models xAxis(1,0,0) to point at the target **/
-	public abstract void lookAt(AnimatableModelInstance target);
+	public abstract void lookAt(IsAnimatableModelInstance target);
 
 	/** Sets this model to lookat the target models vector3 location **/
-	public abstract void lookAt(AnimatableModelInstance target, Vector3 Axis);
+	public abstract void lookAt(IsAnimatableModelInstance target, Vector3 Axis);
 
 	/** Sets this model to lookat the target vector3 location **/
 	public abstract void lookAt(Vector3 target, Vector3 Axis);
@@ -87,7 +117,7 @@ public interface IsAnimatableModelInstance {
 	 * 
 	 * @return Quaternion of angle 
 	 * **/
-	public abstract Quaternion getAngleTo(AnimatableModelInstance target);
+	public abstract Quaternion getAngleTo(IsAnimatableModelInstance target);
 
 	/** 
 	 * Method to find the axis-angle between this AnimatableModelInstances and another relative to the xAxis.
@@ -95,12 +125,12 @@ public interface IsAnimatableModelInstance {
 	 * @return Quaternion of angle 
 	 * **/
 
-	public abstract Quaternion getAngleTo(AnimatableModelInstance target,
+	public abstract Quaternion getAngleTo(IsAnimatableModelInstance target,
 			Vector3 Axis);
 
 	public abstract Quaternion getAngleTo(Vector3 target, Vector3 Axis);
 	
-	public abstract Set<AnimatableModelInstance> getAttachments();
+	public abstract Set<IsAnimatableModelInstance> getAttachments();
 
 	public abstract void setInheritedPosition(boolean inheritedPosition);
 
@@ -121,7 +151,17 @@ public interface IsAnimatableModelInstance {
 
 
 	
+	/**
+	 * If this object has a parent, what is it?
+	 * @return
+	 */
+	public IsAnimatableModelInstance getParentObject();
+	/**
+	 * @param parentObject the parentObject to set
+	 */
+	public void setParentObject(IsAnimatableModelInstance parentObject);
 
-
+	
+	public abstract PosRotScale getTransform();
 
 }

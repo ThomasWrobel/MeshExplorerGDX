@@ -5,7 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -29,11 +32,14 @@ import com.badlogic.gdx.utils.Array; //NOTE: This is like an arraylist but bette
 import com.badlogic.gdx.utils.ObjectSet; //NOTE: This is like a hashset but apparently is better optimized for libgdx stuff
 import com.lostagain.nl.GameMode;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.GWTish.Event;
+import com.lostagain.nl.GWTish.Event.EventType;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.IsAnimatableModelInstance;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.creatures.Creature;
 import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.me.models.GWTishModelManagement.TouchState;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.ConceptBeamShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.shaders.MySorter;
@@ -49,17 +55,17 @@ public class GWTishModelManagement {
 	 * You can use this for special overlay objects - effects, interfaces, etc.
 	 * Remember fine-grain controll within grouped objects should be dealt with the Zindex attribute, not this **/
 	public static ObjectSet<ModelInstance> allOverlayInstances = new ObjectSet<ModelInstance>();
-	
+
 
 	public static MyShaderProvider myshaderprovider = new MyShaderProvider();
-	
 
-	
+
+
 	public static ModelBatch modelBatch;
-	
+
 	public static MySorter mysorter;
 
-	
+
 	/**all hitable models **/
 	public static ObjectSet<hitable> hitables = new ObjectSet<hitable>(); //should be changed to a set to stop duplicates
 	/** everything the mouse is currently down over **/
@@ -83,11 +89,11 @@ public class GWTishModelManagement {
 	//test objects
 	static AnimatableModelInstance lookAtTester;
 
-	
+
 	public static void addmodel(AnimatableModelInstance model) {	
 		addmodel(model,RenderOrder.STANDARD);
 	}
-	
+
 	/** Adds the model to the render list.
 	 * RenderOrder determines if its rendered in front or behind the spritestage.
 	 * 
@@ -99,9 +105,9 @@ public class GWTishModelManagement {
 
 		addmodel((ModelInstance)model,order); //note we cast so as to call the non-AnimatableModelInstance specific method below
 
-		for (AnimatableModelInstance attachedModel : model.getAttachments()) {	
+		for (IsAnimatableModelInstance attachedModel : model.getAttachments()) {	
 			if (attachedModel.isInheriteingVisibility() && attachedModel.isVisible()){
-				addmodel(attachedModel,order);
+				addmodel((ModelInstance)attachedModel,order);
 			}
 		}
 
@@ -117,11 +123,11 @@ public class GWTishModelManagement {
 	 * If Z is less then the stage Z 5 its behind
 	 * If its more then 5its in front**/
 	public static void addmodel(ModelInstance model, RenderOrder order) {	
-		
+
 		//temp test putting it all in front of the stage while we test material based ordering
 		//order = GWTishModelManagement.RenderOrder.OVERLAY;		
-		
-	
+
+
 		//ignore if present already
 		if (allStandardInstances.contains(model) || allOverlayInstances.contains(model)){
 			Gdx.app.log(logstag,"________model already on a render list");
@@ -131,7 +137,7 @@ public class GWTishModelManagement {
 		model.transform.getTranslation(position);
 		float Z = position.z; //is this always correct?
 		//float Z = model.transform.getValues()[Matrix4.M23];
-		
+
 		Gdx.app.log(logstag,"z = "+Z);
 
 		if (order == RenderOrder.STANDARD ){
@@ -143,9 +149,9 @@ public class GWTishModelManagement {
 			allOverlayInstances.add(model);
 			return;
 		}
-		
+
 		allStandardInstances.add(model); //temp till we remove zdecides
-		
+
 		//depending on if we are above/below the stage position we add it accordingly		
 		//if (Z<5){
 		//	allBackgroundInstances.add(model);
@@ -182,8 +188,8 @@ public class GWTishModelManagement {
 
 	public static Vector2 touchStartedAt = null;
 
-	
-	
+
+
 	/**
 	 * tests the sort order of foreground objects
 	 * @param deltatime
@@ -217,7 +223,7 @@ public class GWTishModelManagement {
 
 
 	}
-	
+
 	//TODO: maybe this should be static?
 	static public void setup(){
 
@@ -229,7 +235,7 @@ public class GWTishModelManagement {
 
 		mysorter = new MySorter();
 		modelBatch = new ModelBatch(myshaderprovider,mysorter);
-		
+
 		//First we add one object at the center with a defaultshader used
 		// Its VERY important to use a defaultshader object as the first thing created, else
 		//the default shader will get confused and think it can render things with other shaders too.
@@ -266,8 +272,8 @@ public class GWTishModelManagement {
 
 		ModelInstance beamtest = ModelMaker.createRectangleAt(500, 1000, 30, 200, 200, Color.BLACK, beamShader); // new ModelInstance(model1); 
 
-	//	Renderable renderableWithAttribute = new Renderable();
-	//	beamtest.getRenderable(renderableWithAttribute);
+		//	Renderable renderableWithAttribute = new Renderable();
+		//	beamtest.getRenderable(renderableWithAttribute);
 
 		//	Boolean defaultCanRender = test.canRender(renderableWithAttribute);
 
@@ -298,13 +304,13 @@ public class GWTishModelManagement {
 
 
 		ModelInstance colortest = ModelMaker.createRectangleAt(0, 900, 130, 200, 200, Color.BLACK, testmaterial3); 
-*/
+		 */
 
 
 		//ModelManagment.addmodel(centermaker,RenderOrder.infrontStage);
 
-		
-		
+
+
 		if (GameMode.currentGameMode!=GameMode.Production){
 			GWTishModelManagement.addmodel(beamtest,GWTishModelManagement.RenderOrder.OVERLAY);
 			//	ModelManagment.addmodel(colortest,RenderOrder.infrontStage);
@@ -435,31 +441,45 @@ public class GWTishModelManagement {
 		Model lookAtTesterm =  modelBuilder.createXYZCoordinates(95f, blue, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		lookAtTester = new AnimatableModelInstance(lookAtTesterm);
 		lookAtTester.setToPosition(new Vector3 (500,500,0));
-		
+
 
 		GWTishModelManagement.addmodel(lookAtTester,GWTishModelManagement.RenderOrder.OVERLAY);
 
 	}
 
-	
+
+	static public class rayHit {
+		
+		hitable hitthis;
+		Vector3 atThis;
+		
+		public rayHit(hitable hitthis, Vector3 atThis) {
+			super();
+			this.hitthis = hitthis;
+			this.atThis = atThis;
+		}
+		
+	}
 	/**
 	 * what was in the line of the ray the last time getHitables was run
 	 */
-	static ArrayList<hitable> underCursor = new ArrayList<hitable>();
-	
+	static ArrayList<rayHit> underCursor = new ArrayList<rayHit>();
+
 	/** 
 	 * Comparator to sort by distance
 	 */
-	static public class OrderByDistance implements Comparator<hitable> {
-		    @Override
-		    public int compare(hitable o1, hitable o2) {
-		    	float hit1 = o1.getLastHitsRange();
-		    	float hit2 = o2.getLastHitsRange();		        
-		        return (int) (hit1 - hit2);
-		    }
-		};
-	
-		/**  mouse state (still being implemented. Will replace newtouch and newup)
+	static public class OrderByDistance implements Comparator<rayHit> {
+		@Override
+		public int compare(rayHit o1, rayHit o2) {
+			
+			float hit1 = o1.hitthis.getLastHitsRange();
+			float hit2 = o2.hitthis.getLastHitsRange();		  
+			
+			return (int) (hit1 - hit2);
+		}
+	};
+
+	/**  mouse state (still being implemented. Will replace newtouch and newup)
 	 **/
 	public static enum TouchState {
 		/** screen is not touched or mouse is not down **/
@@ -476,19 +496,57 @@ public class GWTishModelManagement {
 		 * mouse or touch just went up
 		 */
 		NewTouchUp,
-	
+
 		/**
 		 * The mouse has just moved a bit since being down  **/
 		NewDrag,
-	
+
 		/**
 		 * The mouse has moved a bit since being down and is still being held **/
 		Dragging;
-	
+
 	}
 
-		static OrderByDistance distanceSorter = new OrderByDistance();
+	static OrderByDistance distanceSorter = new OrderByDistance();
+
+
+	public static void getHitables(float x, float y, Camera camera) 
+	{
+
+		
+		//generate current event object
+				boolean altKeyWasPressed   = Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT);
+				boolean cntrKeyWasPressed  = Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT);
+				boolean shiftKeyWasPressed = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT);
+				int currentEventX        = (int) x;
+				int currentEventY        = (int) y;
+				int currentEventKeyCode    = 0; //TODO: fill this in if possible?
+				
+				
+				Event currentEvent = new Event(
+						altKeyWasPressed,  
+						cntrKeyWasPressed,  
+						shiftKeyWasPressed,
+						currentEventX,
+						currentEventY,  
+						currentEventKeyCode);	
+				
+				
+				//set it as the current event
+				Event.setCurrentEvent(currentEvent);
+		
+		
+		Ray pickray = camera.getPickRay(x, y);
+
+		TouchState currentTouchState = GWTishModelManagement.currentTouchState;
+		getHitables(pickray,true,currentTouchState);
+		
+		//clear event
+		Event.setCurrentEvent(null);
+	}
+
 	
+	//TODO: make lower statement private in favor of above
 	/**
 	 * Gets all the hitables the current ray hits.
 	 * If penetrate isn't turned on, nothing under the first blocker will be returned.
@@ -503,13 +561,16 @@ public class GWTishModelManagement {
 	 */
 	public static ArrayList<hitable> getHitables(Ray ray,boolean hitsPenetrate, GWTishModelManagement.TouchState applyTouchAction) {
 		
+		
+		
+		
 		underCursor.clear();
 		//hitable closestNonBlockerTouched = null;	    
 		//hitable closestBlockerTouched = null;
 
 		Vector3 position = new Vector3();
 		for (hitable newInstance : hitables) {
-			
+
 			position = newInstance.getCenterOnStage();
 
 			//first check if it hits at all. We base this on the hitables internal tester
@@ -518,28 +579,33 @@ public class GWTishModelManagement {
 			if (hitPoint==null){
 				continue;
 			}
-			
-			
+
+
 
 			float dist2 = ray.origin.dst2(hitPoint);
 			newInstance.setLastHitsRange(dist2);
-			
-			underCursor.add(newInstance);				
-			
+
+			underCursor.add(new rayHit(newInstance,hitPoint));				
+
 		}
-		
-	//	Gdx.app.log(logstag,"underCursor:"+underCursor.size());
-		
+
+		//	Gdx.app.log(logstag,"underCursor:"+underCursor.size());
+
 		//sort by distance
 		Collections.sort(underCursor,distanceSorter);
-		
+
 		ArrayList<hitable> onesHit = new ArrayList<hitable>();
-		
+
 		//crop to the ones on top, hitting as we go
-		for (hitable object : underCursor) {
+		for (rayHit hit : underCursor) {
+
+			hitable object = hit.hitthis;
 			
 			objectInteractionType type = object.getInteractionType();
 			onesHit.add(object);
+
+			//TODO: update the event for the collision position?
+			// need to store the hitpoints above rather then just the hitables in the under cursor list
 			
 			//fire the correct event depending on type
 			if (applyTouchAction!=null){
@@ -562,34 +628,36 @@ public class GWTishModelManagement {
 					}
 					break;
 				case TouchDown:
-					
+
 					break;
 				case NewDrag:
 					object.fireDragStart();					
 					mousedownOn.remove(object);
-					
-					
+
+
 					break;
 				}
 			}
-			
-			
-			
+
+
+
 			if (type == objectInteractionType.Interface){
 				return onesHit;
 			}
 			if (type == objectInteractionType.Blocker && !hitsPenetrate){
 				return onesHit;
 			}
-			
-			
+
+
 		}
-		
-		
+
+
 		return onesHit;
-		
+
 	}
-	
+
+
+
 	/**
 	 * 
 	 * 
@@ -613,7 +681,7 @@ public class GWTishModelManagement {
 	 * @return the nearest hitable
 	 * 
 	 */
-	public static hitable testForHits(Ray ray,boolean hitsPenetrate,boolean processHits) {
+	public static hitable testForHits(Ray ray, boolean hitsPenetrate, boolean processHits) {
 
 		Gdx.app.log(logstag,"_-testing hit in :"+hitables.size+" models");
 		Gdx.app.log(logstag,"_-testing ray at :"+ray.origin.x+","+ray.origin.y);
@@ -656,7 +724,7 @@ public class GWTishModelManagement {
 
 
 			Gdx.app.log(logstag,"_hit "+newInstance.getClass()+" object at distance "+dist2+" position was("+position+")");
-			
+
 			if (newInstance.getInteractionType() == objectInteractionType.Blocker){
 				Gdx.app.log(logstag,"(it was blocker)");
 
@@ -884,7 +952,7 @@ public class GWTishModelManagement {
 
 
 	}
-	
+
 	/**
 	 * changes the render order of a item to "overlay"
 	 * (that is, puts it in the overlay list after taking it out of the normal list
@@ -892,13 +960,13 @@ public class GWTishModelManagement {
 	 * @param model
 	 */
 	public static void setAsOverlay(ModelInstance model){
-		
+
 		//only add to overlay if it was in standard anyway
 		if (allStandardInstances.remove(model)) {
 			allOverlayInstances.add(model);
 		}
-		
-		
+
+
 	}
 	/**
 	 * changes the render order of a item to "standard"
@@ -909,12 +977,12 @@ public class GWTishModelManagement {
 	 * 
 	 */
 	public static void setAsStandard(ModelInstance model){
-		
+
 		//we only add it to standard if it was in overlay
 		if (allOverlayInstances.remove(model)){
 			allStandardInstances.add(model);
 		}
-		
+
 	}
 
 	public static void updateTouchState() {
@@ -927,18 +995,18 @@ public class GWTishModelManagement {
 			switch (GWTishModelManagement.currentTouchState) {
 			case NONE:			
 				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NewTouchDown; //if we wernt touching before then its a new touch!
-			
-				
+
+
 				break;
 			case NewTouchDown:
 				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.TouchDown; //if we previously were a new touchdown, then now we are a non-new touchdown
-								
+
 				//currently duplicated elsewhere in MainExplorationView				
 				Gdx.app.log(logstag," new touch down");
 				GWTishModelManagement.touchStartedAt = new Vector2(Gdx.input.getX(),Gdx.input.getY());
 
-				
-				
+
+
 				break;
 			case NewTouchUp:
 				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.NewTouchDown; //if we just touched up and then the very next frame touched down....then the user is suspiciously fast
@@ -987,5 +1055,7 @@ public class GWTishModelManagement {
 		}
 
 	}
+
+
 
 }

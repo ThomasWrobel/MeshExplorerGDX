@@ -10,10 +10,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
+import com.lostagain.nl.GWTish.PosRotScale;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 
 /** To visualizer a camera,which helps when debugging.
  * 

@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.GWTish.ComplexPanel.Alignment;
 import com.lostagain.nl.GWTish.ComplexPanel.HorizontalAlignment;
 import com.lostagain.nl.GWTish.ComplexPanel.VerticalAlignment;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 
 /**
  * A deck panel is a stack of other panels ontop of eachother

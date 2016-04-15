@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector2;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 
 
 

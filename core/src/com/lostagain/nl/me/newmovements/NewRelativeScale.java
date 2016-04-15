@@ -1,6 +1,7 @@
 package com.lostagain.nl.me.newmovements;
 
 import com.badlogic.gdx.math.Vector3;
+import com.lostagain.nl.GWTish.PosRotScale;
 
 /** rotates relatively to a position **/
 public class NewRelativeScale extends NewMovement {

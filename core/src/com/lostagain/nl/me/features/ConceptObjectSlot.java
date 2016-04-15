@@ -8,17 +8,17 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.Widget;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectInteractionType;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewForward;
 import com.lostagain.nl.me.newmovements.NewMovementController;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.me.objects.DataObject;
 
 /**

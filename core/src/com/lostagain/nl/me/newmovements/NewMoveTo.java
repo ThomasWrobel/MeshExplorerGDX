@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
+import com.lostagain.nl.GWTish.PosRotScale;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewMovement.MovementTypes;
 
 public class NewMoveTo  {

@@ -1,5 +1,7 @@
 package com.lostagain.nl.me.newmovements;
 
+import com.lostagain.nl.GWTish.PosRotScale;
+
 //import com.badlogic.gdx.math.Matrix4;
 
 public class NewForward extends NewMovement {

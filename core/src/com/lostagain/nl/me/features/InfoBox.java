@@ -10,11 +10,11 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.LabelBase.TextureAndCursorObject;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 /***
  * 

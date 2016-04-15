@@ -18,16 +18,16 @@ import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.ClickHandler;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.ToggleButton_old;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.Widget;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.models.objectInteractionType;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 
 /**
  * Experimental inventory class

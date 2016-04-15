@@ -1,5 +1,6 @@
 package com.lostagain.nl.me.newmovements;
 
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 
 //untested!
 public class NewRunAwayFrom  {

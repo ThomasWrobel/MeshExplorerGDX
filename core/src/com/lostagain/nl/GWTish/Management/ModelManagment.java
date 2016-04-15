@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 
 /**
  * Handles the renderable list for widgets
@@ -35,9 +34,9 @@ public class ModelManagment {
 
 		addModel((ModelInstance)model); //note we cast so as to call the non-AnimatableModelInstance specific method below
 
-		for (AnimatableModelInstance attachedModel : model.getAttachments()) {	
+		for (IsAnimatableModelInstance attachedModel : model.getAttachments()) {	
 			if (attachedModel.isInheriteingVisibility() && attachedModel.isVisible()){
-				addModel(attachedModel);
+				addModel((ModelInstance)attachedModel);
 			}
 		}
 

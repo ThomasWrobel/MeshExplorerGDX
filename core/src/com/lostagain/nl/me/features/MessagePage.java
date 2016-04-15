@@ -22,12 +22,12 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.Style.TextAlign;
 import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectInteractionType;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
 
 /**

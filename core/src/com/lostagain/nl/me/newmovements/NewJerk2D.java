@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.lostagain.nl.GWTish.PosRotScale;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 
 public class NewJerk2D extends NewMovement {
 	

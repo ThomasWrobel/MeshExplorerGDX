@@ -14,13 +14,13 @@ import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.gui.DataObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.locationFeatures.RepairScreen;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.objects.DataObject;
 
 /**

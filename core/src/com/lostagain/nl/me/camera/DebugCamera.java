@@ -17,12 +17,12 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.GWTish.PosRotScale;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.GWTishModelManagement;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
 import com.lostagain.nl.me.newmovements.NewMoveTo;
 import com.lostagain.nl.me.newmovements.NewMovementController;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 
 /**
  * The debug camera is for debugging the draw order, it is not attached to anything and allows you to see where the normal camera is

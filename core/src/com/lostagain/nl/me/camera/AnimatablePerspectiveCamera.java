@@ -8,10 +8,10 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.lostagain.nl.GWTish.PosRotScale;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.IsAnimatableModelInstance;
 import com.lostagain.nl.me.models.GWTishModelManagement;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
-import com.lostagain.nl.me.newmovements.IsAnimatableModelInstance;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 
 /**
  * In order to more easily handle animations on camera we make them all extend this, and use this ones functions for all updates
@@ -36,7 +36,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	//  private Vector3 up; //use super. instead!
 
 
-	HashMap<AnimatableModelInstance,PosRotScale> attachlist = new HashMap<AnimatableModelInstance,PosRotScale>();
+	HashMap<IsAnimatableModelInstance,PosRotScale> attachlist = new HashMap<IsAnimatableModelInstance,PosRotScale>();
 
 
 	//NOTE: A lot of these things are purely here to emulate animatable object functions as we are implementing the interface of that 
@@ -68,8 +68,9 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	public boolean localVisibility = true;
 
 	/** What THIS object is attached too, if anything **/
-	protected AnimatableModelInstance parentObject = null;
+	protected IsAnimatableModelInstance parentObject = null;
 
+	
 	// this is just an example constructor, make sure to implement the constructor you need
 	public AnimatablePerspectiveCamera (float fieldOfViewY, float viewportWidth, float viewportHeight) {
 		super(fieldOfViewY, viewportWidth, viewportHeight);
@@ -158,7 +159,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	 * <br>
 	 * Note; Displacement is not copied. Changes to the given displacement will continue to effect the objects position<br>
 	 * Note3: Displacement should also contain any existing scaleing you have applied, **/
-	public void attachThis(AnimatableModelInstance objectToAttach, PosRotScale displacement){
+	public void attachThis(IsAnimatableModelInstance objectToAttach, PosRotScale displacement){
 
 		//add if not already there
 		if (!attachlist.containsKey(objectToAttach))
@@ -168,7 +169,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 
 	}
 
-	public void deattachThis(AnimatableModelInstance objectToAttach){
+	public void deattachThis(IsAnimatableModelInstance objectToAttach){
 
 		attachlist.remove(objectToAttach);
 
@@ -179,7 +180,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 
 		//Gdx.app.log(logstag,"_____________________________________updateAllAttachedObjects ="+attachlist.size()); 
 
-		for (AnimatableModelInstance object : attachlist.keySet()) {
+		for (IsAnimatableModelInstance object : attachlist.keySet()) {
 
 			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(object));
 			object.setTransform(newposition);
@@ -190,7 +191,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 		}
 	}
 
-	public void updateAtachment(AnimatableModelInstance object,
+	public void updateAtachment(IsAnimatableModelInstance object,
 			PosRotScale lazerbeamdisplacement) {
 
 		attachlist.put(object, lazerbeamdisplacement);
@@ -203,7 +204,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	}
 	
 	@Override
-	public Quaternion getAngleTo(AnimatableModelInstance target) {
+	public Quaternion getAngleTo(IsAnimatableModelInstance target) {
 		return  getAngleTo(target, new Vector3(1,0,0));
 	}
 
@@ -212,10 +213,10 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	 */
 
 	@Override
-	public Quaternion getAngleTo(AnimatableModelInstance target, Vector3 Axis) {
+	public Quaternion getAngleTo(IsAnimatableModelInstance target, Vector3 Axis) {
 
 		Vector3 thisPoint   = this.transState.position.cpy();
-		Vector3 targetPoint = target.transState.position.cpy();
+		Vector3 targetPoint = target.getTransform().position.cpy();
 
 		//get difference (which is the same as target relative to 0,0,0 if this point was 0,0,0)
 		targetPoint.sub(thisPoint);			
@@ -240,13 +241,13 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	}
 
 	@Override
-	public void removeAttachment(AnimatableModelInstance objectToRemove){
+	public void removeAttachment(IsAnimatableModelInstance objectToRemove){
 
 		if (attachlist.containsKey(objectToRemove))
 		{
 			attachlist.remove(objectToRemove);
 			//remove this as the parent object
-			objectToRemove.parentObject=null;
+			objectToRemove.setParentObject(null);
 		}
 
 
@@ -306,7 +307,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	/**
 	 * returns no opp
 	 */
-	private void hide(boolean setlocalVisibility){		
+	public void hide(boolean setlocalVisibility){		
 		//no opp
 	}
 
@@ -320,7 +321,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	/**
 	 * returns no opp
 	 */
-	private void show(boolean setlocalVisibility){		
+	public void show(boolean setlocalVisibility){		
 
 		//no opp
 	}
@@ -460,13 +461,13 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 
 
 	@Override
-	public void lookAt(AnimatableModelInstance target){			
+	public void lookAt(IsAnimatableModelInstance target){			
 		Quaternion angle = getAngleTo(target);			
 		setToRotation(angle);			
 	}
 
 	@Override
-	public void lookAt(AnimatableModelInstance target, Vector3 Axis){			
+	public void lookAt(IsAnimatableModelInstance target, Vector3 Axis){			
 		Quaternion angle = getAngleTo(target,Axis);			
 		setToRotation(angle);			
 	}
@@ -486,7 +487,7 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	}
 
 	@Override
-	public Set<AnimatableModelInstance> getAttachments() {
+	public Set<IsAnimatableModelInstance> getAttachments() {
 		return attachlist.keySet();
 	}
 
@@ -503,6 +504,22 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	@Override
 	public BoundingBox getLocalCollisionBox(boolean onceOnly) {
 		return null;
+	}
+
+	@Override
+	public IsAnimatableModelInstance getParentObject() {
+		return parentObject;
+	}
+
+	@Override
+	public void setParentObject(IsAnimatableModelInstance parentObject) {
+		this.parentObject = parentObject;
+		
+	}
+
+	@Override
+	public PosRotScale getTransform() {
+		return this.transState;
 	}
 
 

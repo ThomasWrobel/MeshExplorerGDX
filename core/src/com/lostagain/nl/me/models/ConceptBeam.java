@@ -14,9 +14,9 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.DefaultStyles;
+import com.lostagain.nl.GWTish.PosRotScale;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.me.gui.ConceptGun;
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
-import com.lostagain.nl.me.newmovements.PosRotScale;
 import com.lostagain.nl.shaders.ConceptBeamImpactShader;
 import com.lostagain.nl.shaders.ConceptBeamShader;
 

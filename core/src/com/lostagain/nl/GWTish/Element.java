@@ -6,8 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-
-import com.lostagain.nl.me.newmovements.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
 
 /**
@@ -56,10 +55,6 @@ public class Element extends AnimatableModelInstance {
 	//------------(might refractor elsewhere at some point)---
 	ArrayList<EventHandler> handlers = new ArrayList<EventHandler>();
 	
-	//event types
-	enum EventType {
-		ClickEvent,MouseDownEvent,MouseUpEvent
-	}
 	/**
 	 * was hitable manually set? in which case we should not remove it here when theres no handlers
 	 * Note; we might have to override setAsHitable to keep track of this
@@ -73,27 +68,27 @@ public class Element extends AnimatableModelInstance {
 		
 		//add new handler
 		handlers.add(handler);
-		
-		
+				
 		//create and return a HandlerRegistration
 		return new HandlerRegistration(this,handler);
      }
 	
+	
 	public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) 
-	 {
+	{
 		//if no handlers yet exist ensure we are hitable
 		ensureHandlers();
 		
 		//add new handler
 		handlers.add(handler);
-		
-		
+				
 		//create and return a HandlerRegistration
 		return new HandlerRegistration(this,handler);
     }
 	
+	
 	public HandlerRegistration addMouseUpHandler(MouseUpHandler handler) 
-	 {
+	{
 		//if no handlers yet exist ensure we are hitable
 		ensureHandlers();		
 		//add new handler
@@ -129,7 +124,7 @@ public class Element extends AnimatableModelInstance {
 	}
 	
 	
-	protected void fireHandlersForType(EventType eventType) {
+	protected void fireHandlersForType(Event.EventType eventType) {
 		
 		if (handlers.isEmpty()){
 			Gdx.app.log(logstag, "no handlers set for element");
@@ -142,14 +137,12 @@ public class Element extends AnimatableModelInstance {
 				 handler.fireHandler();
 			}
 			
-			
-			
 		}
 	}
 	
 	
 	//Actual events here;
-	//This is where the clicks are recieved
+	//This is where the clicks are received
 	private boolean mouseDownOn = false;
 
 	@Override
@@ -169,7 +162,7 @@ public class Element extends AnimatableModelInstance {
 		if (mouseDownOn == true){			
 			mouseDownOn = false;
 			
-			fireHandlersForType(EventType.ClickEvent);
+			fireHandlersForType(Event.EventType.ClickEvent);
 			
 		}
 	

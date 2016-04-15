@@ -3,7 +3,7 @@ package com.lostagain.nl.me.models;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.lostagain.nl.me.newmovements.PosRotScale;
+import com.lostagain.nl.GWTish.PosRotScale;
 
 public interface hitable {
 	
