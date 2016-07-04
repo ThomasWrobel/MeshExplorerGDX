@@ -43,12 +43,19 @@ public class Element extends AnimatableModelInstance {
 	public void setStyle(Material material) {
 		
 		objectsStyle=new Style(this,material);
-		
-		
-	
+			
+		//umm the associated material probablty needs updating to match the material supplied?
 		
 	}
 	
+	public void setStyle(Style material) {
+		
+		objectsStyle=material;
+		//umm the associated material probablty needs updating to match the material supplied in style?
+		//objectsStyle.objectsMaterial
+		
+		
+	}
 	//============
 	//------------
 	//FocusPanel like functions;

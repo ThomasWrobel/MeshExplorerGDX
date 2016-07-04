@@ -38,6 +38,8 @@ import com.lostagain.nl.GWTish.Image;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.features.ConceptGunPanel;
@@ -58,8 +60,6 @@ import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
 import com.lostagain.nl.me.models.MessyModelMaker;
-import com.lostagain.nl.me.models.GWTishModelManagement;
-import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.particles.exampleParticleManagement;
@@ -71,8 +71,9 @@ import com.lostagain.nl.shaders.NormalMapShader;
 //some sort of radial tree diagram
 //http://pages.cs.wisc.edu/~pavlo/thesis/print.pdf ??
 //
-/** The main exploration view, which lets them see LocationURIs 
- * **/
+/** 
+ * The main exploration view, which lets them see LocationURIs 
+ ***/
 public class MainExplorationView implements Screen {
 
 	final static String logstag = "ME.MainExplorationView";
@@ -826,8 +827,10 @@ public class MainExplorationView implements Screen {
 
 			Gdx.app.log(logstag,"currentTouchState:"+GWTishModelManagement.currentTouchState.name());
 			
-			lastHits = GWTishModelManagement.getHitables(ray,false,GWTishModelManagement.currentTouchState); 
-			                                     
+			//lastHits = GWTishModelManagement.getHitables(ray,false,GWTishModelManagement.currentTouchState); 
+			
+			lastHits = GWTishModelManagement.getHitables(ME.getCurrentCursorScreenPosition().x,ME.getCurrentCursorScreenPosition().y,camera); 
+			                                  
 
 			if (lastHits.size()>0){
 				touchedAModel = lastHits.get(0);
@@ -965,14 +968,14 @@ public class MainExplorationView implements Screen {
 			//checking no pending event has canceled the next drag (like if the user is moving a scrollable window)
 			//checking they arnt "dragging" a concept object rather then the landscape (currentlyHeld)
 			//and finally checking if they are allowed to drag at all (ie, maybe the gun is in use and its disabled normal movement)
-			if (!dragging
-					&& !cancelnextdragclick 
-					&& (touchedAModel==null) 
-					&& !STMemory.isHoldingItem()
-					&& !movementControllDisabled){
+			if (   !dragging
+				&& !cancelnextdragclick 
+				&& (touchedAModel==null) 
+				&& !STMemory.isHoldingItem()
+				&& !movementControllDisabled){
+				
 				dragging = true;
 				dragstart = TimeUtils.millis();
-
 
 				startdragxscreen = Gdx.input.getX();
 				startdragyscreen = Gdx.input.getY();
@@ -982,14 +985,15 @@ public class MainExplorationView implements Screen {
 				startdragx_exview = currentPos.x;
 				startdragy_exview = currentPos.y;
 
-			} else if ((!cancelnextdragclick && (touchedAModel==null) && !movementControllDisabled) || forceDragStart) {
+			} else if ((!cancelnextdragclick 
+					&& (touchedAModel==null) 
+					&& !movementControllDisabled) || forceDragStart) {
 
 				drag_dis_x = Gdx.input.getX()-startdragxscreen;
 				drag_dis_y = Gdx.input.getY()-startdragyscreen;
 
 				currentPos.x = startdragx_exview-drag_dis_x;
 				currentPos.y = startdragy_exview+drag_dis_y;
-
 
 			}
 
@@ -1379,7 +1383,7 @@ public class MainExplorationView implements Screen {
 
 
 	/**
-	 * lets us manually trigging dragging of the landscape from another object
+	 * lets us manually trigger dragging of the landscape from another object
 	 */
 	public static void setAsDragging() {
 

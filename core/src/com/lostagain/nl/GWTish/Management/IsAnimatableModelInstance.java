@@ -130,7 +130,19 @@ public interface IsAnimatableModelInstance {
 
 	public abstract Quaternion getAngleTo(Vector3 target, Vector3 Axis);
 	
+	/**
+	 * gets all the direct attachments
+	 * @return
+	 */
 	public abstract Set<IsAnimatableModelInstance> getAttachments();
+	
+	/**
+	 * gets all the attachments,including children's and children's children
+	 * @return
+	 */
+	public abstract Set<IsAnimatableModelInstance> getAllAttachments();
+	
+	
 
 	public abstract void setInheritedPosition(boolean inheritedPosition);
 
@@ -163,5 +175,6 @@ public interface IsAnimatableModelInstance {
 
 	
 	public abstract PosRotScale getTransform();
+
 
 }

@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement.RenderOrder;
 
 /**
  * Handles the renderable list for widgets
@@ -95,7 +95,8 @@ public class ModelManagment {
 		
 		return wasRemoved;
 	}
-	
+
+
 	
 	
 	

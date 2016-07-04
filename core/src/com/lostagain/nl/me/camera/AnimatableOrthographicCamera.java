@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -23,9 +25,9 @@ import com.lostagain.nl.GWTish.Management.IsAnimatableModelInstance;
  * @author Tom on the excellent and helpful advice of Xoppa
  *
  */
-public class AnimatablePerspectiveCamera extends PerspectiveCamera implements IsAnimatableModelInstance {
+public class AnimatableOrthographicCamera extends OrthographicCamera implements IsAnimatableModelInstance {
 
-	final static String logstag = "ME.AnimatablePerspectiveCamera";
+	final static String logstag = "ME.AnimatableOrthographicCamera";
 
 	//Use this instead of the models matrix
 	public final PosRotScale transState = new PosRotScale();
@@ -73,8 +75,8 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 
 	
 	// this is just an example constructor, make sure to implement the constructor you need
-	public AnimatablePerspectiveCamera (float fieldOfViewY, float viewportWidth, float viewportHeight) {
-		super(fieldOfViewY, viewportWidth, viewportHeight);
+	public AnimatableOrthographicCamera (float viewportWidth, float viewportHeight) {
+		super(viewportWidth, viewportHeight);
 	}
 
 	//Method used to update the transform
@@ -162,10 +164,16 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	 * Note3: Displacement should also contain any existing scaleing you have applied, **/
 	public void attachThis(IsAnimatableModelInstance objectToAttach, PosRotScale displacement){
 
-		//add if not already there
+		//add if not already there else update
 		if (!attachlist.containsKey(objectToAttach))
 		{
 			attachlist.put(objectToAttach, displacement);
+		} else {
+
+			Gdx.app.log(logstag,"updating attachment:"+displacement.toString());
+			attachlist.put(objectToAttach, displacement); 
+			//we now should visually sycn positions
+			sycnAttachedObjectsPosition(objectToAttach);
 		}
 
 	}
@@ -179,17 +187,24 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 
 	private void updateAllAttachedObjects(){
 
-		//Gdx.app.log(logstag,"_____________________________________updateAllAttachedObjects ="+attachlist.size()); 
+	//	Gdx.app.log(logstag,"_____________________________________updateAllAttachedObjects ="+attachlist.size()); 
 
 		for (IsAnimatableModelInstance object : attachlist.keySet()) {
 
-			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(object));
-			object.setTransform(newposition);
+			sycnAttachedObjectsPosition(object);
 			//
 			//	Gdx.app.log(logstag,"_____________________________________cam position is ="+transState.position); 
-			//	Gdx.app.log(logstag,"_____________________________________setting attached position to ="+newposition); 
+//
+			//	Gdx.app.log(logstag,"_____________________________________displacement ="+displacement); 
+			//.app.log(logstag,"_____________________________________setting attached position to ="+newposition); 
 
 		}
+	}
+
+	protected void sycnAttachedObjectsPosition(IsAnimatableModelInstance object) {
+		PosRotScale displacement = attachlist.get(object);
+		PosRotScale newposition = transState.copy().displaceBy(displacement);			
+		object.setTransform(newposition);
 	}
 
 	public void updateAtachment(IsAnimatableModelInstance object,
@@ -492,20 +507,6 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 		return attachlist.keySet();
 	}
 
-	@Override
-	public Set<IsAnimatableModelInstance> getAllAttachments() {
-		
-		Set<IsAnimatableModelInstance> attachments = new HashSet<IsAnimatableModelInstance>(attachlist.keySet());
-		
-		for (IsAnimatableModelInstance childAttach : attachments) {
-			
-			attachments.addAll(childAttach.getAllAttachments());
-			
-		}						
-		
-		return attachments;
-	}
-
 	/**
 	 * returns no opp
 	 */
@@ -538,4 +539,18 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	}
 
 
+	@Override
+	public Set<IsAnimatableModelInstance> getAllAttachments() {
+		
+		Set<IsAnimatableModelInstance> attachments = new HashSet<IsAnimatableModelInstance>(attachlist.keySet());
+		
+		for (IsAnimatableModelInstance childAttach : attachments) {
+			
+			attachments.addAll(childAttach.getAllAttachments());
+			
+		}						
+		
+		return attachments;
+	}
+	
 }

@@ -29,8 +29,8 @@ import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.me.features.ConceptObject;
-import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.objects.DataObject;
 
 /** handles the various semantic objects you can carry with, either for concept gun use
@@ -158,6 +158,8 @@ public class STMemory extends Table implements DataObjectDropTarget {
 			lastTime = TimeUtils.millis();
 		
 	}
+	
+	
 	protected static void setCurrentlyHeld(DataObject object) {
 		
 		currentlyHeld=object;

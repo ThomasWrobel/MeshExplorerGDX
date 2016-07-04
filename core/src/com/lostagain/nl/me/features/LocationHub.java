@@ -21,9 +21,9 @@ import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.me.locationFeatures.EmailScreen;
 import com.lostagain.nl.me.locationFeatures.Location;
-import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.uti.HSLColor;
 
 /**

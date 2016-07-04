@@ -9,10 +9,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.features.MeshIcon.IconType;
 import com.lostagain.nl.me.locationFeatures.Location;
-import com.lostagain.nl.me.models.GWTishModelManagement;
-import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
 
 /**
  * A centerpoint for emails, with individual emails appearing in spokes around it.

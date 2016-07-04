@@ -19,8 +19,8 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.newmovements.NewMoveTo;
 import com.lostagain.nl.me.newmovements.NewMovementController;
 

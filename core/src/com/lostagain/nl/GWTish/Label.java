@@ -177,8 +177,11 @@ public class Label extends LabelBase {
 		
 		super(generateObjectData(true, true, contents, sizeMode, MaxWidth, MaxHeight, modelAlignement,textAlignment,null));
 		super.setStyle(getMaterial(LABEL_MATERIAL)); //no style settings will work before this is set
+	
 		this.lastUsedTextAlignment = textAlignment;
-			
+		this.userData="label_"+contents;
+		
+		
 		if (!labelSetupDone){
 			firstTimeSetUp();
 			labelSetupDone=true;
@@ -310,9 +313,9 @@ public class Label extends LabelBase {
 
 
 		Material mat = 	
-				new Material(LABEL_MATERIAL,	
-				TextureAttribute.createDiffuse(newTexture),
+				new Material(LABEL_MATERIAL,
 				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
+				TextureAttribute.createDiffuse(newTexture),
 			//	ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
 				textStyle);
 
@@ -326,7 +329,6 @@ public class Label extends LabelBase {
 
 		//Note the *1 is the scale. We have scale 1 by default, duh.
 		Model newModel = Widget.generateBackground(SizeX, SizeY, mat, alignment);
-
 		
 		GwtishWidgetDistanceFieldAttribute matttest2 = (GwtishWidgetDistanceFieldAttribute) newModel.getMaterial(LABEL_MATERIAL).get(GwtishWidgetDistanceFieldAttribute.ID);
 		

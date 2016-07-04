@@ -9,8 +9,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.semantic.SSSNode;
 import com.darkflame.client.semantic.SSSNodesWithCommonProperty;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.me.features.MeshIcon.IconType;
-import com.lostagain.nl.me.models.GWTishModelManagement;
 
 /**
  * Manages the data request screens for a single location

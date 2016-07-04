@@ -101,6 +101,8 @@ public class Button extends DeckPanel {
 		Caption.getStyle().clearBackgroundColor();
 		Caption.getStyle().clearBorderColor();
 
+		Caption.userData = "button_"+caption;
+		
 		float xsize = Caption.getWidth()+10;
 		float ysize = Caption.getHeight()+10;
 

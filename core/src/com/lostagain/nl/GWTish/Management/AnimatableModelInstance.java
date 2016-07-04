@@ -1,6 +1,7 @@
 package com.lostagain.nl.GWTish.Management;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
@@ -13,9 +14,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.GWTish.PosRotScale;
-import com.lostagain.nl.me.models.GWTishModelManagement;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.models.objectInteractionType;
-import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.me.models.hitable;
 
 /**
@@ -541,6 +541,10 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	}
 
 
+
+	
+	
+	
 	/* (non-Javadoc)
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#lookAt(com.lostagain.nl.me.newmovements.AnimatableModelInstance)
 	 */
@@ -618,6 +622,27 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 
 		return attachlist.keySet();
 	}
+	
+	
+	/**
+	 * gets all attachments and child attachments
+	 */
+	@Override
+	public Set<IsAnimatableModelInstance> getAllAttachments() {
+		
+		Set<IsAnimatableModelInstance> attachments = new HashSet<IsAnimatableModelInstance>(attachlist.keySet());
+		
+		for (IsAnimatableModelInstance childAttach : attachments) {
+			
+			attachments.addAll(childAttach.getAllAttachments());
+			
+		}				
+		
+		
+		return attachments;
+	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#setInheritedPosition(boolean)
@@ -724,23 +749,19 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 
 	@Override
 	public void fireTouchDown() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void fireTouchUp() {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void fireClick() {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void fireDragStart() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -797,7 +818,8 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		
 	}
 
-	protected boolean hasAttachment(AnimatableModelInstance object) {
+	
+	public boolean hasAttachment(AnimatableModelInstance object) {
 		return attachlist.containsKey(object);
 	}
 
@@ -822,9 +844,12 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	}
 
 	/**
-	 * @param parentObject the parentObject to set
+	 * @param parentObject the parentObject to set, detaching from any existing ones first
 	 */
 	public void setParentObject(IsAnimatableModelInstance parentObject) {
+		if (this.parentObject!=null){
+			this.parentObject.removeAttachment(this);	
+		}
 		this.parentObject = parentObject;
 	}
 	

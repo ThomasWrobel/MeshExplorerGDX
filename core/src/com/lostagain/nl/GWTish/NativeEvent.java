@@ -1,31 +1,47 @@
 
 package com.lostagain.nl.GWTish;
 
-import java.util.ArrayList;
+
 
 /**
  * The native emulated-dom event.
  * This is somewhat close to GWT NativeEvent to help compatibility, but 
- * is implemented different and similiarities cant be relied upon.
+ * is implemented different and similarities cant be relied upon.
+ * One difference is the button press handeling. GWT used bitfields for some old IE compatibility thing.
+ * 
  */
 public class NativeEvent {
 
-  /**
-   * The left mouse button.
-   */
-  public static final int BUTTON_LEFT = 1;
+//  /**
+//   * The left mouse button.
+ //  */
+  //public static final int BUTTON_LEFT = 1;
 
-  /**
-   * The middle mouse button.
-   */
-  public static final int BUTTON_MIDDLE = 4;
+ // /**
+ //  * The middle mouse button.
+ //  */
+  //public static final int BUTTON_MIDDLE = 4;
 
-  /**
-   * The right mouse button.
-   */
-  public static final int BUTTON_RIGHT = 2;
+ // /**
+ //  * The right mouse button.
+ //  */
+  //public static final int BUTTON_RIGHT = 2;
 
-  
+	
+	//just use a enum instead
+	static public enum EventButtonType {
+		None,
+		Left,
+		Right,
+		Middle //not yet used
+	}
+	
+	protected EventButtonType ButtonTypeDown =EventButtonType.None;
+	/**
+	 * The last mouse button that was pressed
+	 */
+	static protected EventButtonType LastButtonTypeThatWasDown = EventButtonType.None;
+	
   /**
    * Required constructor for GWT compiler to function.
    */
@@ -49,8 +65,12 @@ public class NativeEvent {
    */
   boolean ShiftKeyWasPressed = false;
   
+  /** 2D screen-relative x */
   int CurrentEventX = 0;
+  /** 2D screen-relative y */
   int CurrentEventY = 0;
+  
+  
   
 /**
    * Should be set when the event was created
@@ -68,14 +88,23 @@ public class NativeEvent {
   }
 
   /**
-   * Gets the mouse buttons that were depressed when the given event occurred.
-   * NOT SUPPORTED YET
-   * @return a bit-field, defined by {@link NativeEvent#BUTTON_LEFT},
-   *         {@link NativeEvent#BUTTON_MIDDLE}, and
-   *         {@link NativeEvent#BUTTON_RIGHT}
+   * Gets the mouse button that was depressed when the given event occurred.<br>
+   * Note; ClickEvents are triggered on mouse up or finger released.<br>
+   * Therefor nothing is "currently" pressed when that happens and this will return NONE.<br>
+   * Use the getLastPressedMouseButton() function instead to work out if it was a left or right click.<br>
+   * @return 
    */
-  public final int getButton() {
-    return 0;
+  public final EventButtonType getMouseButton() {	  
+    return ButtonTypeDown;
+  }
+
+
+  /**
+   * Gets the mouse button that was depressed when the given event occurred.
+   * @return 
+   */
+  static public final EventButtonType getLastPressedMouseButton() {	  
+    return LastButtonTypeThatWasDown;
   }
 
   /**

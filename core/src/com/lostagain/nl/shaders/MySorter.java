@@ -561,7 +561,7 @@ public class MySorter extends DefaultRenderableSorter {
 			
 			//give it a material (random if z-index or not)
 			int ranGroupNum = (int) (Math.random()*3);
-			newWidget.getMaterial().set(new ZIndexAttribute(i,"testgroup"+ranGroupNum));
+			newWidget.getBackgroundMaterial().set(new ZIndexAttribute(i,"testgroup"+ranGroupNum));
 			//(for the moment everything is the same position in the group, 20)
 			
 			//add its renderable to the renderable array

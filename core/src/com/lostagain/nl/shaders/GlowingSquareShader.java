@@ -142,7 +142,7 @@ public class GlowingSquareShader implements Shader {
 		}
 		
 
-		program.setUniformf(u_glowWidth, squareStyle.glowWidth);  	 
+		program.setUniformf(u_glowWidth, squareStyle.borderWidth);  	 
 		program.setUniformf(u_backColor, back);
 		program.setUniformf(u_coreColor, core);
 		//program.setUniformf(u_glowColor, glow);

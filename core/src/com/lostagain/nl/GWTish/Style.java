@@ -43,7 +43,9 @@ public class Style {
 		
 	
 	/**
-	 * The style object must be given the objects material, which for most functions needs to use the distancefieldshader	 * 
+	 * The style object must be given the objects material, which for most functions needs to use the distancefieldshader
+	 * Its this material which will have its attributes changed
+	 * 
 	 * @param objectsMaterial
 	 **/
 	public Style(Element elementWithStyle,Material mat) {
@@ -132,9 +134,10 @@ public class Style {
 	
 	/**
 	 * only works with GlowingSquareAttribute shaders right now
+	 * 0.0-1.0
 	 * @param bordercol
 	 */
-	public void setBorderWidth(float glowWidth) {
+	public void setBorderWidth(float borderWidth) {
 		
 	//	nullParameterCheck(bordercol);
 		
@@ -145,7 +148,8 @@ public class Style {
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		//if (backStyle!=null){
 
-			backStyle.glowWidth = glowWidth;
+			backStyle.borderWidth = borderWidth;
+			
 		//	glowingSquare.glowColor = bordercol;
 	//	}
 
@@ -169,6 +173,11 @@ public class Style {
 		//	glowingSquare.glowColor = bordercol;
 	//	}
 
+	}
+	
+	public void setBorderRadius(float radius) {
+		createBackgroundAttributeIfNeeded();
+			backStyle.cornerRadius = radius;
 	}
 
 	/**

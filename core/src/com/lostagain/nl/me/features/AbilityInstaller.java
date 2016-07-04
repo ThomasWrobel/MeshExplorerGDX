@@ -20,6 +20,7 @@ import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.ComplexPanel;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDragRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
@@ -30,7 +31,6 @@ import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.models.Animating;
-import com.lostagain.nl.me.models.GWTishModelManagement;
 
 /**
  * Provides one slot that lets the player install features to their GUI or location

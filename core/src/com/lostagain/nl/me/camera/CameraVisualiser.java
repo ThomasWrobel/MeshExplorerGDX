@@ -12,8 +12,8 @@ import com.lostagain.nl.me.models.MessyModelMaker;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
-import com.lostagain.nl.me.models.GWTishModelManagement;
-import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement.RenderOrder;
 
 /** To visualizer a camera,which helps when debugging.
  * 

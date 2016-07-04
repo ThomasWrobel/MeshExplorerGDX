@@ -1,16 +1,16 @@
-package com.lostagain.nl.me.models;
+package com.lostagain.nl.GWTish.Management;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -20,33 +20,28 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array; //NOTE: This is like an arraylist but better optimized for libgdx stuff
 import com.badlogic.gdx.utils.ObjectSet; //NOTE: This is like a hashset but apparently is better optimized for libgdx stuff
 import com.lostagain.nl.GameMode;
-import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.GWTish.Event;
-import com.lostagain.nl.GWTish.Event.EventType;
-import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
-import com.lostagain.nl.GWTish.Management.IsAnimatableModelInstance;
-import com.lostagain.nl.me.camera.MECamera;
-import com.lostagain.nl.me.creatures.Creature;
-import com.lostagain.nl.me.domain.MEDomain;
-import com.lostagain.nl.me.models.GWTishModelManagement.TouchState;
+import com.lostagain.nl.GWTish.NativeEvent;
+import com.lostagain.nl.me.models.Animating;
+import com.lostagain.nl.me.models.ModelMaker;
+import com.lostagain.nl.me.models.Moving;
+import com.lostagain.nl.me.models.hitable;
+import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.shaders.ConceptBeamShader;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.shaders.MySorter;
 
 public class GWTishModelManagement {
 
-	private static String logstag="ME.ModelManagment old";
+	private static String logstag="ME.GWTishModelManagement";
+
 
 	/** All the 3d models we want to render in the standard draw order should go into this list **/
 	public static ObjectSet<ModelInstance> allStandardInstances = new ObjectSet<ModelInstance>();
@@ -68,17 +63,18 @@ public class GWTishModelManagement {
 
 	/**all hitable models **/
 	public static ObjectSet<hitable> hitables = new ObjectSet<hitable>(); //should be changed to a set to stop duplicates
+	
 	/** everything the mouse is currently down over **/
 	public static ObjectSet<hitable> mousedownOn = new ObjectSet<hitable>();
 
-	/** has a drag started? (that is, has the cursor moved after its been down, but not released?)**/
+	/** Has a drag started? (that is, has the cursor moved after its been down, but not released?)**/
 	static boolean dragStarted = false;
 
 
-	/**All model with texture animations **/
+	/** All model with texture animations **/
 	public static ObjectSet<Animating> animatingobjects = new ObjectSet<Animating>();
 
-	/**all models currently moving **/
+	/** All models currently moving **/
 	public static ObjectSet<Moving> movingObjects = new ObjectSet<Moving>();
 
 
@@ -94,20 +90,21 @@ public class GWTishModelManagement {
 		addmodel(model,RenderOrder.STANDARD);
 	}
 
-	/** Adds the model to the render list.
+	/** 
+	 * Adds the model to the render list.
 	 * RenderOrder determines if its rendered in front or behind the spritestage.
 	 * 
 	 * You can also  it chooses if its a background or foreground object based on its Z position
 	 * If Z is less then the stage Z 5 its behind
 	 * If its more then 5its in front
-	  If adding a AnimatableModelInstance we also check all its attachments are added too **/
+	  If adding a AnimatableModelInstance we also check all its attachments are added too. **/
 	public static void addmodel(AnimatableModelInstance model, GWTishModelManagement.RenderOrder order) {	
 
 		addmodel((ModelInstance)model,order); //note we cast so as to call the non-AnimatableModelInstance specific method below
 
 		for (IsAnimatableModelInstance attachedModel : model.getAttachments()) {	
 			if (attachedModel.isInheriteingVisibility() && attachedModel.isVisible()){
-				addmodel((ModelInstance)attachedModel,order);
+				addmodel((AnimatableModelInstance)attachedModel,order); //we call this function so as to get objects attached to objects attached to this, etc
 			}
 		}
 
@@ -241,7 +238,7 @@ public class GWTishModelManagement {
 		//the default shader will get confused and think it can render things with other shaders too.
 		//This is because to figure out if it can render something it always compared to the first object it gets.
 
-		//We also have to have transparence on the first shader we make else transparency wont be supported at all
+		//We also have to have transparency on the first shader we make else transparency wont be supported at all
 		Material testmaterial = new Material(
 				ColorAttribute.createDiffuse(Color.RED), 
 				ColorAttribute.createSpecular(Color.WHITE),
@@ -448,33 +445,57 @@ public class GWTishModelManagement {
 	}
 
 
+	/**
+	 * This class stores hits between rays and objects.
+	 * NOTE: The equals has been overriden so this can be directly compared with a object list.
+	 * this means  a.equals(b) will be true even if a is a rayHit and b is a animatedObject.
+	 * This is quite different to how equals normally behaves.
+	 * 
+	 * @author darkflame	 *
+	 */
 	static public class rayHit {
-		
+
 		hitable hitthis;
 		Vector3 atThis;
-		
+
 		public rayHit(hitable hitthis, Vector3 atThis) {
 			super();
 			this.hitthis = hitthis;
 			this.atThis = atThis;
 		}
-		
+		/**
+		* NOTE: The equals has been overriden so this can be directly compared with a object list.
+		 * this means  a.equals(b) will be true even if a is a rayHit and b is a animatedObject.
+		 * This is quite different to how equals normally behaves.
+		 */
+		//@Override
+		//public boolean equals(Object obj) {
+		////	if (hitthis.equals(obj)){
+		//		return true;
+		//	}			
+		//	return super.equals(obj);
+		//}
+
 	}
 	/**
 	 * what was in the line of the ray the last time getHitables was run
 	 */
-	static ArrayList<rayHit> underCursor = new ArrayList<rayHit>();
+	static ArrayList<rayHit> underCursorHits = new ArrayList<rayHit>();
 
+	/**
+	 * what was in the line of the ray the last time getHitables was run
+	 */
+	static ArrayList<hitable> underCursorList = new ArrayList<hitable>();
 	/** 
 	 * Comparator to sort by distance
 	 */
 	static public class OrderByDistance implements Comparator<rayHit> {
 		@Override
 		public int compare(rayHit o1, rayHit o2) {
-			
+
 			float hit1 = o1.hitthis.getLastHitsRange();
 			float hit2 = o2.hitthis.getLastHitsRange();		  
-			
+
 			return (int) (hit1 - hit2);
 		}
 	};
@@ -509,43 +530,59 @@ public class GWTishModelManagement {
 
 	static OrderByDistance distanceSorter = new OrderByDistance();
 
+	
 
-	public static void getHitables(float x, float y, Camera camera) 
+	public static ArrayList<hitable> getHitables(float x, float y, Camera camera) 
 	{
 
-		
+
 		//generate current event object
-				boolean altKeyWasPressed   = Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT);
-				boolean cntrKeyWasPressed  = Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT);
-				boolean shiftKeyWasPressed = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT);
-				int currentEventX        = (int) x;
-				int currentEventY        = (int) y;
-				int currentEventKeyCode    = 0; //TODO: fill this in if possible?
-				
-				
-				Event currentEvent = new Event(
-						altKeyWasPressed,  
-						cntrKeyWasPressed,  
-						shiftKeyWasPressed,
-						currentEventX,
-						currentEventY,  
-						currentEventKeyCode);	
-				
-				
-				//set it as the current event
-				Event.setCurrentEvent(currentEvent);
-		
-		
+		boolean altKeyWasPressed   = Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT);
+		boolean cntrKeyWasPressed  = Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT);
+		boolean shiftKeyWasPressed = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT);
+		int currentEventX        = (int) x;
+		int currentEventY        = (int) y;
+		int currentEventKeyCode    = 0; //TODO: fill this in if possible?
+
+		//The mouse button currently down
+		NativeEvent.EventButtonType buttonTypeDown = NativeEvent.EventButtonType.None;	
+
+		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+			buttonTypeDown = NativeEvent.EventButtonType.Left;
+		} else if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
+			buttonTypeDown = NativeEvent.EventButtonType.Right;
+		}  else if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)){
+			buttonTypeDown = NativeEvent.EventButtonType.Middle;
+		}
+
+
+
+		Event currentEvent = new Event(
+				buttonTypeDown,
+				altKeyWasPressed,  
+				cntrKeyWasPressed,  
+				shiftKeyWasPressed,
+				currentEventX,
+				currentEventY,  
+				currentEventKeyCode);	
+
+
+		//set it as the current event (this also stores the current last event as the previous event)
+		Event.setCurrentEvent(currentEvent);
+
+
 		Ray pickray = camera.getPickRay(x, y);
 
 		TouchState currentTouchState = GWTishModelManagement.currentTouchState;
-		getHitables(pickray,true,currentTouchState);
-		
+		ArrayList<hitable> hits = getHitables(pickray,true,currentTouchState);
+
 		//clear event
 		Event.setCurrentEvent(null);
+		
+		return hits;
 	}
 
-	
+
 	//TODO: make lower statement private in favor of above
 	/**
 	 * Gets all the hitables the current ray hits.
@@ -560,18 +597,16 @@ public class GWTishModelManagement {
 	 * @return
 	 */
 	public static ArrayList<hitable> getHitables(Ray ray,boolean hitsPenetrate, GWTishModelManagement.TouchState applyTouchAction) {
-		
-		
-		
-		
-		underCursor.clear();
-		//hitable closestNonBlockerTouched = null;	    
-		//hitable closestBlockerTouched = null;
 
-		Vector3 position = new Vector3();
+
+
+		underCursorList.clear();
+		underCursorHits.clear();
+
+		//Vector3 position = new Vector3();
 		for (hitable newInstance : hitables) {
 
-			position = newInstance.getCenterOnStage();
+		//	position = newInstance.getCenterOnStage();
 
 			//first check if it hits at all. We base this on the hitables internal tester
 			//this lets different hitables use different intersect types (ie, radius, boundingbox, polygon etc)
@@ -579,34 +614,62 @@ public class GWTishModelManagement {
 			if (hitPoint==null){
 				continue;
 			}
-
-
-
 			float dist2 = ray.origin.dst2(hitPoint);
 			newInstance.setLastHitsRange(dist2);
 
-			underCursor.add(new rayHit(newInstance,hitPoint));				
+			underCursorHits.add(new rayHit(newInstance,hitPoint));				
+			underCursorList.add(newInstance);
+			
+		}
 
+		
+		//Gdx.app.log(logstag,"_underCursorList_ :"+underCursorList.toString());		
+
+		//If anything is set to auto-hide and not currently under the cursor, then we hide it, provided this was some sort of click event
+		if (applyTouchAction!=null && applyTouchAction!=TouchState.NONE){
+			Iterator<IsAnimatableModelInstance> autoHideIt = autoHideList.iterator();
+			while (autoHideIt.hasNext()) {
+				IsAnimatableModelInstance isAnimatableModelInstance = (IsAnimatableModelInstance) autoHideIt.next();
+
+			//	Gdx.app.log(logstag,"_autoHideTesting_ :"+isAnimatableModelInstance.getClass().getName());	
+				
+				if (!underCursorList.contains(isAnimatableModelInstance)) {
+					Set<IsAnimatableModelInstance> attachments = isAnimatableModelInstance.getAllAttachments();
+					
+				//	Gdx.app.log(logstag,"attachments::::"+attachments .toString());	
+					
+					//unfortunately we also need to check for children of the autoHidingObject, as we might be clicking
+					//something on the object (like a button) but not the object itself)					
+					boolean containsNoneOf = Collections.disjoint(underCursorList, attachments);
+					if (containsNoneOf){	
+						isAnimatableModelInstance.hide();		
+						autoHideIt.remove();
+					}
+
+				}
+			}
 		}
 
 		//	Gdx.app.log(logstag,"underCursor:"+underCursor.size());
 
 		//sort by distance
-		Collections.sort(underCursor,distanceSorter);
+		Collections.sort(underCursorHits,distanceSorter);
 
 		ArrayList<hitable> onesHit = new ArrayList<hitable>();
 
 		//crop to the ones on top, hitting as we go
-		for (rayHit hit : underCursor) {
+		for (rayHit hit : underCursorHits) {
 
 			hitable object = hit.hitthis;
-			
+
 			objectInteractionType type = object.getInteractionType();
 			onesHit.add(object);
 
-			//TODO: update the event for the collision position?
-			// need to store the hitpoints above rather then just the hitables in the under cursor list
-			
+			//update the Event data for this specific hit (if hits penetrate each hit might have a different position)
+			Event.getCurrentEvent().setCurrentEventLocation(hit.atThis);
+			//(no need to make a new event as the rest of the properties will be the same)
+
+
 			//fire the correct event depending on type
 			if (applyTouchAction!=null){
 				switch (applyTouchAction) {
@@ -813,8 +876,9 @@ public class GWTishModelManagement {
 			Gdx.app.log(logstag,"hits penatrating, mousing down on;"+everyThingUnderCursor.size()+" objects");
 		}
 
-		//if not we loop and hit anything above the highest blocker
 
+
+		//if not we loop and hit anything above the highest blocker
 		for (hitable instance : everyThingUnderCursor) {
 
 			if (closestBlockerTouched==null || instance.getLastHitsRange()<closestBlockerTouched.getLastHitsRange()){
@@ -884,7 +948,6 @@ public class GWTishModelManagement {
 
 	public static void removeAnimating(Animating model) 
 	{
-
 		//animatingobjects.removeValue(model,true);
 		animatingobjects.remove(model);
 	}
@@ -951,6 +1014,42 @@ public class GWTishModelManagement {
 		//	MECamera.angleTest.lookAt(lookAtTester);
 
 
+	}
+
+	static HashSet<IsAnimatableModelInstance> autoHideList = new HashSet<IsAnimatableModelInstance>();
+	//
+	//TODO: do we also need to check for it being over any of their subwidgets as well?
+	//
+	/**
+	 * Models set to auto-hide will have .hide() triggered on the next MouseDown event, if that event is not 
+	 * over them
+	 *
+	 * @param modelinstance
+	 * @param b
+	 */
+	public static void setModelToAutoHide(IsAnimatableModelInstance model, boolean b) {
+		if (b){
+			autoHideList.add(model);
+		} else {
+			autoHideList.remove(model);
+		}
+	}
+
+	static HashSet<IsAnimatableModelInstance> modalObjectList = new HashSet<IsAnimatableModelInstance>();
+	
+	/**
+	 * Models set to modal are the only ones that can have events run on them IF any models have been set as modal at all.
+	 * Keep the modal list empty for normal behavior.
+	 *
+	 * @param modelinstance
+	 * @param b
+	 */
+	public static void setModelasModalObject(IsAnimatableModelInstance model, boolean b) {
+		if (b){
+			modalObjectList.add(model);
+		} else {
+			modalObjectList.remove(model);
+		}
 	}
 
 	/**

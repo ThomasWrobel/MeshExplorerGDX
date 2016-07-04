@@ -36,6 +36,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.shaders.NoiseShader;

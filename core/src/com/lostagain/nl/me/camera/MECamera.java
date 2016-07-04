@@ -12,9 +12,9 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.models.GWTishModelManagement;
 import com.lostagain.nl.me.newmovements.NewMoveTo;
 import com.lostagain.nl.me.newmovements.NewMovementController;
 
@@ -214,12 +214,18 @@ public class MECamera extends AnimatablePerspectiveCamera {
 	public void setTargetPosition(Vector3 newposition) {
 		setTargetPosition(newposition,4000);
 	}
-	public void setTargetPosition(Vector3 newposition,int speed) {
+	public void setTargetPosition(Vector3 newposition,int duration) {
 		
 		if (newposition==null){
 			return;
 		}
-
+		if (duration==0){
+			//just set instantly (0 values can make animation go wrong, and its wastefull anyway)
+			
+			this.setToPosition(newposition);
+			
+		}
+		
 
 		//Gdx.app.log(logstag, "______________________current position="+transState.position.x+","+transState.position.y+","+transState.position.z+")");
 	//	Gdx.app.log(logstag, "______________________new     position="+newposition.x+","+newposition.y+","+newposition.z+")");
@@ -231,7 +237,7 @@ public class MECamera extends AnimatablePerspectiveCamera {
 
 		Gdx.app.log(logstag,"moving to: "+newposition);
 		
-		movement.setMovement(currentLoc, false,  NewMoveTo.create(currentLoc,newposition.x,newposition.y,newposition.z,speed));
+		movement.setMovement(currentLoc, false,  NewMoveTo.create(currentLoc,newposition.x,newposition.y,newposition.z,duration));
 		
 		
 	}

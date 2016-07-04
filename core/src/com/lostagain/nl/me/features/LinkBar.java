@@ -72,6 +72,8 @@ class LinkBar extends DeckPanel implements GenericProgressMonitor, hitable {
 	
 	public LinkBar(SSSNode targetPC, LinkStoreObject parent){
 		super(StandardWidth,30);
+		super.setMinSize(StandardWidth, 30);
+		
 		this.parentLinkStore = parent;
 		LocationsName = targetPC.getPLabel();
 	

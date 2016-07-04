@@ -77,24 +77,26 @@ public class Widget extends Element {
 	public Widget(Model object) {
 		super(object);
 	}
+	
+	
 	/**
 	 * 
 	 * @param sizeX - minimumSize in X
 	 * @param sizeY - minimumSize in Y
 	 * @param align - where this model will be in relation to its centerpoint
 	 */
-	public Widget(float sizeX,float sizeY,MODELALIGNMENT align) {
+	public Widget(float sizeX,float sizeY, MODELALIGNMENT align) {
 		super(generateBackground(sizeX,sizeY,generateMaterial(),align)); 
-		super.setStyle(getMaterial());
-		
-		this.setMinSize(sizeX, sizeY);
-		
+		super.setStyle(getBackgroundMaterial());		
+	//	this.setMinSize(sizeX, sizeY); //we no longer set the min size by default		
 	}
+	
 	public Widget(float sizeX,float sizeY) {
-		super(generateBackground(sizeX,sizeY,generateMaterial(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
-		super.setStyle(getMaterial());
-		
-		this.setMinSize(sizeX, sizeY);
+		this(sizeX,sizeY,MODELALIGNMENT.TOPLEFT); //alignment topleft by default
+			
+	//	super(generateBackground(sizeX,sizeY,generateMaterial(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
+	//	super.setStyle(getBackgroundMaterial());		
+	//	this.setMinSize(sizeX, sizeY);	//we no longer set the min size by default
 	}
 	
 	
@@ -120,8 +122,14 @@ public class Widget extends Element {
 		
 	}
 	
-	
-	public Material getMaterial(){
+	/**
+	 * Note; This might be null.
+	 * In future we might ensure all shaders have the same name within a single widget?
+	 * Maybe set the shader name the same time as the shader?
+	 *  
+	 * @return
+	 */
+	public Material getBackgroundMaterial(){
 		return getMaterial(SHADERFORBACKGROUND);
 	}
 	/**

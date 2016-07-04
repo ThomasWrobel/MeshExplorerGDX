@@ -88,7 +88,6 @@ public class templateShader extends DefaultShader {
 	 
 	 public templateShader(Renderable renderable) {
 		super(renderable);
-		// TODO Auto-generated constructor stub
 	}
 
 	ShaderProgram program;

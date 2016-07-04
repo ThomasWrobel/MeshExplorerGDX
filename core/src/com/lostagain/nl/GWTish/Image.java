@@ -24,9 +24,18 @@ import com.lostagain.nl.shaders.GlowingSquareShader;
  */
 public class Image extends Widget {
 	Texture image;
-	Material ImageMaterial; 
+	Material ImageMaterial;
+	private boolean setup = false; 
+	
 	static String IMAGEBACKGROUND="IMAGEBACKGROUND";
 
+	/**
+	 * creates a empty image widget sized 0,0. It wont be visible till setImage is called
+	 */
+	public Image() {	
+		super(0,0);
+		
+	}
 
 	public Image(String internalFileLocation) {	
 		this(Gdx.files.internal(internalFileLocation));		
@@ -46,21 +55,16 @@ public class Image extends Widget {
 
 
 	protected Material setupMaterial(Texture image){
-
-		//Material ImageMaterial = new Material(
-		//		IMAGEBACKGROUND,
-		//		new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
-		//		TextureAttribute.createDiffuse(image)
-		//		);
 		
-		Material mat = getMaterial();
+		Material mat = getBackgroundMaterial();		
 		mat.clear();
 		mat.set(ColorAttribute.createDiffuse(Color.WHITE),
 				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),				 
 				TextureAttribute.createDiffuse(image)
 				 );
 
-		
+		ImageMaterial = mat;
+		setup  = true;
 		return mat;
 	}
 
@@ -74,13 +78,15 @@ public class Image extends Widget {
 	//changes the image to the specified one, resizing if needed
 	public void setImage(Texture image,boolean size){
 		
-		Material mat = getMaterial();
+		if (!setup){ //if the empty constructor was used we might not be setup yet
+		   setupMaterial(image); 
+		}
+		
+		Material mat = getBackgroundMaterial();
 		mat.set(TextureAttribute.createDiffuse(image));
 		
-		if (size){
-			
-			setSizeAs(image.getWidth(), image.getHeight());
-			
+		if (size){			
+			setSizeAs(image.getWidth(), image.getHeight());			
 		}
 
 	}

@@ -83,7 +83,7 @@ public class GwtishWidgetShader implements Shader {
 	int  u_shadowColour;
 
 	//background
-	int u_backGlowWidth;
+	int u_backBorderWidth;
 	int u_backBackColor;
 	int u_backCoreColor; 		
 	int u_backGlowColor;
@@ -148,7 +148,7 @@ public class GwtishWidgetShader implements Shader {
 		//square style
 
 		Gdx.app.log(logstag, "(now the background ones....");
-		u_backGlowWidth     = program.getUniformLocation("u_backGlowWidth"); 
+		u_backBorderWidth     = program.getUniformLocation("u_backBorderWidth"); 
 		u_backBackColor     = program.getUniformLocation("u_backBackColor"); 
 		u_backCoreColor     = program.getUniformLocation("u_backCoreColor");  		
 		u_backGlowColor     = program.getUniformLocation("u_backGlowColor"); 
@@ -183,7 +183,15 @@ public class GwtishWidgetShader implements Shader {
 		
 		//Standard blending;
 		context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
-		context.setDepthTest(GL20.GL_LESS);    		
+		context.setDepthTest(GL20.GL_LESS);  
+		context.setDepthTest(GL20.GL_NONE); //NEW: Completely disable depth testing as Jamgames have lots of things at the same position
+		//instead we manuallt sort with zindex attributes
+		//TODO: have a setting for turning this GL20.GL_NONE on/off?
+		
+		
+		//http://stackoverflow.com/questions/32487074/libgdx-eliminate-transparency-artifacts-when-using-cameragroupstrategy-with-dec
+		//Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+
 		//-------------
 		//(currently we need a way to optionally use GL_NONE for overlays
 		
@@ -398,14 +406,14 @@ public class GwtishWidgetShader implements Shader {
 
 		if (backgroundParameters==null){
 			//(if no background specified its just transparent)	 	
-			program.setUniformf(u_backGlowWidth,    0f);  	 
+			program.setUniformf(u_backBorderWidth,    0f);  	 
 			program.setUniformf(u_backBackColor,    Color.CLEAR);
 			program.setUniformf(u_backCoreColor,    Color.CLEAR); 
 			program.setUniformf(u_backCornerRadius, 1f); 
 
 		} else {
 
-			program.setUniformf(u_backGlowWidth,    backgroundParameters.glowWidth   );  	 
+			program.setUniformf(u_backBorderWidth,    backgroundParameters.borderWidth   );  	 
 			program.setUniformf(u_backBackColor,    backgroundParameters.getBackColor()   );
 			program.setUniformf(u_backCoreColor,    backgroundParameters.getBorderColour()); 
 			program.setUniformf(u_backCornerRadius, backgroundParameters.cornerRadius); 

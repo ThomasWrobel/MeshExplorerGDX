@@ -59,7 +59,8 @@ public class ProgressBar extends Widget implements GenericProgressMonitor {
 	 **/
 	public ProgressBar(float Height,float MinWidth,float MaxWidth, float MinNumber, float MaxNumber,float CurrentVal){
 		super(MinWidth, Height, MODELALIGNMENT.TOPLEFT);
-
+		super.setMinSize(MinWidth, Height); //so we dont change size under the minimum
+		
 		widgetsHeight        = Height;
 		widgetsCurrentWidth  = MaxWidth;
 		

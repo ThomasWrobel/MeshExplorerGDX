@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Image;
-import com.lostagain.nl.me.models.GWTishModelManagement;
-import com.lostagain.nl.me.models.GWTishModelManagement.RenderOrder;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
+import com.lostagain.nl.GWTish.Management.GWTishModelManagement.RenderOrder;
 import com.lostagain.nl.shaders.NormalMapShader;
 
 /**

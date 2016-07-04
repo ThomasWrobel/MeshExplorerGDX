@@ -15,10 +15,11 @@ public class GwtishWidgetBackgroundAttribute extends Attribute {
 	public final static String Alias = "GwtishWidgetBackgroundAttribute";
 	public final static long ID = register(Alias);
 
-	public float glowWidth;
+	public float borderWidth;
 	public Color backColor;
 	public Color borderColour;
 
+	
 	/**
 	 * the radius of the curved corners
 	 * Behaves strangly if less then 1f.
@@ -37,7 +38,7 @@ public class GwtishWidgetBackgroundAttribute extends Attribute {
 	public GwtishWidgetBackgroundAttribute (final float glowWidth,final Color backColor, final Color borderColour , final float cornerRadius) {
 
 		super(ID);
-		this.glowWidth = glowWidth;
+		this.borderWidth = glowWidth;
 		this.backColor = backColor.cpy();
 		this.borderColour = borderColour.cpy();
 		this.cornerRadius=cornerRadius;
@@ -63,13 +64,13 @@ public class GwtishWidgetBackgroundAttribute extends Attribute {
 	
 	@Override
 	public Attribute copy () {
-		return new GwtishWidgetBackgroundAttribute(glowWidth,backColor,borderColour,cornerRadius);
+		return new GwtishWidgetBackgroundAttribute(borderWidth,backColor,borderColour,cornerRadius);
 	}
 
 	@Override
 	protected boolean equals (Attribute other) {
 		if (
-				(((GwtishWidgetBackgroundAttribute)other).glowWidth == glowWidth      ) &&
+				(((GwtishWidgetBackgroundAttribute)other).borderWidth == borderWidth      ) &&
 				(((GwtishWidgetBackgroundAttribute)other).cornerRadius == cornerRadius) &&
 				(((GwtishWidgetBackgroundAttribute)other).backColor == backColor      ) &&
 				(((GwtishWidgetBackgroundAttribute)other).borderColour == borderColour) 
@@ -89,11 +90,11 @@ public class GwtishWidgetBackgroundAttribute extends Attribute {
 		if (type != o.type) return type < o.type ? -1 : 1; //if not the same type and less then we return -1 else we return 1
 
 		//if they are the same type we continue	
-		double otherwidth = ((GwtishWidgetBackgroundAttribute)o).glowWidth; //just picking width here arbitarily for the moment
+		double otherwidth = ((GwtishWidgetBackgroundAttribute)o).borderWidth; //just picking width here arbitrarily for the moment
 		//not sure yet when draw order will be important for glowing square backgrounds
 
 
-		return glowWidth == otherwidth ? 0 : (glowWidth < otherwidth ? -1 : 1);
+		return borderWidth == otherwidth ? 0 : (borderWidth < otherwidth ? -1 : 1);
 
 	}
 

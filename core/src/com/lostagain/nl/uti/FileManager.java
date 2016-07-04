@@ -25,7 +25,6 @@ import com.darkflame.client.interfaces.SSSGenericFileManager;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackError;
 import com.darkflame.client.interfaces.SSSGenericFileManager.FileCallbackRunnable;
 
-
 //NOTE: No save implemented on this SSSGenericFileManager
 public class FileManager implements SSSGenericFileManager{
 	
@@ -138,7 +137,6 @@ public class FileManager implements SSSGenericFileManager{
 			myUrl = new URL(location);
 			
 		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
 			Log.info(" couldn't get remote file;"+e1.getLocalizedMessage());
 			runonerror.run(e1.getLocalizedMessage(), e1);
 			return;

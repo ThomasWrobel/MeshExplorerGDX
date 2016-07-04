@@ -15,6 +15,8 @@
  */
 package com.lostagain.nl.GWTish;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * A GWTish event is represented by this class<br>
@@ -26,13 +28,33 @@ package com.lostagain.nl.GWTish;
  * 
  */
 public class Event extends NativeEvent {
-
+	
+	private static String logstag="ME.NativeEvent";
+	
 	static Event currentEvent;
+
+
+	private  Vector3 EventsCurrentLocation;
 	
 	
-	  public static void setCurrentEvent(Event currentEvent) {
+	//NOTE: this might move to the superclass? Not sure where it fits better
+	/**
+	 * The current 3d location this event just fired at
+	 * @return
+	 */
+	  public Vector3 getEventsCurrentLocation() {
+		return EventsCurrentLocation;
+	}
+
+
+
+
+	public static void setCurrentEvent(Event currentEvent) {;
+				
 		Event.currentEvent = currentEvent;
 	}
+
+	
 
 
 
@@ -50,14 +72,26 @@ public class Event extends NativeEvent {
 	EventType thisEventsType;
 
 
+
+	
+
 	/**
 	   * Unlike GWT, we can create events directly
 	   * (this class is not very similar)
+	 * @param buttonTypeDown 
 	   */
-	  public Event(boolean altKeyWasPressed, boolean cntrKeyWasPressed, boolean shiftKeyWasPressed, int currentEventX,
+	  public Event(EventButtonType buttonTypeDown, boolean altKeyWasPressed, boolean cntrKeyWasPressed, boolean shiftKeyWasPressed, int currentEventX,
 			int currentEventY, int currentEventKeyCode) {
 		  
 		super();
+		
+		ButtonTypeDown=buttonTypeDown;
+		//we also keep a record of the last one down if its set to none
+		//This lets us check the buttons that were just pressed when something has been released.
+		if (ButtonTypeDown!=EventButtonType.None)
+		{
+			LastButtonTypeThatWasDown = ButtonTypeDown;
+		}
 		
 		AltKeyWasPressed = altKeyWasPressed;
 		CntrKeyWasPressed = cntrKeyWasPressed;
@@ -259,6 +293,19 @@ public class Event extends NativeEvent {
   public static Event getCurrentEvent() {
     return currentEvent;
   }
+
+
+  
+
+/**
+ * Sets the 3d scene position that this event is triggered
+ * This should only be called from Gwtishs Model Management class as part of its event fireing
+ * @param atThis
+ */
+public void setCurrentEventLocation(Vector3 atThis) {
+	EventsCurrentLocation = atThis;	
+}
+
 
 
 

@@ -104,11 +104,12 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		
 		
 		//pick shader based on renderable? (old method, being replaced with the above)
-		shadertypes shaderenum = (shadertypes) renderable.userData;
-			
-		if (shaderenum==null){
+
+		if (renderable.userData==null || renderable.userData instanceof String){
 			return super.createShader(renderable);
 		}
+		shadertypes shaderenum = (shadertypes) renderable.userData;
+			
 		Gdx.app.log(logstag, "shaderenum="+shaderenum.toString());
 			
 			
