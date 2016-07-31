@@ -239,6 +239,8 @@ public class Style {
 		
 	}
 	
+	//BlendingAttribute blendAttribute;
+	
 	/**
 	 * Sets the opacity of this widget.
 	 * Specifically it adds a blending style with the opacity set
@@ -250,12 +252,37 @@ public class Style {
 	 */
 	public void setOpacity(float opacity) {
 
+		//create blend shader if needed, else change the one we have
 		
-		this.addAttributeToShader(new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,opacity));
+/*
+		Gdx.app.log(logstag,"_________(request opacity setting)");
+		Gdx.app.log(logstag,"_________(attributes:)"+objectsMaterial.size());
+
+		Gdx.app.log(logstag,"_________(objectsMaterial)"+BlendingAttribute.Type);
+		Gdx.app.log(logstag,"_________(objectsMaterial)"+objectsMaterial.has(BlendingAttribute.Type));
+		*/
+		
+		
+		if (!objectsMaterial.has(BlendingAttribute.Type)){
+			
+			BlendingAttribute blendAttribute = new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,opacity);
+			this.addAttributeToShader(blendAttribute);
+			
+		} else {
+			
+			((BlendingAttribute) objectsMaterial.get(BlendingAttribute.Type)).opacity = opacity;
+		}
+		
+		
 		
 	}
 	
-	
+	public float getOpacity() {		
+		if (objectsMaterial.has(BlendingAttribute.Type)){
+			return ((BlendingAttribute) objectsMaterial.get(BlendingAttribute.Type)).opacity;
+		}
+		return 1.0f;
+	}
 	
 	/**
 	 * Sets z-index value and groupname
@@ -556,6 +583,8 @@ public class Style {
 	public float getPaddingBottom() {
 		return PaddingBottom;
 	}
+
+	
 
 
 
