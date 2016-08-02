@@ -12,7 +12,13 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.lostagain.nl.GWTish.Widget.MODELALIGNMENT;
 import com.lostagain.nl.GWTish.Management.ZIndexGroup;
 
-
+/**
+ * Abstract base class for panels that can contain multiple child widgets.
+ * (aprox emulation of gwts ComplexPanel)
+ * 
+ * @author darkflame
+ *
+ */
 public abstract class ComplexPanel extends Widget {
 
 	final static String logstag = "GWTish.ComplexPanel";
@@ -43,14 +49,24 @@ public abstract class ComplexPanel extends Widget {
 			Top,Middle,Bottom
 		}
 		
+		
 		/**
 		 * A class that stores the widget with its horizontal and vertical alignments
 		 * @author Tom
 		 */
-		class Alignment {		
+		static public class Alignment {		
 			HorizontalAlignment horizontal = null;
 			VerticalAlignment   vert = null;
-						
+
+			/**
+			 * default middle center alignment
+			 */
+			public Alignment() {
+				
+				this.horizontal = HorizontalAlignment.Center;
+				this.vert = VerticalAlignment.Middle;
+				
+			}			
 			public Alignment(HorizontalAlignment horizontal,VerticalAlignment vert) {
 				
 				this.horizontal = horizontal;
@@ -522,8 +538,14 @@ public abstract class ComplexPanel extends Widget {
 	  }
 
 	  
+	/**
+	 * sets both the vertical and horizontal alignment of a widget    and triggers the widgets to be repositioned
+	 * @param widget
+	 * @param contentAlignment
+	 */
 	public void setContentAlignments(Widget widget, Alignment contentAlignment) {		
-		contentAlignments.put(widget, contentAlignment);		
+		contentAlignments.put(widget, contentAlignment);	
+		 this.repositionWidgets();
 	}
 
 	

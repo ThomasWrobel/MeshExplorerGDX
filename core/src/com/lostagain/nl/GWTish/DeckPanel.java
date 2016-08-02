@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.GWTish.ComplexPanel.Alignment;
 import com.lostagain.nl.GWTish.ComplexPanel.HorizontalAlignment;
 import com.lostagain.nl.GWTish.ComplexPanel.VerticalAlignment;
+import com.lostagain.nl.GWTish.Widget.MODELALIGNMENT;
 
 /**
  * A deck panel is a stack of other panels ontop of eachother
@@ -28,6 +29,11 @@ public class DeckPanel extends ComplexPanel {
 	//resize
 	//	sizeToFitContents();
 	//}
+
+	public DeckPanel(float sizeX, float sizeY, MODELALIGNMENT align) {
+		super(sizeX, sizeY, align);
+		
+	}
 
 	/**
 	 * even though we have all the widgets ontop of eachother we need to reposition them if our size changes in order
