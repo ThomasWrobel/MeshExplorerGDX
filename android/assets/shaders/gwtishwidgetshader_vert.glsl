@@ -11,6 +11,24 @@ precision mediump float;
 #endif
 
 
+//
+// The Goal of this shader is to allow a very very aproximate emulatation of a styled div with text in it.
+// This shader should be applied to a rectangle only.
+//
+// Currently supported;
+// - Displays text using a image containing a distance field rendering of a font (to allow it to be sharp at any distance)
+// - Text can have its colour changed
+// - Text can have a shadow applied
+// - Text can have a glow applied
+// - Text can have a outline applied
+// - The background to the text can be set to any color
+// - Background can have borders of varying size
+// - Background can have curved corners to the border
+//
+// TODO (maybe)
+// Background shadow support (to emulate CSS Box shadow)
+//
+
 
 
 //in
@@ -55,7 +73,7 @@ uniform float u_colorFlag; //color mode tells the shader it uses a diffuse color
 varying float v_colorFlag;
 
 //background
-uniform float u_backGlowWidth; 
+uniform float u_backBorderWidth; 
 uniform vec4  u_backBackColor;
 uniform vec4  u_backCoreColor;
 uniform float u_backCornerRadius;
@@ -98,7 +116,7 @@ varying vec4  v_shadowColour;
 varying vec2 iResolution;
 varying vec2 fPosition;
 //background style data
-varying float v_backGlowWidth; 
+varying float v_backBorderWidth; 
 varying vec4  v_backBackColor;
 varying vec4  v_backCoreColor;
 varying float v_backCornerRadius;
@@ -151,7 +169,7 @@ void main() {
     
     
     //background
-   v_backGlowWidth   =u_backGlowWidth; 
+   v_backBorderWidth   =u_backBorderWidth; 
    v_backBackColor   =u_backBackColor;
    v_backCoreColor   =u_backCoreColor;
    v_backCornerRadius=u_backCornerRadius;

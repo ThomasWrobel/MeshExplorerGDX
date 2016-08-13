@@ -751,7 +751,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 	@Override
 	public void fireTouchDown() {
-		Gdx.app.log(logstag,"_-fireTouchUp-_");
+		Gdx.app.log(logstag,"_-fireTouchdown-_");
 	}
 
 

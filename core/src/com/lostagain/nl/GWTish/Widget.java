@@ -87,7 +87,9 @@ public class Widget extends Element {
 	 */
 	public Widget(float sizeX,float sizeY, MODELALIGNMENT align) {
 		super(generateBackground(sizeX,sizeY,generateMaterial(),align)); 
-		super.setStyle(getBackgroundMaterial());		
+		super.setStyle(getBackgroundMaterial());	
+		
+		alignment = align;
 	//	this.setMinSize(sizeX, sizeY); //we no longer set the min size by default		
 	}
 	
@@ -193,10 +195,11 @@ public class Widget extends Element {
 	}
 	
 	
+	
 	//the offset tells us where the top left corner will be relative to the pivot point.
 	//Effectively it lets us have a custom position for the pivot by messuring everything relative to that point 
 	//when creating the polygon vectexs
-	private static Vector2 getOffsetForSize(float newWidth, float newHeight,MODELALIGNMENT alignment )
+	protected static Vector2 getOffsetForSize(float newWidth, float newHeight,MODELALIGNMENT alignment )
 	{
 		Vector2 offset = new Vector2(0,0);
 		switch(alignment)

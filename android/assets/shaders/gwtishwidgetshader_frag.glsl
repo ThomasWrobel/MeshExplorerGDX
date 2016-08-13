@@ -10,9 +10,23 @@ precision mediump float;
 #define HIGH
 #endif
 
-
-
-
+//
+// The Goal of this shader is to allow a very very aproximate emulatation of a styled div with text in it.
+// This shader should be applied to a rectangle only.
+//
+// Currently supported;
+// - Displays text using a image containing a distance field rendering of a font (to allow it to be sharp at any distance)
+// - Text can have its colour changed
+// - Text can have a shadow applied
+// - Text can have a glow applied
+// - Text can have a outline applied
+// - The background to the text can be set to any color
+// - Background can have borders of varying size
+// - Background can have curved corners to the border
+//
+// TODO (maybe)
+// Background shadow support (to emulate CSS Box shadow)
+//
 
 
 // this calculated in vertex shader
@@ -33,7 +47,6 @@ uniform vec2 u_sizeDiff;
 varying vec2 v_texCoord0;
 varying vec4 v_color;
 varying vec2 vTexCoord;
-
 varying vec4 v_textColor;
 //varying vec4 v_backColor;
 
@@ -68,9 +81,9 @@ uniform sampler2D u_texture;
 
 
 //background style data
-varying float v_backGlowWidth; 
+varying float v_backBorderWidth; 
 varying vec4  v_backBackColor;
-varying vec4  v_backCoreColor;
+varying vec4  v_backCoreColor; //border color for some reason
 varying vec4  v_backCornerRadius;
 
 varying vec2 iResolution;
@@ -91,13 +104,6 @@ float radius = v_backCornerRadius;
 
 
 
-
-
-
-
-
-
-
 //WORKAROUND if fwidth/above extension is not supported
 //http://stackoverflow.com/questions/22442304/glsl-es-dfdx-dfdy-analog
 float myFunc(vec2 p){
@@ -110,7 +116,7 @@ float dfdx    = myFunc(vTexCoord + pixel_step.x) - current; //myfunction is give
 float dfdy    = myFunc(vTexCoord + pixel_step.y) - current; //same for y
   
 
- 
+//the following were attempts at smoothing the font 
 const float smoothing =  0.25/(4.0*32.0); //0.25/(filesmooth*fontfilescale)                     //0.001953125//1.0/16.0;  
 
 float contour(in float d, in float w) {
@@ -124,14 +130,36 @@ float samp(in vec2 uv, float w) {
 
 
 
-
-// Rounded rect distance function
+//http://iquilezles.org/www/articles/distfunctions/distfunctions.htm
+//Rounded rect distance function
 float udRoundRect(vec2 p, vec2 b, float r)
 {
 	return length(max(abs(p) - b, 0.0)) - r;
 }
 
-//gets the background col at the specified point
+//Alternative to the above we now use instead;
+//Adapted from;
+//https://www.shadertoy.com/view/4dfXDn
+float boxDist2D(vec2 p, vec2 size, float radius)
+{
+	size -= vec2(radius);
+	vec2 d = abs(p) - size;
+  	return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)) - radius;
+}
+//---------------------------------
+
+//Simple function to move a point by a certain amount
+vec2 translate(vec2 point, vec2 dis)
+{
+	return point - dis;
+}
+
+//Gets the background col at the specified point
+//This will include the border, which can be coloured and curved at the corners if needed.
+//
+//In future we could emulate css style BoxShadow here too, unlike css we cant go outside
+//the edges of the box, so the background would have to be made smaller to give the shadow room
+//We could possibly do this automatically via vertex manipulation?
 vec4 getBackColour()
 {
 	vec2  fragCoord    = fPosition*iResolution.xy; 
@@ -141,35 +169,69 @@ vec4 getBackColour()
     
     //uv based color (put it in as a option?)
 	//vec4  contentColor = vec4(uv,1.0,v_backCoreColor.a); //vec4(1.0,0.0,1.0,1.0); //vec4(uv, 0.5 + 0.5*sin(iGlobalTime), 1.0);
-  	vec4  contentColor = v_backCoreColor; 
-    
-    hsize = hsize - 1.5; //inwards from border
-    
-   // fragCoord.x = fragCoord.x-0.5;    
-   // fragCoord.y = fragCoord.y-0.5;  
-    
-    float rr = udRoundRect(fragCoord - center, hsize - radius, radius);
-    
+  	vec4  BorderColor = v_backCoreColor; 
+  	
+  	//
+  	//If no border is specified, we change the border to the backcolor
+  	//This is to ensure there is no gap at the edge. (it seems even when set to zero the border has a slight size - likely due to AA)
+  	//
+    if (v_backBorderWidth==0.0){
+      BorderColor=v_backBackColor;
+    }
   
-    if (rr>0){
-    	//no background outside line
-    	v_backBackColor = vec4(0.0,0.0,0.0,0.0);
+  //The final result of working out the background colour at this point goes into resultColour  
+    vec4  resultColor = BorderColor;
+   
+   // fragCoord.x = fragCoord.x-0.5;    
+   // fragCoord.y = fragCoord.y-0.5;      
+    
+   
+    float hbw = v_backBorderWidth / 2.0;
+    
+   //old function
+   // float rr = udRoundRect(fragCoord - center, hsize - radius , radius); //- radius        
+	
+	//new function for 2D Rectangular Distance
+	vec2 p = fragCoord;// (fPosition + vec2(0.0))*iResolution.xy;		
+    float rr = boxDist2D(translate(p, hsize), (iResolution.xy/2.0)-v_backBorderWidth, radius); //Half resolution works....why?
+          
+	//Notes on Box "Distance Function" above     
+    //rr==0 seems to be the edge returned 
+    //need to seperate transitions
+    //rr>0 means "towards edge" ie. interpolate between the border colour and transparent
+    //rr<0 means "towards center" ie. interpolate between the border colour and background
+      //  rr = 1.0-abs(rr);
+        //float a = clamp(rr, 0.0,1.0);
+    
+    if (rr>hbw){
+    	//v_backBackColor =  ;    	    	
+   	    rr = 1.0-abs(rr);
+        float a = clamp(rr, 0.0,1.0);
+    	resultColor =mix(BorderColor, vec4(0.0,0.0,0.0,0.0), 1.0-a); 
+    	
+    } else if (rr <=-hbw){
+    	    	
+   	    rr = 1.0-abs(rr);
+       float a = clamp(rr, 0.0,1.0);
+    	resultColor =mix(BorderColor, v_backBackColor, 1.0-a); 
+    } else {
+   	 	resultColor = BorderColor;
     }
     
-    rr = 1.0-abs(rr);
-    float a = clamp(rr, 0.0,1.0);
+   // 
+   //(if we add shadow support, it will created before that if statement and replace the vec4(0,0,0,0), as that currently represents the transparent
+   //region of the shader)
+   //
     
-    if (v_backGlowWidth==0){
-   	 v_backGlowWidth=0.01; //cant be zero
-    }
     
-    float w = v_backGlowWidth;//1.0; //width of fade 
-    a = smoothstep(0.5 - w, 0.5 + w,rr);
-    	    
-   return mix(contentColor, v_backBackColor, 1.0-a); 
+   //return the background colour as a result
+   return resultColor;//mix(contentColor, v_backBackColor, 1.0-a); 
 }
 
 
+//
+//And now, a rather complex function for the styled text using the distance field image of it supplied
+//
 vec4 getStyledText()
 {
 	float colorFlag = v_colorFlag;
@@ -199,7 +261,7 @@ vec4 getStyledText()
        	 	
    //float width = abs(dFdx(dist)) + abs(dFdy(dist));  //<-----------(was attempt at replacement for web, does not work)          
      
-   float width = abs(dfdx*dist) + abs(dfdy*dist);  //<-----------(was attempt at replacement for web, does not work?)          
+   float width = abs(dfdx*dist) + abs(dfdx*dist);  //<-----------(was attempt at replacement for web, does not work?)          
      
        	 	
  	 	 	// supersampled version
@@ -214,7 +276,6 @@ vec4 getStyledText()
     
     // Supersample, 4 extra points
     float dscale = 0.354; // half of 1/sqrt2; you can play with this
-    
    
    // vec2 duv = dscale * (dFdx(vTexCoord) + dFdy(vTexCoord)); //<---------------correct formula (works fine desktop)
    

@@ -2,6 +2,7 @@ package com.lostagain.nl.me.camera;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
@@ -542,15 +543,20 @@ public class AnimatableOrthographicCamera extends OrthographicCamera implements 
 	@Override
 	public Set<IsAnimatableModelInstance> getAllAttachments() {
 		
-		Set<IsAnimatableModelInstance> attachments = new HashSet<IsAnimatableModelInstance>(attachlist.keySet());
+		Set<IsAnimatableModelInstance> attachments = new HashSet();
+		Set<IsAnimatableModelInstance> direct_children = new HashSet<IsAnimatableModelInstance>(attachlist.keySet());
 		
-		for (IsAnimatableModelInstance childAttach : attachments) {
+		attachments.addAll(direct_children);
+		
+		for (IsAnimatableModelInstance childAttach : direct_children) {
 			
 			attachments.addAll(childAttach.getAllAttachments());
 			
-		}						
+		}				
 		
-		return attachments;
+		
+		return attachments;	
+		
 	}
 	
 }

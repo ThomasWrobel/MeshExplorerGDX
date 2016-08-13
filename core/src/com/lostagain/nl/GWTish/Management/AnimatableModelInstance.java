@@ -630,9 +630,12 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	@Override
 	public Set<IsAnimatableModelInstance> getAllAttachments() {
 		
-		Set<IsAnimatableModelInstance> attachments = new HashSet<IsAnimatableModelInstance>(attachlist.keySet());
+		Set<IsAnimatableModelInstance> attachments = new HashSet();
+		Set<IsAnimatableModelInstance> direct_children = new HashSet<IsAnimatableModelInstance>(attachlist.keySet());
 		
-		for (IsAnimatableModelInstance childAttach : attachments) {
+		attachments.addAll(direct_children);
+		
+		for (IsAnimatableModelInstance childAttach : direct_children) {
 			
 			attachments.addAll(childAttach.getAllAttachments());
 			

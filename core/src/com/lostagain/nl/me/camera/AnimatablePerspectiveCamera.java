@@ -494,16 +494,21 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 
 	@Override
 	public Set<IsAnimatableModelInstance> getAllAttachments() {
+
+		Set<IsAnimatableModelInstance> attachments = new HashSet();
+		Set<IsAnimatableModelInstance> direct_children = new HashSet<IsAnimatableModelInstance>(attachlist.keySet());
 		
-		Set<IsAnimatableModelInstance> attachments = new HashSet<IsAnimatableModelInstance>(attachlist.keySet());
+		attachments.addAll(direct_children);
 		
-		for (IsAnimatableModelInstance childAttach : attachments) {
+		for (IsAnimatableModelInstance childAttach : direct_children) {
 			
 			attachments.addAll(childAttach.getAllAttachments());
 			
-		}						
+		}				
 		
-		return attachments;
+		
+		return attachments;					
+		
 	}
 
 	/**

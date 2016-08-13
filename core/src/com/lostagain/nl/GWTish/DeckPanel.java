@@ -195,6 +195,14 @@ public class DeckPanel extends ComplexPanel {
 			newLocationX = (maxW - incomingWidth) / 2;
 
 		}
+		
+		//the above will return alignments based on top left, we need to correct for if the widgets pin is elsewhere
+		
+		Vector2 offset  =  getOffsetForSize(this.getWidth(), this.getHeight(),alignment);
+		
+		newLocationY = newLocationY -offset.y;
+		newLocationX = newLocationX -offset.x;
+		
 
 		return new Vector3(getLeftPadding()+newLocationX,getTopPadding()+newLocationY,(1f+index));//widgets used to be  stacked 5 apart vertically  (5f+10f*index)
 
