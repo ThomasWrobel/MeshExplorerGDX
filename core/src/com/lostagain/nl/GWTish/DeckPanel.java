@@ -156,7 +156,7 @@ public class DeckPanel extends ComplexPanel {
 		//get alignment of widget
 		Alignment align = contentAlignments.get(widget);
 		if (align == null) {
-			align = new Alignment(HorizontalAlignment.Left,
+			align = new Alignment(defaultHorizontalAlignment,
 					defaultVerticalAlignment);
 			contentAlignments.put(widget, align);
 		}
@@ -168,16 +168,16 @@ public class DeckPanel extends ComplexPanel {
 		//get Y location based on alignment
 		switch (align.vert) {
 		case Bottom:
-			newLocationY = (maxH - incomingHeight);
+			newLocationY = -(maxH - incomingHeight);
 			break;
 		case Middle:
-			newLocationY =  (maxH - incomingHeight)/2; //center in panel
+			newLocationY =  -(maxH - incomingHeight)/2; //center in panel
 			break;
 		case Top:
 			newLocationY = 0;
 			break;
 		default:
-			newLocationY =  (maxH - incomingHeight)/2; //center in panel
+			newLocationY =  -(maxH - incomingHeight)/2; //center in panel
 			break;
 
 		}
@@ -196,12 +196,16 @@ public class DeckPanel extends ComplexPanel {
 
 		}
 		
-		//the above will return alignments based on top left, we need to correct for if the widgets pin is elsewhere
 		
+		/*
 		Vector2 offset  =  getOffsetForSize(this.getWidth(), this.getHeight(),alignment);
+
+		Gdx.app.log(logstag," offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
 		
-		newLocationY = newLocationY -offset.y;
-		newLocationX = newLocationX -offset.x;
+		newLocationY = newLocationY +offset.y;
+		newLocationX = newLocationX +offset.x;
+
+		Gdx.app.log(logstag," newLocation= "+newLocationX+","+newLocationY);*/
 		
 
 		return new Vector3(getLeftPadding()+newLocationX,getTopPadding()+newLocationY,(1f+index));//widgets used to be  stacked 5 apart vertically  (5f+10f*index)
@@ -238,7 +242,9 @@ public class DeckPanel extends ComplexPanel {
 
 
 	private VerticalAlignment defaultVerticalAlignment = VerticalAlignment.Middle;
+	private HorizontalAlignment defaultHorizontalAlignment = HorizontalAlignment.Center;
 
+	
 	/**
 	 * Sets the default horizontal alignment to be used for widgets added to this
 	 * panel. It only applies to widgets added after this property is set.

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -162,12 +163,27 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	 * Note3: Displacement should also contain any existing scaleing you have applied, **/
 	public void attachThis(IsAnimatableModelInstance objectToAttach, PosRotScale displacement){
 
-		//add if not already there
+		
+		//add if not already there else update
 		if (!attachlist.containsKey(objectToAttach))
 		{
+
+
+			//associate this as the parent object
+			objectToAttach.setParentObject(this);
+			
 			attachlist.put(objectToAttach, displacement);
+
+			
+		} else {
+
+			Gdx.app.log(logstag,"updating attachment:"+displacement.toString());
+			attachlist.put(objectToAttach, displacement); 
+			//we now should visually sycn positions
+			sycnAttachedObjectsPosition(objectToAttach);
 		}
 
+		
 	}
 
 	public void deattachThis(IsAnimatableModelInstance objectToAttach){
@@ -177,20 +193,29 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 
 	}
 
+
 	private void updateAllAttachedObjects(){
 
-		//Gdx.app.log(logstag,"_____________________________________updateAllAttachedObjects ="+attachlist.size()); 
+	//	Gdx.app.log(logstag,"_____________________________________updateAllAttachedObjects ="+attachlist.size()); 
 
 		for (IsAnimatableModelInstance object : attachlist.keySet()) {
 
-			PosRotScale newposition = transState.copy().displaceBy(attachlist.get(object));
-			object.setTransform(newposition);
+			sycnAttachedObjectsPosition(object);
 			//
 			//	Gdx.app.log(logstag,"_____________________________________cam position is ="+transState.position); 
-			//	Gdx.app.log(logstag,"_____________________________________setting attached position to ="+newposition); 
+//
+			//	Gdx.app.log(logstag,"_____________________________________displacement ="+displacement); 
+			//.app.log(logstag,"_____________________________________setting attached position to ="+newposition); 
 
 		}
 	}
+
+	protected void sycnAttachedObjectsPosition(IsAnimatableModelInstance object) {
+		PosRotScale displacement = attachlist.get(object);
+		PosRotScale newposition = transState.copy().displaceBy(displacement);			
+		object.setTransform(newposition);
+	}
+
 
 	public void updateAtachment(IsAnimatableModelInstance object,
 			PosRotScale lazerbeamdisplacement) {
@@ -357,16 +382,25 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 		//----
 		return 0;
 	}
+
+	
 	/**
-	 * returns no opp
+	 * returns current visibility
 	 */
 	@Override
 	public boolean isVisible() {
-
-		return false;
-
+		
+		//if local visibility is false, or we are not inheriting the visibility, then our localvisibility should match are visibility
+		if (getParentObject()==null || localVisibility==false || !inheritVisibility ){
+			return localVisibility;
+		}
+		
+		///if we are inheriting and we are not hidden then our visibility should match our parents
+		return getParentObject().isVisible();
+				
 	}
-
+	
+	
 	@Override
 	public void inheritTransform ( PosRotScale newState) {
 
@@ -542,5 +576,19 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 		return this.transState;
 	}
 
+
+	/**
+	 * Note; returns the displacement specification of the specified object from this one. NOT a copy of it.
+	 * Changing the returned value will change the displacement
+	 */
+	public PosRotScale getAttachmentsPoint(IsAnimatableModelInstance object){
+		return attachlist.get(object);
+	}
+
+	@Override
+	public void fireTouchUp() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

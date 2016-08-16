@@ -285,7 +285,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		return this.getHeight()*this.transState.scale.y;
 	}
 	/**
-	 * returns unscaled width
+	 * returns unscaled total width, based on a bounding box
 	 */
 	@Override
 	public float getWidth(){
@@ -298,7 +298,7 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	 * @see com.lostagain.nl.me.newmovements.IsAnimatableModelInstance#getHeight()
 	 */
 	/**
-	 * returns unscaled height
+	 * returns unscaled total height, based on a bounding box
 	 */
 	@Override
 	public float getHeight(){
@@ -855,6 +855,16 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		}
 		this.parentObject = parentObject;
 	}
+
+
+	/**
+	 * Note; returns the displacement specification of the specified object from this one. NOT a copy of it.
+	 * Changing the returned value will change the displacement
+	 */
+	public PosRotScale getAttachmentsPoint(IsAnimatableModelInstance object){
+		return attachlist.get(object);
+	}
+
 	
 
 }

@@ -152,6 +152,8 @@ public abstract class ComplexPanel extends Widget {
 	public ComplexPanel(float sizeX, float sizeY, MODELALIGNMENT align) {
 		super(sizeX, sizeY, align);
 
+		this.MinSizX = sizeX;
+		this.MinSizY = sizeY;
 		/*
 		//this will be given to child widgets to inform the parent of size changes
 		updateContainerSize = new Runnable(){
@@ -435,14 +437,27 @@ public abstract class ComplexPanel extends Widget {
 			
 					
 			Vector3 newLoc = getNextPosition(width,height,true,widget); //contents.indexOf(widget)
-			
+		
 			
 			float newLocationX = newLoc.x;
-			float newLocationY = newLoc.y; //under the last widget
+			float newLocationY = newLoc.y; 
 			float newLocationZ = newLoc.z;
 					
+			//the above will return alignments based on top left, we need to correct for if the widgets pin is elsewhere			
+			//NEW: Compensate for our pivots offset
+			Vector2 offset  =  getOffsetForSize(this.getWidth(), this.getHeight(),alignment);
+
+			Gdx.app.log(logstag," vp offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
 			
-			PosRotScale newLocation = new PosRotScale(newLocationX,-newLocationY,newLocationZ); 
+			newLocationY = newLocationY +offset.y;
+			newLocationX = newLocationX +offset.x;
+
+			Gdx.app.log(logstag," newLocation= "+newLocationX+","+newLocationY);
+			//-------------
+	
+	
+			
+			PosRotScale newLocation = new PosRotScale(newLocationX,newLocationY,newLocationZ); 
 			
 			
 			//set the scale of the newLocation to match the scale of the incoming object too (so its size is preserved
@@ -474,11 +489,23 @@ public abstract class ComplexPanel extends Widget {
 					
 			
 			float newLocationX = newLoc.x;
-			float newLocationY = newLoc.y; //under the last widget
+			float newLocationY = newLoc.y;
 			float newLocationZ = newLoc.z;
-					
+			//the above will return alignments based on top left, we need to correct for if the widgets pin is elsewhere			
+			//NEW: Compensate for our pivots offset
+			Vector2 offset  =  getOffsetForSize(this.getWidth(), this.getHeight(),alignment);
+
+			Gdx.app.log(logstag," vp offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
 			
-			PosRotScale newLocation = new PosRotScale(newLocationX,-newLocationY,newLocationZ); 
+			newLocationY = newLocationY +offset.y;
+			newLocationX = newLocationX +offset.x;
+
+			Gdx.app.log(logstag," newLocation= "+newLocationX+","+newLocationY);
+			//-------------
+	
+	
+			
+			PosRotScale newLocation = new PosRotScale(newLocationX,newLocationY,newLocationZ); 
 			
 			currentDisplacement.setToPosition(newLocation.position);
 			

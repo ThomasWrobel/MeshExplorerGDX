@@ -46,22 +46,27 @@ public class ModelMaker {
 	/**
 	 * Creates a model rectangle. At points x1/y1 to x2/y2 at height z.
 	 * If material is null it uses a default one
-	 * 
-	 * @param x1
-	 * @param y1
-	 * @param x2
-	 * @param y2
+	 *
+	 * @param x1 - left
+	 * @param y1 - top 
+	 * @param x2 - right
+	 * @param y2 - bottom
 	 * @param z
 	 * @param mat
 	 * @return
 	 */
-	
 	static public Model createRectangle(float x1,float y1,float x2,float y2,float z,Material mat ) {
-
 		
-		Vector3 corner1 = new Vector3(x1,y1,z);
+		//move y values down so its "pinned" at the top left rather then bottom left
+		float h = y1-y2;
+		y1=y1+h;
+		y2=y2+h;
+		
+		
+		//
+		Vector3 corner1 = new Vector3(x1,y1,z); //top left
 		Vector3 corner2 = new Vector3(x2,y1,z);
-		Vector3 corner3 = new Vector3(x2,y2,z);
+		Vector3 corner3 = new Vector3(x2,y2,z); //bottom right
 		Vector3 corner4 = new Vector3(x1,y2,z);	
 	
     
@@ -69,6 +74,8 @@ public class ModelMaker {
 		modelBuilder.begin();
 		MeshPartBuilder meshBuilder;
 
+		
+		
 		//Node node = modelBuilder.node();
 		//node.translation.set(11,11,5);		
 		if (mat!=null){
@@ -83,20 +90,31 @@ public class ModelMaker {
 					
 		}
 		
+		if (true){
+		
+			meshBuilder.rect(
+					x1, y1, 0, 
+					x2, y1, 0,
+					x2, y2, 0, 
+					x1, y2, 0, 
+					0, 1, 0);
+		return modelBuilder.end();
+		}
+		
 		//meshBuilder.cone(5, 5, 5, 10);
 		
 		VertexInfo newtest1 = new VertexInfo();
 		Vector3 testnorm=new Vector3(0,1,0);
-		newtest1.set(corner1, testnorm, Color.WHITE, new Vector2(0f,1f));
+		newtest1.set(corner1, testnorm, Color.WHITE, new Vector2(0f,0f)); // is this uv order correct? 
 
 		VertexInfo newtest2 = new VertexInfo();
-		newtest2.set(corner2, testnorm, Color.WHITE, new Vector2(1f,1f));
+		newtest2.set(corner2, testnorm, Color.WHITE, new Vector2(1f,0f));
 
 		VertexInfo newtest3 = new VertexInfo();
-		newtest3.set(corner3, testnorm, Color.WHITE, new Vector2(1f,0f));
+		newtest3.set(corner3, testnorm, Color.WHITE, new Vector2(1f,1f));
 		
 		VertexInfo newtest4 = new VertexInfo();
-		newtest4.set(corner4, testnorm, Color.WHITE, new Vector2(0f,0f));
+		newtest4.set(corner4, testnorm, Color.WHITE, new Vector2(0f,1f));
 		
 		meshBuilder.rect(newtest1, newtest2, newtest3, newtest4);
 		

@@ -165,10 +165,17 @@ public class AnimatableOrthographicCamera extends OrthographicCamera implements 
 	 * Note3: Displacement should also contain any existing scaleing you have applied, **/
 	public void attachThis(IsAnimatableModelInstance objectToAttach, PosRotScale displacement){
 
+		
 		//add if not already there else update
 		if (!attachlist.containsKey(objectToAttach))
 		{
+
+			//associate this as the parent object
+			objectToAttach.setParentObject(this);
+			
+			
 			attachlist.put(objectToAttach, displacement);
+
 		} else {
 
 			Gdx.app.log(logstag,"updating attachment:"+displacement.toString());
@@ -177,6 +184,7 @@ public class AnimatableOrthographicCamera extends OrthographicCamera implements 
 			sycnAttachedObjectsPosition(objectToAttach);
 		}
 
+		
 	}
 
 	public void deattachThis(IsAnimatableModelInstance objectToAttach){
@@ -373,16 +381,23 @@ public class AnimatableOrthographicCamera extends OrthographicCamera implements 
 		//----
 		return 0;
 	}
+	
 	/**
-	 * returns no opp
+	 * returns current visibility
 	 */
 	@Override
 	public boolean isVisible() {
-
-		return false;
-
+		
+		//if local visibility is false, or we are not inheriting the visibility, then our localvisibility should match are visibility
+		if (getParentObject()==null || localVisibility==false || !inheritVisibility ){
+			return localVisibility;
+		}
+		
+		///if we are inheriting and we are not hidden then our visibility should match our parents
+		return getParentObject().isVisible();
+				
 	}
-
+	
 	@Override
 	public void inheritTransform ( PosRotScale newState) {
 
@@ -499,7 +514,7 @@ public class AnimatableOrthographicCamera extends OrthographicCamera implements 
 
 
 	
-	public PosRotScale getAttachmentsPoint(AnimatableModelInstance object){
+	public PosRotScale getAttachmentsPoint(IsAnimatableModelInstance object){
 		return attachlist.get(object);
 	}
 
@@ -556,6 +571,12 @@ public class AnimatableOrthographicCamera extends OrthographicCamera implements 
 		
 		
 		return attachments;	
+		
+	}
+
+	@Override
+	public void fireTouchUp() {
+		// TODO Auto-generated method stub
 		
 	}
 	

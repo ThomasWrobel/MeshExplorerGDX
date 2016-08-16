@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class VerticalPanel extends CellPanel {
 
+	final static String logstag = "GWTish.VerticalPanel";
 	// current stats
 	float currentTotalWidgetHeight = 0f;
 
@@ -73,8 +74,11 @@ public class VerticalPanel extends CellPanel {
 		Gdx.app.log(logstag, index + " adding incomingHeight: "
 				+ incomingHeight + " total=" + currentTotalWidgetHeight);
 
+				
+		
 		return new Vector3(newLocationX, 
-				getTopPadding()	+ newLocationY, 3f);
+				-(getTopPadding()	+ newLocationY), //messureing from top left, hence the negative
+				3f);
 
 		
 		//return new Vector3(getLeftPadding() + newLocationX, 
@@ -87,7 +91,7 @@ public class VerticalPanel extends CellPanel {
 	 * be run first
 	 */
 	void repositionWidgets() {
-		Gdx.app.log(logstag, "Reposition " + contents.size() + " widgets in ");
+		Gdx.app.log(logstag, "Reposition " + contents.size() + " widgets in vp ");
 		// simply clear and re-add them all
 
 		// reset stats

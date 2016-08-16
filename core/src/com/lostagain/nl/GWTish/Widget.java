@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector2;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.IsAnimatableModelInstance;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
 
@@ -26,14 +27,14 @@ public class Widget extends Element {
 	private static final String SHADERFORBACKGROUND = "Background";
 
 	final static String logstag = "GWTish.Widget";
-	
+
 	static Material DefaultWhiteBackground = new Material(
-			   SHADERFORBACKGROUND,
-			   new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
-			   new GwtishWidgetBackgroundAttribute(1f,Color.CLEAR,Color.RED,1.0f));
-	
-	
-	
+			SHADERFORBACKGROUND,
+			new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
+			new GwtishWidgetBackgroundAttribute(1f,Color.CLEAR,Color.RED,1.0f));
+
+
+
 	//Handlers
 	/**
 	 * A HashSet of all the size change handlers associated with this object
@@ -46,7 +47,19 @@ public class Widget extends Element {
 	 * If this widget is resized, its parent will be informed.
 	 */
 	Widget parentWidget = null;
-	
+
+
+	/**
+	 * Width, not including padding
+	 */
+	float Width = 0f;
+	/**
+	 * Height, not including padding
+	 */
+	float Height = 0f;
+
+
+
 	/**
 	 * Min Size X - the widget will never go smaller then this in Xwhen resized
 	 */
@@ -55,8 +68,8 @@ public class Widget extends Element {
 	 * Min Size Y - the widget will never go smaller then this in Y when resized
 	 */
 	float MinSizY = 0f;
-	
-	
+
+
 	/**
 	 * Specifies where the pivot should go on the backing model for this widget
 	 * TOPLEFT is effective normal for GWT like behavior, but we are keeping it flexible here for now
@@ -64,21 +77,27 @@ public class Widget extends Element {
 	 *
 	 **/
 	public static enum MODELALIGNMENT {
-		TOPLEFT,CENTER,BOTTOMRIGHT
+		TOPLEFT,
+		TOPRIGHT,
+		CENTER,
+		BOTTOMRIGHT,
+		BOTTOMLEFT
 	}
-	public MODELALIGNMENT alignment = MODELALIGNMENT.TOPLEFT;
 	
+	public MODELALIGNMENT alignment = MODELALIGNMENT.TOPLEFT;
+
 	/**
 	 * If supplying your own model remember to call
 	 * super.setStyle();
-		
+
 	 * @param object
 	 */
 	public Widget(Model object) {
 		super(object);
+		 alignment = MODELALIGNMENT.TOPLEFT;
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @param sizeX - minimumSize in X
@@ -88,42 +107,44 @@ public class Widget extends Element {
 	public Widget(float sizeX,float sizeY, MODELALIGNMENT align) {
 		super(generateBackground(sizeX,sizeY,generateMaterial(),align)); 
 		super.setStyle(getBackgroundMaterial());	
-		
+		Width = sizeX;
+		Height=sizeY;
+
 		alignment = align;
-	//	this.setMinSize(sizeX, sizeY); //we no longer set the min size by default		
+		//	this.setMinSize(sizeX, sizeY); //we no longer set the min size by default		
 	}
-	
+
 	public Widget(float sizeX,float sizeY) {
 		this(sizeX,sizeY,MODELALIGNMENT.TOPLEFT); //alignment topleft by default
-			
-	//	super(generateBackground(sizeX,sizeY,generateMaterial(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
-	//	super.setStyle(getBackgroundMaterial());		
-	//	this.setMinSize(sizeX, sizeY);	//we no longer set the min size by default
+
+		//	super(generateBackground(sizeX,sizeY,generateMaterial(),MODELALIGNMENT.TOPLEFT)); //alignment topleft by default
+		//	super.setStyle(getBackgroundMaterial());		
+		//	this.setMinSize(sizeX, sizeY);	//we no longer set the min size by default
 	}
-	
-	
+
+
 	static protected Material generateMaterial(){
 		return DefaultWhiteBackground.copy();
 	}
-	
-	
+
+
 	/**
 	 * Sets the opacity of the background (which will include text as well if this is a Label)
 	 * @param opacity
 	 */
 	public void setOpacity(float opacity){		
 
-	//	Gdx.app.log(logstag,"______________setOpacity:"+opacity);
-		
+		//	Gdx.app.log(logstag,"______________setOpacity:"+opacity);
+
 		//get the material from the model
 		//Material infoBoxsMaterial = getMaterial();
 		//((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type)).opacity = opacity;	
-		
+
 		this.getStyle().setOpacity(opacity);
-		
-		
+
+
 	}
-	
+
 	/**
 	 * Note; This might be null.
 	 * In future we might ensure all shaders have the same name within a single widget?
@@ -137,26 +158,26 @@ public class Widget extends Element {
 	/**
 	 * Sets the opacity of the background
 	 * @param opacity
-	 
+
 	public void setBackgroundColor(Color backcol){		
-		
+
 
 		Gdx.app.log(logstag,"______________backcol:"+backcol);
-		
+
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)infoBoxsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
-		
+
 		backtexture.backColor = backcol;
 	}
-	*/
+	 */
 	/*
 	public void setBorderColor(Color bordercol){		
-		
+
 		this.getStyle().setBorderColor(bordercol);
-		
+
 	}*/
-	
+
 	/**
 	 * makes a arbitrarily sized background that will be expanded as widgets are added
 	 * @return
@@ -165,26 +186,32 @@ public class Widget extends Element {
 
 		//we first get the offset 
 		Vector2 offset =  getOffsetForSize(sizeX, sizeY,alignment);
+
+
+		Gdx.app.log(logstag," offsetFor "+alignment+" of "+sizeX+","+sizeY+" is "+offset);
 		
-		Model newModel = ModelMaker.createRectangle(-offset.x, -offset.y, sizeX-offset.x,sizeY-offset.y, 0, mat); 	
+				Model newModel = ModelMaker.createRectangle(offset.x, (offset.y), sizeX+offset.x,(sizeY+offset.y), 0, mat); 	
+		
+		Gdx.app.log(logstag," rect; "+(offset.x)+","+ (offset.y)+"," 
+				+(sizeX+offset.x)+","+(sizeY+offset.y));
 		
 		return newModel;
 	}
-	
-	
+
+
 	//handles
 	protected void fireAllSizeChangeHandlers (){
 		Gdx.app.log(logstag," firing all size change handlers:"+SizeChangeHandlers.size());
 		for (Runnable handler : SizeChangeHandlers) {
-			
+
 			Gdx.app.log(logstag," firing all size change handler:"+handler.hashCode());
 			handler.run();
-			
+
 		}		
 	}
-	
+
 	public void addOnSizeChangeHandler(Runnable onSizeChange){
-	
+
 		SizeChangeHandlers.add(onSizeChange);		
 	}
 	public void removeOnSizeChangeHandler(Runnable onSizeChange){
@@ -193,59 +220,122 @@ public class Widget extends Element {
 	public Widget getParent() {
 		return parentWidget;
 	}
-	
-	
-	
+
+
+
 	//the offset tells us where the top left corner will be relative to the pivot point.
 	//Effectively it lets us have a custom position for the pivot by messuring everything relative to that point 
 	//when creating the polygon vectexs
 	protected static Vector2 getOffsetForSize(float newWidth, float newHeight,MODELALIGNMENT alignment )
 	{
+		//old....dont understand how this ever  worked 
+//		Vector2 offset = new Vector2(0,0);
+//		switch(alignment)
+//		{
+//		case CENTER:
+//			offset.x = newWidth/2;
+//			offset.y = newHeight/2;
+//			break;
+//		case TOPLEFT:
+//			offset.x = 0;
+//			offset.y = newHeight; //remember y is messured downwards
+//			break;
+//		case BOTTOMRIGHT:
+//			offset.x = newWidth;
+//			offset.y = 0;
+//			break;
+//
+//		}
 		Vector2 offset = new Vector2(0,0);
-		switch(alignment)
-		
+		switch(alignment) 
 		{
 		case CENTER:
-			 offset.x = newWidth/2;
-			 offset.y = newHeight/2;
+			offset.x = -newWidth/2;
+			offset.y = newHeight/2;  //remember y is measured bottom up
 			break;
 		case TOPLEFT:
-			 offset.x = 0;
-			 offset.y = newHeight;
+			offset.x = 0;
+			offset.y = 0;
 			break;
 		case BOTTOMRIGHT:
-			 offset.x = newWidth;
-			 offset.y = 0;
+			offset.x = -newWidth;
+			offset.y = newHeight;
 			break;
-		
+		case BOTTOMLEFT:
+			offset.x = 0;
+			offset.y = newHeight;			
+			break;
+		case TOPRIGHT:
+			offset.x = -newWidth;
+			offset.y = 0;			
+			break;
+		default:
+			break;
+
 		}
-		
+
 		return offset;
-		
-		
+
+
 	}
 	
-	//Sets the object's size. This size does not include padding, which will be added automatically to get the final size	
-	public void setSizeAs(float newWidth, float newHeight) {
+
+	public void setWidth(float newWidth) {					
+		this.setWidth(newWidth, true);					
+	}
+	
+	/**Sets the object's size. This size does not include padding, which will be added automatically to get the final size	**/
+	public void setWidth(float newWidth,boolean FireSizeChangeEvents) {
+
+		setSizeAs(newWidth,  Height,FireSizeChangeEvents);
+
+	}
+
+
+	public void setHeight(float newHeight) {					
+		this.setHeight(newHeight, true);					
+	}
+
+	/**Sets the object's size. This size does not include padding, which will be added automatically to get the final size	**/
+	public void setHeight(float newHeight,boolean FireSizeChangeEvents) {
+		setSizeAs(Width,  newHeight,FireSizeChangeEvents);
+	}
+
+
+	public void setSizeAs(float newWidth, float newHeight) {					
+		this.setSizeAs(newWidth, newHeight, true);					
+	}
+
+	/**
+	 * Sets the object's size. This size does not include padding, which will be added automatically to get the final size	
+	 * @param newWidth
+	 * @param newHeight
+	 * 
+	 * @param FireSizeChangeEvents - tells children and parent that its size has been changed. This should normally be true unless your reacting to a size change event and you want to suppress potential feedback loops
+	 */
+	public void setSizeAs(float newWidth, float newHeight, boolean FireSizeChangeEvents) {
 		Gdx.app.log(logstag,"_________newWidth:"+"("+getStyle().PaddingLeft+","+newWidth+","+getStyle().PaddingRight+")");		
 		Gdx.app.log(logstag,"_________newHeight:"+"("+getStyle().PaddingTop+","+newHeight+","+getStyle().PaddingBottom+")");
-		
+		Width = newWidth;
+		Height= newHeight;
+
 		//adjust for padding
 		newWidth  = getStyle().PaddingLeft+newWidth+getStyle().PaddingRight;
 		newHeight = getStyle().PaddingTop+newHeight+getStyle().PaddingBottom;
-		
 
-		
 		//we first get the offset 
 		Vector2 offset =  getOffsetForSize(newWidth, newHeight,alignment);
+
+		Gdx.app.log(logstag," offsetFor "+alignment+" of "+newWidth+","+newHeight+" is "+offset);
+		
 		//the offset tells us where the top left corner will be relative to the pivot point.
 		//Effectively it lets us have a custom position for the pivot by measuring everything relative to that point 
 		//when creating the polygon vectexs
-		
-		setSizeAs(newWidth,  newHeight, offset.x,offset.y);
-		
+
+		setSizeAs(newWidth,  newHeight, -offset.x,offset.y,FireSizeChangeEvents);//todo: invert the sign of the offset in the function itself
+
 	}
-	
+
 	/**
 	 * Changes this objects rect mesh background to the new specified size
 	 * The internal texture will be stretched
@@ -253,43 +343,50 @@ public class Widget extends Element {
 	 * @param newWidth
 	 * @param newHeight
 	 */
-	private void setSizeAs(float newWidth, float newHeight,float offsetX,float offsetY) {
+	private void setSizeAs(float newWidth, float newHeight,float offsetX,float offsetY, boolean FireSizeChangeEvents) {
 
 		//
-		
+
 		//ensure not smaller then minimum
 		if (newWidth<this.MinSizX){
 			newWidth = MinSizX;
-			
+
 		}
 		if (newHeight<this.MinSizY){
 			newHeight = MinSizY;
 		}
 
 		Gdx.app.log(logstag," sizing to ::"+newWidth+","+newHeight);
-		
+
 		//note we can optimize here by checking current size against requested and ensuring its different?
 		if (newHeight==this.getHeight() && newWidth==this.getWidth()){
 			Gdx.app.log(logstag,"______________already at requested or minimum size:"+newWidth+","+newHeight);
 			return;			
 		}
-		
+
 		//
-		
+
 		Mesh IconsMesh = this.model.meshes.get(0);
-		
+
 		final VertexAttribute posAttr = IconsMesh.getVertexAttribute(Usage.Position);
 		final int offset = posAttr.offset / 4;
 		final int numComponents = posAttr.numComponents;
 		final int numVertices = IconsMesh.getNumVertices();
 		final int vertexSize = IconsMesh.getVertexSize() / 4;
-	
+
 		final float[] vertices = new float[numVertices * vertexSize];
 		IconsMesh.getVertices(vertices);
 		int idx = offset;
-		
+
 		float w = newWidth-offsetX;
-		float h = newHeight-offsetY;
+		float topY = newHeight+offsetY;
+		float bottomY = offsetY;
+
+		Gdx.app.log(logstag,"______________offsetX:"+offsetX);
+		Gdx.app.log(logstag,"______________bottomY:"+offsetY);
+		Gdx.app.log(logstag,"______________w:"+w);
+		Gdx.app.log(logstag,"______________topY:"+topY);
+		
 		
 		//centerl
 		//float newSizeArray[] = new float[] { -hw,-hh,0,
@@ -297,58 +394,86 @@ public class Widget extends Element {
 		//									  hw,hh,0,
 		//									 -hw,hh,0 };
 		//
+//
+//		float newSizeArray[] = new float[] { 
+//				-offsetX,-offsetY,0,
+//				w,-offsetY,0,
+//				w,h,0,
+//				-offsetX,h,0 };
+
 		
-		float newSizeArray[] = new float[] { -offsetX,-offsetY,0,
-											  w,-offsetY,0,
-											  w,h,0,
-											 -offsetX,h,0 };
-				
+
+		float newSizeArray[] = new float[] { 
+				-offsetX,-topY,0,
+				w,-topY,0,
+				w,-bottomY,0,
+				-offsetX,-bottomY,0 };
+		
 		//can be optimized latter by pre-calcing the size ratio and just multiply
 		for (int i = 0; i < 12; i=i+3) {
-			
-			
+
+
 			//currently just scale up a bit
 			vertices[idx    ] = newSizeArray[i];
 			vertices[idx + 1] = newSizeArray[i+1];
 			vertices[idx + 2] = newSizeArray[i+2];
-			
+
 			idx += vertexSize;
 		}
-		
-		
+
+
 		IconsMesh.setVertices(vertices);
 
 		Gdx.app.log(logstag," old size::"+this.getWidth()+","+this.getHeight());
-		
+
 		//recalc bounding box if theres one
 		wasResized();
 
 		Gdx.app.log(logstag," new size::"+this.getWidth()+","+this.getHeight());
-		
+
 		//ensure things attached are repositioned
 		updateAllAttachedObjects();
 
 		Gdx.app.log(logstag," new size2::"+this.getWidth()+","+this.getHeight());
-		
-		//inform parent
-		if (parentWidget!=null){
-			Gdx.app.log(logstag,"updating parent of "+this.getClass());		
-			parentWidget.onChildResize();
+
+		if (FireSizeChangeEvents){
+
+			//inform parent
+			if (parentWidget!=null){
+				Gdx.app.log(logstag,"updating parent of "+this.getClass());		
+				parentWidget.onChildResize();
+			}
+			//inform children
+			for (IsAnimatableModelInstance child : this.getAttachments()){
+				//ensure its a widget before casting
+				if (child instanceof Widget){
+					Gdx.app.log(logstag,"updating child of "+this.getClass());	
+
+					((Widget)child).onParentResize();
+				}
+
+			}
+
+			//fire size change handlers		
+			fireAllSizeChangeHandlers();
+
 		}
-		
-		//fire size change handlers
-		fireAllSizeChangeHandlers();
-		
 	}
-	
+
 	/**
-	 * if needed, override this method to rearrange widgets or resize stuff after a size change of a child widget
+	 * If needed, override this method to rearrange widgets or resize stuff after a size change of a child widget
 	 */
 	protected void onChildResize() {
-		
+
 	}
-	
-	
+
+	/**
+	 * If needed, override this method to rearrange widgets or resize stuff after a size change of a parent widget
+	 */
+	protected void onParentResize() {
+
+	}
+
 	public MODELALIGNMENT getAlignment() {
 		return alignment;
 	}
@@ -360,25 +485,25 @@ public class Widget extends Element {
 		setSizeAs(this.getWidth(),this.getHeight()); //we should check if before/after it matches
 
 		Gdx.app.log(logstag,"______________getWidth"+this.getWidth());
-		
-		
+
+
 	}
-	
+
 	public void setMinSize(float minSizeX,float minSizeY) {
 		MinSizX = minSizeX;
 		MinSizY = minSizeY;
 	}
-	
+
 	protected void setParent(Widget parentWidget) {
 		this.parentWidget=parentWidget;
 	}
-	
+
 	public void setZIndex(int index, String group) {
 		getStyle().setZIndex(index,group);
 	}
-	
-	
-	
+
+
+
 	static int uniqueNamesGeneratedCount = 0;
 	/**
 	 * Gets a unique string identifier for a group IP.
@@ -390,7 +515,7 @@ public class Widget extends Element {
 	static public String generateUniqueGroupID(String prefix){
 		uniqueNamesGeneratedCount++;				
 		return prefix+uniqueNamesGeneratedCount;
-		
+
 	}
 
 }

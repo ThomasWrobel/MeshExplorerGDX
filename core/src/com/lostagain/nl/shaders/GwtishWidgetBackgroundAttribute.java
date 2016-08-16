@@ -30,10 +30,14 @@ public class GwtishWidgetBackgroundAttribute extends Attribute {
 
 
 	/**
-	 * The presence of this parameter will cause the ConceptBeamShader to be used
-	 * @param width - width of beam
-	 * @param  glowColor - its color
-	 * @param  borderColour - color of its core (normally white for a intense glow at the middle of the beam)
+	 * 
+	 */
+	/**
+	 * 
+	 * @param glowWidth
+	 * @param backColor
+	 * @param borderColour
+	 * @param cornerRadius
 	 */
 	public GwtishWidgetBackgroundAttribute (final float glowWidth,final Color backColor, final Color borderColour , final float cornerRadius) {
 

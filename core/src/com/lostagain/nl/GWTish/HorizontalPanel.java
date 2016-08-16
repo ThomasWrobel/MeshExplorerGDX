@@ -51,16 +51,16 @@ public class HorizontalPanel extends CellPanel {
 
 		switch (align.vert) {
 		case Bottom:
-			newLocationY = (maxH - incomingHeight);
+			newLocationY = -(maxH - incomingHeight);
 			break;
 		case Middle:
-			newLocationY =  (maxH - incomingHeight)/2; //center in panel
+			newLocationY =  -(maxH - incomingHeight)/2; //center in panel
 			break;
 		case Top:
 			newLocationY = 0;
 			break;
 		default:
-			newLocationY =  (maxH - incomingHeight)/2; //center in panel
+			newLocationY =  -(maxH - incomingHeight)/2; //center in panel
 			break;
 
 		}
@@ -83,7 +83,7 @@ public class HorizontalPanel extends CellPanel {
 			currentTotalWidgetWidth=currentTotalWidgetWidth+incomingWidth+spaceing;
 		}
 
-		return new Vector3(getLeftPadding()+newLocationX,getTopPadding()+newLocationY,3f);
+		return new Vector3(getLeftPadding()+newLocationX,-getTopPadding()+newLocationY,3f); //messureing from topleft downwards hence inverting the padding
 
 
 	}

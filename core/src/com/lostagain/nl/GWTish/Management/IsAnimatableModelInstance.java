@@ -156,7 +156,7 @@ public interface IsAnimatableModelInstance {
 	
 	/**
 	 * Determains if this object is visible or not.
-	 * This means, if its inheiriting visibility, that its personal visibility setting is true AND its parents is
+	 * This means, if its inheriting visibility, that its personal visibility setting is true AND its parents is
 	 * @return
 	 */
 	public abstract boolean isVisible();
@@ -168,13 +168,27 @@ public interface IsAnimatableModelInstance {
 	 * @return
 	 */
 	public IsAnimatableModelInstance getParentObject();
+	
 	/**
+	 * Sets the parent object removing it from any existing parent first.
+	 * This should thus be run before any other parent operations else you might remove it from a list you just added it too
+	 * 
 	 * @param parentObject the parentObject to set
 	 */
 	public void setParentObject(IsAnimatableModelInstance parentObject);
 
 	
 	public abstract PosRotScale getTransform();
+
+	/**
+	 * get the relative displacement of the specified attachment on this object 
+	 * @param objectBeingDragged
+	 * @return
+	 */
+	public abstract PosRotScale getAttachmentsPoint(IsAnimatableModelInstance objectBeingDragged);
+
+	
+	public abstract void fireTouchUp();
 
 
 }
