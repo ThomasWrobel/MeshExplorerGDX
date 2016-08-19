@@ -187,12 +187,6 @@ public class AnimatableOrthographicCamera extends OrthographicCamera implements 
 		
 	}
 
-	public void deattachThis(IsAnimatableModelInstance objectToAttach){
-
-		attachlist.remove(objectToAttach);
-
-
-	}
 
 	private void updateAllAttachedObjects(){
 
@@ -546,7 +540,9 @@ public class AnimatableOrthographicCamera extends OrthographicCamera implements 
 	@Override
 	public void setParentObject(IsAnimatableModelInstance parentObject) {
 		this.parentObject = parentObject;
-		
+		if (this.parentObject!=null){
+			this.parentObject.removeAttachment(this);	
+		}
 	}
 
 	@Override

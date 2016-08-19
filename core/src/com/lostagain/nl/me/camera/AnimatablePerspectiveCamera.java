@@ -186,12 +186,6 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 		
 	}
 
-	public void deattachThis(IsAnimatableModelInstance objectToAttach){
-
-		attachlist.remove(objectToAttach);
-
-
-	}
 
 
 	private void updateAllAttachedObjects(){
@@ -568,7 +562,9 @@ public class AnimatablePerspectiveCamera extends PerspectiveCamera implements Is
 	@Override
 	public void setParentObject(IsAnimatableModelInstance parentObject) {
 		this.parentObject = parentObject;
-		
+		if (this.parentObject!=null){
+			this.parentObject.removeAttachment(this);	
+		}
 	}
 
 	@Override

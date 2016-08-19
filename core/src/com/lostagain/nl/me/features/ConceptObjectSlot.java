@@ -301,7 +301,7 @@ public class ConceptObjectSlot extends Widget implements hitable,Animating {
 
 	@Override
 	public void fireTouchUp() {
-		Gdx.app.log(logstag,"_-(fireTouchUp)-_");
+		Gdx.app.log(logstag,"_-(fireTouchUp on slot)-_");
 		
 		ConceptObject holding = STMemory.getCurrentlyOrRecentlyHeld();
 		

@@ -228,24 +228,7 @@ public class Widget extends Element {
 	//when creating the polygon vectexs
 	protected static Vector2 getOffsetForSize(float newWidth, float newHeight,MODELALIGNMENT alignment )
 	{
-		//old....dont understand how this ever  worked 
-//		Vector2 offset = new Vector2(0,0);
-//		switch(alignment)
-//		{
-//		case CENTER:
-//			offset.x = newWidth/2;
-//			offset.y = newHeight/2;
-//			break;
-//		case TOPLEFT:
-//			offset.x = 0;
-//			offset.y = newHeight; //remember y is messured downwards
-//			break;
-//		case BOTTOMRIGHT:
-//			offset.x = newWidth;
-//			offset.y = 0;
-//			break;
-//
-//		}
+		
 		Vector2 offset = new Vector2(0,0);
 		switch(alignment) 
 		{
@@ -345,7 +328,7 @@ public class Widget extends Element {
 	 */
 	private void setSizeAs(float newWidth, float newHeight,float offsetX,float offsetY, boolean FireSizeChangeEvents) {
 
-		//
+		
 
 		//ensure not smaller then minimum
 		if (newWidth<this.MinSizX){
@@ -366,6 +349,8 @@ public class Widget extends Element {
 
 		//
 
+		
+		
 		Mesh IconsMesh = this.model.meshes.get(0);
 
 		final VertexAttribute posAttr = IconsMesh.getVertexAttribute(Usage.Position);
@@ -382,6 +367,11 @@ public class Widget extends Element {
 		float topY = newHeight+offsetY;
 		float bottomY = offsetY;
 
+		//move up by the height 
+		topY = topY -newHeight;
+		bottomY = bottomY - newHeight;
+		
+		
 		Gdx.app.log(logstag,"______________offsetX:"+offsetX);
 		Gdx.app.log(logstag,"______________bottomY:"+offsetY);
 		Gdx.app.log(logstag,"______________w:"+w);
@@ -401,13 +391,12 @@ public class Widget extends Element {
 //				w,h,0,
 //				-offsetX,h,0 };
 
-		
 
 		float newSizeArray[] = new float[] { 
-				-offsetX,-topY,0,
-				w,-topY,0,
-				w,-bottomY,0,
-				-offsetX,-bottomY,0 };
+				-offsetX,bottomY,0,
+				w,bottomY,0,
+				w,topY,0,
+				-offsetX,topY,0 };
 		
 		//can be optimized latter by pre-calcing the size ratio and just multiply
 		for (int i = 0; i < 12; i=i+3) {
@@ -460,6 +449,20 @@ public class Widget extends Element {
 		}
 	}
 
+	protected String widgetName = this.getClass().getName();
+	public void setWidgetName(String widgetName) {
+		this.widgetName = widgetName;
+	}
+
+
+	/**
+	 * purely for debugging work, all widgets can be named. You can then use this name in the logs.
+	 * @return
+	 */
+	public  String getWidgetName() {
+		return widgetName;
+	}
+
 	/**
 	 * If needed, override this method to rearrange widgets or resize stuff after a size change of a child widget
 	 */
@@ -489,9 +492,20 @@ public class Widget extends Element {
 
 	}
 
+	
+
+	public void setMinWidth(float minSizeX) {
+		this.setMinSize(minSizeX, MinSizY);
+	}
+	public void setMinHeight(float minSizeY) {
+		this.setMinSize(MinSizX, minSizeY);
+		
+	}
+	
 	public void setMinSize(float minSizeX,float minSizeY) {
 		MinSizX = minSizeX;
 		MinSizY = minSizeY;
+		//should recheck if too small?
 	}
 
 	protected void setParent(Widget parentWidget) {

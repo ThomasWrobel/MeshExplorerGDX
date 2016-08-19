@@ -112,7 +112,7 @@ public class HorizontalPanel extends CellPanel {
 		}
 		Gdx.app.log(logstag,"new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
 		//update back size
-		sizeToFitContents(); 
+		//sizeToFitContents(); 
 
 	}
 
@@ -131,6 +131,10 @@ public class HorizontalPanel extends CellPanel {
 	//
 	@Override
 	void sizeToFitContents() {
+		
+		Gdx.app.log(logstag,"size to fit contents new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
+		
+		
 		this.setSizeAs(getLeftPadding()+currentTotalWidgetWidth+getRightPadding(),
 				getBottomPadding()+largestHeightOfStoredWidgets+getTopPadding());
 	}

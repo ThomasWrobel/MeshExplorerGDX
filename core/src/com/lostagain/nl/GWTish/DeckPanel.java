@@ -59,7 +59,7 @@ public class DeckPanel extends ComplexPanel {
 
 		}
 
-		sizeToFitContents();
+		//sizeToFitContents();
 		/*
 		float cy  = largestHeightOfStoredWidgets/2;
 
@@ -208,7 +208,9 @@ public class DeckPanel extends ComplexPanel {
 		Gdx.app.log(logstag," newLocation= "+newLocationX+","+newLocationY);*/
 		
 
-		return new Vector3(getLeftPadding()+newLocationX,getTopPadding()+newLocationY,(1f+index));//widgets used to be  stacked 5 apart vertically  (5f+10f*index)
+		return new Vector3(getLeftPadding()+newLocationX,
+				            -getTopPadding()+newLocationY,
+				            (1f+index));//widgets used to be  stacked 5 apart vertically  (5f+10f*index)
 
 		//return new Vector3(cx-(incomingWidth/2),cy-(incomingHeight/2),(5f+10f*index)); //widgets are stacked 5 apart vertically
 	}

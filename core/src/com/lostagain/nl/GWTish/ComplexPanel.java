@@ -178,17 +178,18 @@ public abstract class ComplexPanel extends Widget {
 	@Override
 	protected void onChildResize(){
 
-		Gdx.app.log(logstag,"updating position due to child size change");
+		Gdx.app.log(logstag,"updating positions on "+getWidgetName()+" due to child size change");
 		boolean changed = recalculateLargestWidgets();
 
-		Gdx.app.log(logstag,"_________vis on before reposition"+isVisible()+" ");
 		repositionWidgets();
-		Gdx.app.log(logstag,"_________vis on after reposition:"+isVisible()+" ");
 
 		//update back size
+
+		Gdx.app.log(logstag,"updating size of "+getWidgetName()+" due to child size change");
 		sizeToFitContents();
 	}
 	
+
 	public ComplexPanel(float sizeX, float sizeY) {
 		this(sizeX, sizeY,MODELALIGNMENT.TOPLEFT);
 		
@@ -215,7 +216,8 @@ public abstract class ComplexPanel extends Widget {
 			
 			//Widget widget = widgetdata.widget;
 			
-			widget.hide();
+			widget.hide(false); //dont change its local visibility setting
+			
 			//widget.removeOnSizeChangeHandler(updateContainerSize);	
 			widget.setParent(null);
 			
@@ -235,12 +237,17 @@ public abstract class ComplexPanel extends Widget {
 
 		Gdx.app.log(logstag,"recalculateLargestWidgets");
 
+		float oldLargestHeightOfStoredWidgets = largestHeightOfStoredWidgets;
+		float oldlargestWidthOfStoredWidgets = largestWidthOfStoredWidgets;
+		largestHeightOfStoredWidgets=0;
+		largestWidthOfStoredWidgets=0;
+		
 		for (Widget widget : contents) {
 
 			//Widget widget = widgetdata.widget;
 			
 			//get size of widget
-			BoundingBox size = widget.getLocalBoundingBox();
+			BoundingBox size = widget.getLocalBoundingBox();  //TODO; we will need to support percentage based sizes at some point, and this isnt goof enough for that. It needs instead to ask for the minimum acceptable size
 
 			float scaleY = widget.transState.scale.y;
 			float scaleX = widget.transState.scale.x;
@@ -248,11 +255,14 @@ public abstract class ComplexPanel extends Widget {
 			float height = size.getHeight() * scaleY;
 			float width  = size.getWidth()  * scaleX;
 
+
+			Gdx.app.log(logstag,"width of "+widget.getClass().getName()+" is "+scaleX+"*"+size.getWidth());
+			
 			if (width>largestWidthOfStoredWidgets){
 				
 				if (width>this.MinSizX){
 					//note we only flag as changed if we are exceeding the minimum size
-					changed=true;
+				//	changed=true;
 				}
 				
 				//update largest
@@ -261,7 +271,7 @@ public abstract class ComplexPanel extends Widget {
 			}
 			if (height>largestHeightOfStoredWidgets){
 				if (height>this.MinSizY){
-					changed=true;
+					//changed=true;
 				}
 				largestHeightOfStoredWidgets=height;
 				
@@ -269,7 +279,12 @@ public abstract class ComplexPanel extends Widget {
 
 		}
 
-
+		if (largestHeightOfStoredWidgets!=oldLargestHeightOfStoredWidgets){
+			changed=true;
+		}
+		if (largestWidthOfStoredWidgets!=oldlargestWidthOfStoredWidgets){
+			changed=true;
+		}
 
 		Gdx.app.log(logstag,"largestWidthOfStoredWidgets:"+largestWidthOfStoredWidgets);
 		Gdx.app.log(logstag,"largestHeightOfStoredWidgets:"+largestHeightOfStoredWidgets);
@@ -283,6 +298,14 @@ public abstract class ComplexPanel extends Widget {
 
 	
 	
+	@Override
+	public void setSizeAs(float newWidth, float newHeight, boolean FireSizeChangeEvents) {
+		super.setSizeAs(newWidth, newHeight, FireSizeChangeEvents);
+		repositionWidgets();//reposition wdgets as they might depend on the total size, which has just changed
+		
+	}
+
+
 	@Override
 	public void setOpacity(float opacity) {		
 		super.setOpacity(opacity);
@@ -379,7 +402,7 @@ public abstract class ComplexPanel extends Widget {
 	
 	/**
 	 * removes a widget from this panel and hides it.
-	 * Note; The widget will still exist if you wish to unhide it, it just wont be attached to this panel anymore
+	 * Note; The widget will still exist if you wish to unhide it or reattach it, it just wont be attached to this panel anymore
 	 * 
 	 * @param widget
 	 * @return false is widget was not found
@@ -393,7 +416,7 @@ public abstract class ComplexPanel extends Widget {
 		}
 		contentAlignments.remove(widget);
 		
-		widget.hide();
+		widget.hide(false); //dont change its internal vis setting
 		
 		widget.setParent(null);
 		
@@ -604,6 +627,12 @@ public abstract class ComplexPanel extends Widget {
 
 			childwidget.setZIndex(index+1,group); 
 		}				
+	}
+
+
+	public int getWidgetCount() {
+		
+		return this.contents.size();
 	}
 
 }
