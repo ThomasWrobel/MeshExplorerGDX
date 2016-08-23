@@ -211,7 +211,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		} else {
 			//unpin it
 			Gdx.app.log(logstag,"--removing from camera---");
-			MainExplorationView.camera.deattachThis(this);
+			MainExplorationView.camera.removeAttachment(this);
 						
 			this.getTransform().position.z = this.getTransform().position.z - 150f;
 			this.sycnTransform();

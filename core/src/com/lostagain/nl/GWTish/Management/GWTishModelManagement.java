@@ -186,7 +186,22 @@ public class GWTishModelManagement {
 	public static Vector2 touchStartedAt = null;
 
 
+	//--
+	
+	//	public static  GWTishModelManagement the3dscene = new GWTishModelManagement();
+	
+	private static ArrayList<hitable> lastHits = new ArrayList<hitable>();
 
+
+	/**
+	 * @return the lastHits
+	 */
+	public static ArrayList<hitable> getLastHits() {
+		return lastHits;
+	}
+	
+
+	
 	/**
 	 * tests the sort order of foreground objects
 	 * @param deltatime
@@ -578,6 +593,7 @@ public class GWTishModelManagement {
 
 		//clear event
 		Event.setCurrentEvent(null);
+		lastHits=hits;
 		
 		return hits;
 	}
@@ -1154,6 +1170,8 @@ public class GWTishModelManagement {
 		}
 
 	}
+
+
 
 
 

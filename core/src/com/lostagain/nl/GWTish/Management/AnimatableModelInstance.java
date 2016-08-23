@@ -723,6 +723,20 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 	}
 
 	/**
+	 * If this is set to render in the overlay list
+	 * @return
+	 */
+	public boolean isOverlay() {
+	
+		if (currentRenderPlacement == RenderOrder.OVERLAY){
+			return true;
+		} else {
+			return false;
+		}
+	
+	}
+	
+	/**
 	 * Adds it to the hitable list. This is a list of things designed to be clicked on or shot at.
 	 * ie. Fires events when a ray hits.
 	 * You will need to override the public boolean rayHits(Ray ray) for your own logic to determine
