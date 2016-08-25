@@ -131,6 +131,12 @@ public class Element extends AnimatableModelInstance {
 	}
 	
 	
+	//Convenience  to remove all handlers
+	public void removeAllHandlers(){
+		handlers.clear();
+	}
+	
+	
 	protected void fireHandlersForType(Event.EventType eventType) {
 		
 		if (handlers.isEmpty()){
@@ -150,7 +156,7 @@ public class Element extends AnimatableModelInstance {
 	
 	//Actual events here;
 	//This is where the clicks are received
-	private boolean mouseDownOn = false;
+	protected boolean mouseDownOn = false;
 
 	@Override
 	public void fireTouchDown() {
@@ -160,6 +166,7 @@ public class Element extends AnimatableModelInstance {
 	}
 
 
+	
 	@Override
 	public void fireTouchUp() {
 		super.fireTouchUp();

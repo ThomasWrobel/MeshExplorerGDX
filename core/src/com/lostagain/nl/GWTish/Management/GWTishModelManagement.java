@@ -507,10 +507,21 @@ public class GWTishModelManagement {
 	static public class OrderByDistance implements Comparator<rayHit> {
 		@Override
 		public int compare(rayHit o1, rayHit o2) {
-
+		
+			//if either is overlay but not the other, put that on top
+			if (o1.hitthis.isOverlay() && !o2.hitthis.isOverlay() ){
+				return -1;
+			}
+			//if either is overlay but not the other, put that on top
+			if (!o1.hitthis.isOverlay() && o2.hitthis.isOverlay() ){
+				return 1;
+			}	
+			
+			
+			
 			float hit1 = o1.hitthis.getLastHitsRange();
-			float hit2 = o2.hitthis.getLastHitsRange();		  
-
+			float hit2 = o2.hitthis.getLastHitsRange();		
+			
 			return (int) (hit1 - hit2);
 		}
 	};
@@ -545,8 +556,32 @@ public class GWTishModelManagement {
 
 	static OrderByDistance distanceSorter = new OrderByDistance();
 
+
+	private static double ScenePixelScaleX=1;
+	private static double ScenePixelScaleY=1;
+
+	
+	
+	
 	
 
+	public static void setSceneScale(double currentSceneRatio, double currentSceneRatio2) 
+	{
+		ScenePixelScaleX = currentSceneRatio;
+		ScenePixelScaleY = currentSceneRatio2;
+		
+	}
+	
+/**
+ * note; the coordinates must be given unscaled (ie, real pixels of 1:1 viewport)
+ * If you wish Event.getCurrentEvent().getClientX/Y to return values scaled  to your current display
+ * Set your scene scaleing with setSceneScale(x,y). Values will then be multiplied by this  
+ *  
+ * @param x - unscaled screen x
+ * @param y - unscaled screen y
+ * @param camera
+ * @return
+ */
 	public static ArrayList<hitable> getHitables(float x, float y, Camera camera) 
 	{
 
@@ -577,8 +612,8 @@ public class GWTishModelManagement {
 				altKeyWasPressed,  
 				cntrKeyWasPressed,  
 				shiftKeyWasPressed,
-				currentEventX,
-				currentEventY,  
+				(int)(currentEventX*ScenePixelScaleX),
+				(int)(currentEventY*ScenePixelScaleY),  
 				currentEventKeyCode);	
 
 
@@ -589,7 +624,7 @@ public class GWTishModelManagement {
 		Ray pickray = camera.getPickRay(x, y);
 
 		TouchState currentTouchState = GWTishModelManagement.currentTouchState;
-		ArrayList<hitable> hits = getHitables(pickray,true,currentTouchState);
+		ArrayList<hitable> hits = getHitables(pickray,false,currentTouchState); //penitates was previously on true. This seemed wrong so changed to false 
 
 		//clear event
 		Event.setCurrentEvent(null);

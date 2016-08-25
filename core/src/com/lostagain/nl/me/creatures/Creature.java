@@ -757,6 +757,13 @@ public class Creature implements hitable , Animating {
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
+	@Override
+	public boolean isOverlay() {
+		return false;
+	}
 	
 	
 }

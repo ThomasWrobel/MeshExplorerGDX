@@ -80,8 +80,8 @@ public class Event extends NativeEvent {
 	   * (this class is not very similar)
 	 * @param buttonTypeDown 
 	   */
-	  public Event(EventButtonType buttonTypeDown, boolean altKeyWasPressed, boolean cntrKeyWasPressed, boolean shiftKeyWasPressed, int currentEventX,
-			int currentEventY, int currentEventKeyCode) {
+	  public Event(EventButtonType buttonTypeDown, boolean altKeyWasPressed, boolean cntrKeyWasPressed, boolean shiftKeyWasPressed, int xpos,
+			int ypos, int currentEventKeyCode) {
 		  
 		super();
 		
@@ -96,8 +96,8 @@ public class Event extends NativeEvent {
 		AltKeyWasPressed = altKeyWasPressed;
 		CntrKeyWasPressed = cntrKeyWasPressed;
 		ShiftKeyWasPressed = shiftKeyWasPressed;
-		CurrentEventX = currentEventX;
-		CurrentEventY = currentEventY;
+		CurrentEventX = xpos;
+		CurrentEventY = ypos;
 		CurrentEventKeyCode = currentEventKeyCode;
 		
 		//TODO: work out how to deal with representing the type of the event as a number?

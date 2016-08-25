@@ -25,6 +25,11 @@ public interface hitable {
 	public Vector3 rayHits(Ray ray);
 	public Vector3 getCenterOnStage();
 	
+	/**
+	 * should this hitable be considered ontop of all others? (used for interface elements)
+	 * @return
+	 */
+	public boolean isOverlay();
 	
 	
 }
