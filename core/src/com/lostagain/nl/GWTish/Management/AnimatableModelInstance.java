@@ -879,6 +879,14 @@ public class AnimatableModelInstance extends ModelInstance implements IsAnimatab
 		return attachlist.get(object);
 	}
 
+	/**
+	 * To help debugging you can optionally give objects a name
+	 */
+	@Override
+	public String getName() {
+		return "AnimatedModalInstance";
+	}
+
 	
 
 }

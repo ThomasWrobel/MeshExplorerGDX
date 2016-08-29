@@ -31,5 +31,11 @@ public interface hitable {
 	 */
 	public boolean isOverlay();
 	
+	/**
+	 * to help debugging you can optionally supply a name for this hitable
+	 * @return
+	 */
+	public String getName();
+	
 	
 }

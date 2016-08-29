@@ -1023,6 +1023,14 @@ public class Label extends LabelBase {
 		
 	}
 
+	/**
+	 *   Gets this object's text.
+	 * @return
+	 */
+	public String getText() {		
+		return this.contents;
+	}
+
 
 	public Material getTextMaterial(){
 		return this.getMaterial(LABEL_MATERIAL);

@@ -178,14 +178,14 @@ public abstract class ComplexPanel extends Widget {
 	@Override
 	protected void onChildResize(){
 
-		Gdx.app.log(logstag,"updating positions on "+getWidgetName()+" due to child size change");
+		Gdx.app.log(logstag,"updating positions on "+getName()+" due to child size change");
 		boolean changed = recalculateLargestWidgets();
 
 		repositionWidgets();
 
 		//update back size
 
-		Gdx.app.log(logstag,"updating size of "+getWidgetName()+" due to child size change");
+		Gdx.app.log(logstag,"updating size of "+getName()+" due to child size change");
 		sizeToFitContents();
 	}
 	

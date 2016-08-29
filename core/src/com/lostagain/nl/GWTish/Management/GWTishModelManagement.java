@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.ObjectSet; //NOTE: This is like a hashset but appa
 import com.lostagain.nl.GameMode;
 import com.lostagain.nl.GWTish.Event;
 import com.lostagain.nl.GWTish.NativeEvent;
+import com.lostagain.nl.GWTish.Widget;
 import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.Moving;
@@ -185,6 +186,13 @@ public class GWTishModelManagement {
 
 	public static Vector2 touchStartedAt = null;
 
+
+	/**
+	 * @return the lastHits
+	 */
+	public static ArrayList<hitable> getLastUnderCursor() {
+		return underCursorList;
+	}
 
 	//--
 	
@@ -517,8 +525,23 @@ public class GWTishModelManagement {
 				return 1;
 			}	
 			
+			//if both are widgets then we compare zindexs if they are in the same group
+			if (o1.hitthis instanceof Widget
+			 && o2.hitthis instanceof Widget){
+				
+				Widget o1w = (Widget) o1.hitthis;
+				Widget o2w = (Widget) o2.hitthis;
+				// same group?
+				if (o1w.getStyle().getZIndexGroup() == o2w.getStyle().getZIndexGroup()){
+					int zin1 = o1w.getStyle().getZIndexValue();
+					int zin2 = o2w.getStyle().getZIndexValue();
+					return -(zin1-zin2);
+				}
+				
+			}
 			
 			
+			//---
 			float hit1 = o1.hitthis.getLastHitsRange();
 			float hit2 = o2.hitthis.getLastHitsRange();		
 			
@@ -704,8 +727,10 @@ public class GWTishModelManagement {
 		//	Gdx.app.log(logstag,"underCursor:"+underCursor.size());
 
 		//sort by distance
-		Collections.sort(underCursorHits,distanceSorter);
-
+		Collections.sort(underCursorHits,distanceSorter);//todo: might need to take zindex into account 
+		listUnderCursorToLog(underCursorHits);
+		
+		
 		ArrayList<hitable> onesHit = new ArrayList<hitable>();
 
 		//crop to the ones on top, hitting as we go
@@ -759,6 +784,10 @@ public class GWTishModelManagement {
 				return onesHit;
 			}
 			if (type == objectInteractionType.Blocker && !hitsPenetrate){
+				
+				Gdx.app.log(logstag,"_hit blocker :"+object.getClass()+" totalunder cursor:"+underCursorHits.size());
+				
+				
 				return onesHit;
 			}
 
@@ -771,6 +800,14 @@ public class GWTishModelManagement {
 	}
 
 
+
+	private static void listUnderCursorToLog(ArrayList<rayHit> underCursorHits2) {
+		for (rayHit rayhit : underCursorHits2) {
+			Gdx.app.log(logstag,"undercursor last click/touch action    :"+rayhit.hitthis.getName()+"        ("+rayhit.hitthis.getInteractionType()+")");
+				
+			
+		}
+	}
 
 	/**
 	 * 
