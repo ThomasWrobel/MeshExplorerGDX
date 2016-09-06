@@ -6,7 +6,7 @@ package com.lostagain.nl.me.models;
  *
  */
 public enum objectInteractionType {
-	/** clicks and firings interact with this object and we do not block whats under it from also getting the interactions**/
+	/** clicks and firings interact with this object (assuming its set to hitable) and we do not block whats under it from also getting the interactions**/
 	Normal,
 	/** interactions happen with this object and it blocks what's under it  **/
 	Blocker,

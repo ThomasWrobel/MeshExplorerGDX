@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
 import com.lostagain.nl.GWTish.Management.ZIndexGroup;
 import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute.presetTextStyle;
@@ -60,7 +61,7 @@ public class Style {
 
 		GwtishWidgetDistanceFieldAttribute materialAccordingToStyle = (GwtishWidgetDistanceFieldAttribute) mat.get(GwtishWidgetDistanceFieldAttribute.ID);
 		if (materialAccordingToStyle!=null){
-			Gdx.app.log(logstag, "3fitarea set as:"+materialAccordingToStyle.textScaleing ); 
+			Gdx.app.log(logstag, "3fitarea set as:"+materialAccordingToStyle.textScaleingMode ); 
 		} else {
 			Gdx.app.log(logstag, "no textstyle set" ); 
 		}
@@ -133,9 +134,10 @@ public class Style {
 	
 	
 	/**
-	 * only works with GlowingSquareAttribute shaders right now
-	 * 0.0-1.0
-	 * @param bordercol
+	 * Sets the width of the background border.
+	 * Should be in world units, but it looks odd if too big.
+	 * 
+	 * @param borderWidth
 	 */
 	public void setBorderWidth(float borderWidth) {
 		
@@ -155,7 +157,6 @@ public class Style {
 
 	}
 	/**
-	 * only works with GlowingSquareAttribute shaders right now
 	 * @param bordercol
 	 */
 	public void setBorderColor(Color bordercol) {
@@ -427,6 +428,8 @@ public class Style {
 	  float PaddingRight = 0f;
 	  float PaddingBottom  = 0f;
 	  
+	  
+	  
 	/**
 	 * should be fired when any style related to layout is changed.
 	 * ie. text alignment,padding etc
@@ -453,6 +456,7 @@ public class Style {
 	
 	double lineHeight   = -1;
 	Unit lineHeightUnit = Unit.NOTSET; 
+	
 	public void setLineHeight(double value,
             Style.Unit unit) {
 		lineHeight = value;
@@ -476,15 +480,48 @@ public class Style {
 	}
 	
 	/**
-	 * Experimental, this effects the shaders impression of the text size only, and doesnt
+	 * DONT CHANGE THIS VALUE.
+	 * This is only here right now for experiments, allthough the setting itself is needed for fixedsized labels to work internally.
+	 * 
+	 * Ultimately, this effects the shaders impression of the text size *only*, and doesn't
 	 * effect widget size at all
+	 * 
+	 * In future, hopefully soon, there will be proper font size controll. Dont use this as a replacement!
 	 */
 	public void setTextScale(float scale){
 		createTextAttributeIfNeeded();
 		textStyle.textScale = scale;				
-		//layoutStyleChanged();
+	//	layoutStyleChanged();
+	}
+	
+
+	//font sizing implementation wip
+	double fontSize = -1;
+	Unit fontSizeUnit =  Unit.NOTSET;
+	
+	public double getFontSize() {
+		if (fontSizeUnit==Unit.NOTSET){
+			return -1;
+		}		
+		return fontSize;
 	}
 
+	public Unit getFontSizeUnit() {
+		return fontSizeUnit;
+	}
+
+	/**
+	 * not implemented yet
+	 * @param size
+	 * @param unit (px only for now)
+	 */
+	public void setFontSize(int size, Unit unit) {
+		fontSize = size;
+		fontSizeUnit = unit;
+		
+	}
+	//------------
+	
 	/**
 	 * Sets this widgets padding on all four sides.
 	 * This will set the shader to render any text inwards by this amount, as well as setting the left padding variable 
@@ -583,6 +620,7 @@ public class Style {
 	public float getPaddingBottom() {
 		return PaddingBottom;
 	}
+
 
 	
 

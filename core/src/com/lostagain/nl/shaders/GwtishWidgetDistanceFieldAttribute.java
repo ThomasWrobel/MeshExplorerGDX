@@ -37,10 +37,11 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 	 * Do we scale it to fit or not?
 	 * ("Fit" in this case means its dimensions match the area of the model minus the area of the padding)
 	 */
-	public TextScalingMode textScaleing = TextScalingMode.natural;
+	public TextScalingMode textScaleingMode = TextScalingMode.natural;
 	
 	/**
-	 * manually controll text scale
+	 * manually controll text scale. Atm this is arbitary and expiremental atm, hopefully pixel based in future.
+	 * (or, at least, pixel based on the texture, the end result could still be any sized)
 	 */
 	public float textScale = 1.0f;
 	
@@ -191,7 +192,7 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 		this.shadowColour = shadowColour.cpy();
 		this.paddingTop = paddingTop;
 		this.paddingLeft =paddingLeft;
-		this.textScaleing=textScaleing;
+		this.textScaleingMode=textScaleing;
 	}
 	/**
 	 * The presence of this parameter will cause the DistanceFieldAttribute to be used
@@ -239,7 +240,7 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 				 shadowBlur,
 				 paddingTop,
 				 paddingLeft,
-				 textScaleing);
+				 textScaleingMode);
 		
 	}
 
@@ -261,7 +262,7 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 			(((GwtishWidgetDistanceFieldAttribute)other).shadowBlur == shadowBlur) &&
 			(((GwtishWidgetDistanceFieldAttribute)other).paddingTop == paddingTop) &&
 			(((GwtishWidgetDistanceFieldAttribute)other).paddingLeft == paddingLeft) &&
-			(((GwtishWidgetDistanceFieldAttribute)other).textScaleing == textScaleing) 
+			(((GwtishWidgetDistanceFieldAttribute)other).textScaleingMode == textScaleingMode) 
 			
 			
 			)
@@ -342,7 +343,7 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 
 
 	public void setTextScaleing(TextScalingMode textScaleing) {
-		this.textScaleing = textScaleing;
+		this.textScaleingMode = textScaleing;
 	}
 
 

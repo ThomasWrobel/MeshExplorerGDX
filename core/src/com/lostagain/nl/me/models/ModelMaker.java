@@ -72,33 +72,39 @@ public class ModelMaker {
     
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
-		MeshPartBuilder meshBuilder;
+		MeshPartBuilder meshPartBuilder;
 
 		
 		
 		//Node node = modelBuilder.node();
 		//node.translation.set(11,11,5);		
 		if (mat!=null){
-			meshBuilder = modelBuilder.part("bit", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal|Usage.TextureCoordinates, mat);
+			meshPartBuilder = modelBuilder.part("bit", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal|Usage.TextureCoordinates, mat);
+			//this will create a nodepart called "bit" under a new node automatically called "node1"
+			
 		} else {
 			
 			Material defaultmaterial = new Material(ColorAttribute.createDiffuse(Color.WHITE), 
 					ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(1f), 
 					FloatAttribute.createShininess(16f));
 			
-			meshBuilder = modelBuilder.part("bit", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal|Usage.TextureCoordinates, defaultmaterial);
-					
+			meshPartBuilder = modelBuilder.part("bit", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal|Usage.TextureCoordinates, defaultmaterial);
+			//this will create a nodepart called "bit" under a new node automatically called "node1"
+			
 		}
 		
 		if (true){
 		
-			meshBuilder.rect(
+			meshPartBuilder.rect(
 					x1, y1, 0, 
 					x2, y1, 0,
 					x2, y2, 0, 
 					x1, y2, 0, 
 					0, 1, 0);
-		return modelBuilder.end();
+			
+			
+			
+			return modelBuilder.end();
 		}
 		
 		//meshBuilder.cone(5, 5, 5, 10);
@@ -116,7 +122,7 @@ public class ModelMaker {
 		VertexInfo newtest4 = new VertexInfo();
 		newtest4.set(corner4, testnorm, Color.WHITE, new Vector2(0f,1f));
 		
-		meshBuilder.rect(newtest1, newtest2, newtest3, newtest4);
+		meshPartBuilder.rect(newtest1, newtest2, newtest3, newtest4);
 		
 		Model model = modelBuilder.end();
 		

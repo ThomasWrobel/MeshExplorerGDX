@@ -114,6 +114,7 @@ public class Widget extends Element {
 		Height=sizeY;
 
 		alignment = align;
+		
 		//	this.setMinSize(sizeX, sizeY); //we no longer set the min size by default		
 	}
 
@@ -190,13 +191,12 @@ public class Widget extends Element {
 		//we first get the offset 
 		Vector2 offset =  getOffsetForSize(sizeX, sizeY,alignment);
 
-
-
-
-		
 		Log.info(" offsetFor "+alignment+" of "+sizeX+","+sizeY+" is "+offset);
 		
-				Model newModel = ModelMaker.createRectangle(offset.x, (offset.y), sizeX+offset.x,(sizeY+offset.y), 0, mat); 	
+		Model newModel = ModelMaker.createRectangle(offset.x, (offset.y), sizeX+offset.x,(sizeY+offset.y), 0, mat); 	
+		
+		
+		
 		
 		Log.info(" rect; "+(offset.x)+","+ (offset.y)+"," 
 				+(sizeX+offset.x)+","+(sizeY+offset.y));

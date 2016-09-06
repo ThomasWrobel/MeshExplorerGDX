@@ -95,8 +95,8 @@ public class Label extends LabelBase {
 	}
 
 	SizeMode labelsSizeMode = SizeMode.ExpandXYToFit;
-	
-	
+
+
 	/**
 	 * under fixed width mode this marks the maximum width of the widget. Any expansion of the text beyond it will result
 	 * in word wrapping.
@@ -112,13 +112,13 @@ public class Label extends LabelBase {
 	 * The text alignment used to last generate the text texture
 	 */
 	private TextAlign lastUsedTextAlignment;
-	
-	
+
+
 	//Texture currentTexture = null;
 	//boolean modelNeedsUpdate = true;
 
 	//Style data (mostly controlled by shader)
-//	static private Color defaultBackColour = Color.CLEAR;
+	//	static private Color defaultBackColour = Color.CLEAR;
 
 	/**
 	 * 
@@ -136,11 +136,19 @@ public class Label extends LabelBase {
 		this( contents, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
 	}
 
+	/**
+	 * fixed size label - texture scales into it (non-gwt like)
+	 * @param contents
+	 * @param Width
+	 * @param Height
+	 * @param modelalignment
+	 * @param textalign
+	 */
 	public Label(String contents, float Width, float Height, MODELALIGNMENT modelalignment, TextAlign textalign) {
 		this( contents, Width, Height, SizeMode.Fixed, modelalignment,textalign); //defaults to top left alignment of pivot
-}
+	}
 	/**
-	 * 
+	 * * fixed size label - texture scales into it (non-gwt like)
 	 * @param contents
 	 * @param MaxWidth
 	 * @param MaxHeight
@@ -148,7 +156,7 @@ public class Label extends LabelBase {
 	public Label (String contents,float MaxWidth,float MaxHeight){ 
 		this( contents, MaxWidth,MaxHeight, SizeMode.Fixed, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
 	}
-	
+
 	/**
 	 * 
 	 * @param contents
@@ -158,7 +166,7 @@ public class Label extends LabelBase {
 	public Label (String contents,float Width,float Height, MODELALIGNMENT alignment){ 
 		this( contents, Width,Height, SizeMode.Fixed, alignment,TextAlign.LEFT); 
 	}
-	
+
 	/**
 	 * 
 	 * @param contents
@@ -174,62 +182,59 @@ public class Label extends LabelBase {
 	 * @param modelAlignement
 	 */
 	public Label (String contents,float MaxWidth,float MaxHeight, SizeMode sizeMode, MODELALIGNMENT modelAlignement, TextAlign textAlignment){ 
-		
+
 		super(generateObjectData(true, true, contents, sizeMode, MaxWidth, MaxHeight, modelAlignement,textAlignment,null));
 		super.setStyle(getMaterial(LABEL_MATERIAL)); //no style settings will work before this is set
-	
+
 		this.lastUsedTextAlignment = textAlignment;
 		this.userData="label_"+contents;
-		
-		
+
+
 		if (!labelSetupDone){
 			firstTimeSetUp();
 			labelSetupDone=true;
 		}
 
-				
+
 		labelsSizeMode = sizeMode;
 		this.maxWidth = MaxWidth;
 		this.maxHeight = MaxHeight;
 		this.contents=contents;
-		
+
 		Material materialAccordingToStyle = this.getStyle().getMaterial();
 		Material materialAccordingToGetMaterial = getMaterial(LABEL_MATERIAL);
-		
-		if (materialAccordingToStyle!=materialAccordingToGetMaterial){
 
+		//debug checks
+		if (materialAccordingToStyle!=materialAccordingToGetMaterial){
 			Gdx.app.log(logstag, "materials dont match!"); 
 		}
-
 		if (materialAccordingToStyle==null){
-
 			Gdx.app.log(logstag, "materialAccordingToStyle is null"); 
 		}
 		if (materialAccordingToGetMaterial==null){
-
 			Gdx.app.log(logstag, "materialAccordingToGetMaterial is null"); 
 		}
-		
-		
+		//--------------------------------------------------------
+
 		GwtishWidgetDistanceFieldAttribute matttest = (GwtishWidgetDistanceFieldAttribute) this.getStyle().getMaterial().get(GwtishWidgetDistanceFieldAttribute.ID);
-		
-		Gdx.app.log(logstag, "fitarea set as:"+matttest.textScaleing); 
+
+		Gdx.app.log(logstag, "fitarea set as:"+matttest.textScaleingMode); 
 		Gdx.app.log(logstag, "paddingLeft:   "+matttest.paddingLeft); 
-		
-		//if (sizeMode==SizeMode.Fixed){
-		
-			
-			//then the shader nee
-						
-			
-			//if fixed mode we might need to pad the texture to ensure it keeps its ratio			
-			//setPaddingToPreserveTextRatio(TextAlign.LEFT,  maxWidth , maxHeight, this.textureSize.x, this.textureSize.y);
-			
-		//}
-		
+
+		if (sizeMode==SizeMode.Fixed){
+			//calc needed shader scaleing. Fixed size mode enlarges and shrinks texture to fit model - but does so in the shader, not by changing the underlying texture resolution
+			//(which is pointless - as you could only ever lose information and make it look worse.)
+			calculateCorrectShaderTextScale();
+
+		//old;
+		//if fixed mode we might need to pad the texture to ensure it keeps its ratio			
+		//setPaddingToPreserveTextRatio(TextAlign.LEFT,  maxWidth , maxHeight, this.textureSize.x, this.textureSize.y);
+
+		}
+
 	}
-	
-	
+
+
 	/*
 	 * Generates a label with the specified contents, auto expanding its size to fit
 	 * Newlines in the content are respected 
@@ -240,7 +245,7 @@ public class Label extends LabelBase {
 		super(generateObjectData(true, true, contents, SizeMode.ExpandXYToFit,-1));//No max width
 
 		super.setStyle(this.getMaterial(LABEL_MATERIAL));
-		
+
 		labelsSizeMode = SizeMode.ExpandXYToFit;
 		this.maxWidth = -1;
 		this.contents=contents;
@@ -252,11 +257,11 @@ public class Label extends LabelBase {
 
 
 	}
-*/
+	 */
 
 
 
-	
+
 	/**
 	 * The object data needed on creation is just the background mesh instance and the cursor position.
 	 * This shouldn't need to be run outside the objects first creation.
@@ -273,7 +278,7 @@ public class Label extends LabelBase {
 	 */
 	private static backgroundAndCursorObject generateObjectData(boolean regenTexture,boolean regenMaterial,String contents,SizeMode labelsSizeMode, float maxWidth ,float maxHeight, MODELALIGNMENT alignment, TextAlign textAlignment,Style style) {
 		TextureAndCursorObject textureData = null;
-		
+
 		if (regenTexture){			
 			textureData = generateTexture(labelsSizeMode, contents,maxWidth,textAlignment,style); //left default			
 		}
@@ -288,51 +293,53 @@ public class Label extends LabelBase {
 		//if (textStyle==null){
 		//	textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 		GwtishWidgetDistanceFieldAttribute textStyle = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
-		
+
 		//}
 
-		
-		//we normally get the size from the generated material unless its specified as fixed
+
+		//we normally get the model size from the generated material unless its specified as fixed
 		float textureSizeX = newTexture.getWidth();
 		float textureSizeY = newTexture.getHeight();
 		float SizeX = textureSizeX;
 		float SizeY = textureSizeY;
-		
+
 		if (labelsSizeMode==SizeMode.Fixed){
-			
+
 			SizeX = maxWidth;			
 			SizeY = maxHeight;
-			
-			
+
+
 			textStyle.setTextScaleing(TextScalingMode.fitPreserveRatio); 
 
-			Gdx.app.log(logstag, "fitarea detected texture size mode set as:"+textStyle.textScaleing); 
-			//setPaddingToPreserveTextRatio(TextAlign.LEFT,  maxWidth , maxHeight, sizeX, sizeY);
 			
+			
+			Gdx.app.log(logstag, "fitarea detected texture size mode set as:"+textStyle.textScaleingMode); 
+			//setPaddingToPreserveTextRatio(TextAlign.LEFT,  maxWidth , maxHeight, sizeX, sizeY);
+
 		}
 
 
 		Material mat = 	
 				new Material(LABEL_MATERIAL,
-				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
-				TextureAttribute.createDiffuse(newTexture),
-			//	ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
-				textStyle);
+						new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
+						TextureAttribute.createDiffuse(newTexture),
+						//	ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
+						textStyle);
 
 
 		GwtishWidgetDistanceFieldAttribute matttest = (GwtishWidgetDistanceFieldAttribute) mat.get(GwtishWidgetDistanceFieldAttribute.ID);
-		
-	
+
+
 
 		//Gdx.app.log(logstag,"______________text glow col is: "+teststyle.glowColour);
 		//Gdx.app.log(logstag,"______________generating rect of "+LabelWidth+","+LabelHeight);
 
 		//Note the *1 is the scale. We have scale 1 by default, duh.
 		Model newModel = Widget.generateBackground(SizeX, SizeY, mat, alignment);
-		
+
 		GwtishWidgetDistanceFieldAttribute matttest2 = (GwtishWidgetDistanceFieldAttribute) newModel.getMaterial(LABEL_MATERIAL).get(GwtishWidgetDistanceFieldAttribute.ID);
-		
-		Gdx.app.log(logstag, "1fitarea set as:"+matttest2.textScaleing); 
+
+		Gdx.app.log(logstag, "1fitarea set as:"+matttest2.textScaleingMode); 
 		Gdx.app.log(logstag, "paddingLeft:   "+matttest2.paddingLeft); 
 
 		//ModelMaker.createRectangle(0, 0, sizeX*1,sizeY*1, 0, mat); 
@@ -353,29 +360,31 @@ public class Label extends LabelBase {
 
 		GlyphLayout layout = new GlyphLayout();	    
 		//layout.setText(DefaultStyles.standdardFont, text);
-		
+
 		BitmapFont font = DefaultStyles.standdardFont;
-				
+
 		if (stylesettings!=null){
-			
+
 			//make a copy of the font so we can customize the data
 			//probably not very efficient?
-			font = new BitmapFont(DefaultStyles.standdardFont.getData(), DefaultStyles.standdardFont.getRegion(), DefaultStyles.standdardFont.usesIntegerPositions());
-			
+			font = new BitmapFont(DefaultStyles.standdardFont.getData(),
+								DefaultStyles.standdardFont.getRegion(), 
+								DefaultStyles.standdardFont.usesIntegerPositions());
+
 			float LineHeight = (float) stylesettings.getLineHeightValue();
 			Style.Unit LineHeightUnit = stylesettings.getLineHeightUnit();
-			
-			//we only support PX and Percentage at the moment		
+
+			//we only support PX at the moment		
 			if (LineHeightUnit == Style.Unit.PX){
 				font.getData().setLineHeight(LineHeight);
 			}
-			
-			
+
+
 		}
 		
+		///font.getData().setScale(3.5f); //scaling only effects spaceing, not font size
 		
-		//font.getData().setScale(1.5f); //scaling doesnt work well
-		
+
 		//if maxWidth is zero or -1 then we dynamically work it out instead
 		if (maxWidth<1){
 			layout.setText(font, text);
@@ -409,10 +418,26 @@ public class Label extends LabelBase {
 
 
 
-		layout.setText(font, text, Color.BLACK, maxWidth, layoutAlignment, true); //cant centralize without width
+		layout.setText(font, text, Color.BLACK, maxWidth, layoutAlignment, true); //can't centralize without width
+		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, font); 
 
-
-
+		//Font size  trying to figure out
+		
+		//Note; in order to scale text to fit in other modes we still render at the native size, but dont effect the mesh size
+		//the texture will then auto-scale into the space. 
+		//
+		//However...this "solution" doesn't deal with maxwidth because the width of the characters determines how many per line can fit.
+		//So this might take some thinking about.
+		//a) there should be a minimum texture pixel size per character, regardless of final visual size
+		//b) for the wrapping to work, however, at least the correct ratio needs to end up in the layout?
+		//ii) or maybe we change the width proportionally the other way? (then when its sized up to the widget size it will be correct? err...seems weird but should work? )
+		//
+		
+		
+		
+		
+		
+		//old;
 
 
 		//   float currentWidth  = layout.width;
@@ -440,15 +465,6 @@ public class Label extends LabelBase {
 
 		//	TextureAndCursorObject textureDAta = generateTexture( text, 0, 0,  sizeratio, true,maxWidth); //note zeros as size isn't used
 
-
-
-
-		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, font); //note zeros as size isn't used
-
-		//Note; in order to scale text to fit in other modes we still render at the native size, but dont effect the mesh size
-		//the texture will then auto-scale into the space
-
-		//
 
 
 
@@ -540,8 +556,6 @@ public class Label extends LabelBase {
 	static public TextureAndCursorObject generateTexture(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit, float maxWidth) {
 
 		PixmapAndCursorObject data = generatePixmap(text, DefaultWidth, DefaultHeight, sizeratio, expandSizeToFit,maxWidth);
-
-
 
 		return new TextureAndCursorObject(new Texture(data.textureItself),data.Cursor.x,data.Cursor.y);
 	}
@@ -800,22 +814,22 @@ public class Label extends LabelBase {
 	private void regenerateTexture(String text) {
 		TextAlign align = this.getStyle().getTextAlignment();
 		lastUsedTextAlignment = align;
-		
+
 		//note; we subtract the left/right padding from maxwidth if we are on fixed size mode
 		float effectiveMaxWidth = maxWidth;
 		if (maxWidth!=-1){
 			effectiveMaxWidth = maxWidth - (this.getStyle().getPaddingLeft() + this.getStyle().getPaddingRight());
 		}
-		
+
 		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,effectiveMaxWidth,align,this.getStyle()); //-1 is the default max width which means "any size"
 
 
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
 
 		Texture newTexture = textureAndData.textureItself;
-		
+
 		infoBoxsMaterial.set(TextureAttribute.createDiffuse(newTexture));
- 
+
 
 		//if (textStyle==null){
 		//textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
@@ -823,7 +837,7 @@ public class Label extends LabelBase {
 		//ColorAttribute ColorAttributestyle = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));	
 		//  TextureAttribute.createDiffuse(NewTexture.textureItself)	,	
 		// ColorAttribute.createDiffuse(defaultBackColour)
-		
+
 
 		float x = textureAndData.textureItself.getWidth();
 		float y = textureAndData.textureItself.getHeight();
@@ -840,26 +854,26 @@ public class Label extends LabelBase {
 		case Fixed:			
 			//real size should only set if not on fixed size mode. However, we do want to effect the padding as the real widget ratio might not match the text texture, so we need to pad the widget to compansate
 			//setPaddingToPreserveTextRatio(align, maxWidth, maxHeight, x, y);
-			
+
 			break;
 		}
 	}
-	
+
 	/*
 	//now handled in shader
 	private void setPaddingToPreserveTextRatio(TextAlign align, float maxWidth , float maxHeight, float textureSizeX, float textureSizeY) {
-		
+
 		boolean autoPadToPreserveRatio = true;
-		
+
 		if (autoPadToPreserveRatio){
-			
+
 			Gdx.app.log(logstag,"____(using padding to correct aspect ratio of text. Raw texture size is:"+textureSizeX+","+textureSizeY+")__");
 			Gdx.app.log(logstag,"____(using padding to correct aspect ratio of text. fixed size is:"+maxWidth+","+maxHeight+")__");
-					
+
 			//we need to work out which dimension needs to be scaled down more to fit 
 			float diffX = maxWidth  - textureSizeX;
 			float diffY = maxHeight - textureSizeY;
-			
+
 			//ie
 			//200 - 50
 			//50 - 40gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggcdddddddddddddddddddddddddddddddddddxggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg < - THIS line contributed by a visiting cat
@@ -868,7 +882,7 @@ public class Label extends LabelBase {
 			float newY =0;
 			boolean textureSmallerInX = false;
 			boolean textureSmallerInY = false;
-			
+
 			if (diffX>0){
 				//texture size is smaller then width in X
 				textureSmallerInX = true;
@@ -877,7 +891,7 @@ public class Label extends LabelBase {
 				//texture size is smaller then width in X
 				textureSmallerInY = true;
 			}
-			
+
 			//if they are both smaller
 			if (textureSmallerInX && textureSmallerInY){
 				Gdx.app.log(logstag,"____(both dimensions are smaller)__");
@@ -894,8 +908,8 @@ public class Label extends LabelBase {
 					 newY = maxHeight;
 				}
 			}
-			
-			
+
+
 			//which is the bigger difference?
 			/**
 			if (diffX>diffY){
@@ -904,7 +918,7 @@ public class Label extends LabelBase {
 				Gdx.app.log(logstag,"______x needs more shrinking, ratio to y is"+textureSizeRatio);
 				 newX = maxWidth;
 				 newY = textureSizeY*textureSizeRatio;
-				
+
 			} else {
 				//y needs more				
 				float textureSizeRatio = textureSizeX/textureSizeY;
@@ -912,13 +926,13 @@ public class Label extends LabelBase {
 				 newX = textureSizeX*textureSizeRatio;
 				 newY = maxHeight;
 			}/
-			
+
 			float paddingX = maxWidth  - newX;
 			float paddingY = maxHeight - newY;
-						
-			
+
+
 			Gdx.app.log(logstag,"______"+this.contents+"____paddingX="+paddingX+" paddingY="+paddingY);
-			
+
 			//this becomes the padding, and its applied based on alignment
 			if (align == TextAlign.CENTER){
 
@@ -934,20 +948,20 @@ public class Label extends LabelBase {
 			if (align == TextAlign.RIGHT){                             
 				this.getStyle().setPaddingLeft(paddingX);
 			}                                                                                  
-		
-			
-			
+
+
+
 		}
 	}
-	*/
-	
+	 */
+
 	/*
 	/**
 	 * A scaleing factor that will enlarge of shrink the text relative to the standard font size.
 	 * NOTE: this does not scale the internal texture size. As we are using a distance field font, it should look sharp at all distances anyway.
 	 * Scaleing would not help.
 	 * @param text
-	 
+
 	public void setTextScale(float scale){
 		ModelScale = scale;
 
@@ -955,14 +969,28 @@ public class Label extends LabelBase {
 		//modelNeedsUpdate=true;
 
 	}
-	*/
+	 */
 
+	/**
+	 * 
+	 * @param labelsSizeMode
+	 * @param contents
+	 * @param maxWidth
+	 * @param align
+	 * @param style
+	 * 
+	 * @return
+	 */
 	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents, float maxWidth,TextAlign align, Style style) {
 
 
 
 		TextureAndCursorObject NewTexture = null;
 
+
+		float sizeRatio = 1f; // was going to be used for font size, but we dont really want to achieve that by shrinking the texture DO WE? 
+		//HMMM.....we do need some indication of size though to get the correct wrapping points on maxWidth
+		
 
 		switch (labelsSizeMode) {
 		case ExpandHeightMaxWidth:
@@ -1018,9 +1046,9 @@ public class Label extends LabelBase {
 
 		//infoBoxsMaterial.set( ColorAttribute.createDiffuse(labelBackColor));
 
-		
+
 		super.getStyle().setBackgroundColor(labelBackColor);
-		
+
 	}
 
 	/**
@@ -1039,12 +1067,12 @@ public class Label extends LabelBase {
 
 	@Override
 	public void setOpacity(float opacity){
-		
+
 
 		super.setOpacity(opacity);
-		
 
-/*
+
+		/*
 		//get the material from the model
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);
 		GwtishWidgetDistanceFieldAttribute style = ((GwtishWidgetDistanceFieldAttribute)infoBoxsMaterial.get(GwtishWidgetDistanceFieldAttribute.ID));
@@ -1053,7 +1081,7 @@ public class Label extends LabelBase {
 		//Gdx.app.log(logstag,"_____________current            col:"+style.textColour);
 		//Gdx.app.log(logstag,"_____________current shadow     col:"+style.shadowColour);
 		//Gdx.app.log(logstag,"_____________current glowColour col:"+style.glowColour);
-	
+
 
 
 		//ColorAttribute background = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
@@ -1061,7 +1089,7 @@ public class Label extends LabelBase {
 		BlendingAttribute backgroundOpacity = ((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type));
 		backgroundOpacity.opacity = opacity;
 		//	Gdx.app.log(logstag,"_____________opacity:"+opacity);
-		*/
+		 */
 	}
 
 	public void setMaxWidth(float maxWidth) {
@@ -1073,65 +1101,53 @@ public class Label extends LabelBase {
 	@Override
 	public void layoutStyleChanged() {
 		super.layoutStyleChanged();
-		
+
 		//If the padding has changed and we are on fixed width mode, we need to regenerate
 		//the texture to ensure its still contained within the widget
-				
+
 		///if (this.getStyle().getTextAlignment() != lastUsedTextAlignment){
-			regenerateTexture(contents);
-			
+		regenerateTexture(contents);
+
 		//}
-		
-			//work out a appropriate text scale for the shader so it fits
-			float widgetWidth  = this.getWidth();
-			float widgetHeight = this.getHeight();
-			float totalPaddingWidth =  (getStyle().getPaddingLeft()+getStyle().getPaddingRight());
-			if (totalPaddingWidth>widgetWidth){
-				totalPaddingWidth=widgetWidth;
-			}
-			float totalPaddingHeight =  (getStyle().getPaddingTop()+getStyle().getPaddingBottom());
-			if (totalPaddingHeight>widgetHeight){
-				totalPaddingHeight=widgetHeight;
-			}
-			float textScale = Math.min(( widgetWidth-totalPaddingWidth)/textureSize.x, (widgetHeight-totalPaddingHeight)/textureSize.y); 
-			
-			this.getStyle().setTextScale(textScale);
-			
-			
+
+		//work out a appropriate text scale for the shader so it fits
+		calculateCorrectShaderTextScale();
+
+
 		//the shader takes care of text positioning, but not sizing, so we need to recalculate sizes based on mode.
 		/*
 		float newTotalWidth  = -1;
 		float newTotalHeight = -1;	
 		float newTextWidth  = -1;
 		float newTextHeight = -1;	
-		
-		
+
+
 		//different behavior based on sizemode
 		switch (this.labelsSizeMode){
 		case ExpandHeightMaxWidth:
-			
-			
+
+
 			break;
 		case ExpandXYToFit:
-			
-			
+
+
 			break;
 		case Fixed:
 			//same totals as before
 			newTotalWidth  = maxWidth;
 			newTotalHeight = maxHeight;
-			
+
 			//new text size is the total size, minus all the padding		
 			newTextWidth  = newTotalWidth  - (getStyle().getPaddingLeft()+getStyle().getPaddingRight());
 			newTextHeight =	newTotalHeight - (getStyle().getPaddingTop()+getStyle().getPaddingBottom());
-			
+
 			//regenerate texture
 			regenerateTexture(contents);
-			
+
 			break;
 		default:
 			break;
-		
+
 		}
 		/**
 		 * For fixed size labels;
@@ -1148,8 +1164,27 @@ Text size remains just h/w, however
 		 */
 
 		//		Gdx.app.log(logstag," size now::"+this.getWidth()+","+this.getHeight());
-		
-		
+
+
+	}
+	/**
+	 * work out a appropriate text scale for the shader so it fits
+	 * This is most important for fixedSize mode, where the text scales to the widget		
+	 */
+	private void calculateCorrectShaderTextScale() {
+		float widgetWidth  = this.getWidth();
+		float widgetHeight = this.getHeight();
+		float totalPaddingWidth =  (getStyle().getPaddingLeft()+getStyle().getPaddingRight());
+		if (totalPaddingWidth>widgetWidth){
+			totalPaddingWidth=widgetWidth;
+		}
+		float totalPaddingHeight =  (getStyle().getPaddingTop()+getStyle().getPaddingBottom());
+		if (totalPaddingHeight>widgetHeight){
+			totalPaddingHeight=widgetHeight;
+		}
+		float textScale = Math.min(( widgetWidth-totalPaddingWidth)/textureSize.x, (widgetHeight-totalPaddingHeight)/textureSize.y); 
+
+		this.getStyle().setTextScale(textScale);
 	}
 
 

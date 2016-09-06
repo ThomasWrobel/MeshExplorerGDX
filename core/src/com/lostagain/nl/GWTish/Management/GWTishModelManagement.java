@@ -136,7 +136,7 @@ public class GWTishModelManagement {
 		float Z = position.z; //is this always correct?
 		//float Z = model.transform.getValues()[Matrix4.M23];
 
-		Gdx.app.log(logstag,"z = "+Z);
+	//	Gdx.app.log(logstag,"z = "+Z);
 
 		if (order == RenderOrder.STANDARD ){
 			allStandardInstances.add(model);
@@ -728,7 +728,7 @@ public class GWTishModelManagement {
 
 		//sort by distance
 		Collections.sort(underCursorHits,distanceSorter);//todo: might need to take zindex into account 
-		listUnderCursorToLog(underCursorHits);
+	//	listUnderCursorToLog(underCursorHits);//helps debug
 		
 		
 		ArrayList<hitable> onesHit = new ArrayList<hitable>();
@@ -785,7 +785,7 @@ public class GWTishModelManagement {
 			}
 			if (type == objectInteractionType.Blocker && !hitsPenetrate){
 				
-				Gdx.app.log(logstag,"_hit blocker :"+object.getClass()+" totalunder cursor:"+underCursorHits.size());
+			//	Gdx.app.log(logstag,"_hit blocker :"+object.getClass()+" totalunder cursor:"+underCursorHits.size());
 				
 				
 				return onesHit;

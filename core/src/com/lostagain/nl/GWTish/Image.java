@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.lostagain.nl.shaders.GlowingSquareShader;
 
 /**
@@ -24,7 +26,7 @@ import com.lostagain.nl.shaders.GlowingSquareShader;
  */
 public class Image extends Widget {
 	Texture image;
-	Material ImageMaterial;
+	protected Material ImageMaterial;
 	private boolean setup = false; 
 	
 	static String IMAGEBACKGROUND="IMAGEBACKGROUND";
@@ -68,6 +70,34 @@ public class Image extends Widget {
 		return mat;
 	}
 
+
+	/**
+	 * Replaces the Material, in case you want this image to clone another's look.
+	 * 
+	 * @param texture
+	 */
+	protected void replaceMaterialAttribute(Material replacementMaterial){
+		
+		Log.info("replaceing material with new one:"+replacementMaterial.id);
+		
+		super.nodes.first().parts.first().material = replacementMaterial; //This only works because image are basic quads with 1 node and 1 part. More complex objects will not work. 
+ 		
+		/**
+		for (Node part : 	super.nodes) {
+		
+			Log.info("node id:"+part.id);
+			
+			for (NodePart nodepart : part.parts) {
+				
+				Log.info("replaceing mat on nodepart"+nodepart.meshPart.id);
+				nodepart.material = replacementMaterial; //This only works because image objects have a single material stored in slot zero. More complex objects will not work. 
+		 		
+			}
+		}**/
+		
+		
+		return;
+	}
 
 
 

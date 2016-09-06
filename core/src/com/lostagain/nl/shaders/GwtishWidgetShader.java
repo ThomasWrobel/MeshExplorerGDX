@@ -249,14 +249,14 @@ public class GwtishWidgetShader implements Shader {
 
 			
 			//depending on sizemode though, we might still want to use the models size - thus stretching the texture		
-			if (textStyleData.textScaleing.equals(TextScalingMode.fitarea)){
+			if (textStyleData.textScaleingMode.equals(TextScalingMode.fitarea)){
 				
 				
 				 tw = w;
 				 th = h;				 
 				//	Gdx.app.log(logstag, "fitarea detected in shader. size set as:"+tw+","+th); 
 					
-			} else if (textStyleData.textScaleing.equals(TextScalingMode.fitPreserveRatio)){
+			} else if (textStyleData.textScaleingMode.equals(TextScalingMode.fitPreserveRatio)){
 							
 				//padding totals can only, at most, be the size of the widget
 				//if they exceed it, we should take midpoint between them
