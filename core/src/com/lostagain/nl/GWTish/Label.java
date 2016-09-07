@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Align;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.GWTish.Style.TextAlign;
+import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
@@ -224,7 +225,8 @@ public class Label extends LabelBase {
 		if (sizeMode==SizeMode.Fixed){
 			//calc needed shader scaleing. Fixed size mode enlarges and shrinks texture to fit model - but does so in the shader, not by changing the underlying texture resolution
 			//(which is pointless - as you could only ever lose information and make it look worse.)
-			calculateCorrectShaderTextScale();
+			
+			calculateCorrectShaderTextScale(1.0f); //default to a 1.0f, which means we use the native bitmap font size 
 
 		//old;
 		//if fixed mode we might need to pad the texture to ensure it keeps its ratio			
@@ -264,7 +266,8 @@ public class Label extends LabelBase {
 
 	/**
 	 * The object data needed on creation is just the background mesh instance and the cursor position.
-	 * This shouldn't need to be run outside the objects first creation.
+	 * This shouldn't need to be run outside the objects first creation, allthough a resize might be required.
+	 * 
 	 * After its created everything should eventually be alterable separately without full recreation
 	 * 
 	 * @param regenTexture - probably can be removed
@@ -276,11 +279,26 @@ public class Label extends LabelBase {
 	 * @param textAlignment 
 	 * @return
 	 */
-	private static backgroundAndCursorObject generateObjectData(boolean regenTexture,boolean regenMaterial,String contents,SizeMode labelsSizeMode, float maxWidth ,float maxHeight, MODELALIGNMENT alignment, TextAlign textAlignment,Style style) {
+	private static backgroundAndCursorObject generateObjectData(
+			boolean regenTexture,
+			boolean regenMaterial,
+			String contents,
+			SizeMode labelsSizeMode,
+			float maxWidth ,
+			float maxHeight,
+			MODELALIGNMENT alignment, 
+			TextAlign textAlignment,
+			Style style) {
+		
+		
 		TextureAndCursorObject textureData = null;
 
+		BitmapFont font          = getEffectiveFont(style);
+		float NativeToSceneRatio = getNativeToSceneResizeRatio(style, font);
+		
 		if (regenTexture){			
-			textureData = generateTexture(labelsSizeMode, contents,maxWidth,textAlignment,style); //left default			
+			textureData = generateTexture(labelsSizeMode, contents,
+					NativeToSceneRatio,maxWidth,textAlignment,style,font); //left default			
 		}
 
 		Texture newTexture = textureData.textureItself;
@@ -300,18 +318,16 @@ public class Label extends LabelBase {
 		//we normally get the model size from the generated material unless its specified as fixed
 		float textureSizeX = newTexture.getWidth();
 		float textureSizeY = newTexture.getHeight();
-		float SizeX = textureSizeX;
-		float SizeY = textureSizeY;
+		
+		float SizeX = textureSizeX * (1.0f/NativeToSceneRatio);
+		float SizeY = textureSizeY * (1.0f/NativeToSceneRatio);
 
 		if (labelsSizeMode==SizeMode.Fixed){
 
 			SizeX = maxWidth;			
 			SizeY = maxHeight;
 
-
 			textStyle.setTextScaleing(TextScalingMode.fitPreserveRatio); 
-
-			
 			
 			Gdx.app.log(logstag, "fitarea detected texture size mode set as:"+textStyle.textScaleingMode); 
 			//setPaddingToPreserveTextRatio(TextAlign.LEFT,  maxWidth , maxHeight, sizeX, sizeY);
@@ -352,46 +368,75 @@ public class Label extends LabelBase {
 
 
 	}
+	private static BitmapFont getEffectiveFont(Style style) {
+		BitmapFont font = DefaultStyles.standdardFont;
 
+		if (style!=null){
+			//make a copy of the font so we can customize the line height data
+			//probably not very efficient?
+			font = new BitmapFont(DefaultStyles.standdardFont.getData(),
+								  DefaultStyles.standdardFont.getRegion(), 
+								  DefaultStyles.standdardFont.usesIntegerPositions());
 
-	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, float sizeratio, float maxWidth,TextAlign align, Style stylesettings) {
+			float LineHeight = (float) style.getLineHeightValue();
+			Style.Unit LineHeightUnit = style.getLineHeightUnit();
+
+			//we only support PX at the moment		
+			if (LineHeightUnit == Style.Unit.PX){
+				font.getData().setLineHeight(LineHeight);
+			}
+		}
+		return font;
+	}
+
+/**
+ * 
+ * @param text
+ * @param NativeSceneRatio
+ * @param effectiveMaxWidth
+ * @param align
+ * @param stylesettings
+ * @param font
+ * @return
+ */
+	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, 
+			float NativeSceneRatio, 
+			float effectiveMaxWidth,
+			TextAlign align, 
+			Style stylesettings,
+			BitmapFont font
+			) {
 
 		//  BitmapFontData data = DefaultStyles.standdardFont.getData();
 
 		GlyphLayout layout = new GlyphLayout();	    
 		//layout.setText(DefaultStyles.standdardFont, text);
 
-		BitmapFont font = DefaultStyles.standdardFont;
-
-		if (stylesettings!=null){
-
-			//make a copy of the font so we can customize the data
-			//probably not very efficient?
-			font = new BitmapFont(DefaultStyles.standdardFont.getData(),
-								DefaultStyles.standdardFont.getRegion(), 
-								DefaultStyles.standdardFont.usesIntegerPositions());
-
-			float LineHeight = (float) stylesettings.getLineHeightValue();
-			Style.Unit LineHeightUnit = stylesettings.getLineHeightUnit();
-
-			//we only support PX at the moment		
-			if (LineHeightUnit == Style.Unit.PX){
-				font.getData().setLineHeight(LineHeight);
-			}
-
-
+	
+		
+		
+		//if maxWidth is zero or -1 then we dynamically work it out instead
+		//this means the texture will just be as horizontally long as it needs too, without forced wrapping
+		if (effectiveMaxWidth<1){
+			layout.setText(font, text); 
+			effectiveMaxWidth = layout.width; //gets width at native font size
+		}	else {
+			
+			//if the effectiveMaxWidth is set however,we might have to shrink it by the NativeSceneRatio
+			//This is because font size effects when wraps have to happen.
+			//Bigger font = bigger letters = must wrap sooner
+			//
+			//so this "fake shrunk" newwidth is used to determine the wrapping of the font, which is then scaled up again at the end.
+			//Note; the actual per-character pixel size of the map never changes, we are just using this to cropit different
+			
+			effectiveMaxWidth = effectiveMaxWidth * NativeSceneRatio;
+			
+			
 		}
 		
-		///font.getData().setScale(3.5f); //scaling only effects spaceing, not font size
-		
+				
 
-		//if maxWidth is zero or -1 then we dynamically work it out instead
-		if (maxWidth<1){
-			layout.setText(font, text);
-			maxWidth = layout.width;
-		}	    
-
-		Gdx.app.log(logstag,text+"__"+text+"_layout width:"+maxWidth);
+		Gdx.app.log(logstag,text+"__"+text+"_layout width:"+effectiveMaxWidth);
 		Gdx.app.log(logstag,text+"___layout line height:"+font.getLineHeight());
 
 		//convert from text align to layout align
@@ -417,8 +462,7 @@ public class Label extends LabelBase {
 		}
 
 
-
-		layout.setText(font, text, Color.BLACK, maxWidth, layoutAlignment, true); //can't centralize without width
+		layout.setText(font, text, Color.BLACK, effectiveMaxWidth, layoutAlignment, true); //can't centralize without width
 		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, font); 
 
 		//Font size  trying to figure out
@@ -432,7 +476,7 @@ public class Label extends LabelBase {
 		//b) for the wrapping to work, however, at least the correct ratio needs to end up in the layout?
 		//ii) or maybe we change the width proportionally the other way? (then when its sized up to the widget size it will be correct? err...seems weird but should work? )
 		//
-		
+		//font size is stored in style right now, so whatever we do we use that 
 		
 		
 		
@@ -470,6 +514,60 @@ public class Label extends LabelBase {
 
 		return textureDAta;
 
+	}
+	
+
+	//note implemented yet
+	private static Vector2 caclculateModelSizeFromTexture(float getNativeToSceneResizeRatio, Style stylesettings) {
+		
+		//textureSize.x, textureSize.y
+		
+		Vector2 test = new Vector2(0,0);
+		
+		return test;
+		
+	}
+	
+	/**
+	 * The ratio between the internal pixmap font size and the one requested in the style as the output size.
+	 * The actual widget size should thus be;
+	 * 
+	 * (texturemap size * ratio) + padding
+	 * 
+	 * @param stylesettings
+	 * @param font
+	 * @return
+	 */
+	private static float getNativeToSceneResizeRatio(Style stylesettings, BitmapFont font) {
+		float ShrinkWidthRatio = 1.0f;
+		
+		//if font size is set we work out the changes here
+		if (stylesettings!=null && stylesettings.fontSizeUnit!=Unit.NOTSET){
+		
+		///font.getData().setScale(3.5f); //scaling only effects spacing, not font size
+		//how to do font size ?
+		//maybe work out the difference between native and result width/height as ratio?
+		//scale down the width so it wraps at the correct letters, then..umm...set the shader font scale up? to....err.something?		
+		
+		//lets try getting te ratio of the native map height to the result height;
+		float baseToAssent = font.getCapHeight()+font.getAscent();
+		float baseToDecent = -font.getDescent();
+		float fontHeight = baseToAssent+baseToDecent;
+		Gdx.app.log(logstag,"__native fontHeight:"+fontHeight);		
+		double fontSizeRequested = stylesettings.getFontSize();
+		Gdx.app.log(logstag,"__requested fontHeight:"+fontSizeRequested+" ("+stylesettings.getFontSizeUnit()+")");
+		double ratio = fontHeight/fontSizeRequested;
+		ShrinkWidthRatio = (float) ratio;
+		
+		Gdx.app.log(logstag,"__ratio:"+ShrinkWidthRatio); //shrink width by this amount (if fixed width)
+		
+		//now sale up again using the ratio in the shader? or just geometry
+		
+		//-------------------------
+		} else {
+			ShrinkWidthRatio = 1f; //default no change
+		}
+		return ShrinkWidthRatio;
 	}
 
 
@@ -811,25 +909,41 @@ public class Label extends LabelBase {
 
 	}
 
+	//
 	private void regenerateTexture(String text) {
+		
 		TextAlign align = this.getStyle().getTextAlignment();
 		lastUsedTextAlignment = align;
 
-		//note; we subtract the left/right padding from maxwidth if we are on fixed size mode
+		//note; we subtract the left/right padding from maxwidth to get the required width of the texture itself
 		float effectiveMaxWidth = maxWidth;
 		if (maxWidth!=-1){
 			effectiveMaxWidth = maxWidth - (this.getStyle().getPaddingLeft() + this.getStyle().getPaddingRight());
 		}
+		
 
-		TextureAndCursorObject textureAndData = generateTexture(labelsSizeMode, contents,effectiveMaxWidth,align,this.getStyle()); //-1 is the default max width which means "any size"
+		BitmapFont font = getEffectiveFont(this.getStyle());
+		float NativeToSceneRatio = getNativeToSceneResizeRatio(this.getStyle(), font);
 
+		Gdx.app.log(logstag,"_________regenerating texture; labelsSizeMode:"+labelsSizeMode+" (width="+effectiveMaxWidth+")");
+		
+		TextureAndCursorObject textureAndData = generateTexture(
+				labelsSizeMode, 
+				contents,
+				NativeToSceneRatio,
+				effectiveMaxWidth,//-1 is the default max width which means "any size"
+				align,
+				this.getStyle(),
+				font); 
 
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
 
 		Texture newTexture = textureAndData.textureItself;
 
 		infoBoxsMaterial.set(TextureAttribute.createDiffuse(newTexture));
-
+	
+		
+		
 
 		//if (textStyle==null){
 		//textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
@@ -839,8 +953,22 @@ public class Label extends LabelBase {
 		// ColorAttribute.createDiffuse(defaultBackColour)
 
 
-		float x = textureAndData.textureItself.getWidth();
-		float y = textureAndData.textureItself.getHeight();
+		float textureSizeX = textureAndData.textureItself.getWidth();
+		float textureSizeY = textureAndData.textureItself.getHeight();
+		
+		//update stats on our texture size
+		super.updateData(new Vector2(textureSizeX,textureSizeY), textureAndData.Cursor); //TODO: cursor position should always be set to the next position to type. Not sure textureAndData returns this yet
+		//---------------------
+		
+		
+		//new widget size (without padding, as the  setSizeAs adds it itself)
+		float x = textureSizeX * (1.0f/NativeToSceneRatio);
+		float y = textureSizeY * (1.0f/NativeToSceneRatio);
+		
+
+		Gdx.app.log(logstag,"_________setting text to;"+text+" texturesize:"+textureSizeX+","+textureSizeY);
+		Gdx.app.log(logstag,"_________NativeToSceneRatio;"+(1.0f/NativeToSceneRatio));
+		
 		//boolean autoPadToPreserveRatio = true;
 		Gdx.app.log(logstag,"_________setting text to;"+text+" size:"+x+","+y);
 
@@ -851,12 +979,21 @@ public class Label extends LabelBase {
 		case ExpandXYToFit:
 			this.setSizeAs(x, y); 
 			break;
-		case Fixed:			
+		case Fixed:		
+			Gdx.app.log(logstag,"_________(fixed mode, so size doesnt change)");
+
 			//real size should only set if not on fixed size mode. However, we do want to effect the padding as the real widget ratio might not match the text texture, so we need to pad the widget to compansate
 			//setPaddingToPreserveTextRatio(align, maxWidth, maxHeight, x, y);
 
 			break;
 		}
+		
+		
+		//ensure the text scale in the shader is correct
+		//this effectively "fills" the mesh with the text and a surrounding border of padding
+		calculateCorrectShaderTextScale(NativeToSceneRatio);
+		
+		
 	}
 
 	/*
@@ -975,37 +1112,43 @@ public class Label extends LabelBase {
 	 * 
 	 * @param labelsSizeMode
 	 * @param contents
-	 * @param maxWidth
+	 * @param NativeToSceneRatio
+	 * @param effectiveMaxWidth - max width of the texts texture (will wrap to this)
 	 * @param align
 	 * @param style
-	 * 
+	 * @param font
 	 * @return
 	 */
-	static private TextureAndCursorObject generateTexture(SizeMode labelsSizeMode, String contents, float maxWidth,TextAlign align, Style style) {
+	static private TextureAndCursorObject generateTexture(
+			SizeMode labelsSizeMode,			
+			String contents, 
+			float NativeToSceneRatio,
+			float effectiveMaxWidth,
+			TextAlign align, 
+			Style style,
+			BitmapFont font
+			) {
 
 
+		
+	
 
 		TextureAndCursorObject NewTexture = null;
 
-
-		float sizeRatio = 1f; // was going to be used for font size, but we dont really want to achieve that by shrinking the texture DO WE? 
-		//HMMM.....we do need some indication of size though to get the correct wrapping points on maxWidth
-		
-
 		switch (labelsSizeMode) {
 		case ExpandHeightMaxWidth:
-			NewTexture = generatePixmapExpandedToFit(contents,1f,maxWidth,align,style); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,NativeToSceneRatio,effectiveMaxWidth,align,style,font); //-1 = no max width
 			break;
 		case Fixed:			
 			//Note; the textures internal size is not related to the widgets size directly, but it needs to know
 			//the final width/height ratio in order to pad the Pixmap enough to preserve its ratio.
-			NewTexture = generatePixmapExpandedToFit(contents,1f,-1,align,style); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,NativeToSceneRatio,-1,align,style,font); //-1 = no max width
 			break;
 			//expand to fit is also the default
 		case ExpandXYToFit:
 		default:
 			Gdx.app.log(logstag,"______________generating expand to fit text ");
-			NewTexture = generatePixmapExpandedToFit(contents,1f,-1,align,style); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,NativeToSceneRatio,-1,align,style,font); //-1 = no max width
 			break;
 
 		}
@@ -1111,7 +1254,7 @@ public class Label extends LabelBase {
 		//}
 
 		//work out a appropriate text scale for the shader so it fits
-		calculateCorrectShaderTextScale();
+		//calculateCorrectShaderTextScale();
 
 
 		//the shader takes care of text positioning, but not sizing, so we need to recalculate sizes based on mode.
@@ -1169,11 +1312,18 @@ Text size remains just h/w, however
 	}
 	/**
 	 * work out a appropriate text scale for the shader so it fits
-	 * This is most important for fixedSize mode, where the text scales to the widget		
+	 * This is most important for fixedSize mode, where the text scales to the widget
+	 * 		
+	 * @param nativeToSceneRatio - scales the text on the shader down or up to match requested font size (ie, 0.5 = half size)
 	 */
-	private void calculateCorrectShaderTextScale() {
-		float widgetWidth  = this.getWidth();
+	private void calculateCorrectShaderTextScale(float nativeToSceneRatio) {
+		
+		float widgetWidth  = this.getWidth(); //returns size with padding
 		float widgetHeight = this.getHeight();
+
+		Gdx.app.log(logstag,"_________setting shader to textScale based on real size ;"+widgetWidth+","+widgetHeight);
+		Gdx.app.log(logstag,"_________setting shader to textScale based on texture size ;"+textureSize.x+","+textureSize.y);
+		
 		float totalPaddingWidth =  (getStyle().getPaddingLeft()+getStyle().getPaddingRight());
 		if (totalPaddingWidth>widgetWidth){
 			totalPaddingWidth=widgetWidth;
@@ -1182,9 +1332,22 @@ Text size remains just h/w, however
 		if (totalPaddingHeight>widgetHeight){
 			totalPaddingHeight=widgetHeight;
 		}
-		float textScale = Math.min(( widgetWidth-totalPaddingWidth)/textureSize.x, (widgetHeight-totalPaddingHeight)/textureSize.y); 
+		
+		//now get the widget size without padding
+		float widgetWidthWithoutPadding  = widgetWidth-totalPaddingWidth;		
+		float widgetHeightWithoutPadding = widgetHeight-totalPaddingHeight;
+		//---
+		
+		//the smaller ratio  - either the width or height
+		float textScale = Math.min(
+									widgetWidthWithoutPadding / (textureSize.x),
+				                    widgetHeightWithoutPadding/ (textureSize.y)
+				                   ); 
+	
+		Gdx.app.log(logstag,"_________setting shader to textScale;"+textScale);
 
 		this.getStyle().setTextScale(textScale);
+		
 	}
 
 

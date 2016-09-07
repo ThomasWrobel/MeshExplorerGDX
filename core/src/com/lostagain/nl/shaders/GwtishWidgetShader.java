@@ -256,7 +256,8 @@ public class GwtishWidgetShader implements Shader {
 				 th = h;				 
 				//	Gdx.app.log(logstag, "fitarea detected in shader. size set as:"+tw+","+th); 
 					
-			} else if (textStyleData.textScaleingMode.equals(TextScalingMode.fitPreserveRatio)){
+			} else if (textStyleData.textScaleingMode == TextScalingMode.fitPreserveRatio || 
+				     	textStyleData.textScaleingMode == TextScalingMode.natural ){
 							
 				//padding totals can only, at most, be the size of the widget
 				//if they exceed it, we should take midpoint between them

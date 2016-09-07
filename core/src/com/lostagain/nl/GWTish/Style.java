@@ -518,7 +518,9 @@ public class Style {
 	public void setFontSize(int size, Unit unit) {
 		fontSize = size;
 		fontSizeUnit = unit;
-		
+		//setting the font size might change the layout a lot
+
+		layoutStyleChanged();
 	}
 	//------------
 	

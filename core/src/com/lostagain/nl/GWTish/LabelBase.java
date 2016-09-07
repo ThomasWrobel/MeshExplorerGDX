@@ -80,8 +80,7 @@ public class LabelBase extends Widget {
 		}
 		
 	//Current writing statistics
-	Vector2 Cursor = null;
-
+	Vector2 Cursor = null;	
 	Vector2 textureSize = null;
 	
 	public LabelBase(backgroundAndCursorObject setupData){
@@ -91,6 +90,17 @@ public class LabelBase extends Widget {
 		this.Cursor = setupData.Cursor;
 		this.textureSize = setupData.textureSize;		
 	}
+	
+	/**
+	 * 
+	 * @param textureSize - if the texture size changes, update this
+	 * @param cursor - if the cursor position changes update this
+	 */
+	public void updateData(Vector2 textureSize,Vector2 cursor) {
+		this.Cursor = cursor;
+		this.textureSize = textureSize;
+	}
+
 	
 	
 }
