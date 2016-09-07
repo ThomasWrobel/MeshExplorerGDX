@@ -981,7 +981,7 @@ public class Label extends LabelBase {
 			break;
 		case Fixed:		
 			Gdx.app.log(logstag,"_________(fixed mode, so size doesnt change)");
-
+			
 			//real size should only set if not on fixed size mode. However, we do want to effect the padding as the real widget ratio might not match the text texture, so we need to pad the widget to compansate
 			//setPaddingToPreserveTextRatio(align, maxWidth, maxHeight, x, y);
 

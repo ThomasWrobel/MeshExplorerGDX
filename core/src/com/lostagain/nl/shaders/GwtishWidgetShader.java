@@ -251,13 +251,12 @@ public class GwtishWidgetShader implements Shader {
 			//depending on sizemode though, we might still want to use the models size - thus stretching the texture		
 			if (textStyleData.textScaleingMode.equals(TextScalingMode.fitarea)){
 				
-				
+				//fit area does not support padding (it wouldnt make sense really,unless you deliberately wanted to crop text off?)
 				 tw = w;
 				 th = h;				 
-				//	Gdx.app.log(logstag, "fitarea detected in shader. size set as:"+tw+","+th); 
 					
 			} else if (textStyleData.textScaleingMode == TextScalingMode.fitPreserveRatio || 
-				     	textStyleData.textScaleingMode == TextScalingMode.natural ){
+				     	textStyleData.textScaleingMode == TextScalingMode.natural ){ //natural might end up redundant?
 							
 				//padding totals can only, at most, be the size of the widget
 				//if they exceed it, we should take midpoint between them
@@ -277,14 +276,14 @@ public class GwtishWidgetShader implements Shader {
 				//float scale = Math.min((w-totalPaddingWidth)/tw, (h-totalPaddingHeight)/th); //amount texture should be scaled down by
 				
 				
-				//temp experiment;
+				//Experiment (seems to centralize text successfully);
 				float scale = textStyleData.textScale;
 
-				//scale = scale/4;				
+				//scale the texture size
 				tw = scale*tw;
 				th = scale*th;				
 				
-				//autopad the smaller dimension to centralize
+				//autopad the smaller dimension to centralize (that is, find the topleft corner needed to centralize the text)
 				//this might not be correct, see commented out one that will require padding information on all 4 sides
 				if (th<(h)){
 					//pad height
@@ -295,7 +294,9 @@ public class GwtishWidgetShader implements Shader {
 					//pad width
 					textScale_width_pad = (((w/2)-textStyleData.paddingLeft)-(tw/2));					
 				}
+				//--------------------------------------------------------------
 				
+				//but we dont want center, we want correct padding!
 				
 				//Perhaps not do this at all if there's uneven padding?
 				/*
@@ -307,9 +308,10 @@ public class GwtishWidgetShader implements Shader {
 				if (tw<(w-totalPaddingWidth)){
 					//pad width
 					textScale_width_pad = ((w-totalPaddingWidth)-tw)/2;					
-				}
-				*/
+				}*/
 				
+				textScale_width_pad=0;
+				textScale_height_pad=0;
 			}
 			
 			

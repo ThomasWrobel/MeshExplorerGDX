@@ -553,6 +553,8 @@ public class Style {
 	 * 
 	 * Unit is assumed to be the world units of your stage
 	 * 
+	 * NOTE; if using fit-area labels, padding has no effect
+	 * 
 	 * @param Left
 	 **/
 	public void setPaddingLeft(float Left){
