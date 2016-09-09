@@ -75,6 +75,16 @@ public class Label extends LabelBase {
 	 */
 	static Boolean labelSetupDone = false;
 
+	/**
+	 * we can optionally interpret html like br tags as newlines
+	 */
+	private boolean interpretBRasNewLine=false;
+
+	public void setInterpretBRasNewLine(boolean interpretBRasNewLine) {
+		this.interpretBRasNewLine = interpretBRasNewLine;
+	}
+	
+	
 	//defaults
 	BitmapFont defaultFont;
 
@@ -126,7 +136,7 @@ public class Label extends LabelBase {
 	 * @param contents
 	 */
 	public Label (String contents){ 
-		this(contents, -1,-1, SizeMode.ExpandXYToFit, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot with no max width
+		this(contents, false, -1,-1, SizeMode.ExpandXYToFit, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot with no max width
 	}
 	/**
 	 * 
@@ -134,7 +144,7 @@ public class Label extends LabelBase {
 	 * @param MaxWidth
 	 */
 	public Label (String contents,float MaxWidth){ 
-		this( contents, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
+		this( contents, false, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
 	}
 
 	/**
@@ -146,7 +156,7 @@ public class Label extends LabelBase {
 	 * @param textalign
 	 */
 	public Label(String contents, float Width, float Height, MODELALIGNMENT modelalignment, TextAlign textalign) {
-		this( contents, Width, Height, SizeMode.Fixed, modelalignment,textalign); //defaults to top left alignment of pivot
+		this( contents, false, Width, Height, SizeMode.Fixed, modelalignment,textalign); //defaults to top left alignment of pivot
 	}
 	/**
 	 * * fixed size label - texture scales into it (non-gwt like)
@@ -155,7 +165,7 @@ public class Label extends LabelBase {
 	 * @param MaxHeight
 	 */
 	public Label (String contents,float MaxWidth,float MaxHeight){ 
-		this( contents, MaxWidth,MaxHeight, SizeMode.Fixed, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
+		this( contents, false, MaxWidth,MaxHeight, SizeMode.Fixed, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
 	}
 
 	/**
@@ -165,7 +175,7 @@ public class Label extends LabelBase {
 	 *  @param MaxHeight
 	 */
 	public Label (String contents,float Width,float Height, MODELALIGNMENT alignment){ 
-		this( contents, Width,Height, SizeMode.Fixed, alignment,TextAlign.LEFT); 
+		this( contents, false, Width,Height, SizeMode.Fixed, alignment,TextAlign.LEFT); 
 	}
 
 	/**
@@ -174,7 +184,7 @@ public class Label extends LabelBase {
 	 * @param MaxWidth
 	 */
 	public Label (String contents,float MaxWidth,MODELALIGNMENT alignment){ 
-		this( contents, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, alignment,TextAlign.LEFT); 
+		this( contents, false, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, alignment,TextAlign.LEFT); 
 	}
 	/**
 	 * 
@@ -182,9 +192,9 @@ public class Label extends LabelBase {
 	 * @param MaxWidth
 	 * @param modelAlignement
 	 */
-	public Label (String contents,float MaxWidth,float MaxHeight, SizeMode sizeMode, MODELALIGNMENT modelAlignement, TextAlign textAlignment){ 
+	public Label (String contents,boolean interpretBRasNewLine,float MaxWidth,float MaxHeight, SizeMode sizeMode, MODELALIGNMENT modelAlignement, TextAlign textAlignment){ 
 
-		super(generateObjectData(true, true, contents, sizeMode, MaxWidth, MaxHeight, modelAlignement,textAlignment,null));
+		super(generateObjectData(true, true, contents, interpretBRasNewLine,sizeMode, MaxWidth, MaxHeight, modelAlignement,textAlignment,null));
 		super.setStyle(getMaterial(LABEL_MATERIAL)); //no style settings will work before this is set
 
 		this.lastUsedTextAlignment = textAlignment;
@@ -283,6 +293,7 @@ public class Label extends LabelBase {
 			boolean regenTexture,
 			boolean regenMaterial,
 			String contents,
+			boolean interpretBRasNewLine,
 			SizeMode labelsSizeMode,
 			float maxWidth ,
 			float maxHeight,
@@ -297,7 +308,7 @@ public class Label extends LabelBase {
 		float NativeToSceneRatio = getNativeToSceneResizeRatio(style, font);
 		
 		if (regenTexture){			
-			textureData = generateTexture(labelsSizeMode, contents,
+			textureData = generateTexture(labelsSizeMode, contents,interpretBRasNewLine,
 					NativeToSceneRatio,maxWidth,textAlignment,style,font); //left default			
 		}
 
@@ -399,7 +410,9 @@ public class Label extends LabelBase {
  * @param font
  * @return
  */
-	static public TextureAndCursorObject generatePixmapExpandedToFit(String text, 
+	static public TextureAndCursorObject generatePixmapExpandedToFit(
+			String text, 
+			boolean interpretBRasNewLine,
 			float NativeSceneRatio, 
 			float effectiveMaxWidth,
 			TextAlign align, 
@@ -459,6 +472,14 @@ public class Label extends LabelBase {
 		default:
 			layoutAlignment = Align.center;
 			break;
+		}
+		
+		//if we are set to interpret <br> as newline, then we replace them with \n
+		if (interpretBRasNewLine){	
+
+			text=text.replace("<br>", "\n");			
+
+			
 		}
 
 
@@ -589,6 +610,7 @@ public class Label extends LabelBase {
 		BitmapFontData data = standdardFont.getData();  //need optional font too, should match whats used in layout
 		Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0])); //as pixmap
 
+		
 		//now loop over each run of letters. 
 		for (GlyphRun grun : layout.runs) {
 
@@ -615,8 +637,8 @@ public class Label extends LabelBase {
 						glyph.height);
 
 				// 	Gdx.app.log(logstag,"___ "+glyph.toString()+" glyph.xadvance:"+glyph.xadvance+" w:"+glyph.width);	
-
 				//	Gdx.app.log(logstag,"___g:"+g.toString());
+				
 				runstring=runstring+glyph.toString();
 
 			}
@@ -930,6 +952,7 @@ public class Label extends LabelBase {
 		TextureAndCursorObject textureAndData = generateTexture(
 				labelsSizeMode, 
 				contents,
+				interpretBRasNewLine,
 				NativeToSceneRatio,
 				effectiveMaxWidth,//-1 is the default max width which means "any size"
 				align,
@@ -1122,6 +1145,7 @@ public class Label extends LabelBase {
 	static private TextureAndCursorObject generateTexture(
 			SizeMode labelsSizeMode,			
 			String contents, 
+			boolean interpretBRasNewLine,
 			float NativeToSceneRatio,
 			float effectiveMaxWidth,
 			TextAlign align, 
@@ -1137,18 +1161,18 @@ public class Label extends LabelBase {
 
 		switch (labelsSizeMode) {
 		case ExpandHeightMaxWidth:
-			NewTexture = generatePixmapExpandedToFit(contents,NativeToSceneRatio,effectiveMaxWidth,align,style,font); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,interpretBRasNewLine,NativeToSceneRatio,effectiveMaxWidth,align,style,font); //-1 = no max width
 			break;
 		case Fixed:			
 			//Note; the textures internal size is not related to the widgets size directly, but it needs to know
 			//the final width/height ratio in order to pad the Pixmap enough to preserve its ratio.
-			NewTexture = generatePixmapExpandedToFit(contents,NativeToSceneRatio,-1,align,style,font); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,interpretBRasNewLine,NativeToSceneRatio,-1,align,style,font); //-1 = no max width
 			break;
 			//expand to fit is also the default
 		case ExpandXYToFit:
 		default:
 			Gdx.app.log(logstag,"______________generating expand to fit text ");
-			NewTexture = generatePixmapExpandedToFit(contents,NativeToSceneRatio,-1,align,style,font); //-1 = no max width
+			NewTexture = generatePixmapExpandedToFit(contents,interpretBRasNewLine,NativeToSceneRatio,-1,align,style,font); //-1 = no max width
 			break;
 
 		}
@@ -1238,6 +1262,7 @@ public class Label extends LabelBase {
 	public void setMaxWidth(float maxWidth) {
 		this.maxWidth = maxWidth;
 		labelsSizeMode = SizeMode.ExpandHeightMaxWidth;
+		layoutStyleChanged();
 	}
 
 	//regenerates the texture if the style layout is changed (ie, text alignment or padding)
