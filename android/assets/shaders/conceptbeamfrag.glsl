@@ -1,4 +1,14 @@
-precision highp float;
+//precision highp float;
+#ifdef GL_ES 
+#define LOWP lowp
+#define MED mediump
+#define HIGH highp
+precision mediump float;
+#else
+#define MED
+#define LOWP
+#define HIGH
+#endif
 
 uniform float u_time;
 uniform vec2 resolution;
