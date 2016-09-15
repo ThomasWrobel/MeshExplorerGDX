@@ -1,5 +1,7 @@
 package com.lostagain.nl.me.movements;
 
+import java.util.logging.Logger;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
@@ -13,6 +15,8 @@ public class MoveTo  {
 
 
 	final static String logstag = "ME.MoveTo";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
+	
 	//static Matrix4 Left = new Matrix4().setToRotation(0, 0, 1, 90);
 	static public Movement create(ModelInstance originObject, ModelInstance targetObject, int duration) {
 		
@@ -60,11 +64,11 @@ public class MoveTo  {
 		 //the difference is the new movement
 		Matrix4 oldloc = originObject.transform.cpy();
 		
-		 Gdx.app.log(logstag, "_____________________________________________destination_loc:"+destination_loc.x+","+destination_loc.y+","+destination_loc.z);
+		 Log.info( "_____________________________________________destination_loc:"+destination_loc.x+","+destination_loc.y+","+destination_loc.z);
 			
 		 Vector3 destination_loc2 =  destination_loc.mul(oldloc);
 		 
-		 Gdx.app.log(logstag, "________________________=______destination_loc:"+destination_loc2.x+","+destination_loc2.y+","+destination_loc2.z);
+		 Log.info( "________________________=______destination_loc:"+destination_loc2.x+","+destination_loc2.y+","+destination_loc2.z);
 			
 			
 		Matrix4 destinationmatrix = new Matrix4().setTranslation(destination_loc2);

@@ -1,5 +1,7 @@
 package com.lostagain.nl.GWTish;
 
+import java.util.logging.Logger;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -52,7 +54,8 @@ import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute.TextScalingMo
 public class Label extends LabelBase {
 
 	final static String logstag = "ME.Label";
-
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
+	
 	/**
 	 * The name of the label material
 	 */
@@ -217,20 +220,20 @@ public class Label extends LabelBase {
 
 		//debug checks
 		if (materialAccordingToStyle!=materialAccordingToGetMaterial){
-			Gdx.app.log(logstag, "materials dont match!"); 
+			Log.info( "materials dont match!"); 
 		}
 		if (materialAccordingToStyle==null){
-			Gdx.app.log(logstag, "materialAccordingToStyle is null"); 
+			Log.info( "materialAccordingToStyle is null"); 
 		}
 		if (materialAccordingToGetMaterial==null){
-			Gdx.app.log(logstag, "materialAccordingToGetMaterial is null"); 
+			Log.info( "materialAccordingToGetMaterial is null"); 
 		}
 		//--------------------------------------------------------
 
 		GwtishWidgetDistanceFieldAttribute matttest = (GwtishWidgetDistanceFieldAttribute) this.getStyle().getMaterial().get(GwtishWidgetDistanceFieldAttribute.ID);
 
-		Gdx.app.log(logstag, "fitarea set as:"+matttest.textScaleingMode); 
-		Gdx.app.log(logstag, "paddingLeft:   "+matttest.paddingLeft); 
+		Log.info( "fitarea set as:"+matttest.textScaleingMode); 
+		Log.info( "paddingLeft:   "+matttest.paddingLeft); 
 
 		if (sizeMode==SizeMode.Fixed){
 			//calc needed shader scaleing. Fixed size mode enlarges and shrinks texture to fit model - but does so in the shader, not by changing the underlying texture resolution
@@ -340,7 +343,7 @@ public class Label extends LabelBase {
 
 			textStyle.setTextScaleing(TextScalingMode.fitPreserveRatio); 
 			
-			Gdx.app.log(logstag, "fitarea detected texture size mode set as:"+textStyle.textScaleingMode); 
+			Log.info( "fitarea detected texture size mode set as:"+textStyle.textScaleingMode); 
 			//setPaddingToPreserveTextRatio(TextAlign.LEFT,  maxWidth , maxHeight, sizeX, sizeY);
 
 		}
@@ -358,16 +361,16 @@ public class Label extends LabelBase {
 
 
 
-		//Gdx.app.log(logstag,"______________text glow col is: "+teststyle.glowColour);
-		//Gdx.app.log(logstag,"______________generating rect of "+LabelWidth+","+LabelHeight);
+		//Log.info("______________text glow col is: "+teststyle.glowColour);
+		//Log.info("______________generating rect of "+LabelWidth+","+LabelHeight);
 
 		//Note the *1 is the scale. We have scale 1 by default, duh.
 		Model newModel = Widget.generateBackground(SizeX, SizeY, mat, alignment);
 
 		GwtishWidgetDistanceFieldAttribute matttest2 = (GwtishWidgetDistanceFieldAttribute) newModel.getMaterial(LABEL_MATERIAL).get(GwtishWidgetDistanceFieldAttribute.ID);
 
-		Gdx.app.log(logstag, "1fitarea set as:"+matttest2.textScaleingMode); 
-		Gdx.app.log(logstag, "paddingLeft:   "+matttest2.paddingLeft); 
+		Log.info( "1fitarea set as:"+matttest2.textScaleingMode); 
+		Log.info( "paddingLeft:   "+matttest2.paddingLeft); 
 
 		//ModelMaker.createRectangle(0, 0, sizeX*1,sizeY*1, 0, mat); 
 
@@ -449,8 +452,8 @@ public class Label extends LabelBase {
 		
 				
 
-		Gdx.app.log(logstag,text+"__"+text+"_layout width:"+effectiveMaxWidth);
-		Gdx.app.log(logstag,text+"___layout line height:"+font.getLineHeight());
+		Log.info(text+"__"+text+"_layout width:"+effectiveMaxWidth);
+		Log.info(text+"___layout line height:"+font.getLineHeight());
 
 		//convert from text align to layout align
 		int layoutAlignment = Align.center;
@@ -460,7 +463,7 @@ public class Label extends LabelBase {
 			layoutAlignment = Align.center;
 			break;
 		case JUSTIFY:		    
-			Gdx.app.log(logstag,"___JUSTIFY NOT SUPPORTED. DEFAULTING TO CENTER");
+			Log.info("___JUSTIFY NOT SUPPORTED. DEFAULTING TO CENTER");
 			layoutAlignment = Align.center;
 			break;
 		case LEFT:
@@ -510,23 +513,23 @@ public class Label extends LabelBase {
 		/*
 	    for (GlyphRun grun : layout.runs) {
 
-	    	Gdx.app.log(logstag,"______________run width:"+grun.width+" at "+grun.y);	
+	    	Log.info("______________run width:"+grun.width+" at "+grun.y);	
 	    	String runstring = "";
 
 	    	for (Glyph g : grun.glyphs) {
 
-	    	//	Gdx.app.log(logstag,"___g:"+g.toString());
+	    	//	Log.info("___g:"+g.toString());
 	    		runstring=runstring+g.toString();
 
 			}
-	    	Gdx.app.log(logstag,"___runstring:"+runstring);
+	    	Log.info("___runstring:"+runstring);
 
 
 
 		}
 		 */
 
-		//	Gdx.app.log(logstag,"______________predicted size = "+currentWidth+","+currentHeight);
+		//	Log.info("______________predicted size = "+currentWidth+","+currentHeight);
 
 		//	TextureAndCursorObject textureDAta = generateTexture( text, 0, 0,  sizeratio, true,maxWidth); //note zeros as size isn't used
 
@@ -574,13 +577,13 @@ public class Label extends LabelBase {
 		float baseToAssent = font.getCapHeight()+font.getAscent();
 		float baseToDecent = -font.getDescent();
 		float fontHeight = baseToAssent+baseToDecent;
-		Gdx.app.log(logstag,"__native fontHeight:"+fontHeight);		
+		Log.info("__native fontHeight:"+fontHeight);		
 		double fontSizeRequested = stylesettings.getFontSize();
-		Gdx.app.log(logstag,"__requested fontHeight:"+fontSizeRequested+" ("+stylesettings.getFontSizeUnit()+")");
+		Log.info("__requested fontHeight:"+fontSizeRequested+" ("+stylesettings.getFontSizeUnit()+")");
 		double ratio = fontHeight/fontSizeRequested;
 		ShrinkWidthRatio = (float) ratio;
 		
-		Gdx.app.log(logstag,"__ratio:"+ShrinkWidthRatio); //shrink width by this amount (if fixed width)
+		Log.info("__ratio:"+ShrinkWidthRatio); //shrink width by this amount (if fixed width)
 		
 		//now sale up again using the ratio in the shader? or just geometry
 		
@@ -617,7 +620,7 @@ public class Label extends LabelBase {
 			String runstring = "";
 			float currentRunX=0;
 			//now draw each letter
-			Gdx.app.log(logstag,"_________grun="+grun.x+","+grun.y+" ");
+			Log.info("_________grun="+grun.x+","+grun.y+" ");
 			int i =0;
 			for (Glyph glyph : grun.glyphs) {
 
@@ -636,8 +639,8 @@ public class Label extends LabelBase {
 						glyph.width, 
 						glyph.height);
 
-				// 	Gdx.app.log(logstag,"___ "+glyph.toString()+" glyph.xadvance:"+glyph.xadvance+" w:"+glyph.width);	
-				//	Gdx.app.log(logstag,"___g:"+g.toString());
+				// 	Log.info("___ "+glyph.toString()+" glyph.xadvance:"+glyph.xadvance+" w:"+glyph.width);	
+				//	Log.info("___g:"+g.toString());
 				
 				runstring=runstring+glyph.toString();
 
@@ -646,9 +649,9 @@ public class Label extends LabelBase {
 				float advance = grun.xAdvances.get(i);
 				i++;
 				currentRunX=currentRunX+advance;
-				Gdx.app.log(logstag,"______________last run width:"+grun.width+" drawn was till "+currentRunX);	
+				Log.info("______________last run width:"+grun.width+" drawn was till "+currentRunX);	
 			}
-			//Gdx.app.log(logstag,"___runstring drawen:"+runstring);
+			//Log.info("___runstring drawen:"+runstring);
 
 
 
@@ -718,7 +721,7 @@ public class Label extends LabelBase {
 
 		//int totalheight=defaultglyph.height+9;
 
-		Gdx.app.log(logstag,"scaledown="+scaledown);
+		Log.info("scaledown="+scaledown);
 		double lastremainder =0;
 		int yp=0;
 
@@ -735,7 +738,7 @@ public class Label extends LabelBase {
 			Glyph glyph = data.getGlyph(Letters.charAt(i));
 
 			if (glyph==null){
-				Gdx.app.log(logstag,"_______(current glyph not valid not in character set, setting glyph to space)");
+				Log.info("_______(current glyph not valid not in character set, setting glyph to space)");
 				glyph=data.getGlyph(' '); //temp
 
 
@@ -750,7 +753,7 @@ public class Label extends LabelBase {
 			destX = 0+currentX+glyph.xoffset;
 
 
-			//Gdx.app.log(logstag,"Letters.charAt(i)="+Letters.charAt(i));
+			//Log.info("Letters.charAt(i)="+Letters.charAt(i));
 
 			if (Letters.charAt(i) == '\n' || (destX>maxWidth && maxWidth!=-1) ){
 
@@ -759,7 +762,7 @@ public class Label extends LabelBase {
 				currentX=0;
 				destX=glyph.xoffset;
 				lastremainder=0;
-				//Gdx.app.log(logstag,"______________adding line. (yp now="+yp+") next char is:"+Letters.charAt(i));
+				//Log.info("______________adding line. (yp now="+yp+") next char is:"+Letters.charAt(i));
 
 				//we skip \n as we don't want to really write that
 				if (Letters.charAt(i) == '\n'){
@@ -785,7 +788,7 @@ public class Label extends LabelBase {
 				biggestY = cbiggestY;
 			}
 			if (expandSizeToFit && (biggestX>textPixmap.getWidth())){
-				Gdx.app.log(logstag,"______________x ("+biggestX+") out of range, having to make canvas bigger");
+				Log.info("______________x ("+biggestX+") out of range, having to make canvas bigger");
 				//we just double the X size, as we are cropping later anyway
 				cbiggestX=biggestX*2;
 				hadToEnlarge =  true;					
@@ -794,7 +797,7 @@ public class Label extends LabelBase {
 			}
 
 			if (expandSizeToFit && (biggestY>textPixmap.getHeight())){
-				Gdx.app.log(logstag,"______________y ("+cbiggestY+") out of range, having to make canvas bigger");
+				Log.info("______________y ("+cbiggestY+") out of range, having to make canvas bigger");
 				//we just double the Y size, as we are cropping later anyway
 				cbiggestY=biggestY*2;
 				hadToEnlarge =  true;					
@@ -824,8 +827,8 @@ public class Label extends LabelBase {
 			double newprecisepos =  ((glyph.xadvance+2)  * scaledown)+lastremainder;//glyph.width+3
 			lastremainder = newprecisepos - Math.floor(newprecisepos);
 			int newpos = (int) (Math.floor(newprecisepos));
-			//	Gdx.app.log(logstag,"newpos="+newpos);
-			//	Gdx.app.log(logstag,"lastremainder="+lastremainder);
+			//	Log.info("newpos="+newpos);
+			//	Log.info("lastremainder="+lastremainder);
 			currentX=currentX + newpos;
 		}
 
@@ -834,7 +837,7 @@ public class Label extends LabelBase {
 			// biggestX = currentX;
 			// biggestY = destY+cheight;
 
-			Gdx.app.log(logstag,"______________final cropped size="+biggestX+","+biggestY);
+			Log.info("______________final cropped size="+biggestX+","+biggestY);
 
 			textPixmap = sizePixmapTo(textPixmap, biggestX, biggestY);
 
@@ -891,15 +894,15 @@ public class Label extends LabelBase {
 
 
 
-		//Gdx.app.log(logstag,"______________text glow col is: "+teststyle.glowColour);
-		//Gdx.app.log(logstag,"______________generating rect of "+LabelWidth+","+LabelHeight);
+		//Log.info("______________text glow col is: "+teststyle.glowColour);
+		//Log.info("______________generating rect of "+LabelWidth+","+LabelHeight);
 		//
 		labelModel = ModelMaker.createRectangle(0, 0, LabelNativeWidth*this.ModelScale,LabelNativeHeight*this.ModelScale, 0, mat); 
 
 		labelInstance = new AnimatableModelInstance(labelModel);
 
 	//	DistanceFieldAttribute textStyleData = (DistanceFieldAttribute)mat.get(DistanceFieldAttribute.ID);
-	//	Gdx.app.log(logstag,"______________text glow col is2: "+textStyleData.glowColour);
+	//	Log.info("______________text glow col is2: "+textStyleData.glowColour);
 		//Matrix4 newmatrix = new Matrix4();
 		//newmatrix.setToRotation(0, 0, 1, -90);
 		//labelInstance.transform.mul(newmatrix);
@@ -947,7 +950,7 @@ public class Label extends LabelBase {
 		BitmapFont font = getEffectiveFont(this.getStyle());
 		float NativeToSceneRatio = getNativeToSceneResizeRatio(this.getStyle(), font);
 
-		Gdx.app.log(logstag,"_________regenerating texture; labelsSizeMode:"+labelsSizeMode+" (width="+effectiveMaxWidth+")");
+		Log.info("_________regenerating texture; labelsSizeMode:"+labelsSizeMode+" (width="+effectiveMaxWidth+")");
 		
 		TextureAndCursorObject textureAndData = generateTexture(
 				labelsSizeMode, 
@@ -989,11 +992,11 @@ public class Label extends LabelBase {
 		float y = textureSizeY * (1.0f/NativeToSceneRatio);
 		
 
-		Gdx.app.log(logstag,"_________setting text to;"+text+" texturesize:"+textureSizeX+","+textureSizeY);
-		Gdx.app.log(logstag,"_________NativeToSceneRatio;"+(1.0f/NativeToSceneRatio));
+		Log.info("_________setting text to;"+text+" texturesize:"+textureSizeX+","+textureSizeY);
+		Log.info("_________NativeToSceneRatio;"+(1.0f/NativeToSceneRatio));
 		
 		//boolean autoPadToPreserveRatio = true;
-		Gdx.app.log(logstag,"_________setting text to;"+text+" size:"+x+","+y);
+		Log.info("_________setting text to;"+text+" size:"+x+","+y);
 
 		switch (labelsSizeMode) {
 		case ExpandHeightMaxWidth:
@@ -1003,7 +1006,7 @@ public class Label extends LabelBase {
 			this.setSizeAs(x, y); 
 			break;
 		case Fixed:		
-			Gdx.app.log(logstag,"_________(fixed mode, so size doesnt change)");
+			Log.info("_________(fixed mode, so size doesnt change)");
 			
 			//real size should only set if not on fixed size mode. However, we do want to effect the padding as the real widget ratio might not match the text texture, so we need to pad the widget to compansate
 			//setPaddingToPreserveTextRatio(align, maxWidth, maxHeight, x, y);
@@ -1027,8 +1030,8 @@ public class Label extends LabelBase {
 
 		if (autoPadToPreserveRatio){
 
-			Gdx.app.log(logstag,"____(using padding to correct aspect ratio of text. Raw texture size is:"+textureSizeX+","+textureSizeY+")__");
-			Gdx.app.log(logstag,"____(using padding to correct aspect ratio of text. fixed size is:"+maxWidth+","+maxHeight+")__");
+			Log.info("____(using padding to correct aspect ratio of text. Raw texture size is:"+textureSizeX+","+textureSizeY+")__");
+			Log.info("____(using padding to correct aspect ratio of text. fixed size is:"+maxWidth+","+maxHeight+")__");
 
 			//we need to work out which dimension needs to be scaled down more to fit 
 			float diffX = maxWidth  - textureSizeX;
@@ -1054,16 +1057,16 @@ public class Label extends LabelBase {
 
 			//if they are both smaller
 			if (textureSmallerInX && textureSmallerInY){
-				Gdx.app.log(logstag,"____(both dimensions are smaller)__");
+				Log.info("____(both dimensions are smaller)__");
 				//find the smaller difference and set that equal to the limit
 				if (diffX<diffY){
 					float textureSizeRatio = textureSizeY/textureSizeX;
-					Gdx.app.log(logstag,"______y needs more padding, ratio to x is"+textureSizeRatio);
+					Log.info("______y needs more padding, ratio to x is"+textureSizeRatio);
 					 newX = maxWidth;
 					 newY = textureSizeY*textureSizeRatio;
 				} else {
 					float textureSizeRatio = textureSizeX/textureSizeY;
-					Gdx.app.log(logstag,"______x needs more padding, ratio to y is"+textureSizeRatio);
+					Log.info("______x needs more padding, ratio to y is"+textureSizeRatio);
 					 newX = textureSizeX*textureSizeRatio;
 					 newY = maxHeight;
 				}
@@ -1075,14 +1078,14 @@ public class Label extends LabelBase {
 			if (diffX>diffY){
 				//x needs more shrinking
 				float textureSizeRatio = textureSizeY/textureSizeX;
-				Gdx.app.log(logstag,"______x needs more shrinking, ratio to y is"+textureSizeRatio);
+				Log.info("______x needs more shrinking, ratio to y is"+textureSizeRatio);
 				 newX = maxWidth;
 				 newY = textureSizeY*textureSizeRatio;
 
 			} else {
 				//y needs more				
 				float textureSizeRatio = textureSizeX/textureSizeY;
-				Gdx.app.log(logstag,"______y needs more shrinking, ratio to x is"+textureSizeRatio);
+				Log.info("______y needs more shrinking, ratio to x is"+textureSizeRatio);
 				 newX = textureSizeX*textureSizeRatio;
 				 newY = maxHeight;
 			}/
@@ -1091,18 +1094,18 @@ public class Label extends LabelBase {
 			float paddingY = maxHeight - newY;
 
 
-			Gdx.app.log(logstag,"______"+this.contents+"____paddingX="+paddingX+" paddingY="+paddingY);
+			Log.info("______"+this.contents+"____paddingX="+paddingX+" paddingY="+paddingY);
 
 			//this becomes the padding, and its applied based on alignment
 			if (align == TextAlign.CENTER){
 
-				Gdx.app.log(logstag,"__________setting padding both sides="+(paddingX/2));
+				Log.info("__________setting padding both sides="+(paddingX/2));
 				this.getStyle().setPaddingLeft(paddingX/2);
 				this.getStyle().setPaddingRight(paddingX/2);
 			}
 			if (align == TextAlign.LEFT){
 
-				Gdx.app.log(logstag,"__________padding on right="+paddingX);
+				Log.info("__________padding on right="+paddingX);
 				this.getStyle().setPaddingRight(paddingX);
 			}
 			if (align == TextAlign.RIGHT){                             
@@ -1171,7 +1174,7 @@ public class Label extends LabelBase {
 			//expand to fit is also the default
 		case ExpandXYToFit:
 		default:
-			Gdx.app.log(logstag,"______________generating expand to fit text ");
+			Log.info("______________generating expand to fit text ");
 			NewTexture = generatePixmapExpandedToFit(contents,interpretBRasNewLine,NativeToSceneRatio,-1,align,style,font); //-1 = no max width
 			break;
 
@@ -1245,9 +1248,9 @@ public class Label extends LabelBase {
 		GwtishWidgetDistanceFieldAttribute style = ((GwtishWidgetDistanceFieldAttribute)infoBoxsMaterial.get(GwtishWidgetDistanceFieldAttribute.ID));
 		style.setOverall_Opacity_Multiplier(opacity);
 
-		//Gdx.app.log(logstag,"_____________current            col:"+style.textColour);
-		//Gdx.app.log(logstag,"_____________current shadow     col:"+style.shadowColour);
-		//Gdx.app.log(logstag,"_____________current glowColour col:"+style.glowColour);
+		//Log.info("_____________current            col:"+style.textColour);
+		//Log.info("_____________current shadow     col:"+style.shadowColour);
+		//Log.info("_____________current glowColour col:"+style.glowColour);
 
 
 
@@ -1255,7 +1258,7 @@ public class Label extends LabelBase {
 		//background.color.a = opacity;
 		BlendingAttribute backgroundOpacity = ((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type));
 		backgroundOpacity.opacity = opacity;
-		//	Gdx.app.log(logstag,"_____________opacity:"+opacity);
+		//	Log.info("_____________opacity:"+opacity);
 		 */
 	}
 
@@ -1331,7 +1334,7 @@ Text size remains just h/w, however
 
 		 */
 
-		//		Gdx.app.log(logstag," size now::"+this.getWidth()+","+this.getHeight());
+		//		Log.info(" size now::"+this.getWidth()+","+this.getHeight());
 
 
 	}
@@ -1346,8 +1349,8 @@ Text size remains just h/w, however
 		float widgetWidth  = this.getWidth(); //returns size with padding
 		float widgetHeight = this.getHeight();
 
-		Gdx.app.log(logstag,"_________setting shader to textScale based on real size ;"+widgetWidth+","+widgetHeight);
-		Gdx.app.log(logstag,"_________setting shader to textScale based on texture size ;"+textureSize.x+","+textureSize.y);
+		Log.info("_________setting shader to textScale based on real size ;"+widgetWidth+","+widgetHeight);
+		Log.info("_________setting shader to textScale based on texture size ;"+textureSize.x+","+textureSize.y);
 		
 		float totalPaddingWidth =  (getStyle().getPaddingLeft()+getStyle().getPaddingRight());
 		if (totalPaddingWidth>widgetWidth){
@@ -1369,7 +1372,7 @@ Text size remains just h/w, however
 				                    widgetHeightWithoutPadding/ (textureSize.y)
 				                   ); 
 	
-		Gdx.app.log(logstag,"_________setting shader to textScale;"+textScale);
+		Log.info("_________setting shader to textScale;"+textScale);
 
 		this.getStyle().setTextScale(textScale);
 		

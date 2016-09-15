@@ -1,5 +1,7 @@
 package com.lostagain.nl.me.newmovements;
 
+import java.util.logging.Logger;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 //import com.badlogic.gdx.math.Matrix4;
@@ -16,6 +18,9 @@ import com.lostagain.nl.GWTish.PosRotScale;
  */
 public class NewMovement {
 
+	private static String logstag="ME.NewMovement";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
+	
 	PosRotScale destination;
 	
 	float LastWholeDelta = 0;
@@ -30,8 +35,6 @@ public class NewMovement {
 	
 	
 	MovementTypes currenttype = MovementTypes.Relative;
-	
-	private static String logstag="ME.NewMovement";
 	
 	float durationTotalMS = 1000;
 	float durationMSEachMove= 1000;
@@ -57,7 +60,7 @@ public class NewMovement {
 		this.destination=destination;
 		this.durationMSEachMove=durationMSEachMove;
 				
-		Gdx.app.log(logstag,"destination.position set to: "+destination.position); //Z not updating??!?
+		Log.info("destination.position set to: "+destination.position); //Z not updating??!?
 		
 	};
 	
@@ -67,7 +70,7 @@ public class NewMovement {
 		this.destination=destination;
 		this.durationMSEachMove=durationTotalMS;
 
-		Gdx.app.log(logstag,"destination.position set to: "+destination.position); //Z not updating??!?
+		Log.info("destination.position set to: "+destination.position); //Z not updating??!?
 		
 	};
 	
@@ -78,7 +81,7 @@ public class NewMovement {
 		//That is if we are within 1 "durationMSEachMove" of "durationTotal"
 		if (totalTimePast>(durationTotalMS-durationMSEachMove)){
 			onLastRepeat = true;
-			//Gdx.app.log(logstag, "onLastRepeat="+onLastRepeat+" t="+totalTimePast+" out of "+durationTotalMS);
+			//Log.info( "onLastRepeat="+onLastRepeat+" t="+totalTimePast+" out of "+durationTotalMS);
 		} else {
 			onLastRepeat = false;
 		}
@@ -113,7 +116,7 @@ public class NewMovement {
 		if (totalTimePast>durationMSEachMove) {
 			
 			subdelta=totalTimePast%durationMSEachMove;
-		//	Gdx.app.log(logstag, "_____________________prenew startRR scale on repeat="+lastTransform.getScaleX()+","+lastTransform.getScaleY()+","+lastTransform.getScaleZ()+")");
+		//	Log.info( "_____________________prenew startRR scale on repeat="+lastTransform.getScaleX()+","+lastTransform.getScaleY()+","+lastTransform.getScaleZ()+")");
 			
 			 onRepeat();
 		}
@@ -132,9 +135,9 @@ public class NewMovement {
 			//scale
 			Vector3 newscale =  new Vector3(1f,1f,1f).lerp(destination.scale, ratio);
 			
-			Gdx.app.log(logstag, "______ current rel position "+newposition.x+","+newposition.y+","+newposition.z);
+			Log.info( "______ current rel position "+newposition.x+","+newposition.y+","+newposition.z);
 
-			Gdx.app.log(logstag, "___ current rel scale "+newscale.toString() );	
+			Log.info( "___ current rel scale "+newscale.toString() );	
 			
 			return new PosRotScale(newposition,newrotation,newscale);
 		
@@ -172,9 +175,9 @@ public class NewMovement {
 			//(etc)
 			
 			float WholeDelta = totalTimePast-subdelta;	//work out last "step" (that is, difference between current subdetail and the last whole duration past 		
-		//	Gdx.app.log(logstag, "_____________________________________________wholeDelta="+WholeDelta+" last one was"+LastWholeDelta);
+		//	Log.info( "_____________________________________________wholeDelta="+WholeDelta+" last one was"+LastWholeDelta);
 			if (WholeDelta>LastWholeDelta){ //if more then the last one
-			//	Gdx.app.log(logstag, "_______________prenew start scale on repeat="+lastTransform.getScaleX()+","+lastTransform.getScaleY()+","+lastTransform.getScaleZ()+")");
+			//	Log.info( "_______________prenew start scale on repeat="+lastTransform.getScaleX()+","+lastTransform.getScaleY()+","+lastTransform.getScaleZ()+")");
 				
 				
 				onRepeat();
@@ -199,7 +202,7 @@ public class NewMovement {
 			//scale
 			Vector3 startScale = start.scale.cpy();
 			
-			//Gdx.app.log(logstag, "_____________________________________________start scale="+start.getScaleX());
+			//Log.info( "_____________________________________________start scale="+start.getScaleX());
 			
 			float ratio = (subdelta/durationMSEachMove); //scales the time position from start to end to between 0.0 and 1.0
 			
@@ -207,11 +210,11 @@ public class NewMovement {
 			Vector3 newposition = startLocation.lerp(destination.position, ratio);
 			
 
-		//	Gdx.app.log(logstag,"destination.position is: "+destination.position); //Z set right but doesn't update later
+		//	Log.info("destination.position is: "+destination.position); //Z set right but doesn't update later
 			Vector3 startAxis = new Vector3();
 			startRotation.getAxisAngle(startAxis);
 			
-			//Gdx.app.log(logstag, "______a startrotation="+startRotation.getAngle()+" axis="+startAxis);
+			//Log.info( "______a startrotation="+startRotation.getAngle()+" axis="+startAxis);
 			
 			//rot
 			Quaternion newrotation = startRotation.slerp(destination.rotation, ratio);
@@ -219,17 +222,17 @@ public class NewMovement {
 			//newrotation = destination.rotation.cpy(); //temp while testing problem with rotation setting on jerk2d
 					
 			//scale
-		//	Gdx.app.log(logstag, "______a current startscale="+startScale.x);
-		//	Gdx.app.log(logstag, "______a current destscale="+destscale.x);
-		//	Gdx.app.log(logstag, "______a current slerp="+ratio);
+		//	Log.info( "______a current startscale="+startScale.x);
+		//	Log.info( "______a current destscale="+destscale.x);
+		//	Log.info( "______a current slerp="+ratio);
 			
-			//Gdx.app.log(logstag, "________a current dest rotation ="+destination.rotation.getAngle());	
+			//Log.info( "________a current dest rotation ="+destination.rotation.getAngle());	
 			//newrotation.getAxisAngle(startAxis);
-			//Gdx.app.log(logstag, "____________________a current new  rotation="+newrotation.getAngle()+" axis="+startAxis);	
+			//Log.info( "____________________a current new  rotation="+newrotation.getAngle()+" axis="+startAxis);	
 			
 			Vector3 newscale = startScale.lerp(destination.scale, ratio);
 
-		//	Gdx.app.log(logstag, "______a current scaleX="+newscale.x);
+		//	Log.info( "______a current scaleX="+newscale.x);
 			
 			return new PosRotScale(newposition,newrotation,newscale);
 		
@@ -252,7 +255,7 @@ public class NewMovement {
 	 */
 	public void onRestart(PosRotScale newstart) {
 		lastTransform = newstart.copy();
-		//Gdx.app.log(logstag, "_____________________________________________lastLocation scale="+lastLocation.getScaleX());
+		//Log.info( "_____________________________________________lastLocation scale="+lastLocation.getScaleX());
 	}
 	
 

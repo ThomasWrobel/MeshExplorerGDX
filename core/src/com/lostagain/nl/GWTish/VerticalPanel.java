@@ -1,5 +1,7 @@
 package com.lostagain.nl.GWTish;
 
+import java.util.logging.Logger;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -7,6 +9,8 @@ import com.badlogic.gdx.math.Vector3;
 public class VerticalPanel extends CellPanel {
 
 	final static String logstag = "GWTish.VerticalPanel";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
+	
 	// current stats
 	float currentTotalWidgetHeight = 0f;
 
@@ -71,7 +75,7 @@ public class VerticalPanel extends CellPanel {
 					+ incomingHeight + spaceing; // should spacing be scaled?
 		}
 
-		Gdx.app.log(logstag, index + " adding incomingHeight: "
+		Log.info( index + " adding incomingHeight: "
 				+ incomingHeight + " total=" + currentTotalWidgetHeight);
 
 				
@@ -91,7 +95,7 @@ public class VerticalPanel extends CellPanel {
 	 * be run first
 	 */
 	void repositionWidgets() {
-		Gdx.app.log(logstag, "Reposition " + contents.size() + " widgets in vp ");
+		Log.info( "Reposition " + contents.size() + " widgets in vp ");
 		// simply clear and re-add them all
 
 		// reset stats
@@ -105,7 +109,7 @@ public class VerticalPanel extends CellPanel {
 
 		}
 
-		Gdx.app.log(logstag, "new size:" + largestWidthOfStoredWidgets + ","
+		Log.info( "new size:" + largestWidthOfStoredWidgets + ","
 				+ currentTotalWidgetHeight);
 
 	}

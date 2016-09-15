@@ -1,5 +1,7 @@
 package com.lostagain.nl.GWTish;
 
+import java.util.logging.Logger;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.lostagain.nl.GWTish.Event.EventType;
@@ -16,6 +18,9 @@ import com.lostagain.nl.GWTish.Event.EventType;
  */
 public class ToggleButton extends DeckPanel {
 	//	
+	final static String logstag = "GWTish.ToggleButton";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
+
 	protected Widget up; 
 	protected Widget down;
 
@@ -136,7 +141,7 @@ public class ToggleButton extends DeckPanel {
 
 
 		//	setupCaption(caption);
-		Gdx.app.log(logstag,"_-(total widgets in button "+this.contents.size()+" )-_");
+		Log.info("total widgets in button "+this.contents.size()+" )-_");
 
 
 		//for testing

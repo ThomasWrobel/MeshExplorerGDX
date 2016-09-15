@@ -1,5 +1,7 @@
 package com.lostagain.nl.GWTish;
 
+import java.util.logging.Logger;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,6 +23,9 @@ import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
  */
 public class Style {
 	final static String logstag = "GWTish.Style";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
+	
+	
 	Element elementWithStyle;
 	Material objectsMaterial = null;
 
@@ -61,9 +66,9 @@ public class Style {
 
 		GwtishWidgetDistanceFieldAttribute materialAccordingToStyle = (GwtishWidgetDistanceFieldAttribute) mat.get(GwtishWidgetDistanceFieldAttribute.ID);
 		if (materialAccordingToStyle!=null){
-			Gdx.app.log(logstag, "3fitarea set as:"+materialAccordingToStyle.textScaleingMode ); 
+			Log.info( "3fitarea set as:"+materialAccordingToStyle.textScaleingMode ); 
 		} else {
-			Gdx.app.log(logstag, "no textstyle set" ); 
+			Log.info( "no textstyle set" ); 
 		}
 	}
 
@@ -79,7 +84,7 @@ public class Style {
 		
 		if (textStyle!=null){
 			
-			//Gdx.app.log(logstag,"_________setting color to:"+col);
+			//Log.info("_________setting color to:"+col);
 			
 			textStyle.textColour.set(col);
 		}
@@ -93,7 +98,7 @@ public class Style {
 
 		if (textStyle!=null){
 			
-			Gdx.app.log(logstag,"_________setting shadow color to:"+col);
+			Log.info("_________setting shadow color to:"+col);
 			
 			textStyle.shadowColour.set(col);
 		}
@@ -103,30 +108,30 @@ public class Style {
 	public void setTextGlowColor(Color col) {
 		if (textStyle!=null){
 			
-			Gdx.app.log(logstag,"_________setting glow color to:"+col);
+			Log.info("_________setting glow color to:"+col);
 			
 			textStyle.glowColour.set(col);
 		}
 	}
 	public void setTextGlowSize(float size) {
 		if (textStyle!=null){			
-			Gdx.app.log(logstag,"_________setting glow size to:"+size);			
+			Log.info("_________setting glow size to:"+size);			
 			textStyle.glowSize= size;
 		}
 	}
 	public void setTextOutineLimits(float inner,float outer ) {
 		if (textStyle!=null){
 			
-			Gdx.app.log(logstag,"_________setting inner limit to:"+inner);			
+			Log.info("_________setting inner limit to:"+inner);			
 			textStyle.outlinerInnerLimit = inner;
-			Gdx.app.log(logstag,"_________setting outer limit to:"+outer);			
+			Log.info("_________setting outer limit to:"+outer);			
 			textStyle.outlinerOuterLimit = outer;
 		}
 	}
 	public void setTextOutlineColor(Color col) {
 		if (textStyle!=null){
 			
-			Gdx.app.log(logstag,"_________setting outline color to:"+col);
+			Log.info("_________setting outline color to:"+col);
 			
 			textStyle.outlineColour.set(col); 
 		}
@@ -144,7 +149,7 @@ public class Style {
 	//	nullParameterCheck(bordercol);
 		
 		createBackgroundAttributeIfNeeded();
-	//	Gdx.app.log(logstag,"_________setting bordercoll:"+bordercol);
+	//	Log.info("_________setting bordercoll:"+bordercol);
 
 		//get the material from the model
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
@@ -164,7 +169,7 @@ public class Style {
 		nullParameterCheck(bordercol);
 		
 		createBackgroundAttributeIfNeeded();
-	//	Gdx.app.log(logstag,"_________setting bordercoll:"+bordercol);
+	//	Log.info("_________setting bordercoll:"+bordercol);
 
 		//get the material from the model
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
@@ -194,7 +199,7 @@ public class Style {
 
 		
 		
-		//Gdx.app.log(logstag,"______________backcol:"+backcol);
+		//Log.info("______________backcol:"+backcol);
 
 		//get the material from the model
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
@@ -219,7 +224,7 @@ public class Style {
 		
 		if (backStyle==null){
 			
-			Gdx.app.log(logstag,"_________(creating default background shader attribute)");
+			Log.info("_________(creating default background shader attribute)");
 			
 			backStyle =  new GwtishWidgetBackgroundAttribute(1f,Color.CLEAR,Color.CLEAR,1.0f);
 			this.addAttributeToShader(backStyle);
@@ -232,7 +237,7 @@ public class Style {
 		
 		if (textStyle==null){			
 
-			Gdx.app.log(logstag,"_________(creating default text shader attribute)");
+			Log.info("_________(creating default text shader attribute)");
 			//if we are creating one automatically on demand, everything is set to clear
 			textStyle  = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
 			addAttributeToShader(textStyle);			
@@ -256,11 +261,11 @@ public class Style {
 		//create blend shader if needed, else change the one we have
 		
 /*
-		Gdx.app.log(logstag,"_________(request opacity setting)");
-		Gdx.app.log(logstag,"_________(attributes:)"+objectsMaterial.size());
+		Log.info("_________(request opacity setting)");
+		Log.info("_________(attributes:)"+objectsMaterial.size());
 
-		Gdx.app.log(logstag,"_________(objectsMaterial)"+BlendingAttribute.Type);
-		Gdx.app.log(logstag,"_________(objectsMaterial)"+objectsMaterial.has(BlendingAttribute.Type));
+		Log.info("_________(objectsMaterial)"+BlendingAttribute.Type);
+		Log.info("_________(objectsMaterial)"+objectsMaterial.has(BlendingAttribute.Type));
 		*/
 		
 		

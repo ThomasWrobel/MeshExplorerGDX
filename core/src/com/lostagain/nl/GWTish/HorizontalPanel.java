@@ -1,5 +1,7 @@
 package com.lostagain.nl.GWTish;
 
+import java.util.logging.Logger;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -10,6 +12,7 @@ import com.lostagain.nl.GWTish.ComplexPanel.VerticalAlignment;
 
 public class HorizontalPanel extends CellPanel {
 	final static String logstag = "GWTish.HorizontalPanel";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
 
 	//current stats
 	float currentTotalWidgetWidth   = 0f;
@@ -94,7 +97,7 @@ public class HorizontalPanel extends CellPanel {
 		recalculateLargestWidgets(); should be run first
 	 */
 	void repositionWidgets() {
-		Gdx.app.log(logstag,"repositionWidgets in hp");
+		Log.info("repositionWidgets in hp");
 		//simply clear and re-add them all
 
 		//reset  stats
@@ -110,7 +113,7 @@ public class HorizontalPanel extends CellPanel {
 			internalAdd(widget); //re add
 
 		}
-		Gdx.app.log(logstag,"new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
+		Log.info("new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
 		//update back size
 		//sizeToFitContents(); 
 
@@ -132,7 +135,7 @@ public class HorizontalPanel extends CellPanel {
 	@Override
 	void sizeToFitContents() {
 		
-		Gdx.app.log(logstag,"size to fit contents new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
+		Log.info("size to fit contents new size:"+currentTotalWidgetWidth+","+largestHeightOfStoredWidgets);
 		
 		
 		this.setSizeAs(getLeftPadding()+currentTotalWidgetWidth+getRightPadding(),

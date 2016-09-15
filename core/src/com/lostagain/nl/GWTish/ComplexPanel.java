@@ -2,6 +2,7 @@ package com.lostagain.nl.GWTish;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -22,6 +23,10 @@ import com.lostagain.nl.GWTish.Management.ZIndexGroup;
 public abstract class ComplexPanel extends Widget {
 
 	final static String logstag = "GWTish.ComplexPanel";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
+
+	
+	
 	Color DefaultColour = new Color(0.3f,0.3f,1f,0.5f);
 	
 	
@@ -160,12 +165,12 @@ public abstract class ComplexPanel extends Widget {
 			@Override
 			public void run() {
 
-				Gdx.app.log(logstag,"updating position due to size change");
+				Log.info("updating position due to size change");
 				boolean changed = recalculateLargestWidgets();
 
-				Gdx.app.log(logstag,"_________vis on panel:"+isVisible()+" ");
+				Log.info("_________vis on panel:"+isVisible()+" ");
 				repositionWidgets();
-				Gdx.app.log(logstag,"_________vis on panel2:"+isVisible()+" ");
+				Log.info("_________vis on panel2:"+isVisible()+" ");
 			}			
 		};*/
 
@@ -178,14 +183,14 @@ public abstract class ComplexPanel extends Widget {
 	@Override
 	protected void onChildResize(){
 
-		Gdx.app.log(logstag,"updating positions on "+getName()+" due to child size change");
+		Log.info("updating positions on "+getName()+" due to child size change");
 		boolean changed = recalculateLargestWidgets();
 
 		repositionWidgets();
 
 		//update back size
 
-		Gdx.app.log(logstag,"updating size of "+getName()+" due to child size change");
+		Log.info("updating size of "+getName()+" due to child size change");
 		sizeToFitContents();
 	}
 	
@@ -202,7 +207,7 @@ public abstract class ComplexPanel extends Widget {
 					@Override
 					public void run() {
 
-						Gdx.app.log(logstag,"updating position due to size change");
+						Log.info("updating position due to size change");
 						boolean changed = recalculateLargestWidgets();
 						
 						repositionWidgets();
@@ -235,7 +240,7 @@ public abstract class ComplexPanel extends Widget {
 
 		boolean changed=false;
 
-		Gdx.app.log(logstag,"recalculateLargestWidgets");
+		Log.info("recalculateLargestWidgets");
 
 		float oldLargestHeightOfStoredWidgets = largestHeightOfStoredWidgets;
 		float oldlargestWidthOfStoredWidgets = largestWidthOfStoredWidgets;
@@ -256,7 +261,7 @@ public abstract class ComplexPanel extends Widget {
 			float width  = size.getWidth()  * scaleX;
 
 
-			Gdx.app.log(logstag,"width of "+widget.getClass().getName()+" is "+scaleX+"*"+size.getWidth());
+			Log.info("width of "+widget.getClass().getName()+" is "+scaleX+"*"+size.getWidth());
 			
 			if (width>largestWidthOfStoredWidgets){
 				
@@ -286,8 +291,8 @@ public abstract class ComplexPanel extends Widget {
 			changed=true;
 		}
 
-		Gdx.app.log(logstag,"largestWidthOfStoredWidgets:"+largestWidthOfStoredWidgets);
-		Gdx.app.log(logstag,"largestHeightOfStoredWidgets:"+largestHeightOfStoredWidgets);
+		Log.info("largestWidthOfStoredWidgets:"+largestWidthOfStoredWidgets);
+		Log.info("largestHeightOfStoredWidgets:"+largestHeightOfStoredWidgets);
 
 		return changed;
 
@@ -373,7 +378,7 @@ public abstract class ComplexPanel extends Widget {
 		int atIndex = beforeIndex-1;
 		
 		if (contents.contains(widget)){
-			Gdx.app.log(logstag,"______________already contains widget");
+			Log.info("______________already contains widget");
 			
 			//do nothing as its already contained
 			return false;			
@@ -470,12 +475,12 @@ public abstract class ComplexPanel extends Widget {
 			//NEW: Compensate for our pivots offset
 			Vector2 offset  =  getOffsetForSize(this.getWidth(), this.getHeight(),alignment);
 
-			Gdx.app.log(logstag," vp offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
+			Log.info(" vp offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
 			
 			newLocationY = newLocationY +offset.y;
 			newLocationX = newLocationX +offset.x;
 
-			Gdx.app.log(logstag," newLocation= "+newLocationX+","+newLocationY);
+			Log.info(" newLocation= "+newLocationX+","+newLocationY);
 			//-------------
 	
 	
@@ -486,7 +491,7 @@ public abstract class ComplexPanel extends Widget {
 			//set the scale of the newLocation to match the scale of the incoming object too (so its size is preserved
 			newLocation.setToScaling(widget.transState.scale);
 			
-			Gdx.app.log(logstag,"______________placing new "+widget.getClass()+" widget at: "+newLocationY+" its scaled size is:"+width+","+height);
+			Log.info("______________placing new "+widget.getClass()+" widget at: "+newLocationY+" its scaled size is:"+width+","+height);
 		
 			attachThis(widget, newLocation);
 		
@@ -518,12 +523,12 @@ public abstract class ComplexPanel extends Widget {
 			//NEW: Compensate for our pivots offset
 			Vector2 offset  =  getOffsetForSize(this.getWidth(), this.getHeight(),alignment);
 
-			Gdx.app.log(logstag," vp offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
+			Log.info(" vp offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
 			
 			newLocationY = newLocationY +offset.y;
 			newLocationX = newLocationX +offset.x;
 
-			Gdx.app.log(logstag," newLocation= "+newLocationX+","+newLocationY);
+			Log.info(" newLocation= "+newLocationX+","+newLocationY);
 			//-------------
 	
 	
@@ -615,7 +620,7 @@ public abstract class ComplexPanel extends Widget {
 	 * @param group  - things in the same group get ordered next to eachother according to index value 
 	 */
 	public void setZIndex(int index, String group) {
-		Gdx.app.log(logstag,"_-(setZIndex on complexpanel to:"+index+","+group+")-_");
+		Log.info("_-(setZIndex on complexpanel to:"+index+","+group+")-_");
 	
 		//set zindex of back material
 		super.setZIndex(index,group);
@@ -623,7 +628,7 @@ public abstract class ComplexPanel extends Widget {
 		//but we also need to apply it to all subobjects (only a little higher!)
 		for (Widget childwidget : contents) {
 			
-			Gdx.app.log(logstag,"_-(setZIndex on complexpanelchild to:"+(index+1)+","+group+")-_");
+			Log.info("_-(setZIndex on complexpanelchild to:"+(index+1)+","+group+")-_");
 
 			childwidget.setZIndex(index+1,group); 
 		}				

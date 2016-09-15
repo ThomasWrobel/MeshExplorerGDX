@@ -1,5 +1,7 @@
 package com.lostagain.nl.GWTish;
 
+import java.util.logging.Logger;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -18,6 +20,10 @@ import com.lostagain.nl.GWTish.Widget.MODELALIGNMENT;
  */
 public class DeckPanel extends ComplexPanel {
 
+	final static String logstag = "GWTish.DeckPanel";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
+
+	
 	public DeckPanel(float sizeX, float sizeY) {
 		super(sizeX, sizeY);
 		// TODO Auto-generated constructor stub
@@ -102,7 +108,7 @@ public class DeckPanel extends ComplexPanel {
 
 	public void showWidget(Widget selected,boolean hideOthers) {
 		if (selected==null || !contents.contains(selected)){
-			Gdx.app.log(logstag,"_widget not on panel, cant show/hide");			
+			Log.info("_widget not on panel, cant show/hide");			
 			return;			
 		}
 
@@ -200,12 +206,12 @@ public class DeckPanel extends ComplexPanel {
 		/*
 		Vector2 offset  =  getOffsetForSize(this.getWidth(), this.getHeight(),alignment);
 
-		Gdx.app.log(logstag," offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
+		Log.info(" offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
 		
 		newLocationY = newLocationY +offset.y;
 		newLocationX = newLocationX +offset.x;
 
-		Gdx.app.log(logstag," newLocation= "+newLocationX+","+newLocationY);*/
+		Log.info(" newLocation= "+newLocationX+","+newLocationY);*/
 		
 
 		return new Vector3(getLeftPadding()+newLocationX,
@@ -227,7 +233,7 @@ public class DeckPanel extends ComplexPanel {
 	 * @param group  - things in the same group get ordered next to eachother according to index value 
 	 */
 	public void setZIndex(int index, String group) {
-		Gdx.app.log(logstag,"_-(setZIndex "+group+","+index+" )-_");
+		Log.info("_-(setZIndex "+group+","+index+" )-_");
 
 		//set zindex of back material
 		getStyle().setZIndex(index,group);
@@ -236,7 +242,7 @@ public class DeckPanel extends ComplexPanel {
 		int n=1;
 		for (Widget childwidget : contents) {
 
-			Gdx.app.log(logstag,"_-( child now; "+group+","+(index+n)+" )-_");			
+			Log.info("_-( child now; "+group+","+(index+n)+" )-_");			
 			childwidget.setZIndex(index+n,group); 
 			n++;
 		}				

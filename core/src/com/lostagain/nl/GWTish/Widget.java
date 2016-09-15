@@ -29,7 +29,7 @@ public class Widget extends Element {
 	private static final String SHADERFORBACKGROUND = "Background";
 
 	//final static String logstag = "GWTish.Widget";
-	public static Logger Log = Logger.getLogger("JAMGdx.Widget");
+	public static Logger Log = Logger.getLogger("GWTish.Widget");
 	
 	static Material DefaultWhiteBackground = new Material(
 			SHADERFORBACKGROUND,

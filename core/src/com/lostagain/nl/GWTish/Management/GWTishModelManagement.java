@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -42,6 +43,8 @@ import com.lostagain.nl.shaders.MySorter;
 public class GWTishModelManagement {
 
 	private static String logstag="ME.GWTishModelManagement";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
+	
 
 
 	/** All the 3d models we want to render in the standard draw order should go into this list **/
@@ -128,7 +131,7 @@ public class GWTishModelManagement {
 
 		//ignore if present already
 		if (allStandardInstances.contains(model) || allOverlayInstances.contains(model)){
-			Gdx.app.log(logstag,"________model already on a render list");
+			Log.info("________model already on a render list");
 			return;
 		}
 		Vector3 position = new Vector3();
@@ -752,17 +755,17 @@ public class GWTishModelManagement {
 				case NONE:
 					break;
 				case NewTouchDown:
-					Gdx.app.log(logstag,"_firing touchdown on :"+object.getClass());
+					Log.info("_firing touchdown on :"+object.getClass());
 					object.fireTouchDown();
 					mousedownOn.add(object);
 					break;
 				case NewTouchUp:
 
-					Gdx.app.log(logstag,"_firing touchup on :"+object.getClass());
+					Log.info("_firing touchup on :"+object.getClass());
 					object.fireTouchUp();					
 					boolean wasPreviouslyDownOn = mousedownOn.remove(object);
 					if (wasPreviouslyDownOn){
-						Gdx.app.log(logstag,"_firing click on :"+object.getClass());
+						Log.info("_firing click on :"+object.getClass());
 						object.fireClick();
 					}
 					break;
@@ -803,7 +806,7 @@ public class GWTishModelManagement {
 
 	private static void listUnderCursorToLog(ArrayList<rayHit> underCursorHits2) {
 		for (rayHit rayhit : underCursorHits2) {
-			Gdx.app.log(logstag,"undercursor last click/touch action    :"+rayhit.hitthis.getName()+"        ("+rayhit.hitthis.getInteractionType()+")");
+			Log.info("undercursor last click/touch action    :"+rayhit.hitthis.getName()+"        ("+rayhit.hitthis.getInteractionType()+")");
 				
 			
 		}
@@ -834,8 +837,8 @@ public class GWTishModelManagement {
 	 */
 	public static hitable testForHits(Ray ray, boolean hitsPenetrate, boolean processHits) {
 
-		Gdx.app.log(logstag,"_-testing hit in :"+hitables.size+" models");
-		Gdx.app.log(logstag,"_-testing ray at :"+ray.origin.x+","+ray.origin.y);
+		Log.info("_-testing hit in :"+hitables.size+" models");
+		Log.info("_-testing ray at :"+ray.origin.x+","+ray.origin.y);
 
 
 		Vector3 position = new Vector3();
@@ -874,10 +877,10 @@ public class GWTishModelManagement {
 			float dist2 = ray.origin.dst2(hitPoint);
 
 
-			Gdx.app.log(logstag,"_hit "+newInstance.getClass()+" object at distance "+dist2+" position was("+position+")");
+			Log.info("_hit "+newInstance.getClass()+" object at distance "+dist2+" position was("+position+")");
 
 			if (newInstance.getInteractionType() == objectInteractionType.Blocker){
-				Gdx.app.log(logstag,"(it was blocker)");
+				Log.info("(it was blocker)");
 
 			}
 
@@ -896,7 +899,7 @@ public class GWTishModelManagement {
 				//else we test if its closer
 				//Note the > I think this is because the ray goes from furthest to nearest. So higher values are nearer
 				if (newInstance.getLastHitsRange()<closestBlockerTouched.getLastHitsRange()){
-					Gdx.app.log(logstag,"(new blocker is closer)");
+					Log.info("(new blocker is closer)");
 					closestBlockerTouched = newInstance;
 					continue;
 				}
@@ -916,7 +919,7 @@ public class GWTishModelManagement {
 				}
 				//else we test if its closer
 				if (newInstance.getLastHitsRange() < closestNonBlockerTouched.getLastHitsRange()){
-					Gdx.app.log(logstag,"(new non-blocker is closer)");
+					Log.info("(new non-blocker is closer)");
 					closestNonBlockerTouched=newInstance;
 					continue;
 				}
@@ -938,7 +941,7 @@ public class GWTishModelManagement {
 		//if so we hit it and exit
 		if (!hitsPenetrate && closestNonBlockerTouched!=null){
 
-			Gdx.app.log(logstag,"ClosestNonBlockerTouched as at:"+closestNonBlockerTouched.getLastHitsRange()+" ("+closestNonBlockerTouched.getClass()+")");
+			Log.info("ClosestNonBlockerTouched as at:"+closestNonBlockerTouched.getLastHitsRange()+" ("+closestNonBlockerTouched.getClass()+")");
 
 			if (closestBlockerTouched==null){
 				if (processHits){
@@ -951,7 +954,7 @@ public class GWTishModelManagement {
 
 			//if blocker is further then non-blocker
 			if (closestBlockerTouched.getLastHitsRange() < closestNonBlockerTouched.getLastHitsRange()){
-				Gdx.app.log(logstag,"closestBlockerTouched as at:"+closestBlockerTouched.getLastHitsRange()+" ("+closestBlockerTouched.getClass()+")");
+				Log.info("closestBlockerTouched as at:"+closestBlockerTouched.getLastHitsRange()+" ("+closestBlockerTouched.getClass()+")");
 
 				if (processHits){
 					closestNonBlockerTouched.fireTouchDown();
@@ -961,7 +964,7 @@ public class GWTishModelManagement {
 				return closestNonBlockerTouched;
 			}
 		} else{
-			Gdx.app.log(logstag,"hits penatrating, mousing down on;"+everyThingUnderCursor.size()+" objects");
+			Log.info("hits penatrating, mousing down on;"+everyThingUnderCursor.size()+" objects");
 		}
 
 
@@ -1047,7 +1050,7 @@ public class GWTishModelManagement {
 
 		if (!dragStarted) {
 
-			Gdx.app.log(logstag,"_-drag start on all :"+mousedownOn.size);
+			Log.info("_-drag start on all :"+mousedownOn.size);
 			for (hitable model : mousedownOn) {
 				model.fireDragStart();	
 
@@ -1189,7 +1192,7 @@ public class GWTishModelManagement {
 				GWTishModelManagement.currentTouchState = GWTishModelManagement.TouchState.TouchDown; //if we previously were a new touchdown, then now we are a non-new touchdown
 
 				//currently duplicated elsewhere in MainExplorationView				
-				Gdx.app.log(logstag," new touch down");
+				Log.info(" new touch down");
 				GWTishModelManagement.touchStartedAt = new Vector2(Gdx.input.getX(),Gdx.input.getY());
 
 
