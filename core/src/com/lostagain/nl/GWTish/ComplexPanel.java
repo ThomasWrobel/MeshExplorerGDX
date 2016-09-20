@@ -352,12 +352,16 @@ public abstract class ComplexPanel extends Widget {
 	
 	public boolean add(Widget widget) {
 		
-		//if we have a zindex, the child should be +1 automatically
+		//if we have a z-index, the child should be +1 automatically
+		
 		if (this.getStyle().hasZIndex()){
 			
 			int zindex = this.getStyle().getZIndexValue();
 			ZIndexGroup groupname = this.getStyle().getZIndexGroup();
-			widget.getStyle().setZIndex(zindex+1, groupname);
+			//widget.getStyle().setZIndex(zindex+1, groupname);
+			
+			widget.setZIndex(zindex+1, groupname); // we should also deal with child widgets, each one +1 to the parent
+			
 			
 			
 		}

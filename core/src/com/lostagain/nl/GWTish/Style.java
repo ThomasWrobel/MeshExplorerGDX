@@ -303,13 +303,13 @@ public class Style {
 	}
 	
 	/**
-	 * Sets z-index value and groupname
+	 * Sets z-index value and group
 	 * 
 	 * @param opacity
 	 */
 	public void setZIndex(int index, ZIndexGroup group) {
 
-			objectsMaterial.set( new ZIndexAttribute(index+1,group) );
+			objectsMaterial.set( new ZIndexAttribute(index,group) ); //why the +1?
 		
 	}
 	

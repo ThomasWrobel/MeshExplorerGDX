@@ -30,7 +30,7 @@ public class Button extends DeckPanel {
 	Color UPCOLOR  = Color.LIGHT_GRAY;
 
 
-	protected Label Caption;
+	public Label Caption;
 
 	/**
 	 * creates a button with specified size and runnable when clicked
@@ -109,10 +109,11 @@ public class Button extends DeckPanel {
 
 		Caption.userData = "button_"+caption;
 		
-		float xsize = Caption.getWidth()+10;
-		float ysize = Caption.getHeight()+10;
+		
+	//	float xsize = Caption.getWidth()+10;
+	//	float ysize = Caption.getHeight()+10;
 
-		setSizeAs(xsize, ysize);
+		//setSizeAs(xsize, ysize);
 
 		//by default we have two panels of grey and dark grey as the background
 		//setupDefaultBackground(xsize, ysize);
@@ -121,7 +122,7 @@ public class Button extends DeckPanel {
 		super.add(Caption);
 
 		//the caption should always be visible, but only one background
-		//super.showWidget(Caption);
+		//super.showWidget(Caption,true);
 		//super.showWidget(up,false);
 
 

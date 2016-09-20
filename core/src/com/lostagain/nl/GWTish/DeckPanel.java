@@ -9,6 +9,8 @@ import com.lostagain.nl.GWTish.ComplexPanel.Alignment;
 import com.lostagain.nl.GWTish.ComplexPanel.HorizontalAlignment;
 import com.lostagain.nl.GWTish.ComplexPanel.VerticalAlignment;
 import com.lostagain.nl.GWTish.Widget.MODELALIGNMENT;
+import com.lostagain.nl.GWTish.Management.IsAnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.ZIndexGroup;
 
 /**
  * A deck panel is a stack of other panels ontop of eachother
@@ -269,4 +271,49 @@ public class DeckPanel extends ComplexPanel {
 
 	}
 
+	/**
+	 * because things in a deckpanel can overlap, we implement setzindex in a special way.
+	 * rather then just going +1 zindex on each child, we keep their existing zindex  (subtracting our own) and add our own new one too it.
+	 * In this way they preserve their order relative to this widget.
+	 */
+	@Override
+	public void setZIndex(int newZindex, ZIndexGroup group, boolean setChildWidgets) {
+		
+		//our old zindex
+		int thisWidgetsOldZindex = this.getStyle().getZIndexValue();
+		if (thisWidgetsOldZindex<0){
+			thisWidgetsOldZindex=0;
+		}
+		
+		//set new zindex		
+		getStyle().setZIndex(newZindex,group);
+		
+		if (setChildWidgets){
+			for (IsAnimatableModelInstance model : this.getAttachments()) {				
+				if (model instanceof Widget){
+					
+					//we can only set z-index on widgets, so we need to ensure they are before casting
+					Widget child = (Widget) model;
+			
+					//old child value
+					int oldChildZindex = child.getStyle().getZIndexValue();
+					//subtract old parent
+					int RelativeZindex = oldChildZindex - thisWidgetsOldZindex;
+					//add new zindex
+					int newzindex = RelativeZindex + newZindex;
+					
+					child.setZIndex(newzindex, group, true);
+				}
+				
+			}			
+		}
+		
+		
+		
+	}
+
+	
+	
+	
+	
 }

@@ -25,10 +25,11 @@ public class ZIndexGroup extends Array<ZIndexAttribute> {
 	
 	public static HashMap<String,ZIndexGroup> AllZIndexGroups = new HashMap<String,ZIndexGroup>();
 
+	
 	/**
 	 * Returns a existing zIndexGroup is one exists with this name, else makes a new one.
 	 */
-	static ZIndexGroup getZIndexGroup(String groupname){
+	public static ZIndexGroup getZIndexGroup(String groupname){
 		
 		ZIndexGroup group = AllZIndexGroups.get(groupname);
 		

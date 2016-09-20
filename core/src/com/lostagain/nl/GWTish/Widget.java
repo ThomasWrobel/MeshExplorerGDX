@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector2;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.GWTish.Management.IsAnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.ZIndexGroup;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
@@ -518,11 +519,55 @@ public class Widget extends Element {
 		this.parentWidget=parentWidget;
 	}
 
-	public void setZIndex(int index, String group) {
-		getStyle().setZIndex(index,group);
+	/**
+	 * sets this widget to the zindex and groupname, also sets child widgets to +1 the supplied value
+	 * @param index
+	 * @param groupname
+	 */
+	public void setZIndex(int index, String groupname) {
+		//getStyle().setZIndex(index,group);
+		//ZIndexGroup.getZIndexGroup(groupname);
+		this.setZIndex(index, ZIndexGroup.getZIndexGroup(groupname), true);
+		
+	}
+	/**
+	 * sets this widget to the zindex and groupname, also sets child widgets to +1 the supplied value
+	 * @param index
+	 * @param groupname
+	 */
+	
+	public void setZIndex(int index, ZIndexGroup group) {
+		//getStyle().setZIndex(index,group);
+		this.setZIndex(index, group, true);
+		
 	}
 
+	/**
+	 * 
+	 * @param index
+	 * @param group
+	 * @param setChildWidgets - sets child widgets to +1 the supplied value
+	 */
+	public void setZIndex(int index, ZIndexGroup group,boolean setChildWidgets) {
+		getStyle().setZIndex(index,group);
+		
+		if (setChildWidgets){
+			for (IsAnimatableModelInstance model : this.getAttachments()) {
+				
+				if (model instanceof Widget){
+					//we can only set z-index on widgets, so we need to ensure they are before casting
+					Widget child = (Widget) model;
+					child.setZIndex(index+1, group, true);
+					
+				}
+				
+			}
+			
+		}
+		
+	}
 
+	
 
 	objectInteractionType currentInteractionType = objectInteractionType.Blocker;
 	

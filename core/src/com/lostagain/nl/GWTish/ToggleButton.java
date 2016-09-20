@@ -21,10 +21,10 @@ public class ToggleButton extends DeckPanel {
 	final static String logstag = "GWTish.ToggleButton";
 	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
 
-	protected Widget up; 
+	public Widget up; //only publicc for testing	
 	protected Widget down;
 
-	protected Label Caption;
+	public Label Caption;
 	private boolean stateup=true;
 
 
@@ -58,13 +58,13 @@ public class ToggleButton extends DeckPanel {
 		this.setAsHitable(true);
 		super.getStyle().setBackgroundColor(Color.GRAY);
 
+		setZIndex(0, Widget.generateUniqueGroupID("togglebutton"));
 		//by default we have two panels of different greys
 		setupDefaultBackground(sizeX, sizyY);
 
 		//no caption
 
 
-		setZIndex(0, "testbutton");
 		super.showWidget(0);
 
 		//---		
@@ -127,18 +127,25 @@ public class ToggleButton extends DeckPanel {
 		float ysize = Caption.getHeight()+10;
 
 		setSizeAs(xsize, ysize);
-
+		
+		setZIndex(0, Widget.generateUniqueGroupID("togglebutton"));
+		
 		//by default we have two panels of grey and dark grey as the background
 		setupDefaultBackground(xsize, ysize);
 
 		//and the caption ontop
 		super.add(Caption);
-
+		//we want the caption higher then the background so we deliberately increasezindex more then the natural +1
+		Caption.getStyle().setZIndex(getStyle().getZIndexValue()+5, getStyle().getZIndexGroup());
+		
+		
 		//the caption should always be visible, but only one background
 		super.showWidget(Caption);
 		super.showWidget(up,false);
 
-
+		//Caption.getStyle().setZIndex(getStyle().getZIndexValue()+20, getStyle().getZIndexGroup());
+		
+		
 
 		//	setupCaption(caption);
 		Log.info("total widgets in button "+this.contents.size()+" )-_");
@@ -147,7 +154,7 @@ public class ToggleButton extends DeckPanel {
 		//for testing
 		//in future we need a way to get a unique name for the zIndex group
 		//Also change the set function to set everything attached to Zindex +1 as a option
-		setZIndex(0, "testbutton");
+		
 		//Caption.setZIndex(2, "testbutton");
 
 
