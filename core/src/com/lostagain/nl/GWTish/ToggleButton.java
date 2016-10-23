@@ -10,8 +10,12 @@ import com.lostagain.nl.GWTish.Event.EventType;
  * currently just a widget that has a runnable that fires when clicked.
  * This will naturally change a lot, but having a basic button to test stuff is useful
  * 
- * TODO: Turn this class into a ToggleButton, and make a similiar class for Button that doesnt swap two widgets
- * but rather just changes the colour of the background
+ * TODO: Make this extend something closer too http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/client/ui/CustomButton.html
+ * which in turn extends deckpanel
+ * We then have potential widgets for all states, not just up and down.
+ * 
+ * We might possibly also want a option for using modelinstances? This would allow true 3d buttons easily - as well as switches, leavers....hmmm
+ * 
  * 
  * @author Tom
  *
@@ -21,7 +25,7 @@ public class ToggleButton extends DeckPanel {
 	final static String logstag = "GWTish.ToggleButton";
 	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
 
-	public Widget up; //only publicc for testing	
+	public Widget up; //only public for testing	
 	protected Widget down;
 
 	public Label Caption;

@@ -395,10 +395,24 @@ public class Label extends LabelBase {
 			float LineHeight = (float) style.getLineHeightValue();
 			Style.Unit LineHeightUnit = style.getLineHeightUnit();
 
-			//we only support PX at the moment		
+			//we only support PX or Unitless at the moment		
 			if (LineHeightUnit == Style.Unit.PX){
 				font.getData().setLineHeight(LineHeight);
 			}
+			if (LineHeightUnit == Style.Unit.UNITLESS){				
+				//only supported if font size is pixels
+				if (style.getFontSizeUnit() == Unit.PX){
+					
+					double fontsize = style.getFontSize();
+					double effectiveSize = fontsize*LineHeight;
+
+					Log.info( "fontsize:   "+fontsize+"   LineHeight:"+LineHeight); 
+					Log.info( "effective lineheight:   "+effectiveSize); 
+					font.getData().setLineHeight((float) effectiveSize);
+					
+				}
+			}
+			
 		}
 		return font;
 	}
@@ -575,9 +589,14 @@ public class Label extends LabelBase {
 		
 		//lets try getting te ratio of the native map height to the result height;
 		float baseToAssent = font.getCapHeight()+font.getAscent();
+		Log.info("__native cap+ascent:"+baseToAssent);	
 		float baseToDecent = -font.getDescent();
-		float fontHeight = baseToAssent+baseToDecent;
-		Log.info("__native fontHeight:"+fontHeight);		
+		Log.info("__native baseToDecent:"+baseToDecent);	
+		
+		float fontHeight = baseToAssent+baseToDecent; //seems too small?
+		fontHeight=32; //actual size		
+		Log.info("__native fontHeight:"+fontHeight);
+		
 		double fontSizeRequested = stylesettings.getFontSize();
 		Log.info("__requested fontHeight:"+fontSizeRequested+" ("+stylesettings.getFontSizeUnit()+")");
 		double ratio = fontHeight/fontSizeRequested;
@@ -613,7 +632,6 @@ public class Label extends LabelBase {
 		BitmapFontData data = standdardFont.getData();  //need optional font too, should match whats used in layout
 		Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0])); //as pixmap
 
-		
 		//now loop over each run of letters. 
 		for (GlyphRun grun : layout.runs) {
 

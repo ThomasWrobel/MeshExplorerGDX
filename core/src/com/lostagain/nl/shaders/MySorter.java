@@ -119,8 +119,11 @@ public class MySorter extends DefaultRenderableSorter {
 				//First we work out the distances to the camera (or, rather distance squared - we only need relative order so its a waste
 				//to do the squareroute to get the real distance. Internally that dst2 compared is just doing pythagoras)
 				
-				int o1distance = (int)(1000f * camera.position.dst2(tmpV1));
-				int o2distance = (int)(1000f * camera.position.dst2(tmpV2));
+			//	float o1distance = (int)(1000f * camera.position.dst2(tmpV1)); 
+			//	float o2distance = (int)(1000f * camera.position.dst2(tmpV2));
+				
+				float o1distance = (  camera.position.dst2(tmpV1)); //float is needed as int probably too small for squared distances
+				float o2distance = ( camera.position.dst2(tmpV2));
 				
 				
 				
@@ -139,8 +142,9 @@ public class MySorter extends DefaultRenderableSorter {
 				//get a more accurate distance based on the center of the bounding box
 				o1.meshPart.update();
 				tmpV1.set((o1.meshPart.center).mul(o1.worldTransform));			
-				 o1distance = (int)(1000f * camera.position.dst2(tmpV1));
-				
+			//	 o1distance = (int)(1000f * camera.position.dst2(tmpV1));
+				 o1distance = (camera.position.dst2(tmpV1));
+					
 				
 				o1zindex.group.drawOrderDistance = o1distance;
 			} else {
@@ -162,8 +166,9 @@ public class MySorter extends DefaultRenderableSorter {
 				//get a more accurate distance based on the center of the bounding box
 				o2.meshPart.update();
 				tmpV2.set((o2.meshPart.center).mul(o2.worldTransform));			
-				 o2distance = (int)(1000f * camera.position.dst2(tmpV2));
-				 
+				// o2distance = (int)(1000f * camera.position.dst2(tmpV2));
+				 o2distance = (camera.position.dst2(tmpV2));
+					 
 				
 				o2zindex.group.drawOrderDistance = o2distance;
 			} else {
@@ -683,7 +688,7 @@ public class MySorter extends DefaultRenderableSorter {
 
 				int zindex1  = ((ZIndexAttribute)renderable.material.get(ZIndexAttribute.ID)).zIndex;
 				ZIndexGroup group = ((ZIndexAttribute)renderable.material.get(ZIndexAttribute.ID)).group;
-				Gdx.app.log("zindex","name="+name+ " (zindex = "+zindex1+" , "+group.group_id+" DISTANCE:"+group.drawOrderDistance+")");
+				Gdx.app.log("zindex","name="+name+ " (zindex = "+zindex1+" , "+group.group_id+" Group DISTANCE:"+group.drawOrderDistance+")");
 
 
 

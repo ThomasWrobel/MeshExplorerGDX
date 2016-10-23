@@ -44,7 +44,7 @@ public class DefaultStyles {
 
 
 	public static Texture texturespaced = new Texture(Gdx.files.internal("data/fonttest_spaced.png"), true);
-	public static BitmapFont standdardFont = new BitmapFont(Gdx.files.internal("data/fonttest_spaced.fnt"), new TextureRegion(texturespaced), true);
+	public static BitmapFont standdardFont = new BitmapFont(Gdx.files.internal("data/fonttest_spaced.fnt"), new TextureRegion(texturespaced), true); //font file says size is 32
 		
 	
 	public static Texture texture = new Texture(Gdx.files.internal("data/standardfont.png"), true);

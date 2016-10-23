@@ -21,7 +21,8 @@ public class ZIndexGroup extends Array<ZIndexAttribute> {
 	public int drawOrderPosition  = -1; //the position of the earliest element in the draw order. -1 for unordered.
 	
 	//new method;
-	public int drawOrderDistance  = -1; //the canonical distance of this group. -1 for not known yet. 
+	
+	public float drawOrderDistance  = -1; //the canonical distance of this group. -1 for not known yet. 
 	
 	public static HashMap<String,ZIndexGroup> AllZIndexGroups = new HashMap<String,ZIndexGroup>();
 

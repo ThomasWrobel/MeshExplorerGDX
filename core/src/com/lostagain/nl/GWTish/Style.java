@@ -404,6 +404,8 @@ public class Style {
 	 public enum Unit {
 		 /** special unit used to indicate a not-set value **/
 		 NOTSET,
+		 /** Unitless, this means if used for lineheight the number gets multiplied by the fontsize**/
+		 UNITLESS,
 		 PX,
 		 /**percentage, should be % in strings **/
 		 PCT, 
