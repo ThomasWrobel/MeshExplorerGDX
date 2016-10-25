@@ -27,6 +27,9 @@ import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute.TextScalingMo
  *
  */
 public class GwtishWidgetShader implements Shader {
+	public static Logger Log = Logger.getLogger("GwtishWidgetShader"); //not we are using this rather then gdxs to allow level control per tag
+	
+	
 	ShaderProgram program;
 
 
@@ -251,7 +254,7 @@ public class GwtishWidgetShader implements Shader {
 			//depending on sizemode though, we might still want to use the models size - thus stretching the texture		
 			if (textStyleData.textScaleingMode.equals(TextScalingMode.fitarea)){
 				
-				//fit area does not support padding (it wouldnt make sense really,unless you deliberately wanted to crop text off?)
+				//fit area does not support padding (it wouldn't make sense really,unless you deliberately wanted to crop text off?)
 				 tw = w;
 				 th = h;				 
 					
@@ -316,7 +319,8 @@ public class GwtishWidgetShader implements Shader {
 			
 			
 			program.setUniformf(u_texture_pixel_step,(1/tw), (1/th));
-
+			
+			
 			//we also supply the ratio between the image and the overall model size
 			//this lets us have a texture at a arbitrary position within the models shader
 			float sizeDiffX = w / tw;
@@ -386,7 +390,8 @@ public class GwtishWidgetShader implements Shader {
 		//displacements
 		program.setUniformf(u_textPaddingX, textScale_width_pad+textStyleData.paddingLeft);
 		program.setUniformf(u_textPaddingY, textScale_height_pad+textStyleData.paddingTop);
-
+		
+		
 		//glow
 		program.setUniformf(u_textGlowColor,textStyleData.getGlowColour());
 		program.setUniformf(u_textGlowSize ,textStyleData.glowSize); //size of glow (values above 1 will look strange)

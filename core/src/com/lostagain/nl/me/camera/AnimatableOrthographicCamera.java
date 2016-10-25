@@ -172,9 +172,10 @@ public class AnimatableOrthographicCamera extends OrthographicCamera implements 
 
 			//associate this as the parent object
 			objectToAttach.setParentObject(this);
-			
-			
 			attachlist.put(objectToAttach, displacement);
+			
+			//update straight away?
+			sycnAttachedObjectsPosition(objectToAttach);
 
 		} else {
 

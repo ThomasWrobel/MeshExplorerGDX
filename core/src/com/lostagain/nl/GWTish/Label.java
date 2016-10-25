@@ -348,6 +348,8 @@ public class Label extends LabelBase {
 
 		}
 
+		//TODO:also ensure its bigger then the minimum size?
+		//
 
 		Material mat = 	
 				new Material(LABEL_MATERIAL,
@@ -383,9 +385,11 @@ public class Label extends LabelBase {
 
 	}
 	private static BitmapFont getEffectiveFont(Style style) {
+		
 		BitmapFont font = DefaultStyles.standdardFont;
 
 		if (style!=null){
+
 			//make a copy of the font so we can customize the line height data
 			//probably not very efficient?
 			font = new BitmapFont(DefaultStyles.standdardFont.getData(),
@@ -1025,18 +1029,16 @@ public class Label extends LabelBase {
 			break;
 		case Fixed:		
 			Log.info("_________(fixed mode, so size doesnt change)");
-			
 			//real size should only set if not on fixed size mode. However, we do want to effect the padding as the real widget ratio might not match the text texture, so we need to pad the widget to compansate
 			//setPaddingToPreserveTextRatio(align, maxWidth, maxHeight, x, y);
-
+			
 			break;
 		}
 		
 		
 		//ensure the text scale in the shader is correct
 		//this effectively "fills" the mesh with the text and a surrounding border of padding
-		calculateCorrectShaderTextScale(NativeToSceneRatio);
-		
+		calculateCorrectShaderTextScale(NativeToSceneRatio); 
 		
 	}
 
@@ -1363,6 +1365,21 @@ Text size remains just h/w, however
 	 * @param nativeToSceneRatio - scales the text on the shader down or up to match requested font size (ie, 0.5 = half size)
 	 */
 	private void calculateCorrectShaderTextScale(float nativeToSceneRatio) {
+		float textScale =1;
+		if (labelsSizeMode==SizeMode.Fixed){			
+			//fixed works differently, as its based on widget size, not font size			
+			//the smaller ratio  - either the width or height
+			 textScale = Math.min(
+										this.maxWidth / (textureSize.x),
+					                    this.maxWidth/ (textureSize.y)
+					              ); 		
+					
+		} else {			
+			 textScale =  (1.0f/nativeToSceneRatio);			
+		}
+
+		this.getStyle().setTextScale(textScale);
+		/*
 		
 		float widgetWidth  = this.getWidth(); //returns size with padding
 		float widgetHeight = this.getHeight();
@@ -1392,7 +1409,7 @@ Text size remains just h/w, however
 	
 		Log.info("_________setting shader to textScale;"+textScale);
 
-		this.getStyle().setTextScale(textScale);
+		this.getStyle().setTextScale(textScale);*/
 		
 	}
 

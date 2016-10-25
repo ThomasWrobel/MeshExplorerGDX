@@ -309,9 +309,18 @@ public class Style {
 	 */
 	public void setZIndex(int index, ZIndexGroup group) {
 
-			objectsMaterial.set( new ZIndexAttribute(index,group) ); //why the +1?
+			objectsMaterial.set( new ZIndexAttribute(index,group) ); 
 		
 	}
+	
+	
+	public void clearZIndex() {
+		if (hasZIndex()){
+			objectsMaterial.remove(ZIndexAttribute.ID);
+		}
+	}
+
+
 	
 	
 	public boolean hasZIndex() {
@@ -631,9 +640,9 @@ public class Style {
 	public float getPaddingBottom() {
 		return PaddingBottom;
 	}
-
-
 	
+
+
 
 
 
