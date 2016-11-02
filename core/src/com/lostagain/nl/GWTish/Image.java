@@ -111,7 +111,7 @@ public class Image extends Widget {
 		if (!setup){ //if the empty constructor was used we might not be setup yet
 		   setupMaterial(image); 
 		}
-		
+		this.image=image;
 		Material mat = getBackgroundMaterial();
 		mat.set(TextureAttribute.createDiffuse(image));
 		
@@ -121,7 +121,14 @@ public class Image extends Widget {
 
 	}
 	
+	
+	
+	public Texture getImage() {
+		return image;
+	}
+
 	/**
+	 * 
 	 * lets you add a specific attribute to the material used to render this image
 	 * This attribute could contain a ID that your material manager uses to select a custom shader for it
 	 * (for example, if you want to do bump mapping on it, or a distance field)

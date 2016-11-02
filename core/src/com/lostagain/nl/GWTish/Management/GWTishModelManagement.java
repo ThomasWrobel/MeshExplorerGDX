@@ -739,6 +739,15 @@ public class GWTishModelManagement {
 		//crop to the ones on top, hitting as we go
 		for (rayHit hit : underCursorHits) {
 
+			//allow a chance to cancel
+			if (cancelCurrentTouchEvent){				
+				cancelCurrentTouchEvent = false;
+				return onesHit;
+			}
+			
+			//
+			
+			
 			hitable object = hit.hitthis;
 
 			objectInteractionType type = object.getInteractionType();
@@ -796,13 +805,21 @@ public class GWTishModelManagement {
 
 
 		}
-
+		
+		//ensure not canceled for next time
+		cancelCurrentTouchEvent=false;
 
 		return onesHit;
 
 	}
 
-
+  static  boolean cancelCurrentTouchEvent=false;
+    /**
+     * cancels either the current,or next, touch events
+     */
+static	public void cancelCurrentTouchEvents(){
+		cancelCurrentTouchEvent = true;
+	}
 
 	private static void listUnderCursorToLog(ArrayList<rayHit> underCursorHits2) {
 		for (rayHit rayhit : underCursorHits2) {
