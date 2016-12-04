@@ -76,8 +76,7 @@ public class GwtishWidgetDistanceFieldAttribute extends Attribute {
 	
 	//enum help manage preset styles
 	public enum presetTextStyle {
-		NULL_DONTRENDERTEXT ( 1,Color.CLEAR ,10,10,Color.CLEAR,0   ,Color.CLEAR, Color.CLEAR,-0.6f,0.6f,0.3f),
-		
+		NULL_DONTRENDERTEXT ( 1,Color.CLEAR ,10,10,Color.CLEAR,0   ,Color.CLEAR, Color.CLEAR,-0.6f,0.6f,0.3f),		
 		standardWithShadow ( 1,Color.BLACK ,10,10,Color.CLEAR,0   ,Color.CLEAR, Color.BLACK,-0.6f,0.6f,0.3f),
 		standardWithRedGlow(1f,Color.BLACK ,10,10,Color.CLEAR,0.7f,Color.RED  , Color.BLACK,   0f,  0f,  0f),
 		whiteWithShadow    ( 1,Color.WHITE ,10,10,Color.CLEAR,0   ,Color.CLEAR, Color.BLACK,-1f,1f,0.5f);

@@ -1,5 +1,7 @@
 package com.lostagain.nl.GWTish;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
@@ -643,7 +645,66 @@ public class Style {
 	
 
 
+ /**
+  * Below is WIP animation system stuff
+  * Not used yet
+  */
 
+	/**
+	 * enum specifying type of style parameter, used for the animation system 
+	 */
+	enum StyleParam {
+		/** text color **/
+		color,
+		/** back color **/
+		backcolor
+	}
+	
+	class stylestate {
+		public stylestate(Color value, float time) {
+			super();
+			this.value = value;
+			this.time = time;
+		}
+		Color value;
+		float time;
+	}
+	
+	/**
+	 * a list of arrays, each containing animations for a particular transition between style parameter states
+	 */
+	HashMap<StyleParam,ArrayList<stylestate>> allTransitionStates =  new HashMap<StyleParam,ArrayList<stylestate>>();
 
-
+	/*
+	@keyframes example {
+	    0%   {background-color: red;}
+	    25%  {background-color: yellow;}
+	    50%  {background-color: blue;}
+	    100% {background-color: green;}
+	}
+*/
+	
+	/**
+	 * 
+	 * @param type
+	 * @param time - between 0 and 1
+	 * @param value
+	 */
+	public void addTransitionState(StyleParam type, float time, Color value) {
+		
+		//
+		ArrayList<stylestate> arrayList = allTransitionStates.get(type);
+		
+		if (arrayList == null){			//if needed add a new type to the transition list
+			arrayList = new ArrayList<stylestate>();
+			allTransitionStates.put(type, arrayList);
+		}
+		
+		stylestate newstate = new stylestate(value,time);		
+		arrayList.add(newstate); //add state
+		
+	}
+	
+	
+	
 }

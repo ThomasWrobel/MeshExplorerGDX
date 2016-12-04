@@ -172,10 +172,10 @@ public class GwtishWidgetShader implements Shader {
 
 	@Override
 	public void begin (Camera camera, RenderContext context) {  
-
 		this.camera = camera;
 		this.context = context;
 
+		
 		program.begin();
 		
 		//the the variable for the cameras projectino to be passed to the shader
@@ -206,6 +206,23 @@ public class GwtishWidgetShader implements Shader {
 	@Override	
 	public void render (Renderable renderable) {  
 
+
+		//TODO:
+		//Prereq;
+		//Combine the two attribute classes into one
+		//Move the transition storage hashmap to that class
+		//
+		//In order to implement animated css like emulation, for each frame we will need to update the various attribute values to what they should
+		//be before they are passed to the shader
+		//0. Work out current % into animation. 1-((total duration - current time)/100)
+		//1. Loop over each type of attribute ( enum in Style for these. Color,Opacity,Border size etc)
+		//2. check for the presence of a Transition for this type, and if so get it
+		//3. loop in the transition, if present, to find the current start and end floats, as well as how far into it we should be.
+		//4. Use this value to lerp between start and end
+		//5. Set the attribute we were checking to this new interpolated value
+		//6. continue for other attributes
+		//
+		
 		//set the variable for the objects world transform to be passed to the shader
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
 
