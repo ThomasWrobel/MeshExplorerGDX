@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute.TextScalingMode;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute.TextScalingMode;
 
 /**
  * The goal of this shader is to combine the features of the distancefieldshader with the glowingrectangle background shader
@@ -207,21 +207,6 @@ public class GwtishWidgetShader implements Shader {
 	public void render (Renderable renderable) {  
 
 
-		//TODO:
-		//Prereq;
-		//Combine the two attribute classes into one
-		//Move the transition storage hashmap to that class
-		//
-		//In order to implement animated css like emulation, for each frame we will need to update the various attribute values to what they should
-		//be before they are passed to the shader
-		//0. Work out current % into animation. 1-((total duration - current time)/100)
-		//1. Loop over each type of attribute ( enum in Style for these. Color,Opacity,Border size etc)
-		//2. check for the presence of a Transition for this type, and if so get it
-		//3. loop in the transition, if present, to find the current start and end floats, as well as how far into it we should be.
-		//4. Use this value to lerp between start and end
-		//5. Set the attribute we were checking to this new interpolated value
-		//6. continue for other attributes
-		//
 		
 		//set the variable for the objects world transform to be passed to the shader
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
@@ -232,18 +217,23 @@ public class GwtishWidgetShader implements Shader {
 		float w = renderable.meshPart.mesh.calculateBoundingBox().getWidth();
 		float h = renderable.meshPart.mesh.calculateBoundingBox().getHeight();
 		
-		//GWTish widgets are controlled by two style attributes
-		//A distance field shader for text styling
-		GwtishWidgetDistanceFieldAttribute textStyleData = (GwtishWidgetDistanceFieldAttribute)renderable.material.get(GwtishWidgetDistanceFieldAttribute.ID);
-		//And a background shader which lets us have curved corners in the background
-		GwtishWidgetBackgroundAttribute backgroundParameters = (GwtishWidgetBackgroundAttribute)renderable.material.get(GwtishWidgetBackgroundAttribute.ID);
+		//GWTish widgets are controlled by a style attributes
+		//A distance field shader for text styling and background controll
+		GwtishWidgetShaderAttribute textStyleData = (GwtishWidgetShaderAttribute)renderable.material.get(GwtishWidgetShaderAttribute.ID);
+		
+		//update delta if animating
+		textStyleData.updateDelta( Gdx.graphics.getDeltaTime()*1000.0);
+		
+		
+		//background used to be a seperate shaderattribute, not used now;
+		//GwtishWidgetBackgroundAttribute backgroundParameters = (GwtishWidgetBackgroundAttribute)renderable.material.get(GwtishWidgetBackgroundAttribute.ID);
 		//(one of these attributes may be null, but not both)
 
 
 
 		//if textStyleData is null, we assume the null dataset for it
 		if (textStyleData==null){
-			textStyleData = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
+			textStyleData = new GwtishWidgetShaderAttribute(GwtishWidgetShaderAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
 			//note; 
 			//this is currently not very efficient - we should have a flag system for "no text" rather then needing COLOR 0,0,0,0 to be set on all color settings  
 			
@@ -368,8 +358,8 @@ public class GwtishWidgetShader implements Shader {
 			if (textStyleData!=null){
 				textStyleData.setOverall_Opacity_Multiplier(backgroundOpacity.opacity);
 			}
-			if (backgroundParameters!=null){
-				backgroundParameters.setOverall_Opacity_Multiplier(backgroundOpacity.opacity);
+			if (textStyleData!=null){
+				textStyleData.setOverall_Opacity_Multiplier(backgroundOpacity.opacity);
 			}
 
 		} else {
@@ -378,8 +368,8 @@ public class GwtishWidgetShader implements Shader {
 				textStyleData.setOverall_Opacity_Multiplier(1f);
 			}
 
-			if (backgroundParameters!=null){
-				backgroundParameters.setOverall_Opacity_Multiplier(1f);
+			if (textStyleData!=null){
+				textStyleData.setOverall_Opacity_Multiplier(1f);
 			}
 
 		}
@@ -390,6 +380,11 @@ public class GwtishWidgetShader implements Shader {
 		// if (renderable.material.has(ColorAttribute.Diffuse)){	    		     		
 		//text from attribute
 		Color textColour = textStyleData.getTextColour();   	
+		
+		if (textColour==null){
+			Log.severe("_______________________________________________________________________________________ textColour is null");
+		}
+		
 
 		program.setUniformf(a_colorFlag,1);
 
@@ -429,7 +424,7 @@ public class GwtishWidgetShader implements Shader {
 
 
 
-		if (backgroundParameters==null){
+		if (textStyleData==null){
 			//(if no background specified its just transparent)	 	
 			program.setUniformf(u_backBorderWidth,    0f);  	 
 			program.setUniformf(u_backBackColor,    Color.CLEAR);
@@ -438,10 +433,10 @@ public class GwtishWidgetShader implements Shader {
 
 		} else {
 
-			program.setUniformf(u_backBorderWidth,    backgroundParameters.borderWidth   );  	 
-			program.setUniformf(u_backBackColor,    backgroundParameters.getBackColor()   );
-			program.setUniformf(u_backCoreColor,    backgroundParameters.getBorderColour()); 
-			program.setUniformf(u_backCornerRadius, backgroundParameters.cornerRadius); 
+			program.setUniformf(u_backBorderWidth,    textStyleData.borderWidth   );  	 
+			program.setUniformf(u_backBackColor,    textStyleData.getBackColor()   );
+			program.setUniformf(u_backCoreColor,    textStyleData.getBorderColour()); 
+			program.setUniformf(u_backCornerRadius, textStyleData.cornerRadius); 
 
 
 		}
@@ -494,7 +489,7 @@ public class GwtishWidgetShader implements Shader {
 	@Override
 	public boolean canRender (Renderable instance) {
 
-		if (instance.material.has(GwtishWidgetDistanceFieldAttribute.ID) || instance.material.has(GwtishWidgetBackgroundAttribute.ID)){
+		if (instance.material.has(GwtishWidgetShaderAttribute.ID)) { //|| instance.material.has(GwtishWidgetBackgroundAttribute.ID)){
 			return true;
 		}
 

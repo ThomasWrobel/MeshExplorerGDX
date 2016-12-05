@@ -126,7 +126,7 @@ public class GlowingSquareShader implements Shader {
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
 
 
-		GwtishWidgetBackgroundAttribute squareStyle = (GwtishWidgetBackgroundAttribute)renderable.material.get(GwtishWidgetBackgroundAttribute.ID);
+		GwtishWidgetShaderAttribute squareStyle = (GwtishWidgetShaderAttribute)renderable.material.get(GwtishWidgetShaderAttribute.ID);
 		Color back = squareStyle.backColor.cpy(); //squareStyle can be null at this point for some reason?
 		Color core = squareStyle.borderColour.cpy();
 		
@@ -183,7 +183,7 @@ public class GlowingSquareShader implements Shader {
 	@Override
 	public boolean canRender (Renderable instance) {
 
-		if (instance.material.has(GwtishWidgetBackgroundAttribute.ID)){
+		if (instance.material.has(GwtishWidgetShaderAttribute.ID)){
 			return true;
 		}
 

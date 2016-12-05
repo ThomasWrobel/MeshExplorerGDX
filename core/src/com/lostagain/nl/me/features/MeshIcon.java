@@ -39,7 +39,7 @@ import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.newmovements.NewForward;
 import com.lostagain.nl.me.newmovements.NewMovement;
 import com.lostagain.nl.me.newmovements.NewMovementController;
-import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
 import com.lostagain.nl.shaders.MySorter;
 import com.lostagain.nl.uti.HSLColor;
 
@@ -484,7 +484,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 		//for now, we just use a simple texture //Color.BLUE,
 		Material material = new Material(ICON_MATERIAL,
-				new GwtishWidgetBackgroundAttribute(1f,DefaultColour,Color.WHITE,3f),
+				new GwtishWidgetShaderAttribute(1f,DefaultColour,Color.WHITE,3f),
 				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f));
 
 

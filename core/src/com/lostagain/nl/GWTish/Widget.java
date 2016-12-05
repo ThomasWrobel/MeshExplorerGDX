@@ -18,7 +18,7 @@ import com.lostagain.nl.GWTish.Management.IsAnimatableModelInstance;
 import com.lostagain.nl.GWTish.Management.ZIndexGroup;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.me.models.objectInteractionType;
-import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
 
 /**
  * This will approximate a similar function as GWTs Widget class does
@@ -35,7 +35,7 @@ public class Widget extends Element {
 	static Material DefaultWhiteBackground = new Material(
 			SHADERFORBACKGROUND,
 			new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
-			new GwtishWidgetBackgroundAttribute(1f,Color.CLEAR,Color.RED,1.0f));
+			new GwtishWidgetShaderAttribute(1f,Color.CLEAR,Color.RED,1.0f));
 
 
 

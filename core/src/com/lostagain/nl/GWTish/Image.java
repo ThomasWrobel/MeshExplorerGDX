@@ -150,7 +150,7 @@ public class Image extends Widget {
 	/**
 	 * Do not use for anything but ZINDEX. Images dont support style changes right now.
 	 * Might not ever, depending how styles end up being handled.
-	 * This is because Images will use their own shader, or one supplied, not the standard text or background shaders giving CSS like functions
+	 * This is because Images will use their own shader, or one supplied, not the standard text shader giving CSS like functions
 	 */
 	@Override
 	public Style getStyle() {

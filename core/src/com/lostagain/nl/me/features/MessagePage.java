@@ -28,7 +28,7 @@ import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.models.hitable;
 import com.lostagain.nl.me.models.objectInteractionType;
-import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
 
 /**
  * represents 1 single email page.
@@ -59,7 +59,7 @@ public class MessagePage extends VerticalPanel implements GenericMeshFeature {
 		this.add(emailContents);
 		
 		
-		emailContents.getStyle().setTextStyle(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+		emailContents.getStyle().setTextStyle(GwtishWidgetShaderAttribute.presetTextStyle.whiteWithShadow);
 		this.getStyle().clearBackgroundColor(); 
 		this.getStyle().clearBorderColor();
 		

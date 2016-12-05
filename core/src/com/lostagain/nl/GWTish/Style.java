@@ -14,9 +14,9 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
 import com.lostagain.nl.GWTish.Management.ZIndexGroup;
-import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute.presetTextStyle;
-import com.lostagain.nl.shaders.GwtishWidgetBackgroundAttribute;
-import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute.StyleParam;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute.presetTextStyle;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
 
 /**
  * stores style parameters for Elements
@@ -31,8 +31,9 @@ public class Style {
 	Element elementWithStyle;
 	Material objectsMaterial = null;
 
-	GwtishWidgetDistanceFieldAttribute textStyle;
-	GwtishWidgetBackgroundAttribute    backStyle;
+	GwtishWidgetShaderAttribute textStyle;
+	
+//	GwtishWidgetBackgroundAttribute    backStyle;
 	
 	
 	
@@ -61,12 +62,12 @@ public class Style {
 		this.elementWithStyle=elementWithStyle;
 		
 		//shaders controlled by two attributes;
-		textStyle     = ((GwtishWidgetDistanceFieldAttribute)objectsMaterial.get(GwtishWidgetDistanceFieldAttribute.ID));
-		backStyle     = ((GwtishWidgetBackgroundAttribute)objectsMaterial.get(GwtishWidgetBackgroundAttribute.ID));
+		textStyle     = ((GwtishWidgetShaderAttribute)objectsMaterial.get(GwtishWidgetShaderAttribute.ID));
+	//	backStyle     = ((GwtishWidgetBackgroundAttribute)objectsMaterial.get(GwtishWidgetBackgroundAttribute.ID));
 	
 		//(one of these might be null, if so they will be created and added on demand)
 
-		GwtishWidgetDistanceFieldAttribute materialAccordingToStyle = (GwtishWidgetDistanceFieldAttribute) mat.get(GwtishWidgetDistanceFieldAttribute.ID);
+		GwtishWidgetShaderAttribute materialAccordingToStyle = (GwtishWidgetShaderAttribute) mat.get(GwtishWidgetShaderAttribute.ID);
 		if (materialAccordingToStyle!=null){
 			Log.info( "3fitarea set as:"+materialAccordingToStyle.textScaleingMode ); 
 		} else {
@@ -150,14 +151,14 @@ public class Style {
 		
 	//	nullParameterCheck(bordercol);
 		
-		createBackgroundAttributeIfNeeded();
+	//	createBackgroundAttributeIfNeeded();
 	//	Log.info("_________setting bordercoll:"+bordercol);
 
 		//get the material from the model
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		//if (backStyle!=null){
 
-			backStyle.borderWidth = borderWidth;
+			textStyle.borderWidth = borderWidth;
 			
 		//	glowingSquare.glowColor = bordercol;
 	//	}
@@ -170,22 +171,22 @@ public class Style {
 		
 		nullParameterCheck(bordercol);
 		
-		createBackgroundAttributeIfNeeded();
+	//	createBackgroundAttributeIfNeeded();
 	//	Log.info("_________setting bordercoll:"+bordercol);
 
 		//get the material from the model
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		//if (backStyle!=null){
 
-			backStyle.borderColour = bordercol;
+		textStyle.borderColour = bordercol;
 		//	glowingSquare.glowColor = bordercol;
 	//	}
 
 	}
 	
 	public void setBorderRadius(float radius) {
-		createBackgroundAttributeIfNeeded();
-			backStyle.cornerRadius = radius;
+	//	createBackgroundAttributeIfNeeded();
+			textStyle.cornerRadius = radius;
 	}
 
 	/**
@@ -197,7 +198,7 @@ public class Style {
 		nullParameterCheck(backcol);
 		
 		
-		createBackgroundAttributeIfNeeded();
+		//createBackgroundAttributeIfNeeded();
 
 		
 		
@@ -207,7 +208,7 @@ public class Style {
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		//if (backStyle!=null){
 			//	GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)objectsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
-			backStyle.backColor.set(backcol);
+		textStyle.backColor.set(backcol);
 		//}
 		
 	//	if (textStyle!=null){
@@ -222,6 +223,7 @@ public class Style {
 		}
 	}
 	
+	/*
 	private void createBackgroundAttributeIfNeeded() {
 		
 		if (backStyle==null){
@@ -233,7 +235,7 @@ public class Style {
 			
 		}
 		
-	}
+	}*/
 	
 	private void createTextAttributeIfNeeded() {
 		
@@ -241,7 +243,7 @@ public class Style {
 
 			Log.info("_________(creating default text shader attribute)");
 			//if we are creating one automatically on demand, everything is set to clear
-			textStyle  = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
+			textStyle  = new GwtishWidgetShaderAttribute(GwtishWidgetShaderAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
 			addAttributeToShader(textStyle);			
 		}
 		
@@ -645,66 +647,38 @@ public class Style {
 	
 
 
- /**
-  * Below is WIP animation system stuff
-  * Not used yet
-  */
+	//---------------
+	//wip animation stuff
 
-	/**
-	 * enum specifying type of style parameter, used for the animation system 
-	 */
-	enum StyleParam {
-		/** text color **/
-		color,
-		/** back color **/
-		backcolor
-	}
-	
-	class stylestate {
-		public stylestate(Color value, float time) {
-			super();
-			this.value = value;
-			this.time = time;
-		}
-		Color value;
-		float time;
-	}
-	
-	/**
-	 * a list of arrays, each containing animations for a particular transition between style parameter states
-	 */
-	HashMap<StyleParam,ArrayList<stylestate>> allTransitionStates =  new HashMap<StyleParam,ArrayList<stylestate>>();
-
-	/*
-	@keyframes example {
-	    0%   {background-color: red;}
-	    25%  {background-color: yellow;}
-	    50%  {background-color: blue;}
-	    100% {background-color: green;}
-	}
-*/
-	
-	/**
-	 * 
-	 * @param type
-	 * @param time - between 0 and 1
-	 * @param value
-	 */
 	public void addTransitionState(StyleParam type, float time, Color value) {
-		
-		//
-		ArrayList<stylestate> arrayList = allTransitionStates.get(type);
-		
-		if (arrayList == null){			//if needed add a new type to the transition list
-			arrayList = new ArrayList<stylestate>();
-			allTransitionStates.put(type, arrayList);
-		}
-		
-		stylestate newstate = new stylestate(value,time);		
-		arrayList.add(newstate); //add state
+		textStyle.addTransitionState(type, time, value);
 		
 	}
+	public void addTransitionState(StyleParam type, float time, float value) {
+		textStyle.addTransitionState(type, time, value);
+		
+	}
+	public void setTransitionLength(float totalAnimationTime) {
+		textStyle.setTransitionLength(totalAnimationTime);
+		
+	}
+	public void debugTransitionStates(){		
+		Log.info(textStyle.debugTransitionStates());		
+	}
 	
+
+	public void setPercentageIntoAnimation(float percentageIntoAnimation){
+		textStyle.setPercentageIntoAnimation(percentageIntoAnimation);
+	}
+
+	/**
+	 * updates the animation, if any
+	 * @param f
+	 */
+	public void updateDelta(float f) {
+		textStyle.updateDelta(f);
+	}
+
 	
 	
 }

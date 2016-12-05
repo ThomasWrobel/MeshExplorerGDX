@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
-import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
 
 /**
  * This will approximate a similar function as GWTs Element class does.

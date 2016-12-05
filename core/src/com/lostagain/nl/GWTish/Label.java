@@ -29,8 +29,8 @@ import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.me.models.ModelMaker;
 import com.lostagain.nl.shaders.DistanceFieldShader;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
-import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute;
-import com.lostagain.nl.shaders.GwtishWidgetDistanceFieldAttribute.TextScalingMode;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute.TextScalingMode;
 
 /**
  * A Libgdx label that will eventually emulate most of the features of a GWT label (ish. VERY ish.)<br>
@@ -230,7 +230,7 @@ public class Label extends LabelBase {
 		}
 		//--------------------------------------------------------
 
-		GwtishWidgetDistanceFieldAttribute matttest = (GwtishWidgetDistanceFieldAttribute) this.getStyle().getMaterial().get(GwtishWidgetDistanceFieldAttribute.ID);
+		GwtishWidgetShaderAttribute matttest = (GwtishWidgetShaderAttribute) this.getStyle().getMaterial().get(GwtishWidgetShaderAttribute.ID);
 
 		Log.info( "fitarea set as:"+matttest.textScaleingMode); 
 		Log.info( "paddingLeft:   "+matttest.paddingLeft); 
@@ -324,7 +324,7 @@ public class Label extends LabelBase {
 
 		//if (textStyle==null){
 		//	textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
-		GwtishWidgetDistanceFieldAttribute textStyle = new GwtishWidgetDistanceFieldAttribute(GwtishWidgetDistanceFieldAttribute.presetTextStyle.whiteWithShadow);
+		GwtishWidgetShaderAttribute textStyle = new GwtishWidgetShaderAttribute(GwtishWidgetShaderAttribute.presetTextStyle.whiteWithShadow);
 
 		//}
 
@@ -359,7 +359,7 @@ public class Label extends LabelBase {
 						textStyle);
 
 
-		GwtishWidgetDistanceFieldAttribute matttest = (GwtishWidgetDistanceFieldAttribute) mat.get(GwtishWidgetDistanceFieldAttribute.ID);
+		GwtishWidgetShaderAttribute matttest = (GwtishWidgetShaderAttribute) mat.get(GwtishWidgetShaderAttribute.ID);
 
 
 
@@ -369,7 +369,7 @@ public class Label extends LabelBase {
 		//Note the *1 is the scale. We have scale 1 by default, duh.
 		Model newModel = Widget.generateBackground(SizeX, SizeY, mat, alignment);
 
-		GwtishWidgetDistanceFieldAttribute matttest2 = (GwtishWidgetDistanceFieldAttribute) newModel.getMaterial(LABEL_MATERIAL).get(GwtishWidgetDistanceFieldAttribute.ID);
+		GwtishWidgetShaderAttribute matttest2 = (GwtishWidgetShaderAttribute) newModel.getMaterial(LABEL_MATERIAL).get(GwtishWidgetShaderAttribute.ID);
 
 		Log.info( "1fitarea set as:"+matttest2.textScaleingMode); 
 		Log.info( "paddingLeft:   "+matttest2.paddingLeft); 

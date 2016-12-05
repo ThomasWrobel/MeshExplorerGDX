@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
  * This controlls the background and border.
  * NOTE: This overrides any ColorAttribute setting for the background. Use this .backColor to pick a background ONLY
  * */
-public class GwtishWidgetBackgroundAttribute extends Attribute {
+public class GwtishWidgetBackgroundAttribute_old extends Attribute {
 	public final static String Alias = "GwtishWidgetBackgroundAttribute";
 	public final static long ID = register(Alias);
 
@@ -39,7 +39,7 @@ public class GwtishWidgetBackgroundAttribute extends Attribute {
 	 * @param borderColour
 	 * @param cornerRadius
 	 */
-	public GwtishWidgetBackgroundAttribute (final float glowWidth,final Color backColor, final Color borderColour , final float cornerRadius) {
+	public GwtishWidgetBackgroundAttribute_old (final float glowWidth,final Color backColor, final Color borderColour , final float cornerRadius) {
 
 		super(ID);
 		this.borderWidth = glowWidth;
