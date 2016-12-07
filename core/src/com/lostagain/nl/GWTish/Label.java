@@ -357,7 +357,7 @@ public class Label extends LabelBase {
 						TextureAttribute.createDiffuse(newTexture),
 						//	ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
 						textStyle);
-
+		
 
 		GwtishWidgetShaderAttribute matttest = (GwtishWidgetShaderAttribute) mat.get(GwtishWidgetShaderAttribute.ID);
 
@@ -681,8 +681,10 @@ public class Label extends LabelBase {
 
 		PixmapAndCursorObject pixmapAndCursor = new PixmapAndCursorObject(textPixmap, currentWidth, currentHeight);
 
-
-		return new TextureAndCursorObject(new Texture(pixmapAndCursor.textureItself),pixmapAndCursor.Cursor.x,pixmapAndCursor.Cursor.y);
+		TextureAndCursorObject textureAndCursorObject = new TextureAndCursorObject(new Texture(pixmapAndCursor.textureItself),pixmapAndCursor.Cursor.x,pixmapAndCursor.Cursor.y);
+		textPixmap.dispose();
+		
+		return textureAndCursorObject;
 
 
 	}
@@ -701,8 +703,11 @@ public class Label extends LabelBase {
 	static public TextureAndCursorObject generateTexture(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit, float maxWidth) {
 
 		PixmapAndCursorObject data = generatePixmap(text, DefaultWidth, DefaultHeight, sizeratio, expandSizeToFit,maxWidth);
-
-		return new TextureAndCursorObject(new Texture(data.textureItself),data.Cursor.x,data.Cursor.y);
+		TextureAndCursorObject textureAndCursorObject = new TextureAndCursorObject(new Texture(data.textureItself),data.Cursor.x,data.Cursor.y);
+		data.textureItself.dispose();
+		
+		
+		return textureAndCursorObject;
 	}
 
 	static public PixmapAndCursorObject generatePixmap(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit, float maxWidth) {
@@ -987,6 +992,10 @@ public class Label extends LabelBase {
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
 
 		Texture newTexture = textureAndData.textureItself;
+		
+		//dispose of previous texture
+		((TextureAttribute)infoBoxsMaterial.get(TextureAttribute.Diffuse)).textureDescription.texture.dispose();
+		//
 
 		infoBoxsMaterial.set(TextureAttribute.createDiffuse(newTexture));
 	

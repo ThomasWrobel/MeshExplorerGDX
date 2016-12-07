@@ -129,6 +129,11 @@ public class Widget extends Element {
 
 
 	static protected Material generateMaterial(){
+		//return  new Material(
+		//		SHADERFORBACKGROUND,
+		//		new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
+		//		new GwtishWidgetShaderAttribute(1f,Color.CLEAR,Color.RED,1.0f));
+
 		return DefaultWhiteBackground.copy();
 	}
 

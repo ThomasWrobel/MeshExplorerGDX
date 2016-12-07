@@ -662,6 +662,10 @@ public class Style {
 		textStyle.setTransitionLength(totalAnimationTime);
 		
 	}
+	public void setTransitionIterationCount(int totalAnimationTime) {
+		textStyle.setTransitionIterationCount(totalAnimationTime);
+		
+	}
 	public void debugTransitionStates(){		
 		Log.info(textStyle.debugTransitionStates());		
 	}

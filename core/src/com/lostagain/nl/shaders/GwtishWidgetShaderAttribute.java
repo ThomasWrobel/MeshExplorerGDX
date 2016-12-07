@@ -433,7 +433,6 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	//--------------------------
 	/**
 	 * Below is WIP animation system stuff
-	 * Not used yet
 	 */
 
 	/**
@@ -447,7 +446,23 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		/***
 		 * glowSize
 		 */
-		glowSize
+		glowSize,
+		/**
+		 * glowColour
+		 */
+		glowColour,
+		/**
+		 * shadowColour
+		 */
+		shadowColour,
+		/**
+		 * shadowXDisplacement
+		 */
+		shadowXDisplacement,
+		/**
+		 * shadowYDisplacement
+		 */
+		shadowYDisplacement
 	}
 
 	class stylestate {
@@ -474,11 +489,16 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	float totalAnimationTime = -1; //no animation
 
 
+	int TransitionIterationCount = -1; //infinite
+	
 	public void setTransitionLength(float totalAnimationTime) {
 		this.totalAnimationTime = totalAnimationTime;
 	}
 
-
+	public void setTransitionIterationCount(int count) {
+		this.TransitionIterationCount = count;
+	}
+	
 	double currentTotalTime = 0.0f; //ms
 	boolean animating=false;
 
@@ -491,12 +511,16 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 
 
 		currentTotalTime=currentTotalTime+d;
-
 		//Log.info("current total delta:"+currentTotalTime);
+		
+		//are we still animating?
+		if ((TransitionIterationCount!=-1) && ((currentTotalTime/totalAnimationTime)>TransitionIterationCount)){
+			animating=false;
+			return;
+			
+		}
 
 		//work out percentage into animation (0.0-1.0)
-
-
 		double timeleft = currentTotalTime%totalAnimationTime;	//currently we loop forever
 		double percentage = timeleft/totalAnimationTime;
 
@@ -652,7 +676,7 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 						continue;
 					} 
 
-					if (startState != null) {
+					if (startState != null && percentageIntoAnimation<=stylestate.time) {
 						//if start is already set we know we are looking for the end
 						//	endColor = stylestate.value;
 						//	currentSegmentEndTime = stylestate.time;
@@ -662,8 +686,19 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 
 				}
 
-				//total segment duration (as percentage range)
-				float segmentDuration = endState.time - startState.time;
+				//if end state wasn't specified, it loops to the start
+				float segmentDuration =0.0f;
+				if (endState==null){
+					endState = states.get(0);
+					//total segment duration (as percentage range)
+					 segmentDuration = 1.0f - startState.time;
+
+				} else {
+					//total segment duration (as percentage range)
+					 segmentDuration = endState.time - startState.time;
+
+				}
+				
 
 				//how far into it? (0.0 to 1.0)
 				float intoSegment = (float) ((percentageIntoAnimation-startState.time)/segmentDuration);
@@ -694,6 +729,27 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 					glowSize = newsize;
 					break;
 				}
+				case glowColour:
+				{
+					Color newcolor = startState.colorValue.cpy().lerp(endState.colorValue, intoSegment);						
+					glowColour.set(newcolor);						
+					break;
+				}
+				case shadowColour:
+				{
+					Color newcolor = startState.colorValue.cpy().lerp(endState.colorValue, intoSegment);						
+					shadowColour.set(newcolor);						
+					break;
+				}
+				case shadowXDisplacement:
+					shadowXDisplacement = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);					
+					break;
+				case shadowYDisplacement:
+					shadowYDisplacement = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);
+					
+					break;
+				default:
+					break;
 				}
 
 

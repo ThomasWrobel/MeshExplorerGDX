@@ -58,7 +58,11 @@ public class GwtishWidgetShader implements Shader {
 	int u_worldTrans;
 	int u_sampler2D; 
 
+	/**
+	 * -1 = no text rendering
+	 */
 	int a_colorFlag;
+	
 	int u_textColour;
 	//int u_backColour;
 
@@ -218,20 +222,19 @@ public class GwtishWidgetShader implements Shader {
 		float h = renderable.meshPart.mesh.calculateBoundingBox().getHeight();
 		
 		//GWTish widgets are controlled by a style attributes
-		//A distance field shader for text styling and background controll
+		//A distance field shader for text styling with additional features for background control
+		//in essence it gives css-like specifications for a texture
 		GwtishWidgetShaderAttribute textStyleData = (GwtishWidgetShaderAttribute)renderable.material.get(GwtishWidgetShaderAttribute.ID);
 		
 		//update delta if animating
 		textStyleData.updateDelta( Gdx.graphics.getDeltaTime()*1000.0);
-		
+		//(various style settings can be animated)
+		//
 		
 		//background used to be a seperate shaderattribute, not used now;
 		//GwtishWidgetBackgroundAttribute backgroundParameters = (GwtishWidgetBackgroundAttribute)renderable.material.get(GwtishWidgetBackgroundAttribute.ID);
-		//(one of these attributes may be null, but not both)
-
-
-
-		//if textStyleData is null, we assume the null dataset for it
+		//if textStyleData is null, we assume the null dataset for it (no londer needed, there is always textStyleData now
+		/*
 		if (textStyleData==null){
 			textStyleData = new GwtishWidgetShaderAttribute(GwtishWidgetShaderAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
 			//note; 
@@ -239,7 +242,8 @@ public class GwtishWidgetShader implements Shader {
 			
 			//distance field attribute shader should also have a texture to go with it
 			
-		}
+		}*/
+		
 
 		//sometimes extra padding has to be added when scaling
 		//this is because we centralize by default when the scaling has resulted in extra space either vertically or horizontally.
@@ -334,6 +338,16 @@ public class GwtishWidgetShader implements Shader {
 			float sizeDiffY = h / th;
 
 			program.setUniformf(u_sizeDiff,sizeDiffX, sizeDiffY);
+			
+
+			program.setUniformf(a_colorFlag,1);
+			
+		} else {
+			
+			//no text to render, ensure settings are correct for that.
+			program.setUniformf(a_colorFlag, -1);    	//-1 means no text rendering. without this we might see old textures used	    		 
+			
+			
 		}
 		
 		
@@ -386,7 +400,6 @@ public class GwtishWidgetShader implements Shader {
 		}
 		
 
-		program.setUniformf(a_colorFlag,1);
 
 		// } else {
 		//if not we assume default text color

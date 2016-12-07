@@ -71,12 +71,13 @@ public class Image extends Widget {
 	}
 
 
+	
 	/**
 	 * Replaces the Material, in case you want this image to clone another's look.
 	 * 
 	 * @param texture
 	 */
-	protected void replaceMaterialAttribute(Material replacementMaterial){
+	public void replaceMaterialAttribute(Material replacementMaterial){
 		
 		Log.info("replaceing material with new one:"+replacementMaterial.id);
 		

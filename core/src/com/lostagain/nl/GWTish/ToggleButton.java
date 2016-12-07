@@ -146,7 +146,7 @@ public class ToggleButton extends DeckPanel {
 		//the caption should always be visible, but only one background
 		super.showWidget(Caption);
 		super.showWidget(up,false);
-
+		
 		//Caption.getStyle().setZIndex(getStyle().getZIndexValue()+20, getStyle().getZIndexGroup());
 		
 		

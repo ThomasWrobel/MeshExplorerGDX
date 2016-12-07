@@ -63,6 +63,10 @@ public class MyShaderProvider extends DefaultShaderProvider {
 	protected Shader createShader (final Renderable renderable) {
 		
 		//New method for selection (we should slowly move the things from the switch statement to this method)
+		if (renderable.material.has(GwtishWidgetShaderAttribute.ID)){
+			return new GwtishWidgetShader();
+		}
+		
 		if (renderable.material.has(ConceptBeamShader.ConceptBeamAttribute.ID)){
 			return new ConceptBeamShader();			
 		}		
@@ -92,9 +96,6 @@ public class MyShaderProvider extends DefaultShaderProvider {
 	//	}
 		if (renderable.material.has(NormalMapShaderAttribute.ID)){
 			return new NormalMapShader(renderable);
-		}
-		if (renderable.material.has(GwtishWidgetShaderAttribute.ID)){
-			return new GwtishWidgetShader();
 		}
 		if (renderable.material.has(GameBackgroundShaderAttribute.ID)){
 			return new GameBackgroundShader(renderable);
