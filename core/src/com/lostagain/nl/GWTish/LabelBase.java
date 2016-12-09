@@ -62,10 +62,10 @@ public class LabelBase extends Widget {
 			public TextureAndCursorObject(Texture texture,
 					float x, float y,Pixmap rawPixelData) {	
 				
-				textureItself = texture;
+				textureItself = texture; //do we need this perminately?
 				Cursor.x = x;
 				Cursor.y = y;			
-				this.rawPixelData = rawPixelData; //somehow make optional
+				this.rawPixelData = rawPixelData; //somehow make optional - only when using typed text
 
 			}
 		}

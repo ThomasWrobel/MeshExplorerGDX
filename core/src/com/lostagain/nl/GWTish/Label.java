@@ -661,17 +661,17 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 		 //new pixmap with old data
 		 if (addToThis!=null){
 			 
-			int newRequiredWidth = startFromX+currentWidth;			 
+			int newRequiredWidth  = startFromX+currentWidth;			 
 			int newRequiredHeight = startFromY+currentHeight;
 			
 			//if new width or height is bigger we need to make a new map
 			if (newRequiredWidth>addToThis.getWidth() || newRequiredHeight>addToThis.getHeight()){
 				
 				//should pick the biggest values for both dimensions
-				if (newRequiredWidth<=addToThis.getWidth()){
+				if (newRequiredWidth<addToThis.getWidth()){
 					newRequiredWidth=addToThis.getWidth();
 				}
-				if (newRequiredHeight<=addToThis.getHeight()){
+				if (newRequiredHeight<addToThis.getHeight()){
 					newRequiredHeight=addToThis.getHeight();
 				}
 
@@ -679,6 +679,9 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 				
 				textPixmap = new Pixmap(newRequiredWidth, newRequiredHeight, Format.RGBA8888);
 				textPixmap.drawPixmap(addToThis, 0, 0);
+				
+				//dispose old
+				addToThis.dispose();
 				
 			} else {
 				//reuse old map!
@@ -708,7 +711,7 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 			 advance = 0;
 			
 			//now draw each letter
-			Log.info("_________grun="+grun.x+","+grun.y+" ");
+		//	Log.info("_________grun="+grun.x+","+grun.y+" ");
 			int i =0;
 			for (Glyph glyph : grun.glyphs) {
 
@@ -1087,6 +1090,8 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 	public void setText(String text){
 		this.contents=text;
 
+		//todo; check if we can add instead
+		
 		regenerateTexture(text,null);
 
 	}
