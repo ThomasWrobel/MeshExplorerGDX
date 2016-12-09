@@ -1,5 +1,6 @@
 package com.lostagain.nl.GWTish;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
@@ -310,9 +311,19 @@ public class Label extends LabelBase {
 		BitmapFont font          = getEffectiveFont(style);
 		float NativeToSceneRatio = getNativeToSceneResizeRatio(style, font);
 		
+		
+
+		int startFromX =0;
+		int startFromY =0;
+		Pixmap addToThis = null;
+		
+		
 		if (regenTexture){			
+			
 			textureData = generateTexture(labelsSizeMode, contents,interpretBRasNewLine,
-					NativeToSceneRatio,maxWidth,textAlignment,style,font); //left default			
+					NativeToSceneRatio,maxWidth,textAlignment,style,font,
+					startFromX,startFromY,addToThis); //left default	
+			
 		}
 
 		Texture newTexture = textureData.textureItself;
@@ -374,10 +385,14 @@ public class Label extends LabelBase {
 		Log.info( "1fitarea set as:"+matttest2.textScaleingMode); 
 		Log.info( "paddingLeft:   "+matttest2.paddingLeft); 
 
-		//ModelMaker.createRectangle(0, 0, sizeX*1,sizeY*1, 0, mat); 
 
 
-		backgroundAndCursorObject setupData = new backgroundAndCursorObject(newModel,0,0,new Vector2(textureSizeX,textureSizeY));
+		backgroundAndCursorObject setupData = new backgroundAndCursorObject(newModel,
+				textureData.Cursor.x,
+				textureData.Cursor.y,
+				new Vector2(textureSizeX,textureSizeY),
+				textureData.rawPixelData
+				);
 
 
 		return setupData;
@@ -431,81 +446,23 @@ public class Label extends LabelBase {
  * @param font
  * @return
  */
-	static public TextureAndCursorObject generatePixmapExpandedToFit(
+	static public TextureAndCursorObject generatePixmapForShader(
 			String text, 
 			boolean interpretBRasNewLine,
 			float NativeSceneRatio, 
 			float effectiveMaxWidth,
 			TextAlign align, 
 			Style stylesettings,
-			BitmapFont font
+			BitmapFont font,
+			int startFromX,
+			int startFromY,
+			Pixmap addToThis
 			) {
 
 		//  BitmapFontData data = DefaultStyles.standdardFont.getData();
 
-		GlyphLayout layout = new GlyphLayout();	    
-		//layout.setText(DefaultStyles.standdardFont, text);
-
-	
-		
-		
-		//if maxWidth is zero or -1 then we dynamically work it out instead
-		//this means the texture will just be as horizontally long as it needs too, without forced wrapping
-		if (effectiveMaxWidth<1){
-			layout.setText(font, text); 
-			effectiveMaxWidth = layout.width; //gets width at native font size
-		}	else {
-			
-			//if the effectiveMaxWidth is set however,we might have to shrink it by the NativeSceneRatio
-			//This is because font size effects when wraps have to happen.
-			//Bigger font = bigger letters = must wrap sooner
-			//
-			//so this "fake shrunk" newwidth is used to determine the wrapping of the font, which is then scaled up again at the end.
-			//Note; the actual per-character pixel size of the map never changes, we are just using this to cropit different
-			
-			effectiveMaxWidth = effectiveMaxWidth * NativeSceneRatio;
-			
-			
-		}
-		
-				
-
-		Log.info(text+"__"+text+"_layout width:"+effectiveMaxWidth);
-		Log.info(text+"___layout line height:"+font.getLineHeight());
-
-		//convert from text align to layout align
-		int layoutAlignment = Align.center;
-
-		switch (align) {
-		case CENTER:
-			layoutAlignment = Align.center;
-			break;
-		case JUSTIFY:		    
-			Log.info("___JUSTIFY NOT SUPPORTED. DEFAULTING TO CENTER");
-			layoutAlignment = Align.center;
-			break;
-		case LEFT:
-			layoutAlignment = Align.left;
-			break;
-		case RIGHT:
-			layoutAlignment = Align.right;
-			break;
-		default:
-			layoutAlignment = Align.center;
-			break;
-		}
-		
-		//if we are set to interpret <br> as newline, then we replace them with \n
-		if (interpretBRasNewLine){	
-
-			text=text.replace("<br>", "\n");			
-
-			
-		}
-
-
-		layout.setText(font, text, Color.BLACK, effectiveMaxWidth, layoutAlignment, true); //can't centralize without width
-		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, font); 
+		GlyphLayout layout = getNewLayout(text, interpretBRasNewLine, NativeSceneRatio, effectiveMaxWidth, align, font);
+		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, font,startFromX,startFromY,addToThis); 
 
 		//Font size  trying to figure out
 		
@@ -557,6 +514,72 @@ public class Label extends LabelBase {
 		return textureDAta;
 
 	}
+private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLine, float NativeSceneRatio,
+		float effectiveMaxWidth, TextAlign align, BitmapFont font) {
+	GlyphLayout layout = new GlyphLayout();	    
+	//layout.setText(DefaultStyles.standdardFont, text);
+
+
+	
+	
+	//if maxWidth is zero or -1 then we dynamically work it out instead
+	//this means the texture will just be as horizontally long as it needs too, without forced wrapping
+	if (effectiveMaxWidth<1){
+		layout.setText(font, text); 
+		effectiveMaxWidth = layout.width; //gets width at native font size
+	}	else {
+		
+		//if the effectiveMaxWidth is set however,we might have to shrink it by the NativeSceneRatio
+		//This is because font size effects when wraps have to happen.
+		//Bigger font = bigger letters = must wrap sooner
+		//
+		//so this "fake shrunk" newwidth is used to determine the wrapping of the font, which is then scaled up again at the end.
+		//Note; the actual per-character pixel size of the map never changes, we are just using this to cropit different
+		
+		effectiveMaxWidth = effectiveMaxWidth * NativeSceneRatio;
+		
+		
+	}
+	
+			
+
+	Log.info(text+"__"+text+"_layout width:"+effectiveMaxWidth);
+	Log.info(text+"___layout line height:"+font.getLineHeight());
+
+	//convert from text align to layout align
+	int layoutAlignment = Align.center;
+
+	switch (align) {
+	case CENTER:
+		layoutAlignment = Align.center;
+		break;
+	case JUSTIFY:		    
+		Log.info("___JUSTIFY NOT SUPPORTED. DEFAULTING TO CENTER");
+		layoutAlignment = Align.center;
+		break;
+	case LEFT:
+		layoutAlignment = Align.left;
+		break;
+	case RIGHT:
+		layoutAlignment = Align.right;
+		break;
+	default:
+		layoutAlignment = Align.center;
+		break;
+	}
+	
+	//if we are set to interpret <br> as newline, then we replace them with \n
+	if (interpretBRasNewLine){	
+
+		text=text.replace("<br>", "\n");			
+
+		
+	}
+
+
+	layout.setText(font, text, Color.BLACK, effectiveMaxWidth, layoutAlignment, true); //can't centralize without width
+	return layout;
+}
 	
 
 	//note implemented yet
@@ -625,39 +648,85 @@ public class Label extends LabelBase {
 	 * @param standdardFont - should match the one used to generate the layout
 	 * @return
 	 **/
-	static public TextureAndCursorObject generateTexture_fromLayout(GlyphLayout layout, BitmapFont standdardFont){
+	static public TextureAndCursorObject generateTexture_fromLayout(GlyphLayout layout, BitmapFont standdardFont,
+			int startFromX,int startFromY,Pixmap addToThis){
 
-		//create according to predicted size (in future add padding option to texture?)
+		//create according to predicted size 
 		int currentWidth  = (int) layout.width;
 		int currentHeight = (int) (layout.height+standdardFont.getCapHeight()); //not sure if cap  height is correct
+		//.info("_________standdardFont.getCapHeight()="+standdardFont.getCapHeight()+" ");
+		
+		Pixmap textPixmap;
+		
+		 //new pixmap with old data
+		 if (addToThis!=null){
+			 
+			int newRequiredWidth = startFromX+currentWidth;			 
+			int newRequiredHeight = startFromY+currentHeight;
+			
+			//if new width or height is bigger we need to make a new map
+			if (newRequiredWidth>addToThis.getWidth() || newRequiredHeight>addToThis.getHeight()){
+				
+				//should pick the biggest values for both dimensions
+				if (newRequiredWidth<=addToThis.getWidth()){
+					newRequiredWidth=addToThis.getWidth();
+				}
+				if (newRequiredHeight<=addToThis.getHeight()){
+					newRequiredHeight=addToThis.getHeight();
+				}
 
-		Pixmap textPixmap = new Pixmap(currentWidth, currentHeight, Format.RGBA8888);
+				Log.info("_________creating new pixmap of size:"+newRequiredWidth+","+newRequiredHeight+" ");
+				
+				textPixmap = new Pixmap(newRequiredWidth, newRequiredHeight, Format.RGBA8888);
+				textPixmap.drawPixmap(addToThis, 0, 0);
+				
+			} else {
+				//reuse old map!
+				textPixmap=addToThis;
+			}
+			
+			 
+		 } else {
+			//new pixmap with no data
+			 textPixmap = new Pixmap(currentWidth, currentHeight, Format.RGBA8888);
+			 
+		 }
+			 
+		 
+		 
+		Pixmap fontPixmap = getFontPixmap(standdardFont);
 
-		BitmapFontData data = standdardFont.getData();  //need optional font too, should match whats used in layout
-		Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0])); //as pixmap
+		int currentTargetX = 0;
+		int currentTargetY = 0;
 
+		float advance = 0;
 		//now loop over each run of letters. 
 		for (GlyphRun grun : layout.runs) {
 
 			String runstring = "";
 			float currentRunX=0;
+			 advance = 0;
+			
 			//now draw each letter
 			Log.info("_________grun="+grun.x+","+grun.y+" ");
 			int i =0;
 			for (Glyph glyph : grun.glyphs) {
 
-				float advance = grun.xAdvances.get(i);
+				advance = grun.xAdvances.get(i);
 				i++;
 				currentRunX=currentRunX   +   advance    ; //1 should not be needed
 
+				 currentTargetX = startFromX+ (int)grun.x  + (int)currentRunX;		//used to use startfrom to add to the pixmap, now we add to the texture instead		
+				 currentTargetY = startFromY+ (int)grun.y;
+				
 				textPixmap.drawPixmap(
 						fontPixmap,
 						glyph.srcX,
 						glyph.srcY, 
 						glyph.width, 
 						glyph.height,
-						(int)grun.x + glyph.xoffset + (int)currentRunX,
-						(int)grun.y + glyph.yoffset,//+(TILE_HEIGHT - (cheight)) / 2,						
+						currentTargetX + glyph.xoffset,
+						currentTargetY + glyph.yoffset,						
 						glyph.width, 
 						glyph.height);
 
@@ -668,7 +737,7 @@ public class Label extends LabelBase {
 
 			}
 			if (grun.glyphs.size>0){
-				float advance = grun.xAdvances.get(i);
+				advance = grun.xAdvances.get(i);
 				i++;
 				currentRunX=currentRunX+advance;
 				Log.info("______________last run width:"+grun.width+" drawn was till "+currentRunX);	
@@ -678,15 +747,77 @@ public class Label extends LabelBase {
 
 
 		}
+		
+		//work out final cursor position, which is currentTargetX + last advance
+		int cx = (int) (currentTargetX+advance);
+		int cy = (int) (currentTargetY); 
+		
+		//PixmapAndCursorObject pixmapAndCursor = new PixmapAndCursorObject(textPixmap, cx, cy);
 
-		PixmapAndCursorObject pixmapAndCursor = new PixmapAndCursorObject(textPixmap, currentWidth, currentHeight);
+		Texture textureData; 
+	//	if (startFromX==0 && startFromY==0 || addToThis==null){
+			textureData = new Texture(textPixmap);
+			/*
+		} else {
+			//add pixmap to existing texture
+			//textureData = new Texture(pixmapAndCursor.textureItself);
+			
+			//enlarge?
+			//
+			Log.info("______________textPixmap size: "+textPixmap.getWidth()+","+textPixmap.getHeight());	
+			Log.info("______________adding at: "+startFromX+","+startFromY);	
+			Log.info("______________texture size: "+addToThis.getWidth()+","+addToThis.getHeight());	
+			
+		//	textPixmap.fill();			
+			
+			//addToThis.getTextureData().prepare();
+		//	Pixmap existingTexture = addToThis.getTextureData().consumePixmap();
+		
+			
+			addToThis.draw(textPixmap, startFromX, startFromY); //todo: startFromY is wrong?? seems to draw offscreen if set
 
-		TextureAndCursorObject textureAndCursorObject = new TextureAndCursorObject(new Texture(pixmapAndCursor.textureItself),pixmapAndCursor.Cursor.x,pixmapAndCursor.Cursor.y);
-		textPixmap.dispose();
+			//note; drawing doesnt work if ANY of it is outside the bounds
+			
+			//add the startfroms to the cursor pos
+			cx=startFromX+cx;
+			cy=startFromY+cy;
+			
+			textureData=addToThis;
+		}*/
+		
+		
+		TextureAndCursorObject textureAndCursorObject = new TextureAndCursorObject(
+				textureData,
+				cx,
+				cy,
+				textPixmap);
+		
+		//textPixmap.dispose();
 		
 		return textureAndCursorObject;
 
 
+	}
+	
+	
+	static HashMap<BitmapFont,Pixmap> fontCache = new HashMap<BitmapFont,Pixmap>();
+	
+	/**
+	 * Gets a pixmap of the specified font, using a cache if its already been created before
+	 * @param standdardFont
+	 * @return
+	 */
+	private static Pixmap getFontPixmap(BitmapFont standdardFont) {
+		
+		Pixmap	fontPixmap = fontCache.get(standdardFont);
+		
+		if (fontPixmap==null){		
+			BitmapFontData data = standdardFont.getData(); 
+			fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0])); 
+			fontCache.put(standdardFont, fontPixmap);
+		}
+		
+		return fontPixmap;
 	}
 
 
@@ -703,8 +834,12 @@ public class Label extends LabelBase {
 	static public TextureAndCursorObject generateTexture(String text,int DefaultWidth,int DefaultHeight, float sizeratio, boolean expandSizeToFit, float maxWidth) {
 
 		PixmapAndCursorObject data = generatePixmap(text, DefaultWidth, DefaultHeight, sizeratio, expandSizeToFit,maxWidth);
-		TextureAndCursorObject textureAndCursorObject = new TextureAndCursorObject(new Texture(data.textureItself),data.Cursor.x,data.Cursor.y);
-		data.textureItself.dispose();
+		TextureAndCursorObject textureAndCursorObject = new TextureAndCursorObject(
+				new Texture(data.textureItself),
+				data.Cursor.x,data.Cursor.y,
+				data.textureItself
+				);
+	//	data.textureItself.dispose();
 		
 		
 		return textureAndCursorObject;
@@ -952,17 +1087,110 @@ public class Label extends LabelBase {
 	public void setText(String text){
 		this.contents=text;
 
-
-		regenerateTexture(text);
-
-
-
-
+		regenerateTexture(text,null);
 
 	}
 
+	public void addText(String text) {
+		this.contents=contents+text;
+
+		Log.info("adding: "+text+" to existing text");
+		//TODO:
+		//We need a efficient way to add text so we can do typing effects animated nicely.
+		//At first I thought we could just track cursor position and add the next letter
+		//However, unfortunately word-wrapping means that sometimes a new letter added can effect previous letters.
+		//When generating the whole text at once, this isn't a issue - GlyphLayout takes care of it
+		//So how to deal with this when adding a letter to the texture?
+		//1) Regenerate the whole texture each time? Wasteful.
+		//2) Somehow erase texture at point it changes? probably worse then regenerating the lot
+		//3) Regenerate whole texture once something wraps? Else just add?
+		//3 is probably best, but tricky
+		//How to know when a (new) wrapping happens? Added text will start halfway in x, so wrap point wont be easy to workout from glyphlayout either
+		
+		//
+		//we can detect a new wordwrap by looking if the predicted height changes from the existing height.
+		//(so we would always at least need to do a new prediction based on this.contents)
+		//
+		
+		//Most of the above is done. HOWEVER
+		//As the size of the texture always increases, every time text is added, we need to make a new pixmap
+		//then copy the old data into it.
+		//This seems almost as bad as regenerating the lost each time.
+		//Should proformance test to see if it is.
+		//Possible optimization is to make the pixmap bigger then is needed, but that would make the shader more complex.
+		//can pixmaps be cropped?
+		//Or better 
+		//Add the new pixmap to the old texture, dont recreate texture or save old pixmap
+		//Should be possible/better, as we are already making a new texture each time right now
+		
+		boolean textWraps=false;
+		
+	//	if (labelsSizeMode==SizeMode.Fixed || labelsSizeMode==SizeMode.ExpandXYToFit){ //these things never wrap
+
+		//	Log.info("(label doesnt wrap) ");
+	//		textWraps=false;
+	//	} else {
+			//we might still wrap, but we need to work it out based on if we have a new height
+
+			//get new predicted size based on existing settings
+			float effectiveMaxWidth = maxWidth;
+			if (maxWidth!=-1){
+				effectiveMaxWidth = maxWidth - (this.getStyle().getPaddingLeft() + this.getStyle().getPaddingRight());
+			}
+			BitmapFont font          = getEffectiveFont(this.getStyle());
+			float NativeToSceneRatio = getNativeToSceneResizeRatio(this.getStyle(), font);
+			
+			GlyphLayout layout = getNewLayout(contents, interpretBRasNewLine, NativeToSceneRatio, effectiveMaxWidth, this.lastUsedTextAlignment, font);
+			
+			int newheight = (int) (layout.height +font.getCapHeight());
+			int newwidth = (int) layout.width;
+			
+			Log.info(" new height = "+newheight);
+			Log.info(" current text height = "+textureSize.y);
+
+			//notes;
+			//cursor y seems to slowly get displaced (ie, a few pixels too big each time)
+			//also x might be too small
+			if (newheight>textureSize.y){
+				Log.info(" size changed, so we need to regenerate ");
+				textWraps=true;
+			} else {
+				textWraps=false;
+			}
+			
+	//	}
+		
+		if (textWraps){
+
+			//get rid of old texture
+			//((TextureAttribute)infoBoxsMaterial.get(TextureAttribute.Diffuse)).textureDescription.texture.dispose();
+			
+			
+			Log.info(" regenerating texture ");
+			regenerateTexture(contents,null);
+			
+		} else {
+			Log.info(" adding to texture ");
+
+		//	Texture addToExisting = new Texture(newwidth, newheight, Format.RGBA8888);
+		//	addToExisting.draw(super.currentPixmap, 0, 0);
+			
+			
+			regenerateTexture(text,super.currentPixmap);
+		}
+		
+		//if new height regen
+		
+		//else add
+		
+		
+		
+	}
+
+
+	
 	//
-	private void regenerateTexture(String text) {
+	private void regenerateTexture(String text,Pixmap addToExisting) {
 		
 		TextAlign align = this.getStyle().getTextAlignment();
 		lastUsedTextAlignment = align;
@@ -978,23 +1206,39 @@ public class Label extends LabelBase {
 		float NativeToSceneRatio = getNativeToSceneResizeRatio(this.getStyle(), font);
 
 		Log.info("_________regenerating texture; labelsSizeMode:"+labelsSizeMode+" (width="+effectiveMaxWidth+")");
+
+		int startFromX =0;
+		int startFromY =0;
+		
+		if (addToExisting!=null){
+			startFromX =(int) super.Cursor.x;
+			startFromY =(int) super.Cursor.y;
+			//addToExisting = super.texture;
+
+
+			Log.info("Cursor is currently at: "+startFromX+","+startFromY);
+		}
+
 		
 		TextureAndCursorObject textureAndData = generateTexture(
 				labelsSizeMode, 
-				contents,
+				text, //contents
 				interpretBRasNewLine,
 				NativeToSceneRatio,
 				effectiveMaxWidth,//-1 is the default max width which means "any size"
 				align,
 				this.getStyle(),
-				font); 
+				font,
+				startFromX,
+				startFromY,
+				addToExisting); 
 
 		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
 
 		Texture newTexture = textureAndData.textureItself;
 		
-		//dispose of previous texture
-		((TextureAttribute)infoBoxsMaterial.get(TextureAttribute.Diffuse)).textureDescription.texture.dispose();
+		//dispose of previous texture (texturre might be reused so we now dont do this here)
+		//((TextureAttribute)infoBoxsMaterial.get(TextureAttribute.Diffuse)).textureDescription.texture.dispose();
 		//
 
 		infoBoxsMaterial.set(TextureAttribute.createDiffuse(newTexture));
@@ -1014,7 +1258,7 @@ public class Label extends LabelBase {
 		float textureSizeY = textureAndData.textureItself.getHeight();
 		
 		//update stats on our texture size
-		super.updateData(new Vector2(textureSizeX,textureSizeY), textureAndData.Cursor); //TODO: cursor position should always be set to the next position to type. Not sure textureAndData returns this yet
+		super.updateData(new Vector2(textureSizeX,textureSizeY), textureAndData.Cursor,textureAndData.rawPixelData); //TODO: cursor position should always be set to the next position to type. Not sure textureAndData returns this yet
 		//---------------------
 		
 		
@@ -1182,29 +1426,33 @@ public class Label extends LabelBase {
 			float effectiveMaxWidth,
 			TextAlign align, 
 			Style style,
-			BitmapFont font
+			BitmapFont font,
+			int startFromX,
+			int startFromY,
+			Pixmap addToThis
 			) {
 
 
-		
-	
+	//	int startFromX =0;
+	//	int startFromY =0;
+	//	Pixmap addToThis = null;
 
 		TextureAndCursorObject NewTexture = null;
 
 		switch (labelsSizeMode) {
 		case ExpandHeightMaxWidth:
-			NewTexture = generatePixmapExpandedToFit(contents,interpretBRasNewLine,NativeToSceneRatio,effectiveMaxWidth,align,style,font); //-1 = no max width
+			NewTexture = generatePixmapForShader(contents,interpretBRasNewLine,NativeToSceneRatio,effectiveMaxWidth,align,style,font,startFromX,startFromY,addToThis); //-1 = no max width
 			break;
 		case Fixed:			
 			//Note; the textures internal size is not related to the widgets size directly, but it needs to know
 			//the final width/height ratio in order to pad the Pixmap enough to preserve its ratio.
-			NewTexture = generatePixmapExpandedToFit(contents,interpretBRasNewLine,NativeToSceneRatio,-1,align,style,font); //-1 = no max width
+			NewTexture = generatePixmapForShader(contents,interpretBRasNewLine,NativeToSceneRatio,-1,align,style,font,startFromX,startFromY,addToThis); //-1 = no max width
 			break;
 			//expand to fit is also the default
 		case ExpandXYToFit:
 		default:
 			Log.info("______________generating expand to fit text ");
-			NewTexture = generatePixmapExpandedToFit(contents,interpretBRasNewLine,NativeToSceneRatio,-1,align,style,font); //-1 = no max width
+			NewTexture = generatePixmapForShader(contents,interpretBRasNewLine,NativeToSceneRatio,-1,align,style,font,startFromX,startFromY,addToThis); //-1 = no max width
 			break;
 
 		}
@@ -1306,7 +1554,7 @@ public class Label extends LabelBase {
 		//the texture to ensure its still contained within the widget
 
 		///if (this.getStyle().getTextAlignment() != lastUsedTextAlignment){
-		regenerateTexture(contents);
+		regenerateTexture(contents,null);
 
 		//}
 
@@ -1421,8 +1669,7 @@ Text size remains just h/w, however
 		this.getStyle().setTextScale(textScale);*/
 		
 	}
-
-
+	
 
 
 

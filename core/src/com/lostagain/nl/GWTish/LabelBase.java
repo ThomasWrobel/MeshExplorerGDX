@@ -32,32 +32,41 @@ public class LabelBase extends Widget {
 		Model object = null; 
 		
 		Vector2 Cursor = new Vector2();
-
 		Vector2 textureSize = null;
+		
+		//Texture texture = null; //somehow make optional?
+		Pixmap texturePixmap = null; 
 
 		public backgroundAndCursorObject(Model labelInstance,
-				int i, int j, Vector2 textureSize) {		
+				float x, float y, Vector2 textureSize,Pixmap texturePixmap) {		
 			
 			object = labelInstance;
 			
-			Cursor.x = i;
-			Cursor.y = j;		
+			Cursor.x = x;
+			Cursor.y = y;		
 						
 			this.textureSize = textureSize;
+			//this.texture = texture;
+			this.texturePixmap=texturePixmap;
 			
 		}
 	}
 	
 	//needed so we can create and pass both with one augment
 		public static class TextureAndCursorObject {
-			public Texture textureItself = null; 
 			
+			public Texture textureItself = null; 			
 			Vector2 Cursor = new Vector2();
+			Pixmap rawPixelData = null; //somehow make optional
+
 			public TextureAndCursorObject(Texture texture,
-					float x, float y) {			
+					float x, float y,Pixmap rawPixelData) {	
+				
 				textureItself = texture;
 				Cursor.x = x;
 				Cursor.y = y;			
+				this.rawPixelData = rawPixelData; //somehow make optional
+
 			}
 		}
 		
@@ -82,6 +91,8 @@ public class LabelBase extends Widget {
 	//Current writing statistics
 	Vector2 Cursor = null;	
 	Vector2 textureSize = null;
+	//Texture texture = null; //somehow make optional
+	Pixmap currentPixmap = null;
 	
 	public LabelBase(backgroundAndCursorObject setupData){
 		super(setupData.object);
@@ -89,6 +100,10 @@ public class LabelBase extends Widget {
 	//	labelInstance = setupData.object;
 		this.Cursor = setupData.Cursor;
 		this.textureSize = setupData.textureSize;		
+		
+	//	this.texture=setupData.texture;
+		this.currentPixmap = setupData.texturePixmap;
+		
 	}
 	
 	/**
@@ -96,9 +111,11 @@ public class LabelBase extends Widget {
 	 * @param textureSize - if the texture size changes, update this
 	 * @param cursor - if the cursor position changes update this
 	 */
-	public void updateData(Vector2 textureSize,Vector2 cursor) {
+	public void updateData(Vector2 textureSize,Vector2 cursor,Pixmap rawPixelData) {
 		this.Cursor = cursor;
 		this.textureSize = textureSize;
+
+		this.currentPixmap=rawPixelData;
 	}
 
 	
