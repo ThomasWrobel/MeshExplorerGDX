@@ -543,7 +543,7 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 	
 			
 
-	Log.info(text+"__"+text+"_layout width:"+effectiveMaxWidth);
+	Log.info(text+"___layout width:"+effectiveMaxWidth);
 	Log.info(text+"___layout line height:"+font.getLineHeight());
 
 	//convert from text align to layout align
@@ -1084,19 +1084,22 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 
 	/**
 	 * Sets the text and regenerates the texture 
-	 * Also doesn't remember cursor position. This is needed if we want to correctly ADD text to the texture in future, rather then recreating it all
-	 * For animated text this optimization is pretty essential
 	 **/
 	public void setText(String text){
 		this.contents=text;
 
-		//todo; check if we can add instead
+		//todo; check if we can add instead?
 		
 		regenerateTexture(text,null);
 
 	}
 
 	public void addText(String text) {
+		//if empty string ignore
+		if (text.isEmpty()){
+			return; // no op
+		}
+		
 		this.contents=contents+text;
 
 		Log.info("adding: "+text+" to existing text");
@@ -1438,11 +1441,14 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 			) {
 
 
-	//	int startFromX =0;
-	//	int startFromY =0;
-	//	Pixmap addToThis = null;
-
 		TextureAndCursorObject NewTexture = null;
+		
+		//if empty we use a quick function
+		if (contents.isEmpty()){
+			NewTexture  = generateEmptyTexture();
+			return NewTexture;
+
+		}
 
 		switch (labelsSizeMode) {
 		case ExpandHeightMaxWidth:
@@ -1467,6 +1473,20 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 		return NewTexture;
 	}
 
+	private static TextureAndCursorObject generateEmptyTexture() {
+
+		Pixmap textPixmap = new Pixmap(0, 0, Format.RGBA8888);
+		Texture textureData = new Texture(textPixmap);
+			
+		
+		TextureAndCursorObject textureAndCursorObject = new TextureAndCursorObject(
+				textureData,
+				0,
+				0,
+				textPixmap);
+		
+		return textureAndCursorObject;
+	}
 	//None needed right now
 	static public void firstTimeSetUp(){
 		//None needed right now
