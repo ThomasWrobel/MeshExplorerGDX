@@ -1651,9 +1651,12 @@ Text size remains just h/w, however
 		if (labelsSizeMode==SizeMode.Fixed){			
 			//fixed works differently, as its based on widget size, not font size			
 			//the smaller ratio  - either the width or height
-			 textScale = Math.min(
-										this.maxWidth / (textureSize.x),
-					                    this.maxWidth/ (textureSize.y)
+			 float effectiveMaxWidth = this.maxWidth - (this.getStyle().getPaddingLeft()+this.getStyle().getPaddingRight());			 
+			float effectiveMaxHeight = this.maxHeight- (this.getStyle().getPaddingBottom()+this.getStyle().getPaddingTop());
+			
+			textScale = Math.min(
+										effectiveMaxWidth / (textureSize.x),
+					                    effectiveMaxHeight / (textureSize.y)
 					              ); 		
 					
 		} else {			

@@ -28,7 +28,7 @@ import com.lostagain.nl.me.models.ModelMaker;
 public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 	final static String logstag = "GWTish.InfoBox";
 	
-	VerticalPanel infoBoxsPanel = new VerticalPanel(); //default panel;
+	//VerticalPanel infoBoxsPanel = new VerticalPanel(); //default panel;
 	
 	Label subtitleLabel;
 	
@@ -42,6 +42,11 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 		
 		super.getStyle().clearBackgroundColor(); //set the back colour (excluding border)
 		super.getStyle().clearBorderColor();
+		super.getStyle().setColor(Color.RED); //should not be needed but is..why?
+		
+
+		super.userData="InfoBox";
+		
 		
 		//add labels
 		float scale = 1.3f;
@@ -114,6 +119,8 @@ public class InfoBox extends VerticalPanel implements GenericMeshFeature {
 	public void updateApperance(float alpha,FeatureState currentState){
 
 		setOpacity(alpha);
+		
+		
 	}
 
 	@Override

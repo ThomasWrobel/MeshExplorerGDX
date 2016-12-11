@@ -70,7 +70,7 @@ varying float v_shadowBlur;
 varying vec4  v_shadowColour;
 //--
 
-varying float v_colorFlag;
+varying float v_colorModeFlag;
  
 
 varying MED vec2 v_diffuseUV;
@@ -84,7 +84,7 @@ uniform sampler2D u_texture;
 varying float v_backBorderWidth; 
 varying vec4  v_backBackColor;
 varying vec4  v_backCoreColor; //border color for some reason
-varying float  v_backCornerRadius;
+varying float v_backCornerRadius;
 
 varying vec2 iResolution;
 varying vec2 fPosition;
@@ -255,7 +255,7 @@ vec4 getBackColour()
 //
 vec4 getStyledText()
 {
-	float colorFlag = v_colorFlag;
+	float colorFlag = v_colorModeFlag;
 	vec4 diffuse = vec4(1.0,0.0,0.0,1.0);
 	 
 	 
@@ -460,8 +460,8 @@ void main() {
 	
 	vec4 newCol = vec4(0.0,0.0,0.0,0.0);
 	
-	//-1 means no texture set
-	if ( v_colorFlag != -1 &&
+	//-1 means no texture set, so we ensure we are over 0.0
+	if ( v_colorModeFlag > -0.1 &&
 	    (
 	    effective_textColor != vec4(0.0,0.0,0.0,0.0)  || 
 	    effective_outColor  != vec4(0.0,0.0,0.0,0.0)  || 
@@ -488,6 +488,14 @@ void main() {
 	
 	vec4 finalCol =  (newCol * newCol.a) + (v_backColor * (1.0-newCol.a));
 	finalCol.a =  newCol.a + v_backColor.a;
+	
+	//if (v_colorModeFlag<0){	
+	//	 finalCol = vec4(0.0,0.0,0.0,0.0);
+	//}
+	//if (v_textPaddingX>80.0){	
+	//	 finalCol = vec4(0.0,1.0,0.0,1.0);
+	////	 
+	//}
 	
 	//finalCol.a = vec4(0.0,0.0,0.0,1.0);
 	//finalCol = clamp(finalCol,vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0));

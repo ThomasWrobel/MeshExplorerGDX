@@ -24,6 +24,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.Style.TextAlign;
+import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
@@ -42,6 +43,8 @@ import com.lostagain.nl.me.newmovements.NewMovementController;
 import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
 import com.lostagain.nl.shaders.MySorter;
 import com.lostagain.nl.uti.HSLColor;
+
+import javafx.scene.text.TextAlignment;
 
 /** 
  * Will become a 3d icon that can be clicked to turn into a interactive meshFeature.
@@ -231,8 +234,10 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	 * **/
 	public MeshIcon(IconType type,String specificName,float w,float h,Location parentLocation,GenericMeshFeature assocatiedfeature) {		
 		super(getIconsDisplayName(type,specificName),w,h,MODELALIGNMENT.CENTER,TextAlign.CENTER);
+
+		super.getStyle().setPadding(5f);
+		super.getStyle().setTextAlignment(TextAlign.CENTER);
 		
-		super.getStyle().setPadding(7f);
 		
 		thisIconsType = type;
 		this.parentLocation = parentLocation;
@@ -831,7 +836,8 @@ public class MeshIcon extends Label implements  Animating,Moving {
 				//recalc size (for bounding box)
 				currentState = FeatureState.FeatureOpen;
 				wasResized();
-
+								
+				
 				Gdx.app.log(logstag,"currentState set to:"+currentState);
 				if (runAfterFadeIn!=null){
 					runAfterFadeIn.run();
@@ -957,7 +963,10 @@ public class MeshIcon extends Label implements  Animating,Moving {
 	//	MeshIconsLabel.setOpacity(1-alpha);
 		Color fadedCol = CurrentLabelColour.cpy();
 		fadedCol.a = (1-alpha);
+		//fadedCol.b = (1-alpha);		
 		this.getStyle().setColor(fadedCol);
+		
+		
 		Color fadedShadow = CurrentLabelShadowColour.cpy();
 		fadedShadow.a = (1-alpha);		
 		this.getStyle().setShadowColor(fadedShadow);

@@ -61,7 +61,7 @@ public class GwtishWidgetShader implements Shader {
 	/**
 	 * -1 = no text rendering
 	 */
-	int a_colorFlag;
+	int u_colorModeFlag;
 	
 	int u_textColour;
 	//int u_backColour;
@@ -122,7 +122,7 @@ public class GwtishWidgetShader implements Shader {
 		u_worldTrans = program.getUniformLocation("u_worldTrans");
 		u_sampler2D =   program.getUniformLocation("u_texture");
 
-		a_colorFlag =  program.getUniformLocation("u_colorFlag");
+		u_colorModeFlag =  program.getUniformLocation("u_colorModeFlag");
 
 		u_texture_pixel_step =  program.getUniformLocation("u_pixel_step");
 		u_resolution  =  program.getUniformLocation("u_resolution");
@@ -244,7 +244,8 @@ public class GwtishWidgetShader implements Shader {
 			
 		}*/
 		
-
+		
+		
 		//sometimes extra padding has to be added when scaling
 		//this is because we centralize by default when the scaling has resulted in extra space either vertically or horizontally.
 		//maybe in future we have other options?
@@ -252,6 +253,8 @@ public class GwtishWidgetShader implements Shader {
 		float textScale_width_pad  = 0;	
 		
 		if (renderable.material.get(TextureAttribute.Diffuse)!=null){
+			
+			
 
 			Texture distanceFieldTextureMap = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
 			distanceFieldTextureMap.setFilter(TextureFilter.Linear, TextureFilter.Linear); //not needed
@@ -340,13 +343,25 @@ public class GwtishWidgetShader implements Shader {
 			program.setUniformf(u_sizeDiff,sizeDiffX, sizeDiffY);
 			
 
-			program.setUniformf(a_colorFlag,1);
+			program.setUniformf(u_colorModeFlag,1.0f);
+			
+			if (renderable.userData.equals("InfoBox")){
+				Log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!a_colorFlag set to 1.0 on infobox");
+			}
 			
 		} else {
 			
 			//no text to render, ensure settings are correct for that.
-			program.setUniformf(a_colorFlag, -1);    	//-1 means no text rendering. without this we might see old textures used	    		 
-			
+		//	program.setUniformf(u_colorModeFlag, -1.0f);    	//-1 means no text rendering. without this we might see old textures used	    		 
+			//BUG: -1.0 seems to become 1.0 in the shader. WEIRD!
+			//WTF. 
+			//TEMP: use 5.0 for now, which is stupid but whatever
+		//	if (renderable.userData.equals("InfoBox")){
+			//	Log.info("a_colorFlag set to 4.0 on infobox");
+			//	program.setUniformf(u_colorModeFlag, 4.0f);    	//-1 means no text rendering. without this we might see old textures used	    		 
+				
+			//}
+			program.setUniformf(u_colorModeFlag, -1.0f);
 			
 		}
 		
@@ -454,15 +469,12 @@ public class GwtishWidgetShader implements Shader {
 
 		}
 
-
+	//	program.setUniformf(u_colorModeFlag, 4.0f);    	//-1 means no text rendering. without this we might see old textures used	    		 
+	//	program.setUniformf(u_textPaddingX, 90.0f);    	//-1 means no text rendering. without this we might see old textures used	    		 
+		
 
 		 renderable.meshPart.render(program);
 		 
-	    	/*	 pre 1.7.1 https://github.com/libgdx/libgdx/pull/3483
-		renderable.mesh.render(program,
-				renderable.primitiveType,
-				renderable.meshPartOffset,
-				renderable.meshPartSize); */
 	}
 
 	public void setSizeUniform(float w, float h) {
@@ -510,12 +522,13 @@ public class GwtishWidgetShader implements Shader {
 
 
 	}
+	/*
 
 	public static GwtishWidgetShader Default = new GwtishWidgetShader();
 	/**
 	 * returns the default copy of this shader, compiling it if needed
 	 * @return
-	 */
+	 *
 	public static ShaderProgram getProgram() {
 		if (Default.program==null){
 			Default.init();
@@ -531,7 +544,7 @@ public class GwtishWidgetShader implements Shader {
 		}
 		// TODO Auto-generated method stub
 		return Default.program;
-	}
+	}*/
 
 
 }

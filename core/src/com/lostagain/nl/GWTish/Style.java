@@ -86,7 +86,8 @@ public class Style {
 		nullParameterCheck(col);
 		
 		if (textStyle!=null){
-			
+
+		//	Log.info("_________setting color to:"+col);
 			//Log.info("_________setting color to:"+col);
 			
 			textStyle.textColour.set(col);
@@ -101,7 +102,7 @@ public class Style {
 
 		if (textStyle!=null){
 			
-			Log.info("_________setting shadow color to:"+col);
+		//	Log.info("_________setting shadow color to:"+col);
 			
 			textStyle.shadowColour.set(col);
 		}

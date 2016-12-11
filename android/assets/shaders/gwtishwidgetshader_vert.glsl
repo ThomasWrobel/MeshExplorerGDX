@@ -69,8 +69,8 @@ uniform float u_shadowBlur;
 uniform vec4  u_shadowColour;
 //--
 			
-uniform float u_colorFlag; //color mode tells the shader it uses a diffuse color(1) rather then just the textures(0)
-varying float v_colorFlag;
+uniform float u_colorModeFlag; //color mode tells the shader it uses a diffuse color(1) rather then just the textures(0)
+varying float v_colorModeFlag;
 
 //background
 uniform float u_backBorderWidth; 
@@ -124,10 +124,10 @@ varying float v_backCornerRadius;
 
 
 
-#if defined(colorFlag)
-varying vec4 v_color;
-attribute vec4 a_color;
-#endif // colorFlag
+//#if defined(colorFlag)
+//varying vec4 v_color;
+//attribute vec4 a_color;
+//#endif // colorFlag
 
 uniform vec4 u_diffuseUVTransform;
 varying vec2 v_diffuseUV;
@@ -136,7 +136,7 @@ varying vec2 v_diffuseUV;
 varying vec2 pixel_step;
 
 void main() {
-	v_colorFlag=u_colorFlag;
+	v_colorModeFlag=u_colorModeFlag;
 	
   //Colours!!
  //  v_backColor = u_backColor;

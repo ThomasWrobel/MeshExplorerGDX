@@ -79,9 +79,9 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		if (renderable.material.has(PrettyNoiseShader.PrettyNoiseShaderAttribute.ID)){
 			return new PrettyNoiseShader();			
 		}		
-		if (renderable.material.has(DistanceFieldShader.DistanceFieldAttribute.ID)){
-			return new DistanceFieldShader();			
-		}				
+	//	if (renderable.material.has(DistanceFieldShader.DistanceFieldAttribute.ID)){
+	//		return new DistanceFieldShader();			
+	//	}				
 		if (renderable.material.has(PrettyBackground.PrettyBackgroundAttribute.ID)){
 			return new PrettyBackground();		
 		}		
@@ -106,6 +106,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		
 		//pick shader based on renderable? (old method, being replaced with the above)
 
+		/*
 		if (renderable.userData==null || renderable.userData instanceof String){
 			return super.createShader(renderable);
 		}
@@ -123,8 +124,9 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		default:
 			return super.createShader(renderable);
 			
-		}
-		//return new DefaultShader(renderable, new DefaultShader.Config());
+		}*/
+		
+		return new DefaultShader(renderable, new DefaultShader.Config());
 		
 	}
 }
