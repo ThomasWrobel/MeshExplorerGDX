@@ -7,6 +7,9 @@ import java.util.logging.Logger;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Align;
+import com.lostagain.nl.GWTish.Style.TextAlign;
+import com.lostagain.nl.GWTish.Style.TextVerticalAlign;
 
 /**
  * a shader attribute that controlls all style settings for the shader
@@ -53,6 +56,10 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	 * ("Fit" in this case means its dimensions match the area of the model minus the area of the padding)
 	 */
 	public TextScalingMode textScaleingMode = TextScalingMode.natural;
+	
+	public TextVerticalAlign textAlignmentVertical = TextVerticalAlign.TOP;
+	public TextAlign textAlignmentHorizontal = TextAlign.LEFT;
+	
 
 	/**
 	 * manually controll text scale. Atm this is arbitary and expiremental atm, hopefully pixel based in future.
@@ -462,7 +469,11 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		/**
 		 * shadowYDisplacement
 		 */
-		shadowYDisplacement
+		shadowYDisplacement,
+		/**
+		 * borderColor
+		 */
+		borderColor;
 	}
 
 	class stylestate {
@@ -746,6 +757,12 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 					break;
 				case shadowYDisplacement:
 					shadowYDisplacement = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);
+					
+					break;
+				case borderColor:
+					Color newcolor = startState.colorValue.cpy().lerp(endState.colorValue, intoSegment);						
+					 borderColour.set(newcolor);						
+				
 					
 					break;
 				default:

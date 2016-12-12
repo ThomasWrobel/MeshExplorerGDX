@@ -289,7 +289,8 @@ public class MessyModelMaker {
 		
 		
 		Material lowmaterial = new Material(ColorAttribute.createDiffuse(MColor), 
-				ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(0.3f), 
+				ColorAttribute.createSpecular(Color.WHITE),
+				new BlendingAttribute(0.3f), 
 				FloatAttribute.createShininess(16f));	
 
 		
@@ -322,16 +323,7 @@ public class MessyModelMaker {
         FileHandle imageFileHandle3 = Gdx.files.internal("data/beam_blob.png"); 
         
        // Gdx.graphics.getGL20().glActiveTexture(GL20.GL_TEXTURE1);
-        Texture blobtexture = new Texture(imageFileHandle3);
-      //  blobtexture.bind();
-        
-        Material blob = new Material(ColorAttribute.createDiffuse(Color.WHITE), 
-				ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(0.7f), 
-				FloatAttribute.createShininess(16f));
-
-        blob.set(TextureAttribute.createDiffuse(blobtexture));
-        blob.set(blendingAttribute);		
-      
+             
         
 		/*
 		modelBuilder.end();
@@ -395,10 +387,23 @@ public class MessyModelMaker {
 		
 		float hwidth =0;
 		float hheight =0;
-		
+
+        Material blob = null;
+        
 		if (withStartBlob || withEndBlob){
 			 hwidth = (corner3.x-corner3.y)+10;	//width of ends is 10 more then the rest	
 			 hheight = (float) (hwidth *1.3); //height slightly longer
+			 
+			 Texture blobtexture = new Texture(imageFileHandle3); //reusing causes problems?
+		      //  blobtexture.bind();
+			 
+		        blob = new Material(ColorAttribute.createDiffuse(Color.WHITE), 
+						ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(0.7f), 
+						FloatAttribute.createShininess(16f));
+
+		        blob.set(TextureAttribute.createDiffuse(blobtexture));
+		        blob.set(blendingAttribute);		
+
 		}
 		
 		//now the glow start blob
@@ -442,7 +447,16 @@ public class MessyModelMaker {
 		Node node4 = modelBuilder.node();
 		node4.translation.set(0,corner1.y,7);
 		
-		
+		 Texture blobtexture = new Texture(imageFileHandle3); //reusing causes problems?
+	      //  blobtexture.bind();
+	        
+	        blob = new Material(ColorAttribute.createDiffuse(Color.WHITE), 
+					ColorAttribute.createSpecular(Color.WHITE),new BlendingAttribute(0.7f), 
+					FloatAttribute.createShininess(16f));
+
+	        blob.set(TextureAttribute.createDiffuse(blobtexture));
+	        blob.set(blendingAttribute);		
+
 		
 		meshBuilder = modelBuilder.part("endblob", GL20.GL_TRIANGLES, Usage.Position | Usage.Normal | Usage.TextureCoordinates,blob );
 		//meshBuilder.getAttributes().findByUsage(Usage.TextureCoordinates).alias = "a_texCoord";

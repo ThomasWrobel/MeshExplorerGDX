@@ -17,19 +17,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.lostagain.nl.DefaultStyles;
-import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.GWTish.Style.TextAlign;
 import com.lostagain.nl.GWTish.Style.Unit;
-import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.shaders.DistanceFieldShader;
-import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
 import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute.TextScalingMode;
 
@@ -583,15 +577,15 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 	
 
 	//note implemented yet
-	private static Vector2 caclculateModelSizeFromTexture(float getNativeToSceneResizeRatio, Style stylesettings) {
+	//private static Vector2 caclculateModelSizeFromTexture(float getNativeToSceneResizeRatio, Style stylesettings) {
 		
 		//textureSize.x, textureSize.y
 		
-		Vector2 test = new Vector2(0,0);
+	//	Vector2 test = new Vector2(0,0);
 		
-		return test;
+	//	return test;
 		
-	}
+	//}
 	
 	/**
 	 * The ratio between the internal pixmap font size and the one requested in the style as the output size.
@@ -1094,6 +1088,11 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 
 	}
 
+	/**
+	 * if possible, adds text to existing text rather then redrawing the lot.
+	 * sometimes a redraw is needed, however
+	 * @param text
+	 */
 	public void addText(String text) {
 		//if empty string ignore
 		if (text.isEmpty()){
@@ -1103,33 +1102,6 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 		this.contents=contents+text;
 
 		Log.info("adding: "+text+" to existing text");
-		//TODO:
-		//We need a efficient way to add text so we can do typing effects animated nicely.
-		//At first I thought we could just track cursor position and add the next letter
-		//However, unfortunately word-wrapping means that sometimes a new letter added can effect previous letters.
-		//When generating the whole text at once, this isn't a issue - GlyphLayout takes care of it
-		//So how to deal with this when adding a letter to the texture?
-		//1) Regenerate the whole texture each time? Wasteful.
-		//2) Somehow erase texture at point it changes? probably worse then regenerating the lot
-		//3) Regenerate whole texture once something wraps? Else just add?
-		//3 is probably best, but tricky
-		//How to know when a (new) wrapping happens? Added text will start halfway in x, so wrap point wont be easy to workout from glyphlayout either
-		
-		//
-		//we can detect a new wordwrap by looking if the predicted height changes from the existing height.
-		//(so we would always at least need to do a new prediction based on this.contents)
-		//
-		
-		//Most of the above is done. HOWEVER
-		//As the size of the texture always increases, every time text is added, we need to make a new pixmap
-		//then copy the old data into it.
-		//This seems almost as bad as regenerating the lost each time.
-		//Should proformance test to see if it is.
-		//Possible optimization is to make the pixmap bigger then is needed, but that would make the shader more complex.
-		//can pixmaps be cropped?
-		//Or better 
-		//Add the new pixmap to the old texture, dont recreate texture or save old pixmap
-		//Should be possible/better, as we are already making a new texture each time right now
 		
 		boolean textWraps=false;
 		
@@ -1186,10 +1158,6 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 			
 			regenerateTexture(text,super.currentPixmap);
 		}
-		
-		//if new height regen
-		
-		//else add
 		
 		
 		
@@ -1473,9 +1441,13 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 		return NewTexture;
 	}
 
+	/**
+	 * should be a more optimized way to do this with zero  length strings
+	 * @return
+	 */
 	private static TextureAndCursorObject generateEmptyTexture() {
 
-		Pixmap textPixmap = new Pixmap(0, 0, Format.RGBA8888);
+		Pixmap textPixmap = new Pixmap(1, 1, Format.RGBA8888);
 		Texture textureData = new Texture(textPixmap);
 			
 		
@@ -1487,6 +1459,9 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 		
 		return textureAndCursorObject;
 	}
+	
+	
+	
 	//None needed right now
 	static public void firstTimeSetUp(){
 		//None needed right now
@@ -1544,24 +1519,6 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 		super.setOpacity(opacity);
 
 
-		/*
-		//get the material from the model
-		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);
-		GwtishWidgetDistanceFieldAttribute style = ((GwtishWidgetDistanceFieldAttribute)infoBoxsMaterial.get(GwtishWidgetDistanceFieldAttribute.ID));
-		style.setOverall_Opacity_Multiplier(opacity);
-
-		//Log.info("_____________current            col:"+style.textColour);
-		//Log.info("_____________current shadow     col:"+style.shadowColour);
-		//Log.info("_____________current glowColour col:"+style.glowColour);
-
-
-
-		//ColorAttribute background = ((ColorAttribute)infoBoxsMaterial.get(ColorAttribute.Diffuse));
-		//background.color.a = opacity;
-		BlendingAttribute backgroundOpacity = ((BlendingAttribute)infoBoxsMaterial.get(BlendingAttribute.Type));
-		backgroundOpacity.opacity = opacity;
-		//	Log.info("_____________opacity:"+opacity);
-		 */
 	}
 
 	public void setMaxWidth(float maxWidth) {

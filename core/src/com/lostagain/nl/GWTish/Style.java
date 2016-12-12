@@ -442,9 +442,25 @@ public class Style {
 	    RIGHT;	    
 	  }
 	  
-	  TextAlign textAlignment = TextAlign.LEFT;
+	  TextAlign textHorizontalAlignment       = TextAlign.LEFT;
 	  
-	  float PaddingLeft = 0f;
+	  
+
+		/**
+		 * Enum for the vertical text-align property.
+		 */
+		  public enum TextVerticalAlign {
+			  TOP,
+			  MIDDLE,
+			  BOTTOM
+		  }
+	  
+	  TextVerticalAlign textVerticalAlignment = TextVerticalAlign.TOP;
+	       
+	
+
+
+	float PaddingLeft = 0f;
 	  float PaddingTop  = 0f;
 	  float PaddingRight = 0f;
 	  float PaddingBottom  = 0f;
@@ -466,14 +482,21 @@ public class Style {
 	}
 
 	public TextAlign getTextAlignment() {
-		return textAlignment;
+		return textHorizontalAlignment;
 	}
 
 	public void setTextAlignment(TextAlign textAlignment) {
-		this.textAlignment = textAlignment;
+		this.textHorizontalAlignment = textAlignment;
+		textStyle.textAlignmentHorizontal = textAlignment;
 		layoutStyleChanged();
 	}
 	
+	  public void setTextVerticalAlignment(TextVerticalAlign textVerticalAlignment) {
+			this.textVerticalAlignment = textVerticalAlignment;
+
+			textStyle.textAlignmentVertical = textVerticalAlignment;
+			layoutStyleChanged();
+		}
 	
 	double lineHeight   = -1;
 	Unit lineHeightUnit = Unit.NOTSET; 

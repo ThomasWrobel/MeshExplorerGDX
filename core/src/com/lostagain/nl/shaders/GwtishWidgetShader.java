@@ -298,8 +298,9 @@ public class GwtishWidgetShader implements Shader {
 
 				//scale the texture size
 				tw = scale*tw;
-				th = scale*th;				
+				th = scale*th;		
 				
+				/*
 				//autopad the smaller dimension to centralize (that is, find the topleft corner needed to centralize the text)
 				//this might not be correct, see commented out one that will require padding information on all 4 sides
 				if (th<(h)){
@@ -310,7 +311,7 @@ public class GwtishWidgetShader implements Shader {
 				if (tw<(w)){
 					//pad width
 					textScale_width_pad = (((w/2)-textStyleData.paddingLeft)-(tw/2));					
-				}
+				}*/
 				//--------------------------------------------------------------
 				
 				//but we dont want center, we want correct padding!
@@ -327,8 +328,38 @@ public class GwtishWidgetShader implements Shader {
 					textScale_width_pad = ((w-totalPaddingWidth)-tw)/2;					
 				}*/
 				
-				textScale_width_pad=0;
-				textScale_height_pad=0;
+				switch(textStyleData.textAlignmentHorizontal){
+				case CENTER:
+				case JUSTIFY:
+					if (tw<(w)){
+						//pad width
+						textScale_width_pad = (((w/2)-textStyleData.paddingLeft)-(tw/2));					
+					}				
+					break;
+				case LEFT:
+					textScale_width_pad=0f;					
+					break;
+				case RIGHT:
+					textScale_width_pad=(w-textStyleData.paddingLeft)-tw;		
+					break;
+				
+				}
+				
+				switch(textStyleData.textAlignmentVertical){
+				case BOTTOM:
+					textScale_height_pad=(h-textStyleData.paddingTop)-th;
+					break;
+				case MIDDLE:
+					if (th<(h)){
+						//pad height
+						textScale_height_pad = (((h/2)-textStyleData.paddingTop)-(th/2));	
+					}				
+					break;
+				case TOP:
+					textScale_height_pad=0f;
+					break;
+				
+				}
 			}
 			
 			

@@ -41,6 +41,7 @@ import com.lostagain.nl.me.newmovements.NewForward;
 import com.lostagain.nl.me.newmovements.NewMovement;
 import com.lostagain.nl.me.newmovements.NewMovementController;
 import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
+import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute.StyleParam;
 import com.lostagain.nl.shaders.MySorter;
 import com.lostagain.nl.uti.HSLColor;
 
@@ -78,7 +79,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		AbilityInstaller("Ability\nInstaller",0.1f),
 		//LinkStore("Links",Color.PURPLE),
 		LinkStore("Links",0.8f),
-		Ability(new Color(1.0f,0.3f,0.1f,0.7f)),
+		Ability("",0.05f,true),//new Color(1.0f,0.3f,0.1f,0.7f)),
 		Info,
 		Concept, //Used as a generic concept object (Note this might change when first opened and its discovered to be a email, software etc inside?)
 		LocationHub("Location\nHub",0.33f), //note the new line
@@ -89,6 +90,7 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		String labelName  = "";
 		Color iconColor   = null; 
 		Color borderColor = null; 
+		boolean flashEffect = false;
 		
 		IconType(){
 			this("");
@@ -96,19 +98,25 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		IconType(String label){
 			labelName=label;
 		}
+
+		IconType(String label,float hue ){
+			this (label,hue,false);
+			
+		}
 		/**
 		 * for consistancy of theme we now generate the colours from hues, but keep the sat and lum the same
 		 * 0.33 = green
 		 * @param label
 		 * @param hue
 		 */
-		IconType(String label,float hue){
+		IconType(String label,float hue,boolean flashEffect ){
 			HSLColor colhsl = new HSLColor(hue,1.0f,0.1f,0.8f);			
 			labelName=label;
 			iconColor = colhsl.toRGB();
 			
 			HSLColor basicBorder = new HSLColor(hue,1.0f,0.6f,1.0f);
 			borderColor = basicBorder.toRGB();
+			this.flashEffect = flashEffect;
 			
 			
 		}
@@ -263,11 +271,19 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 		
 		//set the icon color if not default
-		if (type.getIconColour()!=null){
-			setBackgroundColour(type.getIconColour());
+		Color iconColour = type.getIconColour();
+		if (iconColour!=null){
+			
+			setBackgroundColour(iconColour);
 			
 			super.getStyle().setBorderColor(type.getBorderColour());
 			super.getStyle().setBorderWidth(0.5f);
+			
+			if (type.flashEffect){
+				
+				setFlashinggBackground(iconColour);
+				
+			}
 			
 		}
 
@@ -314,6 +330,13 @@ public class MeshIcon extends Label implements  Animating,Moving {
 		this.setZIndex(150, this.getUniqueName());
 		
 
+	}
+
+	public void setFlashinggBackground(Color iconColour) {
+		super.getStyle().addTransitionState(StyleParam.backcolor, 0f, iconColour);
+		super.getStyle().addTransitionState(StyleParam.backcolor, 0.5f, iconColour.cpy().mul(3.5f));
+		super.getStyle().addTransitionState(StyleParam.backcolor, 1.0f, iconColour);
+		super.getStyle().setTransitionLength(3000.0f);
 	}
 
 
