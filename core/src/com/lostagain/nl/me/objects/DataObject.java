@@ -22,9 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.darkflame.client.semantic.SSSNode;
-import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
+import com.lostagain.nl.GWTish.FontHandling;
 import com.lostagain.nl.GWTish.LabelBase.PixmapAndCursorObject;
 import com.lostagain.nl.me.gui.DataObjectSlot;
 import com.lostagain.nl.me.gui.DataObjectDropTarget;
@@ -239,7 +239,7 @@ public class DataObject extends Image
 			    
 				//Gdx.app.log(logstag,"______________data.imagePaths[0] ="+data.imagePaths[0]);			
 				
-			    BitmapFontData data = DefaultStyles.standdardFont.getData(); //new BitmapFontData(Gdx.files.internal(data.imagePaths[0]), true);
+			    BitmapFontData data = FontHandling.standdardFont.getData(); //new BitmapFontData(Gdx.files.internal(data.imagePaths[0]), true);
 			    
 			    Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0]));
 			    

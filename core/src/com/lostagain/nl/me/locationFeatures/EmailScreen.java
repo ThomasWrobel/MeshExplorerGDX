@@ -29,6 +29,7 @@ import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.GWTish.FontHandling;
 
 public class EmailScreen extends Container<ScrollPane>  implements LocationScreen {
 
@@ -319,7 +320,7 @@ public class EmailScreen extends Container<ScrollPane>  implements LocationScree
 					
 				LabelStyle labstyle = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));
 				
-			 	labstyle.font = DefaultStyles.scramabledFont;
+			 	labstyle.font = FontHandling.scramabledFont;
 			 	labstyle.font.getData().setScale(0.3f);
 			 	
 			 	//save the default style (means if it changes this wont need to be be)

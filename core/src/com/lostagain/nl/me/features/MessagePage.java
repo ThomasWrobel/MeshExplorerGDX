@@ -18,6 +18,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.MainExplorationView;
 import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
+import com.lostagain.nl.GWTish.FontHandling;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.Style.TextAlign;
 import com.lostagain.nl.GWTish.Style.Unit;
@@ -124,7 +125,7 @@ public class MessagePage extends VerticalPanel implements GenericMeshFeature {
 				
 			LabelStyle labstyle = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));
 			
-		 	labstyle.font = DefaultStyles.scramabledFont;
+		 	labstyle.font = FontHandling.scramabledFont;
 		 	labstyle.font.getData().setScale(0.3f);
 		 	
 		 	setStyleAsScrambled(labstyle);

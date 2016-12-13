@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
-import com.lostagain.nl.DefaultStyles;
 import com.lostagain.nl.GWTish.Style.TextAlign;
 import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
@@ -77,12 +76,26 @@ public class Label extends LabelBase {
 	 * we can optionally interpret html like br tags as newlines
 	 */
 	private boolean interpretBRasNewLine=false;
-
+	
+	/**
+	 * we can optionally interpret html like br tags as newlines
+	 * defaults to false
+	 */
 	public void setInterpretBRasNewLine(boolean interpretBRasNewLine) {
 		this.interpretBRasNewLine = interpretBRasNewLine;
 	}
 	
+	private boolean interpretBackslashNasNewLine=true;
 	
+	/**
+	 * interpret \n as newlines
+	 * defaults to true	
+	 * @param interpretBackslashNasNewLine
+	 */
+	public void setInterpretBackslashNasNewLine(boolean interpretBackslashNasNewLine) {
+		this.interpretBackslashNasNewLine = interpretBackslashNasNewLine;
+	}
+
 	//defaults
 	BitmapFont defaultFont;
 
@@ -123,18 +136,13 @@ public class Label extends LabelBase {
 	private TextAlign lastUsedTextAlignment;
 
 
-	//Texture currentTexture = null;
-	//boolean modelNeedsUpdate = true;
-
-	//Style data (mostly controlled by shader)
-	//	static private Color defaultBackColour = Color.CLEAR;
 
 	/**
 	 * 
 	 * @param contents
 	 */
 	public Label (String contents){ 
-		this(contents, false, -1,-1, SizeMode.ExpandXYToFit, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot with no max width
+		this(contents, false,true, -1,-1, SizeMode.ExpandXYToFit, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot with no max width
 	}
 	/**
 	 * 
@@ -142,7 +150,7 @@ public class Label extends LabelBase {
 	 * @param MaxWidth
 	 */
 	public Label (String contents,float MaxWidth){ 
-		this( contents, false, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
+		this( contents, false, true,MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
 	}
 
 	/**
@@ -154,7 +162,7 @@ public class Label extends LabelBase {
 	 * @param textalign
 	 */
 	public Label(String contents, float Width, float Height, MODELALIGNMENT modelalignment, TextAlign textalign) {
-		this( contents, false, Width, Height, SizeMode.Fixed, modelalignment,textalign); //defaults to top left alignment of pivot
+		this( contents, false, true,Width, Height, SizeMode.Fixed, modelalignment,textalign); //defaults to top left alignment of pivot
 	}
 	/**
 	 * * fixed size label - texture scales into it (non-gwt like)
@@ -163,7 +171,7 @@ public class Label extends LabelBase {
 	 * @param MaxHeight
 	 */
 	public Label (String contents,float MaxWidth,float MaxHeight){ 
-		this( contents, false, MaxWidth,MaxHeight, SizeMode.Fixed, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
+		this( contents, false,true, MaxWidth,MaxHeight, SizeMode.Fixed, MODELALIGNMENT.TOPLEFT,TextAlign.LEFT); //defaults to top left alignment of pivot
 	}
 
 	/**
@@ -173,7 +181,7 @@ public class Label extends LabelBase {
 	 *  @param MaxHeight
 	 */
 	public Label (String contents,float Width,float Height, MODELALIGNMENT alignment){ 
-		this( contents, false, Width,Height, SizeMode.Fixed, alignment,TextAlign.LEFT); 
+		this( contents, false,true, Width,Height, SizeMode.Fixed, alignment,TextAlign.LEFT); 
 	}
 
 	/**
@@ -182,7 +190,7 @@ public class Label extends LabelBase {
 	 * @param MaxWidth
 	 */
 	public Label (String contents,float MaxWidth,MODELALIGNMENT alignment){ 
-		this( contents, false, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, alignment,TextAlign.LEFT); 
+		this( contents, false,true, MaxWidth,-1, SizeMode.ExpandHeightMaxWidth, alignment,TextAlign.LEFT); 
 	}
 	/**
 	 * 
@@ -190,9 +198,9 @@ public class Label extends LabelBase {
 	 * @param MaxWidth
 	 * @param modelAlignement
 	 */
-	public Label (String contents,boolean interpretBRasNewLine,float MaxWidth,float MaxHeight, SizeMode sizeMode, MODELALIGNMENT modelAlignement, TextAlign textAlignment){ 
+	public Label (String contents,boolean interpretBRasNewLine,boolean interpretNLasNewLine,float MaxWidth,float MaxHeight, SizeMode sizeMode, MODELALIGNMENT modelAlignement, TextAlign textAlignment){ 
 
-		super(generateObjectData(true, true, contents, interpretBRasNewLine,sizeMode, MaxWidth, MaxHeight, modelAlignement,textAlignment,null));
+		super(generateObjectData(true, true, contents, interpretBRasNewLine,interpretNLasNewLine,sizeMode, MaxWidth, MaxHeight, modelAlignement,textAlignment,null));
 		super.setStyle(getMaterial(LABEL_MATERIAL)); //no style settings will work before this is set
 
 		this.lastUsedTextAlignment = textAlignment;
@@ -292,6 +300,7 @@ public class Label extends LabelBase {
 			boolean regenMaterial,
 			String contents,
 			boolean interpretBRasNewLine,
+			boolean interpretNLasNewLine,
 			SizeMode labelsSizeMode,
 			float maxWidth ,
 			float maxHeight,
@@ -314,7 +323,7 @@ public class Label extends LabelBase {
 		
 		if (regenTexture){			
 			
-			textureData = generateTexture(labelsSizeMode, contents,interpretBRasNewLine,
+			textureData = generateTexture(labelsSizeMode, contents,interpretBRasNewLine,interpretNLasNewLine,
 					NativeToSceneRatio,maxWidth,textAlignment,style,font,
 					startFromX,startFromY,addToThis); //left default	
 			
@@ -393,41 +402,47 @@ public class Label extends LabelBase {
 
 
 	}
+	
 	private static BitmapFont getEffectiveFont(Style style) {
+				
+		BitmapFont rawFont = FontHandling.standdardFont;
+		BitmapFont adjustedFont = rawFont;
 		
-		BitmapFont font = DefaultStyles.standdardFont;
-
 		if (style!=null){
 
 			//make a copy of the font so we can customize the line height data
 			//probably not very efficient?
-			font = new BitmapFont(DefaultStyles.standdardFont.getData(),
-								  DefaultStyles.standdardFont.getRegion(), 
-								  DefaultStyles.standdardFont.usesIntegerPositions());
+			adjustedFont = new BitmapFont(
+					rawFont.getData(),
+					rawFont.getRegion(), 
+					rawFont.usesIntegerPositions());
 
 			float LineHeight = (float) style.getLineHeightValue();
 			Style.Unit LineHeightUnit = style.getLineHeightUnit();
 
 			//we only support PX or Unitless at the moment		
 			if (LineHeightUnit == Style.Unit.PX){
-				font.getData().setLineHeight(LineHeight);
+				adjustedFont.getData().setLineHeight(LineHeight);
 			}
 			if (LineHeightUnit == Style.Unit.UNITLESS){				
 				//only supported if font size is pixels
 				if (style.getFontSizeUnit() == Unit.PX){
 					
-					double fontsize = style.getFontSize();
+					
+					//double fontsize = style.getFontSize(); //wait, we  dont want real size as the texture map is generated at native resolution regardless of what the display size will be.
+					double fontsize = FontHandling.getNativeFontSize(rawFont) ;//rawFont.getLineHeight();
 					double effectiveSize = fontsize*LineHeight;
 
-					Log.info( "fontsize:   "+fontsize+"   LineHeight:"+LineHeight); 
+					Log.info( "native fontsize:   "+fontsize+"   LineHeight:"+LineHeight); 
+					
 					Log.info( "effective lineheight:   "+effectiveSize); 
-					font.getData().setLineHeight((float) effectiveSize);
+					adjustedFont.getData().setLineHeight((float) effectiveSize);
 					
 				}
 			}
 			
 		}
-		return font;
+		return adjustedFont;
 	}
 
 /**
@@ -443,6 +458,7 @@ public class Label extends LabelBase {
 	static public TextureAndCursorObject generatePixmapForShader(
 			String text, 
 			boolean interpretBRasNewLine,
+			boolean interpretNLasNewLine,
 			float NativeSceneRatio, 
 			float effectiveMaxWidth,
 			TextAlign align, 
@@ -455,7 +471,7 @@ public class Label extends LabelBase {
 
 		//  BitmapFontData data = DefaultStyles.standdardFont.getData();
 
-		GlyphLayout layout = getNewLayout(text, interpretBRasNewLine, NativeSceneRatio, effectiveMaxWidth, align, font);
+		GlyphLayout layout = getNewLayout(text, interpretBRasNewLine, interpretNLasNewLine,NativeSceneRatio, effectiveMaxWidth, align, font);
 		TextureAndCursorObject textureDAta = generateTexture_fromLayout(layout, font,startFromX,startFromY,addToThis); 
 
 		//Font size  trying to figure out
@@ -508,7 +524,9 @@ public class Label extends LabelBase {
 		return textureDAta;
 
 	}
-private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLine, float NativeSceneRatio,
+private static GlyphLayout getNewLayout(String text, 
+		boolean interpretBRasNewLine, boolean interpretNLasNewLine,
+		float NativeSceneRatio,
 		float effectiveMaxWidth, TextAlign align, BitmapFont font) {
 	GlyphLayout layout = new GlyphLayout();	    
 	//layout.setText(DefaultStyles.standdardFont, text);
@@ -562,12 +580,12 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 		break;
 	}
 	
+	if (!interpretNLasNewLine){
+		text=text.replace("\n", "");	
+	}
 	//if we are set to interpret <br> as newline, then we replace them with \n
 	if (interpretBRasNewLine){	
-
-		text=text.replace("<br>", "\n");			
-
-		
+		text=text.replace("<br>", "\n");					
 	}
 
 
@@ -701,7 +719,7 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 		for (GlyphRun grun : layout.runs) {
 
 			String runstring = "";
-			float currentRunX=0;
+			float currentRunX= 0; 
 			 advance = 0;
 			
 			//now draw each letter
@@ -862,7 +880,7 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 		//	textPixmap.setColor(1, 0, 0, 1);					
 		//	textPixmap.drawRectangle(3, 3, TITLE_WIDTH-3, TITLE_HEIGHT-3);
 
-		BitmapFontData data = DefaultStyles.standdardFont.getData(); //new BitmapFontData(Gdx.files.internal(data.imagePaths[0]), true);
+		BitmapFontData data = FontHandling.standdardFont.getData(); //new BitmapFontData(Gdx.files.internal(data.imagePaths[0]), true);
 
 		Pixmap fontPixmap = new Pixmap(Gdx.files.internal(data.imagePaths[0]));
 
@@ -1021,62 +1039,6 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 	}
 
 	/**
-	 * Use this to set the style of the text
-	 * @param style
-	 * @return 
-	 */
-	//public void setDistanceFieldAttribute(DistanceFieldAttribute style){
-	//	textStyle = style;
-	//}
-
-	/*
-	private Model createModel() {
-
-		if (currentTexture==null){
-			regenerateTexture(labelsSizeMode, contents);
-
-		}
-
-
-		currentTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);//MipMapLinearNearest does not work with DistanceField shaders
-
-		if (textStyle==null){
-			textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
-		}
-
-
-
-		Material mat = 	new Material("LabelMaterial",
-									 TextureAttribute.createDiffuse(currentTexture),			
-									 ColorAttribute.createDiffuse(defaultBackColour),
-									 textStyle);
-
-
-
-		//Log.info("______________text glow col is: "+teststyle.glowColour);
-		//Log.info("______________generating rect of "+LabelWidth+","+LabelHeight);
-		//
-		labelModel = ModelMaker.createRectangle(0, 0, LabelNativeWidth*this.ModelScale,LabelNativeHeight*this.ModelScale, 0, mat); 
-
-		labelInstance = new AnimatableModelInstance(labelModel);
-
-	//	DistanceFieldAttribute textStyleData = (DistanceFieldAttribute)mat.get(DistanceFieldAttribute.ID);
-	//	Log.info("______________text glow col is2: "+textStyleData.glowColour);
-		//Matrix4 newmatrix = new Matrix4();
-		//newmatrix.setToRotation(0, 0, 1, -90);
-		//labelInstance.transform.mul(newmatrix);
-
-		//labelInstance.userData = MyShaderProvider.shadertypes.distancefield;
-
-		modelNeedsUpdate = false;
-
-		return labelModel;
-
-	}
-	 */
-
-
-	/**
 	 * Sets the text and regenerates the texture 
 	 **/
 	public void setText(String text){
@@ -1120,7 +1082,7 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 			BitmapFont font          = getEffectiveFont(this.getStyle());
 			float NativeToSceneRatio = getNativeToSceneResizeRatio(this.getStyle(), font);
 			
-			GlyphLayout layout = getNewLayout(contents, interpretBRasNewLine, NativeToSceneRatio, effectiveMaxWidth, this.lastUsedTextAlignment, font);
+			GlyphLayout layout = getNewLayout(contents, interpretBRasNewLine,interpretBackslashNasNewLine, NativeToSceneRatio, effectiveMaxWidth, this.lastUsedTextAlignment, font);
 			
 			int newheight = (int) (layout.height +font.getCapHeight());
 			int newwidth = (int) layout.width;
@@ -1165,7 +1127,9 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 
 
 	
-	//
+	/**
+	 * 
+	 */
 	private void regenerateTexture(String text,Pixmap addToExisting) {
 		
 		TextAlign align = this.getStyle().getTextAlignment();
@@ -1189,9 +1153,6 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 		if (addToExisting!=null){
 			startFromX =(int) super.Cursor.x;
 			startFromY =(int) super.Cursor.y;
-			//addToExisting = super.texture;
-
-
 			Log.info("Cursor is currently at: "+startFromX+","+startFromY);
 		}
 
@@ -1200,6 +1161,7 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 				labelsSizeMode, 
 				text, //contents
 				interpretBRasNewLine,
+				interpretBackslashNasNewLine,
 				NativeToSceneRatio,
 				effectiveMaxWidth,//-1 is the default max width which means "any size"
 				align,
@@ -1367,21 +1329,7 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 	}
 	 */
 
-	/*
-	/**
-	 * A scaleing factor that will enlarge of shrink the text relative to the standard font size.
-	 * NOTE: this does not scale the internal texture size. As we are using a distance field font, it should look sharp at all distances anyway.
-	 * Scaleing would not help.
-	 * @param text
 
-	public void setTextScale(float scale){
-		ModelScale = scale;
-
-		//currentTexture  =null; //null tells it to regenerate
-		//modelNeedsUpdate=true;
-
-	}
-	 */
 
 	/**
 	 * 
@@ -1398,6 +1346,7 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 			SizeMode labelsSizeMode,			
 			String contents, 
 			boolean interpretBRasNewLine,
+			boolean interpretNLasNewLine,
 			float NativeToSceneRatio,
 			float effectiveMaxWidth,
 			TextAlign align, 
@@ -1420,18 +1369,18 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 
 		switch (labelsSizeMode) {
 		case ExpandHeightMaxWidth:
-			NewTexture = generatePixmapForShader(contents,interpretBRasNewLine,NativeToSceneRatio,effectiveMaxWidth,align,style,font,startFromX,startFromY,addToThis); //-1 = no max width
+			NewTexture = generatePixmapForShader(contents,interpretBRasNewLine,interpretNLasNewLine,NativeToSceneRatio,effectiveMaxWidth,align,style,font,startFromX,startFromY,addToThis); //-1 = no max width
 			break;
 		case Fixed:			
 			//Note; the textures internal size is not related to the widgets size directly, but it needs to know
 			//the final width/height ratio in order to pad the Pixmap enough to preserve its ratio.
-			NewTexture = generatePixmapForShader(contents,interpretBRasNewLine,NativeToSceneRatio,-1,align,style,font,startFromX,startFromY,addToThis); //-1 = no max width
+			NewTexture = generatePixmapForShader(contents,interpretBRasNewLine,interpretNLasNewLine,NativeToSceneRatio,-1,align,style,font,startFromX,startFromY,addToThis); //-1 = no max width
 			break;
 			//expand to fit is also the default
 		case ExpandXYToFit:
 		default:
 			Log.info("______________generating expand to fit text ");
-			NewTexture = generatePixmapForShader(contents,interpretBRasNewLine,NativeToSceneRatio,-1,align,style,font,startFromX,startFromY,addToThis); //-1 = no max width
+			NewTexture = generatePixmapForShader(contents,interpretBRasNewLine,interpretNLasNewLine,NativeToSceneRatio,-1,align,style,font,startFromX,startFromY,addToThis); //-1 = no max width
 			break;
 
 		}
@@ -1462,10 +1411,11 @@ private static GlyphLayout getNewLayout(String text, boolean interpretBRasNewLin
 	
 	
 	
-	//None needed right now
 	static public void firstTimeSetUp(){
-		//None needed right now
-
+		//setup font size cache		
+		FontHandling.cacheFontSizes();
+		
+		
 	}
 
 
