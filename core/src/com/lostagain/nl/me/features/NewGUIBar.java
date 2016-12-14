@@ -262,6 +262,12 @@ public class NewGUIBar extends VerticalPanel {
 				button.show();
 				add(button);
 				
+				//note;
+				//layout goes wrong when inventory first closes
+				//width gets smaller and doesnt re-enlarge
+				//presumably because the shrunk inventory itself doesnt have the correct width
+				//(as tellable by its background)
+				
 			} else {
 				Gdx.app.log(logstag, "  button not visible");
 				button.hide(); //ensure its hidden
@@ -399,6 +405,7 @@ public class NewGUIBar extends VerticalPanel {
 		PlayersData.playersInventoryPanel.setToScale(new Vector3(1f,1f,1f));
 		add(PlayersData.playersInventoryPanel);
 		
+		//TODO: when inventory closes the size of this gui messes up
 		
 	}
 

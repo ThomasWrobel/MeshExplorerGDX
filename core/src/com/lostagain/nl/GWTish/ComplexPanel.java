@@ -260,8 +260,18 @@ public abstract class ComplexPanel extends Widget {
 			float height = size.getHeight() * scaleY;
 			float width  = size.getWidth()  * scaleX;
 
-
+			//multiply back UP by our own scale
+			//This is because we need the native size of the widgets, not what we have scaled them too
+			//By being attached to us
+			//if we arnt attached yet, we dont do this (widgets in the process of being attached might call recalc before attachment to test if the size will change
+			if (this.hasAttachment(widget)){
+				width=width/super.transState.scale.x; 
+				height=height/super.transState.scale.y;
+			}
+			
+			
 			Log.info("width of "+widget.getClass().getName()+" is "+scaleX+"*"+size.getWidth());
+			Log.info(" / "+super.transState.scale.x+" is "+width);
 			
 			if (width>largestWidthOfStoredWidgets){
 				
@@ -389,10 +399,10 @@ public abstract class ComplexPanel extends Widget {
 		}
 		
 		//add to the widget list
-		contents.add(atIndex,widget);
+		contents.add(atIndex,widget); //not scaled yet
 		
 		//recalculate biggest widgets (used for centralization vertical or horizontal depending on panel)
-		boolean changed = recalculateLargestWidgets();
+		boolean changed = recalculateLargestWidgets(); //needs to be scaled before running this
 		
 		if (changed || atIndex!=contents.size()){
 			repositionWidgets(); //reposition all widgets with the new one	
@@ -401,7 +411,7 @@ public abstract class ComplexPanel extends Widget {
 		}
 		
 		//else we just add the new one
-		internalAdd(widget);
+		internalAdd(widget); /// scales here
 		
 		//resize
 		sizeToFitContents();

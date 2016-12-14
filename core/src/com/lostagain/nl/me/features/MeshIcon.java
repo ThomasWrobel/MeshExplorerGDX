@@ -24,6 +24,7 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.Style.TextAlign;
+import com.lostagain.nl.GWTish.Style.TextVerticalAlign;
 import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
@@ -245,6 +246,8 @@ public class MeshIcon extends Label implements  Animating,Moving {
 
 		super.getStyle().setPadding(5f);
 		super.getStyle().setTextAlignment(TextAlign.CENTER);
+		super.getStyle().setTextVerticalAlignment(TextVerticalAlign.MIDDLE);
+		
 		
 		
 		thisIconsType = type;

@@ -2,6 +2,7 @@ package com.lostagain.nl.me.features;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -45,6 +46,7 @@ import com.lostagain.nl.me.models.objectInteractionType;
 public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature,Animating  {
 
 	final static String logstag = "ME.InventoryPanel";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
 	
 	//node
 	//eventually the inventory panel will be represented by a semantic node
@@ -134,7 +136,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		
 		//topBar.add(Title);
 		//topBar.add(pinButton);
-		this.add(Title);
+		super.add(Title);
 		
 		//add click detection on title
 		Title.addClickHandler(new ClickHandler() {
@@ -142,21 +144,41 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 			public void onClick() {
 				Gdx.app.log(logstag,"---header clicked---");
 				
+				
+				
 				if (collapsedState == DisclosureState.Collapsed){
 					expand();
 					Title.setText("Inventory /\\");
 					
-				}
-				if (collapsedState == DisclosureState.Expanded){
-					collapse();
+				} else if (collapsedState == DisclosureState.Expanded){
+					collapse();					
 					Title.setText("Inventory \\/");
 				}
-					
 				
+					
+				Log.info("<-------------------------------------------------------------------------");
+			//	boolean changed = recalculateLargestWidgets();	//ok, this seems to be where it goes wrong?	something wrong with scale calculations?
+				Log.info("<------------lw:"+InventoryPanel.this.largestWidthOfStoredWidgets);
+				
+				//size should be;
+				//158 x 0.65 =      102.7        - concept objects
+				//    x 0.8 x 0.65 =  x(0.52)    - Title
+				//
+				//add and remove seems to work, insert does not?
+				
+			//	sizeToFitContents();
+			//	Log.info("<-------------------------------------------------------------------------");
+				
+				//goes wrong when opening, works when closing
+				//remove works? insert does not?
+				//size alternates between 
+				//395 and 415 when closing
+			
 			}
 		});
 		
 		//add the slots
+		
 		for (int i = 0; i < NumberOfSlots; i++) {
 			
 			ConceptObjectSlot newSlot = new ConceptObjectSlot();
@@ -261,7 +283,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 	
 	//show everything
 	private void expand(){
-		durationIntoCollapseAnimation = 0f; //instantly appearing works, but when we reset the time to do it gradully it goes wrong scale-wise...hmm
+		durationIntoCollapseAnimation = 0f; //instantly appearing works, but when we reset the time to do it gradually it goes wrong scale-wise...hmm
 		collapsedState = DisclosureState.Expanding;
 		GWTishModelManagement.addAnimating(this);
 		
@@ -278,7 +300,11 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 		
 		isCollapsed = false;*/
 	}
+	
+	
 
+	
+	
 	float collapseDuration = 0.5f;
 	float durationIntoCollapseAnimation = 0f;
 	
@@ -318,8 +344,7 @@ public class InventoryPanel extends VerticalPanel  implements GenericMeshFeature
 					if (!this.hasAttachment(slotToChange))
 					{
 						slotToChange.setToScale(new Vector3(1f,1f,1f));
-						slotToChange.show();					
-						//add(slotToChange); 
+						slotToChange.show();
 						
 						insert(slotToChange,2);
 						

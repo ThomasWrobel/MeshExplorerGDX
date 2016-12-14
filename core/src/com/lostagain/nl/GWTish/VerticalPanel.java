@@ -90,11 +90,12 @@ public class VerticalPanel extends CellPanel {
 
 	}
 
+	
 	/**
 	 * Refreshes the position of all widgets recalculateLargestWidgets(); should
 	 * be run first
 	 */
-	void repositionWidgets() {
+	public void repositionWidgets() { //todo:should be protected, only public for testing
 		Log.info( "Reposition " + contents.size() + " widgets in vp ");
 		// simply clear and re-add them all
 
@@ -127,9 +128,10 @@ public class VerticalPanel extends CellPanel {
 
 
 	@Override
-	void sizeToFitContents() {
-		setSizeAs(getLeftPadding() + largestWidthOfStoredWidgets + getRightPadding(),
-				getBottomPadding() + currentTotalWidgetHeight + getTopPadding());
+	public void sizeToFitContents() { //todo: remove public
+		
+		setSizeAs(getLeftPadding() + largestWidthOfStoredWidgets + getRightPadding(),getBottomPadding() + currentTotalWidgetHeight + getTopPadding());
+		
 	}
 
 }
