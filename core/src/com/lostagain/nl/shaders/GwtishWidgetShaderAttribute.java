@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Align;
 import com.lostagain.nl.GWTish.Style.TextAlign;
@@ -26,6 +28,11 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	public final static String Alias = "GwtishWidgetDistanceFieldAttribute";
 	public final static long ID = register(Alias);
 
+	/**
+	 * the actual map that defines the text, if any
+	 */
+	public Texture distanceFieldTextureMap;
+	
 	/**
 	 * If clear is specified for the text colour,outline colour, glow and shader colour, then the text rendering
 	 * is disabled completely. This should be used if you just wish to use the background shader on GWTish widgets
@@ -214,7 +221,8 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 			float paddingTop,
 			float paddingLeft,
 			TextScalingMode textScaleing,
-			final float glowWidth,final Color backColor, final Color borderColour , final float cornerRadius
+			final float glowWidth,final Color backColor, final Color borderColour , final float cornerRadius,
+			Texture text
 			) {
 
 		super(ID);
@@ -243,6 +251,7 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 			this.borderColour = borderColour.cpy();
 		}
 		this.cornerRadius=cornerRadius;
+		this.distanceFieldTextureMap=text;
 	}
 
 	/**
@@ -309,7 +318,11 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 				paddingTop,
 				paddingLeft,
 				textScaleingMode,
-				borderWidth,backColor,borderColour,cornerRadius);
+				borderWidth,
+				backColor,
+				borderColour,
+				cornerRadius,
+				distanceFieldTextureMap);
 
 	}
 
@@ -545,6 +558,8 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	 */
 	HashMap<StyleParam,ArrayList<stylestate>> allTransitionStates =  new HashMap<StyleParam,ArrayList<stylestate>>();
 
+	
+
 	/*
 		@keyframes example {
 		    0%   {background-color: red;}
@@ -777,5 +792,16 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 
 
 	}
+
+
+	public boolean hasText() {
+		if (distanceFieldTextureMap!=null){
+			return true;
+		}
+		return false;
+	}
+
+
+
 
 }

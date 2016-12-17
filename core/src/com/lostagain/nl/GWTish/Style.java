@@ -7,10 +7,12 @@ import java.util.logging.Logger;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
 import com.lostagain.nl.GWTish.Management.ZIndexGroup;
@@ -295,6 +297,50 @@ public class Style {
 		return 1.0f;
 	}
 	
+	
+	
+
+	
+	/**
+	 * sets a background image on this style
+	 * The string specifies a local location. To help with CSS compatibility
+	 * you can specify it as;
+	 * 
+	 *  url("paper.gif")
+	 *  
+	 *  The url, brackets, and quotes will all be stripped off automatically.
+	 *  
+	 * @param internalLocation
+	 */
+	public void setBackgroundImage(String internalLocation) {
+		//strip css url trappings
+		if (internalLocation.startsWith("url(")){
+			internalLocation = internalLocation.trim(); //remove any spaces at end
+			internalLocation = internalLocation.substring(4,internalLocation.length()-1); //crop out url brackets
+			//remove quotes if present
+			if (internalLocation.startsWith("\"")){
+				internalLocation=	internalLocation.substring(1, internalLocation.length()-1);
+			}
+			
+		}
+
+		Log.info("_________(loading:"+internalLocation+":)");
+		Texture image = new Texture(internalLocation);
+		setBackgroundImage(image);
+		
+		
+	}
+		
+	/**
+	 * adds a texture attribute with the specified texture, replacing any existing
+	 * @param testimage
+	 */
+	public void setBackgroundImage(Texture image) {
+	
+		addAttributeToShader(	TextureAttribute.createDiffuse(image));			
+	
+	}
+
 	/**
 	 * Sets z-index value and groupname
 	 * 

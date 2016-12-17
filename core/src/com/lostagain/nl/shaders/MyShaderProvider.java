@@ -64,7 +64,7 @@ public class MyShaderProvider extends DefaultShaderProvider {
 		
 		//New method for selection (we should slowly move the things from the switch statement to this method)
 		if (renderable.material.has(GwtishWidgetShaderAttribute.ID)){
-			return new GwtishWidgetShader();
+			return new GwtishWidgetShader(renderable);
 		}
 		
 		if (renderable.material.has(ConceptBeamShader.ConceptBeamAttribute.ID)){

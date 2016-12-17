@@ -61,9 +61,11 @@ public class GwtishWidgetShader implements Shader {
 	/**
 	 * -1 = no text rendering
 	 */
-	int u_colorModeFlag;
+	int u_colorModeFlag;	
+	
 	
 	int u_textColour;
+	
 	//int u_backColour;
 
 	int u_texture_pixel_step;
@@ -90,6 +92,7 @@ public class GwtishWidgetShader implements Shader {
 	int  u_shadowColour;
 
 	//background
+	int u_backSample2D;
 	int u_backBorderWidth;
 	int u_backBackColor;
 	int u_backCoreColor; 		
@@ -97,22 +100,48 @@ public class GwtishWidgetShader implements Shader {
 	int u_backCornerRadius;
 
 
-
-	@Override
-	public void init () {
-
+	
+	
+	
+	public GwtishWidgetShader(Renderable renderable) {
+		
 		Gdx.app.log(logstag, "initialising gwtish widget shader");
-
-		String vert = Gdx.files.internal("shaders/gwtishwidgetshader_vert.glsl").readString();
-		String frag = Gdx.files.internal("shaders/gwtishwidgetshader_frag.glsl").readString();
-
-		//String prefix = createPrefix(renderable, this.get);
-
-		program = new ShaderProgram(vert, frag);
+		
+		String prefix = createPrefix(renderable);
+		
+		String vert =  Gdx.files.internal("shaders/gwtishwidgetshader_vert.glsl").readString();
+		String frag =  Gdx.files.internal("shaders/gwtishwidgetshader_frag.glsl").readString();
+		
+		program = new ShaderProgram(prefix+vert, prefix+frag);
 
 		if (!program.isCompiled()){
 			throw new GdxRuntimeException(program.getLog());
 		}
+
+		Log.info("______________________________________________________________________________________created new shader with prefix:\n"+prefix);
+		Log.info("hasText:"+hasText);
+		
+	}
+	
+
+	@Override
+	public void init () {
+		
+		Gdx.app.log(logstag, "initialising gwtish widget shader");
+		/*
+		String prefix = createPrefix();
+		
+
+		String vert =  Gdx.files.internal("shaders/gwtishwidgetshader_vert.glsl").readString();
+		String frag =  Gdx.files.internal("shaders/gwtishwidgetshader_frag.glsl").readString();
+
+		//String prefix = createPrefix(renderable, this.get);
+
+		program = new ShaderProgram(prefix+vert, prefix+frag);
+
+		if (!program.isCompiled()){
+			throw new GdxRuntimeException(program.getLog());
+		}*/
 
 
 		Gdx.app.log(logstag, "setting GwtishWidgetShader uniform locations");
@@ -152,10 +181,14 @@ public class GwtishWidgetShader implements Shader {
 		u_shadowColour        = program.getUniformLocation("u_shadowColour");
 
 		//background
+		
+		//image back
+		u_backSample2D  = program.getUniformLocation("u_backSample2D"); 
+		
 		//square style
 
 		Gdx.app.log(logstag, "(now the background ones....");
-		u_backBorderWidth     = program.getUniformLocation("u_backBorderWidth"); 
+		u_backBorderWidth   = program.getUniformLocation("u_backBorderWidth"); 
 		u_backBackColor     = program.getUniformLocation("u_backBackColor"); 
 		u_backCoreColor     = program.getUniformLocation("u_backCoreColor");  		
 		u_backGlowColor     = program.getUniformLocation("u_backGlowColor"); 
@@ -165,6 +198,55 @@ public class GwtishWidgetShader implements Shader {
 		Gdx.app.log(logstag, "....)");
 
 
+	}
+
+	boolean hasText = false;
+	boolean hasBackgroundImage = false;
+	
+	private String createPrefix(Renderable renderable) {
+		
+		//none yet
+		//in future there will be at least 4 modes;
+
+		/**
+		 * no text /no back image / other stuff (ie, borders, curved corners)
+		 * text /no back image    / other stuff
+		 * no text / back image   / other stuff
+		 * text / back image      / other stuff
+		 */
+		
+		//get shader attribute
+		GwtishWidgetShaderAttribute textStyleData = (GwtishWidgetShaderAttribute)renderable.material.get(GwtishWidgetShaderAttribute.ID);
+		
+		//prefix result
+		String prefix = "";
+		
+		//work out what we need
+		if (textStyleData.hasText()){
+			//has texture defining some text
+			 prefix = prefix+ "#define hasText\n";
+			 hasText = true;
+		} else {
+	//		 prefix = prefix+ "#define hasText\n"; //remove in a mo, just for testing
+				
+			 hasText = false;
+		}
+	
+		if (renderable.material.get(TextureAttribute.Diffuse)!=null){
+			//has texture defining background
+			 prefix = prefix+ "#define hasBackgroundImage\n";
+			 hasBackgroundImage = true;				
+		} else {
+			 hasBackgroundImage = false;
+		}
+		
+
+		
+		//we could also have a "hasProcedralBackground" which is true by default, but could be disabled for things without any background at all?
+		//(currently it just sets it to transparent)
+		
+			
+		return prefix;
 	}
 
 	@Override
@@ -252,12 +334,13 @@ public class GwtishWidgetShader implements Shader {
 		float textScale_height_pad = 0;
 		float textScale_width_pad  = 0;	
 		
-		if (renderable.material.get(TextureAttribute.Diffuse)!=null){
-			
-			
-
-			Texture distanceFieldTextureMap = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
+		if (textStyleData.hasText()) {
+		//if (renderable.material.get(TextureAttribute.Diffuse)!=null){		
+			//Texture distanceFieldTextureMap = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
+		
+			Texture distanceFieldTextureMap =  textStyleData.distanceFieldTextureMap;
 			distanceFieldTextureMap.setFilter(TextureFilter.Linear, TextureFilter.Linear); //not needed
+			
 			program.setUniformi(u_sampler2D, context.textureBinder.bind(distanceFieldTextureMap));    		    		 
 	
 			//Now we need to supply the pixel step of the texture as this is different to the overall one
@@ -376,25 +459,26 @@ public class GwtishWidgetShader implements Shader {
 
 			program.setUniformf(u_colorModeFlag,1.0f);
 			
-			if (renderable.userData.equals("InfoBox")){
-				Log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!a_colorFlag set to 1.0 on infobox");
-			}
+			//if (renderable.userData.equals("InfoBox")){
+			//	Log.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!a_colorFlag set to 1.0 on infobox");
+			//}
 			
 		} else {
 			
-			//no text to render, ensure settings are correct for that.
-		//	program.setUniformf(u_colorModeFlag, -1.0f);    	//-1 means no text rendering. without this we might see old textures used	    		 
-			//BUG: -1.0 seems to become 1.0 in the shader. WEIRD!
-			//WTF. 
-			//TEMP: use 5.0 for now, which is stupid but whatever
-		//	if (renderable.userData.equals("InfoBox")){
-			//	Log.info("a_colorFlag set to 4.0 on infobox");
-			//	program.setUniformf(u_colorModeFlag, 4.0f);    	//-1 means no text rendering. without this we might see old textures used	    		 
-				
-			//}
 			program.setUniformf(u_colorModeFlag, -1.0f);
 			
 		}
+		
+		//test for image background if this shader is set to use them and a image was supplied we have one 
+		if (hasBackgroundImage && renderable.material.get(TextureAttribute.Diffuse)!=null){
+			
+			Texture backgroundMap = ((TextureAttribute)renderable.material.get(TextureAttribute.Diffuse)).textureDescription.texture;      		 
+			
+			//distanceFieldTextureMap.setFilter(TextureFilter.Linear, TextureFilter.Linear); //not needed			
+			program.setUniformi(u_backSample2D, context.textureBinder.bind(backgroundMap));    
+
+		}
+		
 		
 		
 		//	Gdx.app.log(logstag, "glowColour:"+textStyleData.glowColour);
@@ -537,16 +621,58 @@ public class GwtishWidgetShader implements Shader {
 		program.end();
 	}
 
+
 	@Override
 	public int compareTo (Shader other) {
-		return 0;
+		if (other == null) return -1;
+		if (other == this) return 0;
+		return 0; // FIXME compare shaders on their impact on performance
 	}
+	
+
+	
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GwtishWidgetShader other = (GwtishWidgetShader) obj;
+		if (hasBackgroundImage != other.hasBackgroundImage)
+			return false;
+		if (hasText != other.hasText)
+			return false;
+		return true;
+	}
+
 
 	@Override
 	public boolean canRender (Renderable instance) {
 
 		if (instance.material.has(GwtishWidgetShaderAttribute.ID)) { //|| instance.material.has(GwtishWidgetBackgroundAttribute.ID)){
-			return true;
+			
+			//also check if our optional parameters match
+			//see createPrefix()
+			GwtishWidgetShaderAttribute textStyleData = (GwtishWidgetShaderAttribute)instance.material.get(GwtishWidgetShaderAttribute.ID);
+
+			boolean instanceHasBackground = false;
+			if (instance.material.get(TextureAttribute.Diffuse)!=null){
+				instanceHasBackground=true;
+			}
+				
+			//check we match feature support wise
+			if (textStyleData.hasText()==hasText && instanceHasBackground == hasBackgroundImage){
+				
+				return true;
+				
+			}
+			
+			
+			
 		}
 
 		return false;

@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
@@ -201,7 +202,7 @@ public class Label extends LabelBase {
 	public Label (String contents,boolean interpretBRasNewLine,boolean interpretNLasNewLine,float MaxWidth,float MaxHeight, SizeMode sizeMode, MODELALIGNMENT modelAlignement, TextAlign textAlignment){ 
 
 		super(generateObjectData(true, true, contents, interpretBRasNewLine,interpretNLasNewLine,sizeMode, MaxWidth, MaxHeight, modelAlignement,textAlignment,null));
-		super.setStyle(getMaterial(LABEL_MATERIAL)); //no style settings will work before this is set
+		super.setStyle(this.getTextMaterial()); //no style settings will work before this is set
 
 		this.lastUsedTextAlignment = textAlignment;
 		this.userData="label_"+contents;
@@ -219,7 +220,7 @@ public class Label extends LabelBase {
 		this.contents=contents;
 
 		Material materialAccordingToStyle = this.getStyle().getMaterial();
-		Material materialAccordingToGetMaterial = getMaterial(LABEL_MATERIAL);
+		Material materialAccordingToGetMaterial = this.getTextMaterial();
 
 		//debug checks
 		if (materialAccordingToStyle!=materialAccordingToGetMaterial){
@@ -233,10 +234,12 @@ public class Label extends LabelBase {
 		}
 		//--------------------------------------------------------
 
-		GwtishWidgetShaderAttribute matttest = (GwtishWidgetShaderAttribute) this.getStyle().getMaterial().get(GwtishWidgetShaderAttribute.ID);
-
-		Log.info( "fitarea set as:"+matttest.textScaleingMode); 
-		Log.info( "paddingLeft:   "+matttest.paddingLeft); 
+		
+		GwtishWidgetShaderAttribute matttest = (GwtishWidgetShaderAttribute) materialAccordingToGetMaterial.get(GwtishWidgetShaderAttribute.ID);
+	
+		Log.info( "<---------------------------------------------text :   "+contents); 
+		Log.info( "matt test for label has Text:"+matttest.hasText()); 
+		Log.info( "text col:   "+matttest.textColour); 
 
 		if (sizeMode==SizeMode.Fixed){
 			//calc needed shader scaleing. Fixed size mode enlarges and shrinks texture to fit model - but does so in the shader, not by changing the underlying texture resolution
@@ -340,6 +343,8 @@ public class Label extends LabelBase {
 		//	textStyle = new DistanceFieldShader.DistanceFieldAttribute(DistanceFieldAttribute.presetTextStyle.whiteWithShadow);
 		GwtishWidgetShaderAttribute textStyle = new GwtishWidgetShaderAttribute(GwtishWidgetShaderAttribute.presetTextStyle.whiteWithShadow);
 
+		//assign texture to special shader
+		textStyle.distanceFieldTextureMap = newTexture;
 		//}
 
 
@@ -364,16 +369,17 @@ public class Label extends LabelBase {
 
 		//TODO:also ensure its bigger then the minimum size?
 		//
+		
 
 		Material mat = 	
 				new Material(LABEL_MATERIAL,
 						new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),
-						TextureAttribute.createDiffuse(newTexture),
+						//TextureAttribute.createDiffuse(newTexture),
 						//	ColorAttribute.createDiffuse(defaultBackColour), //needs to be passed into this function
 						textStyle);
 		
 
-		GwtishWidgetShaderAttribute matttest = (GwtishWidgetShaderAttribute) mat.get(GwtishWidgetShaderAttribute.ID);
+		//GwtishWidgetShaderAttribute matttest = (GwtishWidgetShaderAttribute) mat.get(GwtishWidgetShaderAttribute.ID);
 
 
 
@@ -383,10 +389,10 @@ public class Label extends LabelBase {
 		//Note the *1 is the scale. We have scale 1 by default, duh.
 		Model newModel = Widget.generateBackground(SizeX, SizeY, mat, alignment);
 
-		GwtishWidgetShaderAttribute matttest2 = (GwtishWidgetShaderAttribute) newModel.getMaterial(LABEL_MATERIAL).get(GwtishWidgetShaderAttribute.ID);
+		//GwtishWidgetShaderAttribute matttest2 = (GwtishWidgetShaderAttribute) newModel.getMaterial(LABEL_MATERIAL).get(GwtishWidgetShaderAttribute.ID);
 
-		Log.info( "1fitarea set as:"+matttest2.textScaleingMode); 
-		Log.info( "paddingLeft:   "+matttest2.paddingLeft); 
+		//Log.info( "1fitarea set as:"+matttest2.textScaleingMode); 
+		//Log.info( "paddingLeft:   "+matttest2.paddingLeft); 
 
 
 
@@ -398,6 +404,12 @@ public class Label extends LabelBase {
 				);
 
 
+		GwtishWidgetShaderAttribute testAttribute = (GwtishWidgetShaderAttribute)setupData.object.getMaterial(LABEL_MATERIAL).get(GwtishWidgetShaderAttribute.ID);
+		
+		Log.info( "<---------------------------------------------setupData :   "+testAttribute.hasText()); 
+		
+		
+		
 		return setupData;
 
 
@@ -1171,17 +1183,26 @@ private static GlyphLayout getNewLayout(String text,
 				startFromY,
 				addToExisting); 
 
-		Material infoBoxsMaterial = this.getMaterial(LABEL_MATERIAL);	
+		Material ourMaterial = getTextMaterial();// this.getMaterial(LABEL_MATERIAL);	
 
 		Texture newTexture = textureAndData.textureItself;
 		
-		//dispose of previous texture (texturre might be reused so we now dont do this here)
+		//dispose of previous texture 
 		//((TextureAttribute)infoBoxsMaterial.get(TextureAttribute.Diffuse)).textureDescription.texture.dispose();
 		//
 
-		infoBoxsMaterial.set(TextureAttribute.createDiffuse(newTexture));
+		//infoBoxsMaterial.set(TextureAttribute.createDiffuse(newTexture));
 	
 		
+		GwtishWidgetShaderAttribute textStyleData = (GwtishWidgetShaderAttribute)ourMaterial.get(GwtishWidgetShaderAttribute.ID);
+
+		//dispose of previous texture if there was one
+		if (textStyleData!=null && textStyleData.distanceFieldTextureMap!=null){
+			textStyleData.distanceFieldTextureMap.dispose();
+		}
+		
+		textStyleData.distanceFieldTextureMap = newTexture;
+		//
 		
 
 		//if (textStyle==null){
@@ -1607,7 +1628,20 @@ Text size remains just h/w, however
 	
 
 
+	/**
+	 * disposes of textures and pixmaps used to make this label
+	 */
+	public void dispose(){
+		super.currentPixmap.dispose();
 
+		Material material = this.getMaterial(LABEL_MATERIAL);	
+		GwtishWidgetShaderAttribute textStyleData = (GwtishWidgetShaderAttribute)material.get(GwtishWidgetShaderAttribute.ID);
+		//dispose of previous texture 
+		textStyleData.distanceFieldTextureMap.dispose();
+
+	//	((TextureAttribute)material.get(TextureAttribute.Diffuse)).textureDescription.texture.dispose();
+		
+	}
 
 
 
