@@ -100,8 +100,10 @@ public class GwtishWidgetShader implements Shader {
 	int u_backCornerRadius;
 
 
-	
-	
+	//filters
+	int u_filterBrightness;
+	int u_filterContrast;
+	int u_filterSaturation;
 	
 	public GwtishWidgetShader(Renderable renderable) {
 		
@@ -184,9 +186,7 @@ public class GwtishWidgetShader implements Shader {
 		
 		//image back
 		u_backSample2D  = program.getUniformLocation("u_backSample2D"); 
-		
-		//square style
-
+		//Procedural color/border back
 		Gdx.app.log(logstag, "(now the background ones....");
 		u_backBorderWidth   = program.getUniformLocation("u_backBorderWidth"); 
 		u_backBackColor     = program.getUniformLocation("u_backBackColor"); 
@@ -194,6 +194,11 @@ public class GwtishWidgetShader implements Shader {
 		u_backGlowColor     = program.getUniformLocation("u_backGlowColor"); 
 		u_backCornerRadius  = program.getUniformLocation("u_backCornerRadius"); 
 
+		
+		//post processing filters
+		u_filterContrast  = program.getUniformLocation("u_filterContrast"); 
+		u_filterBrightness = program.getUniformLocation("u_filterBrightness"); 
+		u_filterSaturation = program.getUniformLocation("u_filterSaturation");
 
 		Gdx.app.log(logstag, "....)");
 
@@ -202,6 +207,7 @@ public class GwtishWidgetShader implements Shader {
 
 	boolean hasText = false;
 	boolean hasBackgroundImage = false;
+	boolean hasFilters = false;
 	
 	private String createPrefix(Renderable renderable) {
 		
@@ -240,7 +246,14 @@ public class GwtishWidgetShader implements Shader {
 			 hasBackgroundImage = false;
 		}
 		
-
+		//filters
+		if (textStyleData.hasFilters()){
+			//has post filters defining some text
+			 prefix = prefix+ "#define hasFilters\n";
+			 hasFilters = true;
+		} else {				
+			hasFilters = false;
+		}
 		
 		//we could also have a "hasProcedralBackground" which is true by default, but could be disabled for things without any background at all?
 		//(currently it just sets it to transparent)
@@ -567,6 +580,7 @@ public class GwtishWidgetShader implements Shader {
 
 
 
+		/*
 		if (textStyleData==null){
 			//(if no background specified its just transparent)	 	
 			program.setUniformf(u_backBorderWidth,    0f);  	 
@@ -574,7 +588,7 @@ public class GwtishWidgetShader implements Shader {
 			program.setUniformf(u_backCoreColor,    Color.CLEAR); 
 			program.setUniformf(u_backCornerRadius, 1f); 
 
-		} else {
+		} else {*/
 
 			program.setUniformf(u_backBorderWidth,    textStyleData.borderWidth   );  	 
 			program.setUniformf(u_backBackColor,    textStyleData.getBackColor()   );
@@ -582,11 +596,24 @@ public class GwtishWidgetShader implements Shader {
 			program.setUniformf(u_backCornerRadius, textStyleData.cornerRadius); 
 
 
-		}
+		//}
 
 	//	program.setUniformf(u_colorModeFlag, 4.0f);    	//-1 means no text rendering. without this we might see old textures used	    		 
 	//	program.setUniformf(u_textPaddingX, 90.0f);    	//-1 means no text rendering. without this we might see old textures used	    		 
 		
+			
+			//Finally filter data, if set
+			
+			program.setUniformf(u_filterContrast,   textStyleData.filter_contrast); 
+			program.setUniformf(u_filterBrightness, textStyleData.filter_brightness); 
+			program.setUniformf(u_filterSaturation, textStyleData.filter_saturation); 
+
+			
+		//	program.setUniformf(u_filterContrast,   2.0f); 
+		//	program.setUniformf(u_filterBrightness, 1.0f); 
+		//	program.setUniformf(u_filterSaturation, 0.0f); 
+
+			
 
 		 renderable.meshPart.render(program);
 		 
@@ -646,6 +673,8 @@ public class GwtishWidgetShader implements Shader {
 			return false;
 		if (hasText != other.hasText)
 			return false;
+		if (hasFilters != other.hasFilters)
+			return false;
 		return true;
 	}
 
@@ -665,7 +694,9 @@ public class GwtishWidgetShader implements Shader {
 			}
 				
 			//check we match feature support wise
-			if (textStyleData.hasText()==hasText && instanceHasBackground == hasBackgroundImage){
+			if (   textStyleData.hasText()     == hasText 
+				&&	textStyleData.hasFilters() == hasFilters
+				&& instanceHasBackground       == hasBackgroundImage){
 				
 				return true;
 				

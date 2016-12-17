@@ -33,7 +33,7 @@ public class Style {
 	Element elementWithStyle;
 	Material objectsMaterial = null;
 
-	GwtishWidgetShaderAttribute textStyle;
+	GwtishWidgetShaderAttribute styleAttribute;
 	
 //	GwtishWidgetBackgroundAttribute    backStyle;
 	
@@ -64,7 +64,7 @@ public class Style {
 		this.elementWithStyle=elementWithStyle;
 		
 		//shaders controlled by two attributes;
-		textStyle     = ((GwtishWidgetShaderAttribute)objectsMaterial.get(GwtishWidgetShaderAttribute.ID));
+		styleAttribute     = ((GwtishWidgetShaderAttribute)objectsMaterial.get(GwtishWidgetShaderAttribute.ID));
 	//	backStyle     = ((GwtishWidgetBackgroundAttribute)objectsMaterial.get(GwtishWidgetBackgroundAttribute.ID));
 	
 		//(one of these might be null, if so they will be created and added on demand)
@@ -87,12 +87,12 @@ public class Style {
 
 		nullParameterCheck(col);
 		
-		if (textStyle!=null){
+		if (styleAttribute!=null){
 
 		//	Log.info("_________setting color to:"+col);
 			//Log.info("_________setting color to:"+col);
 			
-			textStyle.textColour.set(col);
+			styleAttribute.textColour.set(col);
 		}
 
 	}
@@ -102,44 +102,44 @@ public class Style {
 	 */
 	public void setShadowColor(Color col){
 
-		if (textStyle!=null){
+		if (styleAttribute!=null){
 			
 		//	Log.info("_________setting shadow color to:"+col);
 			
-			textStyle.shadowColour.set(col);
+			styleAttribute.shadowColour.set(col);
 		}
 
 	}
 	
 	public void setTextGlowColor(Color col) {
-		if (textStyle!=null){
+		if (styleAttribute!=null){
 			
 			Log.info("_________setting glow color to:"+col);
 			
-			textStyle.glowColour.set(col);
+			styleAttribute.glowColour.set(col);
 		}
 	}
 	public void setTextGlowSize(float size) {
-		if (textStyle!=null){			
+		if (styleAttribute!=null){			
 			Log.info("_________setting glow size to:"+size);			
-			textStyle.glowSize= size;
+			styleAttribute.glowSize= size;
 		}
 	}
 	public void setTextOutineLimits(float inner,float outer ) {
-		if (textStyle!=null){
+		if (styleAttribute!=null){
 			
 			Log.info("_________setting inner limit to:"+inner);			
-			textStyle.outlinerInnerLimit = inner;
+			styleAttribute.outlinerInnerLimit = inner;
 			Log.info("_________setting outer limit to:"+outer);			
-			textStyle.outlinerOuterLimit = outer;
+			styleAttribute.outlinerOuterLimit = outer;
 		}
 	}
 	public void setTextOutlineColor(Color col) {
-		if (textStyle!=null){
+		if (styleAttribute!=null){
 			
 			Log.info("_________setting outline color to:"+col);
 			
-			textStyle.outlineColour.set(col); 
+			styleAttribute.outlineColour.set(col); 
 		}
 	}
 	
@@ -161,7 +161,7 @@ public class Style {
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		//if (backStyle!=null){
 
-			textStyle.borderWidth = borderWidth;
+			styleAttribute.borderWidth = borderWidth;
 			
 		//	glowingSquare.glowColor = bordercol;
 	//	}
@@ -181,7 +181,7 @@ public class Style {
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		//if (backStyle!=null){
 
-		textStyle.borderColour = bordercol;
+		styleAttribute.borderColour = bordercol;
 		//	glowingSquare.glowColor = bordercol;
 	//	}
 
@@ -189,7 +189,7 @@ public class Style {
 	
 	public void setBorderRadius(float radius) {
 	//	createBackgroundAttributeIfNeeded();
-			textStyle.cornerRadius = radius;
+			styleAttribute.cornerRadius = radius;
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class Style {
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		//if (backStyle!=null){
 			//	GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)objectsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
-		textStyle.backColor.set(backcol);
+		styleAttribute.backColor.set(backcol);
 		//}
 		
 	//	if (textStyle!=null){
@@ -242,12 +242,12 @@ public class Style {
 	
 	private void createTextAttributeIfNeeded() {
 		
-		if (textStyle==null){			
+		if (styleAttribute==null){			
 
 			Log.info("_________(creating default text shader attribute)");
 			//if we are creating one automatically on demand, everything is set to clear
-			textStyle  = new GwtishWidgetShaderAttribute(GwtishWidgetShaderAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
-			addAttributeToShader(textStyle);			
+			styleAttribute  = new GwtishWidgetShaderAttribute(GwtishWidgetShaderAttribute.presetTextStyle.NULL_DONTRENDERTEXT);
+			addAttributeToShader(styleAttribute);			
 		}
 		
 	}
@@ -302,17 +302,25 @@ public class Style {
 
 	
 	/**
-	 * sets a background image on this style
-	 * The string specifies a local location. To help with CSS compatibility
-	 * you can specify it as;
-	 * 
-	 *  url("paper.gif")
-	 *  
-	 *  The url, brackets, and quotes will all be stripped off automatically.
-	 *  
+	 * sets a background image on this style<br>
+	 * The string specifies a local location. To help with CSS compatibility<br>
+	 * you can specify it as;<br>
+	 * <br>
+	 *  url("paper.gif")<br>
+	 *  <br>
+	 *  The url, brackets, and quotes will all be stripped off automatically.<br>
+	 *  <br>
+	 *  setting the value to "none" will remove any set image <br><br>
 	 * @param internalLocation
 	 */
 	public void setBackgroundImage(String internalLocation) {
+		
+		//if set to none we clear instead
+		if (internalLocation.equalsIgnoreCase("none")){
+			clearBackgroundImage();
+			return;
+		}
+		
 		//strip css url trappings
 		if (internalLocation.startsWith("url(")){
 			internalLocation = internalLocation.trim(); //remove any spaces at end
@@ -340,7 +348,22 @@ public class Style {
 		addAttributeToShader(	TextureAttribute.createDiffuse(image));			
 	
 	}
+	
+	/**
+	 * removes background if one was set
+	 * you can also use setBackgroundImage("none")
+	 * 
+	 * @param testimage
+	 */
+	public void clearBackgroundImage() {
+	
+		removeAttributeFromShader(	TextureAttribute.Diffuse);	
+			
+	
+	}
 
+
+	
 	/**
 	 * Sets z-index value and groupname
 	 * 
@@ -410,9 +433,13 @@ public class Style {
 
 			objectsMaterial.set( attribute);
 		
-		
 	}
 	
+	private void removeAttributeFromShader(long ID) {
+		objectsMaterial.remove(ID); 
+		
+	}
+
 	
 	/**
 	 * FOR TESTING ONLY, don't use
@@ -441,10 +468,74 @@ public class Style {
 	
 
 	public void setTextStyle(presetTextStyle standardwithshadow) {
-		if (textStyle!=null){
-			textStyle.setToPreset(standardwithshadow);
+		if (styleAttribute!=null){
+			styleAttribute.setToPreset(standardwithshadow);
 		}
 	}
+	
+	
+	//--------------------------
+	//------filter handling
+	//--------------------------
+	
+	/**
+	 * 0=black
+	 * 1=original image
+	 * >1 = brighter
+	 * //not implemented yet
+	 * 
+	 * @param brightness
+	 */
+	public void setBrightnessFilter(float brightness){
+		//not implemented yet
+		ensureFilterEnabled();		
+		styleAttribute.filter_brightness = brightness;
+	}
+	
+	/**
+	 * 0= completely grey
+	 * 1=original image
+	 * >1=more contrast
+	 * 
+	 * //not implemented yet
+	 * 
+	 * @param contrast
+	 */
+	public void setContrastFilter(float contrast){
+		//not implemented yet
+
+		ensureFilterEnabled();
+		styleAttribute.filter_contrast=contrast;
+	}
+	
+	
+	private void ensureFilterEnabled() {
+		
+		styleAttribute.usesPostFilter=true; //ensures the post filter part of the shader will be compiled
+		
+		//TODO:we could test if the filters are all set to default values and turn it off if it can?
+		
+		
+		
+	}
+
+	/**
+	 * 0= completely desaturated
+	 * 1=original image
+	 * >1=more saturation
+	 * 
+	 * //not implemented yet
+	 * 
+	 * @param saturation
+	 */
+	public void setSaturationFilter(float saturation){
+		//not implemented yet
+
+		ensureFilterEnabled();
+		styleAttribute.filter_saturation=saturation;
+	}
+	
+	
 	
 	//-------------------
 	//-------------------
@@ -533,14 +624,14 @@ public class Style {
 
 	public void setTextAlignment(TextAlign textAlignment) {
 		this.textHorizontalAlignment = textAlignment;
-		textStyle.textAlignmentHorizontal = textAlignment;
+		styleAttribute.textAlignmentHorizontal = textAlignment;
 		layoutStyleChanged();
 	}
 	
 	  public void setTextVerticalAlignment(TextVerticalAlign textVerticalAlignment) {
 			this.textVerticalAlignment = textVerticalAlignment;
 
-			textStyle.textAlignmentVertical = textVerticalAlignment;
+			styleAttribute.textAlignmentVertical = textVerticalAlignment;
 			layoutStyleChanged();
 		}
 	
@@ -580,7 +671,7 @@ public class Style {
 	 */
 	public void setTextScale(float scale){
 		createTextAttributeIfNeeded();
-		textStyle.textScale = scale;				
+		styleAttribute.textScale = scale;				
 	//	layoutStyleChanged();
 	}
 	
@@ -631,8 +722,8 @@ public class Style {
 			
 		
 		createTextAttributeIfNeeded();
-		textStyle.paddingLeft = padding;
-		textStyle.paddingTop = padding;
+		styleAttribute.paddingLeft = padding;
+		styleAttribute.paddingTop = padding;
 				
 		layoutStyleChanged();
 	}
@@ -651,7 +742,7 @@ public class Style {
 		PaddingLeft = Left;
 		
 		createTextAttributeIfNeeded();
-		textStyle.paddingLeft = Left;
+		styleAttribute.paddingLeft = Left;
 		layoutStyleChanged();
 	}
 	
@@ -665,7 +756,7 @@ public class Style {
 		PaddingTop = Top;
 		
 		createTextAttributeIfNeeded();
-		textStyle.paddingTop = Top;
+		styleAttribute.paddingTop = Top;
 		layoutStyleChanged();
 	}
 	
@@ -721,28 +812,32 @@ public class Style {
 	//wip animation stuff
 
 	public void addTransitionState(StyleParam type, float time, Color value) {
-		textStyle.addTransitionState(type, time, value);
+		styleAttribute.addTransitionState(type, time, value);
 		
 	}
 	public void addTransitionState(StyleParam type, float time, float value) {
-		textStyle.addTransitionState(type, time, value);
+		styleAttribute.addTransitionState(type, time, value);
 		
 	}
-	public void setTransitionLength(float totalAnimationTime) {
-		textStyle.setTransitionLength(totalAnimationTime);
+	/**
+	 * 
+	 * @param totalAnimationTime - in ms
+	 */
+	public void setTransitionLength(float totalAnimationTimeMS) {
+		styleAttribute.setTransitionLength(totalAnimationTimeMS);
 		
 	}
 	public void setTransitionIterationCount(int totalAnimationTime) {
-		textStyle.setTransitionIterationCount(totalAnimationTime);
+		styleAttribute.setTransitionIterationCount(totalAnimationTime);
 		
 	}
 	public void debugTransitionStates(){		
-		Log.info(textStyle.debugTransitionStates());		
+		Log.info(styleAttribute.debugTransitionStates());		
 	}
 	
 
 	public void setPercentageIntoAnimation(float percentageIntoAnimation){
-		textStyle.setPercentageIntoAnimation(percentageIntoAnimation);
+		styleAttribute.setPercentageIntoAnimation(percentageIntoAnimation);
 	}
 
 	/**
@@ -750,7 +845,7 @@ public class Style {
 	 * @param f
 	 */
 	public void updateDelta(float f) {
-		textStyle.updateDelta(f);
+		styleAttribute.updateDelta(f);
 	}
 
 	

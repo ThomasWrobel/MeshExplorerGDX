@@ -52,6 +52,9 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	public float shadowBlur          = 0.0f;
 	public Color shadowColour        = Color.CLEAR;
 
+	
+	
+	
 	public enum TextScalingMode {
 		natural,fitarea,fitPreserveRatio
 	}
@@ -114,6 +117,18 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	//-------------------------------------
 	//--------------
 
+	
+	//--------------------------
+	//------filter handling
+	//--------------------------
+	//Work in progress
+	public boolean usesPostFilter=false; //should be set to true if filter values arnt default values
+	public float filter_brightness = 1.0f; //default values
+	public float filter_contrast   = 1.0f;
+	public float filter_saturation = 1.0f;
+	
+	
+	
 
 	/**
 	 * Temp variable only. Controls a multiplier factor for opacity that applys to all Get statements of colour components (like getTextColor)
@@ -517,6 +532,9 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	
 	public void setTransitionLength(float totalAnimationTime) {
 		this.totalAnimationTime = totalAnimationTime;
+		if (totalAnimationTime>0){
+			animating=true;
+		}
 	}
 
 	public void setTransitionIterationCount(int count) {
@@ -528,10 +546,16 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 
 
 	public void updateDelta(double d){
+		
 		if (!animating){
 			return;
 		}
 
+		//make sure time is also set
+		if (totalAnimationTime<0){
+			animating=false;
+			return;
+		}
 
 
 		currentTotalTime=currentTotalTime+d;
@@ -799,6 +823,11 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 			return true;
 		}
 		return false;
+	}
+
+
+	public boolean hasFilters() {
+		return usesPostFilter;
 	}
 
 
