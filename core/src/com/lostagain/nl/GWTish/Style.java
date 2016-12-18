@@ -488,7 +488,7 @@ public class Style {
 	 */
 	public void setBrightnessFilter(float brightness){
 		//not implemented yet
-		ensureFilterEnabled();		
+		ensureBCFilterEnabled();		
 		styleAttribute.filter_brightness = brightness;
 	}
 	
@@ -504,19 +504,24 @@ public class Style {
 	public void setContrastFilter(float contrast){
 		//not implemented yet
 
-		ensureFilterEnabled();
+		ensureBCFilterEnabled();
 		styleAttribute.filter_contrast=contrast;
 	}
 	
 	
-	private void ensureFilterEnabled() {
-		
-		styleAttribute.usesPostFilter=true; //ensures the post filter part of the shader will be compiled
-		
+	private void ensureBCFilterEnabled() {		
+		styleAttribute.usesBCPostFilter=true; //ensures the post filter part of the shader will be compiled		
 		//TODO:we could test if the filters are all set to default values and turn it off if it can?
-		
-		
-		
+	}
+	
+	
+	
+	//hsv filter settings;
+
+	public void setHueFilter(float hue){
+		//not implemented yet
+		ensureHSVFilterEnabled();
+		styleAttribute.filter_hue=hue;
 	}
 
 	/**
@@ -530,12 +535,23 @@ public class Style {
 	 */
 	public void setSaturationFilter(float saturation){
 		//not implemented yet
-
-		ensureFilterEnabled();
+		ensureHSVFilterEnabled();
 		styleAttribute.filter_saturation=saturation;
+	}
+	public void setValueFilter(float value){
+		//not implemented yet
+		ensureHSVFilterEnabled();
+		styleAttribute.filter_value=value;
 	}
 	
 	
+	private void ensureHSVFilterEnabled() {		
+		styleAttribute.usesHSVPostFilter=true; //ensures the post filter part of the shader will be compiled		
+		//TODO:we could test if the filters are all set to default values and turn it off if it can?
+	}
+	
+	
+
 	
 	//-------------------
 	//-------------------

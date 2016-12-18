@@ -122,11 +122,15 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	//------filter handling
 	//--------------------------
 	//Work in progress
-	public boolean usesPostFilter=false; //should be set to true if filter values arnt default values
+	public boolean usesBCPostFilter=false; //should be set to true if filter values arnt default values
+	
 	public float filter_brightness = 1.0f; //default values
 	public float filter_contrast   = 1.0f;
-	public float filter_saturation = 1.0f;
 	
+	public boolean usesHSVPostFilter=false; //should be set to true if filter values arnt default values	
+	public float filter_hue = 0.0f;
+	public float filter_saturation = 1.0f;
+	public float filter_value = 1.0f;
 	
 	
 
@@ -501,7 +505,27 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		/**
 		 * borderColor
 		 */
-		borderColor;
+		borderColor,
+		/**
+		 * brightnessFilter (0.0 = black, 1.0=normal)
+		 */
+		brightnessFilter,
+		/**
+		 * contrastFilter  (0.0 = grey, 1.0=normal)
+		 */
+		contrastFilter,
+		/**
+		 * hueFilter 
+		 */
+		hueFilter,
+		/**
+		 * saturationFilter  (0.0 = desaturated, 1.0=normal)
+		 */
+		saturationFilter,
+		/**
+		 * valueFilter  (0.0 = black, 1.0=normal)
+		 */	
+		valueFilter;
 	}
 
 	class stylestate {
@@ -534,8 +558,40 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		this.totalAnimationTime = totalAnimationTime;
 		if (totalAnimationTime>0){
 			animating=true;
+		} else {
+			animating=false;			
 		}
+		
+
+		//enable specific shader functions if needed
+		checkShaderRequirements();
+		
+		
 	}
+
+	private void checkShaderRequirements() {
+		// loop over all transitions to see 
+		for (StyleParam type : allTransitionStates.keySet()) {
+			
+			if (type == StyleParam.brightnessFilter 
+					|| type == StyleParam.contrastFilter) {
+				this.usesBCPostFilter =true;
+				continue;
+			}
+
+			if (type == StyleParam.hueFilter 
+					|| type == StyleParam.saturationFilter
+					|| type == StyleParam.valueFilter)
+		 {
+				
+				this.usesHSVPostFilter = true;
+				continue;
+			}
+			
+		}
+		
+	}
+
 
 	public void setTransitionIterationCount(int count) {
 		this.TransitionIterationCount = count;
@@ -630,6 +686,7 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		stylestate newstate = new stylestate(value,time);	
 		
 		addTransitionState(type, newstate);
+		
 
 	}
 
@@ -774,8 +831,7 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 				}
 				case glowSize:
 				{
-					float newsize = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);
-					
+					float newsize = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);					
 					glowSize = newsize;
 					break;
 				}
@@ -800,8 +856,22 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 					break;
 				case borderColor:
 					Color newcolor = startState.colorValue.cpy().lerp(endState.colorValue, intoSegment);						
-					 borderColour.set(newcolor);						
-				
+					 borderColour.set(newcolor);
+					 break;
+				case brightnessFilter:
+					filter_brightness = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);	
+					break;
+				case contrastFilter:
+					filter_contrast = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);
+					break;
+				case hueFilter:
+					filter_hue = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);
+					break;
+				case saturationFilter:
+					filter_saturation = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);
+					break;
+				case valueFilter:
+					filter_value = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);
 					
 					break;
 				default:
@@ -826,10 +896,12 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	}
 
 
-	public boolean hasFilters() {
-		return usesPostFilter;
+	public boolean hasBCFilter() {
+		return usesBCPostFilter;
 	}
-
+	public boolean hasHSVFilter() {
+		return usesHSVPostFilter;
+	}
 
 
 

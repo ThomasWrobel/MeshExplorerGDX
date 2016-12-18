@@ -103,7 +103,11 @@ public class GwtishWidgetShader implements Shader {
 	//filters
 	int u_filterBrightness;
 	int u_filterContrast;
+	
+	//hsv filters
+	int u_filterHue;
 	int u_filterSaturation;
+	int u_filterValue;
 	
 	public GwtishWidgetShader(Renderable renderable) {
 		
@@ -196,10 +200,13 @@ public class GwtishWidgetShader implements Shader {
 
 		
 		//post processing filters
-		u_filterContrast  = program.getUniformLocation("u_filterContrast"); 
+		u_filterContrast   = program.getUniformLocation("u_filterContrast"); 
 		u_filterBrightness = program.getUniformLocation("u_filterBrightness"); 
+		
+		u_filterHue = program.getUniformLocation("u_filterHue");
 		u_filterSaturation = program.getUniformLocation("u_filterSaturation");
-
+		u_filterValue = program.getUniformLocation("u_filterValue");
+				
 		Gdx.app.log(logstag, "....)");
 
 
@@ -207,7 +214,8 @@ public class GwtishWidgetShader implements Shader {
 
 	boolean hasText = false;
 	boolean hasBackgroundImage = false;
-	boolean hasFilters = false;
+	boolean hasBCFilter = false;
+	boolean hasHSVFilter=false;
 	
 	private String createPrefix(Renderable renderable) {
 		
@@ -247,13 +255,23 @@ public class GwtishWidgetShader implements Shader {
 		}
 		
 		//filters
-		if (textStyleData.hasFilters()){
+		if (textStyleData.hasBCFilter()){
 			//has post filters defining some text
-			 prefix = prefix+ "#define hasFilters\n";
-			 hasFilters = true;
+			 prefix = prefix+ "#define hasBCFilter\n";
+			 hasBCFilter = true;
 		} else {				
-			hasFilters = false;
+			hasBCFilter = false;
 		}
+		
+		
+		if (textStyleData.hasHSVFilter()){
+			//has post filters defining some text
+			 prefix = prefix+ "#define hasHSVFilter\n";
+			 hasHSVFilter = true;
+		} else {				
+			hasHSVFilter = false;
+		}
+		
 		
 		//we could also have a "hasProcedralBackground" which is true by default, but could be disabled for things without any background at all?
 		//(currently it just sets it to transparent)
@@ -606,7 +624,11 @@ public class GwtishWidgetShader implements Shader {
 			
 			program.setUniformf(u_filterContrast,   textStyleData.filter_contrast); 
 			program.setUniformf(u_filterBrightness, textStyleData.filter_brightness); 
+			
+			//hsv filter settings
+			program.setUniformf(u_filterHue, textStyleData.filter_hue); 
 			program.setUniformf(u_filterSaturation, textStyleData.filter_saturation); 
+			program.setUniformf(u_filterValue, textStyleData.filter_value); 
 
 			
 		//	program.setUniformf(u_filterContrast,   2.0f); 
@@ -673,7 +695,10 @@ public class GwtishWidgetShader implements Shader {
 			return false;
 		if (hasText != other.hasText)
 			return false;
-		if (hasFilters != other.hasFilters)
+		if (hasBCFilter != other.hasBCFilter)
+			return false;
+
+		if (hasHSVFilter != other.hasHSVFilter)
 			return false;
 		return true;
 	}
@@ -695,7 +720,8 @@ public class GwtishWidgetShader implements Shader {
 				
 			//check we match feature support wise
 			if (   textStyleData.hasText()     == hasText 
-				&&	textStyleData.hasFilters() == hasFilters
+				&&	textStyleData.hasBCFilter() == hasBCFilter
+				&&	textStyleData.hasHSVFilter() == hasHSVFilter						
 				&& instanceHasBackground       == hasBackgroundImage){
 				
 				return true;
