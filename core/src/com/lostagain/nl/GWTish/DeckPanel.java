@@ -128,7 +128,7 @@ public class DeckPanel extends ComplexPanel {
 
 
 	@Override
-	Vector3 getNextPosition(float incomingWidth, float incomingHeight, boolean b,Widget widget) {
+	Vector3 getNextPosition(float incomingWidth, float incomingHeight,Widget widget) { // boolean b,
 		int index = contents.indexOf(widget);
 
 		/*float cy  = largestHeightOfStoredWidgets/2;

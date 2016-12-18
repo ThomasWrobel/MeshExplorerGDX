@@ -31,7 +31,7 @@ public class HorizontalPanel extends CellPanel {
 
 	}
 
-	Vector3 getNextPosition(float incomingWidth,float incomingHeight,boolean updateWidth,Widget widget){
+	Vector3 getNextPosition(float incomingWidth,float incomingHeight,Widget widget){ //,boolean updateWidth
 
 		int index = contents.indexOf(widget);
 
@@ -82,9 +82,9 @@ public class HorizontalPanel extends CellPanel {
 		}*/
 
 		//the following option shouldnt be needed I think
-		if (updateWidth){
+	//	if (updateWidth){
 			currentTotalWidgetWidth=currentTotalWidgetWidth+incomingWidth+spaceing;
-		}
+	//	}
 
 		return new Vector3(getLeftPadding()+newLocationX,-getTopPadding()+newLocationY,3f); //messureing from topleft downwards hence inverting the padding
 

@@ -355,8 +355,14 @@ public abstract class ComplexPanel extends Widget {
 	 */
 	abstract void repositionWidgets();
 	
-	
-	abstract Vector3 getNextPosition(float width, float height, boolean b,Widget widget);
+	/**
+	 * should also update width/height if needed
+	 * @param width
+	 * @param height
+	 * @param widget
+	 * @return
+	 */
+	abstract Vector3 getNextPosition(float width, float height,Widget widget); //, boolean b
 	
 	
 	
@@ -478,8 +484,9 @@ public abstract class ComplexPanel extends Widget {
 			float width  = size.getWidth()  * scaleX;
 			
 					
-			Vector3 newLoc = getNextPosition(width,height,true,widget); //contents.indexOf(widget)
-		
+		//	Vector3 newLoc = getNextPosition(width,height,true,widget); //contents.indexOf(widget)
+			Vector3 newLoc = getNextPosition(width,height,widget); //contents.indexOf(widget)
+			
 			
 			float newLocationX = newLoc.x;
 			float newLocationY = newLoc.y; 
@@ -527,7 +534,7 @@ public abstract class ComplexPanel extends Widget {
 			float height = size.getHeight() * scaleY;
 			float width  = size.getWidth()  * scaleX;
 						
-			Vector3 newLoc = getNextPosition(width,height,true,widget);
+			Vector3 newLoc = getNextPosition(width,height,widget); //true
 					
 			
 			float newLocationX = newLoc.x;

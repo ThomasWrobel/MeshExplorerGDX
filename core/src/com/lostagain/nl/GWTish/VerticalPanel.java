@@ -29,7 +29,7 @@ public class VerticalPanel extends CellPanel {
 	}
 
 	Vector3 getNextPosition(float incomingWidth, float incomingHeight,
-			boolean updateHeight, Widget widget) {
+			 Widget widget) { //boolean updateHeight,
 
 		int index = contents.indexOf(widget);
 
@@ -70,10 +70,10 @@ public class VerticalPanel extends CellPanel {
 
 		float newLocationY = currentTotalWidgetHeight; // under the last widget
 
-		if (updateHeight) {
+	//	if (updateHeight) {
 			currentTotalWidgetHeight = currentTotalWidgetHeight
 					+ incomingHeight + spaceing; // should spacing be scaled?
-		}
+	//	}
 
 		Log.info( index + " adding incomingHeight: "
 				+ incomingHeight + " total=" + currentTotalWidgetHeight);
