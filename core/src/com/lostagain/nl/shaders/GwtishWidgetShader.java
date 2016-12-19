@@ -216,6 +216,7 @@ public class GwtishWidgetShader implements Shader {
 	boolean hasBackgroundImage = false;
 	boolean hasBCFilter = false;
 	boolean hasHSVFilter=false;
+	boolean hasProcedralBackground = false;
 	
 	private String createPrefix(Renderable renderable) {
 		
@@ -270,6 +271,14 @@ public class GwtishWidgetShader implements Shader {
 			 hasHSVFilter = true;
 		} else {				
 			hasHSVFilter = false;
+		}
+		
+		if (textStyleData.hasProcedralBackground()){
+			//has post filters defining some text
+			 prefix = prefix+ "#define hasProcedralBackground\n";
+			 hasProcedralBackground = true;
+		} else {				
+			hasProcedralBackground = false;
 		}
 		
 		
@@ -697,9 +706,11 @@ public class GwtishWidgetShader implements Shader {
 			return false;
 		if (hasBCFilter != other.hasBCFilter)
 			return false;
-
 		if (hasHSVFilter != other.hasHSVFilter)
 			return false;
+		if (hasProcedralBackground != other.hasProcedralBackground)
+			return false;
+		//
 		return true;
 	}
 
@@ -721,8 +732,9 @@ public class GwtishWidgetShader implements Shader {
 			//check we match feature support wise
 			if (   textStyleData.hasText()     == hasText 
 				&&	textStyleData.hasBCFilter() == hasBCFilter
-				&&	textStyleData.hasHSVFilter() == hasHSVFilter						
-				&& instanceHasBackground       == hasBackgroundImage){
+				&&	textStyleData.hasHSVFilter() == hasHSVFilter	
+				&&	textStyleData.hasProcedralBackground() == hasProcedralBackground							
+				&&  instanceHasBackground       == hasBackgroundImage){
 				
 				return true;
 				

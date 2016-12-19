@@ -118,10 +118,13 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	//--------------
 
 	
+	public boolean usesProcedralBack=false; //should be set to true if filter values arnt default values
+	
 	//--------------------------
 	//------filter handling
 	//--------------------------
 	//Work in progress
+	
 	public boolean usesBCPostFilter=false; //should be set to true if filter values arnt default values
 	
 	public float filter_brightness = 1.0f; //default values
@@ -241,7 +244,12 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 			float paddingLeft,
 			TextScalingMode textScaleing,
 			final float glowWidth,final Color backColor, final Color borderColour , final float cornerRadius,
-			Texture text
+			Texture text,
+			float filter_brightness,
+			float filter_contrast, 
+			float filter_hue,
+			float filter_saturation, 
+			float filter_value
 			) {
 
 		super(ID);
@@ -271,6 +279,13 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		}
 		this.cornerRadius=cornerRadius;
 		this.distanceFieldTextureMap=text;
+		
+		//filter params
+		this.filter_brightness = filter_brightness;
+		this.filter_contrast = filter_contrast;
+		this.filter_hue = filter_hue;
+		this.filter_saturation = filter_saturation;
+		this.filter_value = filter_value;
 	}
 
 	/**
@@ -341,7 +356,13 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 				backColor,
 				borderColour,
 				cornerRadius,
-				distanceFieldTextureMap);
+				distanceFieldTextureMap,
+				filter_brightness,
+				filter_contrast,
+				filter_hue,
+				filter_saturation,
+				filter_value
+				);
 
 	}
 
@@ -367,7 +388,13 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 				(((GwtishWidgetShaderAttribute)other).borderWidth == borderWidth      ) &&
 				(((GwtishWidgetShaderAttribute)other).cornerRadius == cornerRadius) &&
 				(((GwtishWidgetShaderAttribute)other).backColor == backColor      ) &&
-				(((GwtishWidgetShaderAttribute)other).borderColour == borderColour) 
+				(((GwtishWidgetShaderAttribute)other).borderColour == borderColour) &&
+				(((GwtishWidgetShaderAttribute)other).filter_brightness == filter_brightness ) &&
+				(((GwtishWidgetShaderAttribute)other).filter_contrast == filter_contrast) &&
+				(((GwtishWidgetShaderAttribute)other).filter_hue == filter_hue      ) &&
+				(((GwtishWidgetShaderAttribute)other).filter_saturation == filter_saturation) &&
+				(((GwtishWidgetShaderAttribute)other).filter_value == filter_value) 
+
 
 
 				)
@@ -467,6 +494,40 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		return effectiveBorderColour;
 	}
 
+	/**
+	 * checks for default or not default values on various shader variables.
+	 * This will then set or upset flags so the shader - a ubershader - knows what components of itself to use.
+	 * 
+	 * This should be run every time settings change
+	 */
+	public void checkShaderRequirements(){
+		
+		//check for procedralback (usesProcedralBack flag)
+		if (borderWidth !=1.0f || cornerRadius !=1.0f || backColor != Color.CLEAR || borderColour  != Color.CLEAR){
+			usesProcedralBack=true; 
+		} else {
+			usesProcedralBack=false; 
+		}
+				
+		
+		//check bc filter (usesBCPostFilter flag)
+		if (filter_brightness!=1.0f || filter_contrast!=1.0f){
+			usesBCPostFilter=true; 
+		} else {
+			usesBCPostFilter=false; 
+		}
+		
+		//check hsl filter (usesHSVPostFilter flag)
+		if (filter_hue!=0.0f || filter_saturation!=1.0f || filter_value != 1.0f){
+			usesHSVPostFilter=true; 
+		} else {
+			usesHSVPostFilter=false; 
+		}
+		
+		
+	}
+	
+	
 	//--------------------------------------------------
 	//---------------------------------------
 	//--------------------------
@@ -506,6 +567,14 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		 * borderColor
 		 */
 		borderColor,
+		/**
+		 * borderWidth
+		 */
+		borderWidth,
+		/**
+		 * borderWidth
+		 */
+		borderRadius,
 		/**
 		 * brightnessFilter (0.0 = black, 1.0=normal)
 		 */
@@ -564,12 +633,12 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		
 
 		//enable specific shader functions if needed
-		checkShaderRequirements();
+		checkAnimatedShaderRequirements();
 		
 		
 	}
 
-	private void checkShaderRequirements() {
+	private void checkAnimatedShaderRequirements() {
 		// loop over all transitions to see 
 		for (StyleParam type : allTransitionStates.keySet()) {
 			
@@ -582,9 +651,19 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 			if (type == StyleParam.hueFilter 
 					|| type == StyleParam.saturationFilter
 					|| type == StyleParam.valueFilter)
-		 {
+			{
 				
 				this.usesHSVPostFilter = true;
+				continue;
+			}
+			
+			if (type == StyleParam.backcolor 
+					|| type == StyleParam.borderColor
+					|| type == StyleParam.borderWidth
+					|| type == StyleParam.borderRadius)
+			{
+				
+				this.usesProcedralBack = true;
 				continue;
 			}
 			
@@ -858,6 +937,12 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 					Color newcolor = startState.colorValue.cpy().lerp(endState.colorValue, intoSegment);						
 					 borderColour.set(newcolor);
 					 break;
+				case borderRadius:
+					cornerRadius = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);					
+					break;
+				case borderWidth:
+					borderWidth = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);
+					break;
 				case brightnessFilter:
 					filter_brightness = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);	
 					break;
@@ -871,11 +956,9 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 					filter_saturation = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);
 					break;
 				case valueFilter:
-					filter_value = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);
-					
+					filter_value = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);					
 					break;
-				default:
-					break;
+				
 				}
 
 
@@ -901,6 +984,11 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	}
 	public boolean hasHSVFilter() {
 		return usesHSVPostFilter;
+	}
+
+
+	public boolean hasProcedralBackground() {
+		return usesProcedralBack;
 	}
 
 

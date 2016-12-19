@@ -78,6 +78,14 @@ public class Style {
 	}
 
 	/**
+	 * empty style with GWTishshader - used only for testing
+	 */
+	public Style() {
+		styleAttribute = new GwtishWidgetShaderAttribute(Color.BLACK, 100);
+		objectsMaterial = new Material();
+	}
+
+	/**
 	 * Sets the color of the object.
 	 * This is normally the text color 
 	 * (Only supported on objects using the DistanceFieldShader)
@@ -165,7 +173,8 @@ public class Style {
 			
 		//	glowingSquare.glowColor = bordercol;
 	//	}
-
+			styleAttribute.checkShaderRequirements();
+			
 	}
 	/**
 	 * @param bordercol
@@ -184,12 +193,16 @@ public class Style {
 		styleAttribute.borderColour = bordercol;
 		//	glowingSquare.glowColor = bordercol;
 	//	}
+		styleAttribute.checkShaderRequirements();
+		
 
 	}
 	
 	public void setBorderRadius(float radius) {
 	//	createBackgroundAttributeIfNeeded();
 			styleAttribute.cornerRadius = radius;
+			styleAttribute.checkShaderRequirements();
+			
 	}
 
 	/**
@@ -217,6 +230,7 @@ public class Style {
 	//	if (textStyle!=null){
 	//		objectsMaterial.set( ColorAttribute.createDiffuse(backcol));
 	//	}
+		styleAttribute.checkShaderRequirements();
 		
 	}
 
@@ -487,9 +501,9 @@ public class Style {
 	 * @param brightness
 	 */
 	public void setBrightnessFilter(float brightness){
-		//not implemented yet
-		ensureBCFilterEnabled();		
 		styleAttribute.filter_brightness = brightness;
+		styleAttribute.checkShaderRequirements();
+		
 	}
 	
 	/**
@@ -502,26 +516,25 @@ public class Style {
 	 * @param contrast
 	 */
 	public void setContrastFilter(float contrast){
-		//not implemented yet
-
-		ensureBCFilterEnabled();
-		styleAttribute.filter_contrast=contrast;
+			styleAttribute.filter_contrast=contrast;
+			styleAttribute.checkShaderRequirements();
+			
 	}
 	
 	
-	private void ensureBCFilterEnabled() {		
-		styleAttribute.usesBCPostFilter=true; //ensures the post filter part of the shader will be compiled		
-		//TODO:we could test if the filters are all set to default values and turn it off if it can?
-	}
+	//private void ensureBCFilterEnabled() {		
+	//	styleAttribute.usesBCPostFilter=true; //ensures the post filter part of the shader will be compiled		
+	//	//TODO:we could test if the filters are all set to default values and turn it off if it can?
+	//}
 	
 	
 	
 	//hsv filter settings;
 
 	public void setHueFilter(float hue){
-		//not implemented yet
-		ensureHSVFilterEnabled();
 		styleAttribute.filter_hue=hue;
+		styleAttribute.checkShaderRequirements();
+		
 	}
 
 	/**
@@ -534,21 +547,23 @@ public class Style {
 	 * @param saturation
 	 */
 	public void setSaturationFilter(float saturation){
-		//not implemented yet
-		ensureHSVFilterEnabled();
+		
 		styleAttribute.filter_saturation=saturation;
+		styleAttribute.checkShaderRequirements();
+		
 	}
 	public void setValueFilter(float value){
-		//not implemented yet
-		ensureHSVFilterEnabled();
+		
 		styleAttribute.filter_value=value;
+		styleAttribute.checkShaderRequirements();
+		
 	}
 	
 	
-	private void ensureHSVFilterEnabled() {		
-		styleAttribute.usesHSVPostFilter=true; //ensures the post filter part of the shader will be compiled		
+//	private void ensureHSVFilterEnabled() {		
+//		styleAttribute.usesHSVPostFilter=true; //ensures the post filter part of the shader will be compiled		
 		//TODO:we could test if the filters are all set to default values and turn it off if it can?
-	}
+//	}
 	
 	
 
@@ -825,7 +840,7 @@ public class Style {
 
 
 	//---------------
-	//wip animation stuff
+	//animation stuff
 
 	public void addTransitionState(StyleParam type, float time, Color value) {
 		styleAttribute.addTransitionState(type, time, value);
@@ -862,6 +877,15 @@ public class Style {
 	 */
 	public void updateDelta(float f) {
 		styleAttribute.updateDelta(f);
+	}
+
+	
+	/**
+	 * FOR TESTING ONLY, DONT CHANGE SETTINGS ON THE RETURNED ATTRIBUTE
+	 * @return
+	 */
+	public GwtishWidgetShaderAttribute getWidgetShaderAttribute() {
+		return styleAttribute;
 	}
 
 	
