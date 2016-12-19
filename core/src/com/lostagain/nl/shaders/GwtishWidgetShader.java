@@ -125,7 +125,6 @@ public class GwtishWidgetShader implements Shader {
 		}
 
 		Log.info("______________________________________________________________________________________created new shader with prefix:\n"+prefix);
-		Log.info("hasText:"+hasText);
 		
 	}
 	
