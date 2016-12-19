@@ -29,7 +29,7 @@ public class Image extends Widget {
 	protected Material ImageMaterial;
 	private boolean setup = false; 
 	
-	static String IMAGEBACKGROUND="IMAGEBACKGROUND";
+	//static String IMAGEBACKGROUND="IMAGEBACKGROUND";
 
 	/**
 	 * creates a empty image widget sized 0,0. It wont be visible till setImage is called
@@ -59,7 +59,6 @@ public class Image extends Widget {
 	protected Material setupMaterial(Texture image){
 		
 		Material mat = getBackgroundMaterial();		
-		mat.clear();
 		mat.set(ColorAttribute.createDiffuse(Color.WHITE),
 				new BlendingAttribute(true,GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA,1.0f),				 
 				TextureAttribute.createDiffuse(image)
