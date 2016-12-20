@@ -51,7 +51,16 @@ public class Style {
 		}
 		
 		
-		
+
+		/**
+		 * The style object must be given the objects material, which for most functions needs to use the distancefieldshader
+		 * Its this material which will have its attributes changed
+		 * 
+		 * @param objectsMaterial
+		 **/
+		public Style(Element elementWithStyle,Material mat) {
+			this(elementWithStyle,mat,false);
+		}
 	
 	/**
 	 * The style object must be given the objects material, which for most functions needs to use the distancefieldshader
@@ -59,30 +68,34 @@ public class Style {
 	 * 
 	 * @param objectsMaterial
 	 **/
-	public Style(Element elementWithStyle,Material mat) {
+	public Style(Element elementWithStyle,Material mat,boolean clearExistingGWTishStyleSettings) {
 		this.objectsMaterial=mat;
 		this.elementWithStyle=elementWithStyle;
 		
-		//shaders controlled by two attributes;
+		//get existing gwtish style
 		styleAttribute     = ((GwtishWidgetShaderAttribute)objectsMaterial.get(GwtishWidgetShaderAttribute.ID));
-	//	backStyle     = ((GwtishWidgetBackgroundAttribute)objectsMaterial.get(GwtishWidgetBackgroundAttribute.ID));
-	
-		//(one of these might be null, if so they will be created and added on demand)
-
-		GwtishWidgetShaderAttribute materialAccordingToStyle = (GwtishWidgetShaderAttribute) mat.get(GwtishWidgetShaderAttribute.ID);
-		if (materialAccordingToStyle!=null){
-			Log.info( "3fitarea set as:"+materialAccordingToStyle.textScaleingMode ); 
-		} else {
-			Log.info( "no textstyle set" ); 
+		
+		//clear if requested
+		if (styleAttribute !=null && clearExistingGWTishStyleSettings){
+			styleAttribute.resetToDefaults();
 		}
+		
+		//create new if needed	
+
+		createTextAttributeIfNeeded();
+		//if (styleAttribute==null){
+		//	styleAttribute = new GwtishWidgetShaderAttribute(Color.BLACK); //default
+		//} 
 	}
 
 	/**
 	 * empty style with GWTishshader - used only for testing
 	 */
 	public Style() {
-		styleAttribute = new GwtishWidgetShaderAttribute(Color.BLACK, 100);
+		//styleAttribute = new GwtishWidgetShaderAttribute(Color.BLACK);
 		objectsMaterial = new Material();
+
+		createTextAttributeIfNeeded();
 	}
 
 	/**
@@ -190,7 +203,7 @@ public class Style {
 		//Material infoBoxsMaterial = this.getMaterial(SHADERFORBACKGROUND);
 		//if (backStyle!=null){
 
-		styleAttribute.borderColour = bordercol;
+		styleAttribute.borderColour.set(bordercol);
 		//	glowingSquare.glowColor = bordercol;
 	//	}
 		styleAttribute.checkShaderRequirements();
@@ -207,10 +220,11 @@ public class Style {
 
 	/**
 	 * Sets the background color
-	 * @param opacity
+	 * @param backcol
 	 */
 	public void setBackgroundColor(Color backcol){	
-		
+
+		Log.info("_________________ set backcol to:"+backcol.toString());
 		nullParameterCheck(backcol);
 		
 		
@@ -226,11 +240,13 @@ public class Style {
 			//	GlowingSquareAttribute backtexture = ((GlowingSquareShader.GlowingSquareAttribute)objectsMaterial.get(GlowingSquareShader.GlowingSquareAttribute.ID));
 		styleAttribute.backColor.set(backcol);
 		//}
+		Log.info("_________________ set backcol to:"+styleAttribute.backColor.toString());
 		
 	//	if (textStyle!=null){
 	//		objectsMaterial.set( ColorAttribute.createDiffuse(backcol));
 	//	}
 		styleAttribute.checkShaderRequirements();
+
 		
 	}
 
@@ -476,8 +492,11 @@ public class Style {
 		
 	}
 	public void clearBackgroundColor() {
-		setBackgroundColor(Color.CLEAR); 
+
+		Log.info("_________________ Clear a:"+Color.CLEAR.a);
 		
+		setBackgroundColor(Color.CLEAR); 
+
 	}
 	
 
@@ -701,7 +720,7 @@ public class Style {
 	 * In future, hopefully soon, there will be proper font size controll. Dont use this as a replacement!
 	 */
 	public void setTextScale(float scale){
-		createTextAttributeIfNeeded();
+	//	createTextAttributeIfNeeded();
 		styleAttribute.textScale = scale;				
 	//	layoutStyleChanged();
 	}
@@ -752,7 +771,7 @@ public class Style {
 		PaddingBottom = padding;
 			
 		
-		createTextAttributeIfNeeded();
+	//	createTextAttributeIfNeeded();
 		styleAttribute.paddingLeft = padding;
 		styleAttribute.paddingTop = padding;
 				
@@ -772,7 +791,7 @@ public class Style {
 	public void setPaddingLeft(float Left){
 		PaddingLeft = Left;
 		
-		createTextAttributeIfNeeded();
+	//	createTextAttributeIfNeeded();
 		styleAttribute.paddingLeft = Left;
 		layoutStyleChanged();
 	}
@@ -786,7 +805,7 @@ public class Style {
 	public void setPaddingTop(float Top){
 		PaddingTop = Top;
 		
-		createTextAttributeIfNeeded();
+		//createTextAttributeIfNeeded();
 		styleAttribute.paddingTop = Top;
 		layoutStyleChanged();
 	}
@@ -802,7 +821,7 @@ public class Style {
 	public void setPaddingRight(float Right){
 		PaddingRight = Right;
 		
-		createTextAttributeIfNeeded();
+		//createTextAttributeIfNeeded();
 		//textStyle.paddingLeft = Left;
 		layoutStyleChanged();
 	}
@@ -816,7 +835,7 @@ public class Style {
 	public void setPaddingBottom(float Bottom){
 		PaddingBottom = Bottom;
 		
-		createTextAttributeIfNeeded();
+		//createTextAttributeIfNeeded();
 		//textStyle.paddingTop = Top;
 		layoutStyleChanged();
 	}

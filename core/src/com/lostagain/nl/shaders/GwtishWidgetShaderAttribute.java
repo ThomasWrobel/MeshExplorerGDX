@@ -37,12 +37,13 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	 * If clear is specified for the text colour,outline colour, glow and shader colour, then the text rendering
 	 * is disabled completely. This should be used if you just wish to use the background shader on GWTish widgets
 	 */
-	public Color textColour          = Color.WHITE;
+	public Color textColour          = Color.WHITE.cpy();
+	@Deprecated
 	public float width               = 0; //Can't yet work out how best to make this work in the shader
 
 	public float outlinerInnerLimit  = 10f; //Arbitrarily big size for no outline 0.2 is a good default
 	public float outlinerOuterLimit  = 10f; //Arbitrarily big size for no outline 0.05 for default v_outlinerOuterLimit
-	public Color outlineColour       = Color.CLEAR;
+	public Color outlineColour       = Color.CLEAR.cpy();
 
 	public float glowSize            = 0.0f; //size of glow (values above 1 will look strange)
 	public Color glowColour          = new Color(0.0f,1.0f,0.0f,1.0f); 
@@ -50,7 +51,7 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	public float shadowXDisplacement = 1.0f;
 	public float shadowYDisplacement = 1.0f;
 	public float shadowBlur          = 0.0f;
-	public Color shadowColour        = Color.CLEAR;
+	public Color shadowColour        = Color.CLEAR.cpy();
 
 	
 	
@@ -103,8 +104,8 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	//---------new backgroud parameters (moved from widget background attribute)
 
 	public float borderWidth = 1f;
-	public Color backColor = Color.CLEAR;
-	public Color borderColour = Color.CLEAR;
+	public Color backColor = Color.CLEAR.cpy();
+	public Color borderColour = Color.CLEAR.cpy();
 
 
 	/**
@@ -254,17 +255,17 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 
 		super(ID);
 
-		this.textColour = textColour.cpy();
+		this.textColour .set(textColour);
 		this.width = width;
 		this.outlinerInnerLimit = outlinerInnerLimit;
 		this.outlinerOuterLimit = outlinerOuterLimit;
-		this.outlineColour = outlineColour.cpy();;
+		this.outlineColour.set(outlineColour);
 		this.glowSize = glowSize;
-		this.glowColour = glowColour.cpy();;
+		this.glowColour.set(glowColour);
 		this.shadowXDisplacement = shadowXDisplacement;
 		this.shadowYDisplacement = shadowYDisplacement;
 		this.shadowBlur = shadowBlur;
-		this.shadowColour = shadowColour.cpy();
+		this.shadowColour.set(shadowColour);
 		this.paddingTop = paddingTop;
 		this.paddingLeft =paddingLeft;
 		this.textScaleingMode=textScaleing;
@@ -272,10 +273,10 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		//background params
 		this.borderWidth = glowWidth;
 		if (backColor!=null){
-			this.backColor = backColor.cpy();
+			this.backColor.set( backColor);
 		}
 		if (borderColour!=null){
-			this.borderColour = borderColour.cpy();
+			this.borderColour.set(borderColour);
 		}
 		this.cornerRadius=cornerRadius;
 		this.distanceFieldTextureMap=text;
@@ -299,8 +300,8 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 
 		super(ID);
 		this.borderWidth = glowWidth;
-		this.backColor = backColor.cpy();
-		this.borderColour = borderColour.cpy();
+		this.backColor.set(backColor);
+		this.borderColour.set(borderColour);
 		this.cornerRadius=cornerRadius;
 
 	}
@@ -310,11 +311,11 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	 * @param textColour
 	 * @param width - no effect cant work out how to do this correctly in the shader file
 	 */
-	public GwtishWidgetShaderAttribute (final Color textColour,final float width) {
+	public GwtishWidgetShaderAttribute (final Color textColour) {
 
 		super(ID);
-		this.textColour =  textColour.cpy();
-		this.width = width;
+		this.textColour.set(textColour);
+		//this.width = width;
 
 	}
 	/**
@@ -329,7 +330,7 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 			float width, float outlinerInnerLimit,
 			float outlinerOuterLimit) {
 		super(ID);
-		this.textColour = textColour.cpy();
+		this.textColour.set(textColour);
 		this.width = width;
 		this.outlinerInnerLimit = outlinerInnerLimit;
 		this.outlinerOuterLimit = outlinerOuterLimit;
@@ -989,6 +990,74 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 
 	public boolean hasProcedralBackground() {
 		return usesProcedralBack;
+	}
+
+
+	/**
+	 * resets this style to its default values.
+	 * should be the same as creating a new gwtishwidgetshaderattribute
+	 */
+	public void resetToDefaults() {
+		//clear any text defined
+
+		if (distanceFieldTextureMap!=null){
+			distanceFieldTextureMap.dispose();
+			distanceFieldTextureMap=null;
+		}
+		
+		//set text color to default
+		textColour          = Color.WHITE.cpy();
+		outlinerInnerLimit  = 10f; //Arbitrarily big size for no outline 0.2 is a good default
+		outlinerOuterLimit  = 10f; //Arbitrarily big size for no outline 0.05 for default v_outlinerOuterLimit
+	    outlineColour       = Color.CLEAR.cpy();
+
+	    //and its glow
+	    glowSize            = 0.0f; //size of glow (values above 1 will look strange)
+	    glowColour          = new Color(0.0f,1.0f,0.0f,1.0f); 
+
+	    //and its shadows
+		shadowXDisplacement = 1.0f;
+		shadowYDisplacement = 1.0f;
+		shadowBlur          = 0.0f;
+		shadowColour        = Color.CLEAR.cpy();
+		
+		//text alignment and scale settings
+	    textScaleingMode = TextScalingMode.natural;
+	    textAlignmentVertical = TextVerticalAlign.TOP;
+	    textAlignmentHorizontal = TextAlign.LEFT;
+			
+        textScale = 1.0f;
+        paddingLeft = 0.0f;
+        paddingTop = 0.0f;
+
+        //border settings
+    	 borderWidth = 1f;
+    	 backColor = Color.CLEAR.cpy();
+    	 borderColour = Color.CLEAR.cpy();
+    	 cornerRadius = 1f;
+
+    	 //shader flags and filters should be reset too
+    	 usesProcedralBack=false; //should be set to true if filter values arnt default values
+    	usesBCPostFilter=false; //should be set to true if filter values arnt default values
+    	
+    	filter_brightness = 1.0f; //default values
+    	filter_contrast   = 1.0f;
+    	
+    	usesHSVPostFilter=false; //should be set to true if filter values arnt default values	
+    	filter_hue = 0.0f;
+    	filter_saturation = 1.0f;
+    	filter_value = 1.0f;
+    	
+    	//and overall opacity
+    	Overall_Opacity_Multiplier = 1f;
+
+    	//now animation settings
+    	 totalAnimationTime = -1; //no animation
+    	 TransitionIterationCount = -1; //infinite
+    	 currentTotalTime = 0.0f; //ms
+    	 animating=false;
+    	 allTransitionStates.clear();
+
 	}
 
 
