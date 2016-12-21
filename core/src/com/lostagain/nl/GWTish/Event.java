@@ -65,7 +65,9 @@ public class Event extends NativeEvent {
 		MouseDownEvent,
 		MouseUpEvent,
 		BlurEvent,
-		FocusEvent;
+		FocusEvent,
+		KeyUpEvent,
+		KeyDownEvent;
 	}
 
 	

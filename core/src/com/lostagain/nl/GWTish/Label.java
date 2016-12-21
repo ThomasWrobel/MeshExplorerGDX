@@ -1635,6 +1635,8 @@ Text size remains just h/w, however
 	//	((TextureAttribute)material.get(TextureAttribute.Diffuse)).textureDescription.texture.dispose();
 		
 	}
+	
+	
 
 
 

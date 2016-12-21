@@ -85,7 +85,7 @@ public class TextBox extends Label implements InputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
-
+		fireKeyDown();
 		if (keycode == Input.Keys.BACKSPACE){
 			//backspace
 			//recreate (crude)
@@ -121,10 +121,20 @@ public class TextBox extends Label implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {		
+		fireKeyUp();
 		backspaceHeld=false;
 		return false;
 	}
+	
+	public void fireKeyUp() {
 
+		fireHandlersForType(Event.EventType.KeyUpEvent);
+	}
+	public void fireKeyDown() {
+
+		fireHandlersForType(Event.EventType.KeyDownEvent);
+	}
+	
 	@Override
 	public boolean keyTyped(char character) {
 
@@ -180,6 +190,19 @@ public class TextBox extends Label implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+
+	
+
+	/**
+	 * 
+	 * @param keyDownHandler
+	 */
+	public void addKeyDownHandler(KeyDownHandler keyDownHandler) {
+		super.addHandler(keyDownHandler);
+	}
+	public void addKeyUpHandler(KeyUpHandler keyDownHandler) {
+		super.addHandler(keyDownHandler);
 	}
 	
 	
