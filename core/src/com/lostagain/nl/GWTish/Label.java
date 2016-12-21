@@ -379,14 +379,7 @@ public class Label extends LabelBase {
 						textStyle);
 		
 
-		//GwtishWidgetShaderAttribute matttest = (GwtishWidgetShaderAttribute) mat.get(GwtishWidgetShaderAttribute.ID);
-
-
-
-		//Log.info("______________text glow col is: "+teststyle.glowColour);
-		//Log.info("______________generating rect of "+LabelWidth+","+LabelHeight);
-
-		//Note the *1 is the scale. We have scale 1 by default, duh.
+		
 		Model newModel = Widget.generateBackground(SizeX, SizeY, mat, alignment);
 
 		//GwtishWidgetShaderAttribute matttest2 = (GwtishWidgetShaderAttribute) newModel.getMaterial(LABEL_MATERIAL).get(GwtishWidgetShaderAttribute.ID);

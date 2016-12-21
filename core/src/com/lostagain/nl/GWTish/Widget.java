@@ -515,9 +515,28 @@ public class Widget extends Element {
 	}
 	
 	public void setMinSize(float minSizeX,float minSizeY) {
+		
 		MinSizX = minSizeX;
 		MinSizY = minSizeY;
+		
+		float currentWidth = getWidth();
+		float currentHeight = getHeight();
+		
 		//should recheck if too small?
+		if (currentWidth<MinSizX || currentHeight<MinSizY){
+		
+			if (currentWidth<MinSizX){
+				currentWidth = MinSizX;
+			}
+			if (currentHeight<MinSizY){
+				currentHeight = MinSizY;
+			}
+			
+			//resize to min
+			this.setSizeAs(currentWidth, currentHeight);
+		}
+		
+		
 	}
 
 	protected void setParent(Widget parentWidget) {

@@ -21,7 +21,7 @@ public class TextBox extends Label implements InputProcessor {
 	//static demand a input multiplexer
 	static InputMultiplexer inputMultiplexer;
 	/**
-	 * Reuired to be set before any input boxs will work 
+	 * Required to be set before any input boxs will work 
 	 * @param inputMultiplexer
 	 */
 	static public void setInputMultiplexer(InputMultiplexer inputMultiplexer) {
@@ -34,6 +34,8 @@ public class TextBox extends Label implements InputProcessor {
 	 * TextBox.setInputMultiplexer()
 	 * This only needs to be done once. All Input boxes will then add themselves too it automatically
 	 * 
+	 * TextBoxs have a default border and backstyle to show focus, you can either extend and override, or use Blur and Focus handlers to set your own.
+	 * 
 	 * @param defaulttext
 	 */
 	public TextBox(String defaulttext) {
@@ -44,9 +46,10 @@ public class TextBox extends Label implements InputProcessor {
 			Log.severe("attempted to use TextBox but no inputMultiplexer has been set. Use TextBox.setInputMultiplexer(..)  to set one");
 			return;
 		}
-		
 
-		Log.info("TextBox created");
+		this.getStyle().setBackgroundColor(Color.DARK_GRAY);
+        this.getStyle().setBorderColor(Color.LIGHT_GRAY);
+        
         
 		
 	}
@@ -57,9 +60,9 @@ public class TextBox extends Label implements InputProcessor {
 		super.onFocus();
 		inputMultiplexer.addProcessor(this);
 
-		this.getStyle().setBackgroundColor(Color.LIGHT_GRAY);
 		
-		Log.info("added to input multiplexer");
+		this.getStyle().setBackgroundColor(Color.GRAY);
+		
 	}
 
 	@Override
@@ -68,7 +71,6 @@ public class TextBox extends Label implements InputProcessor {
 		inputMultiplexer.removeProcessor(this);
 
 		this.getStyle().setBackgroundColor(Color.DARK_GRAY);
-		Log.info("removed from input multiplexer");
 	}
 	
 	public void dispose(){
