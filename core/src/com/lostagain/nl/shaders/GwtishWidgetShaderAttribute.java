@@ -995,15 +995,15 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 
 	/**
 	 * resets this style to its default values.
-	 * should be the same as creating a new gwtishwidgetshaderattribute
+	 * should be the same as creating a new gwtishwidgetshaderattribute, but it keeps any distanceFieldTextureMap set
 	 */
 	public void resetToDefaults() {
 		//clear any text defined
 
-		if (distanceFieldTextureMap!=null){
-			distanceFieldTextureMap.dispose();
-			distanceFieldTextureMap=null;
-		}
+		//if (distanceFieldTextureMap!=null){
+		//	distanceFieldTextureMap.dispose();
+		//	distanceFieldTextureMap=null;
+		//}
 		
 		//set text color to default
 		textColour          = Color.WHITE.cpy();

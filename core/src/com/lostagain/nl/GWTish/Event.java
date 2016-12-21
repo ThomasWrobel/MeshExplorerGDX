@@ -63,7 +63,9 @@ public class Event extends NativeEvent {
 	public enum EventType {
 		ClickEvent,
 		MouseDownEvent,
-		MouseUpEvent
+		MouseUpEvent,
+		BlurEvent,
+		FocusEvent;
 	}
 
 	

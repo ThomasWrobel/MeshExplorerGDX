@@ -117,19 +117,29 @@ public class Style {
 		}
 
 	}
+	
 	 /* This is normally the shadow text color 
 	 * (Only supported on objects using the DistanceFieldShader)
 	 * @param col
 	 */
 	public void setShadowColor(Color col){
-
-		if (styleAttribute!=null){
-			
-		//	Log.info("_________setting shadow color to:"+col);
-			
+		//	Log.info("_________setting shadow color to:"+col);			
 			styleAttribute.shadowColour.set(col);
-		}
-
+		
+	}
+	
+	public void setShadowBlur(float bluramount){	
+			styleAttribute.shadowBlur=bluramount;
+		
+	}
+	
+	public void setShadowX(float xdisplacement){
+			styleAttribute.shadowXDisplacement=xdisplacement;
+		
+	}
+	public void setShadowY(float ydisplacement){	
+			styleAttribute.shadowYDisplacement=ydisplacement;
+		
 	}
 	
 	public void setTextGlowColor(Color col) {
