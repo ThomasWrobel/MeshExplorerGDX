@@ -504,7 +504,7 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	public void checkShaderRequirements(){
 		
 		//check for procedralback (usesProcedralBack flag)
-		if (borderWidth !=1.0f || cornerRadius !=1.0f || backColor != Color.CLEAR || borderColour  != Color.CLEAR){
+		if (borderWidth !=1.0f || cornerRadius !=1.0f || !backColor.equals(Color.CLEAR) || !borderColour.equals(Color.CLEAR)){
 			usesProcedralBack=true; 
 		} else {
 			usesProcedralBack=false; 

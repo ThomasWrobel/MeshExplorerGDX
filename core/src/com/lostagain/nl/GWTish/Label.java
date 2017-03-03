@@ -314,11 +314,22 @@ public class Label extends LabelBase {
 		
 		TextureAndCursorObject textureData = null;
 
-		BitmapFont font          = getEffectiveFont(style);
-		float NativeToSceneRatio = getNativeToSceneResizeRatio(style, font);
 		
+		BitmapFont font;     //     = getEffectiveFont(style);
+		float NativeToSceneRatio;// = getNativeToSceneResizeRatio(style, font);
 		
-
+		if (contents.isEmpty()){
+			//if no contents we dont bother getting the font
+			//(this allows the creation of empty labels before the font is ready)
+			font=null;
+			NativeToSceneRatio=1.0f; //randomvalue, no real effect with empty texture
+		} else {
+		
+			font          = getEffectiveFont(style);
+			NativeToSceneRatio = getNativeToSceneResizeRatio(style, font);
+		
+		}
+		
 		int startFromX =0;
 		int startFromY =0;
 		Pixmap addToThis = null;

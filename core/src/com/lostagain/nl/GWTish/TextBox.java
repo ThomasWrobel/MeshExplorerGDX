@@ -27,6 +27,20 @@ public class TextBox extends Label implements InputProcessor {
 	static public void setInputMultiplexer(InputMultiplexer inputMultiplexer) {
 		TextBox.inputMultiplexer = inputMultiplexer;
 	}
+	
+	/**
+	 * has a inputMultiplexer been set yet?
+	 * A inputMultiplexer is required to be set before any input boxs will work, set one with  setInputMultiplexer(..)
+	 *
+	 * @return
+	 */
+	static public boolean isInputMultiplexerSet(){
+		if (TextBox.inputMultiplexer!=null){
+			return true;			
+		} else {
+			return false;
+		}
+	}
 
 	
 	/**
