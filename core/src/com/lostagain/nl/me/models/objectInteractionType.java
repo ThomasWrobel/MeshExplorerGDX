@@ -11,6 +11,8 @@ public enum objectInteractionType {
 	/** interactions happen with this object and it blocks what's under it  **/
 	Blocker,
 	/** this object is interface only, and the gun wont fire at it **/
-	Interface
+	Interface, 
+	/** no interactions at all. No touch/mouse events will fire, however the object may still be in the hitables list if added**/
+	None
 	
 }

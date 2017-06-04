@@ -3,6 +3,7 @@ package com.lostagain.nl.shaders;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -25,6 +26,7 @@ import com.lostagain.nl.shaders.InvertShader.InvertAttribute;
 import com.lostagain.nl.shaders.PrettyNoiseShader.PrettyNoiseShaderAttribute;
 
 public class MySorter extends DefaultRenderableSorter {
+	public static Logger Log = Logger.getLogger("MySorter");
 
 	/**
 	 * used to snapshot all the objects being sorted
@@ -539,10 +541,10 @@ public class MySorter extends DefaultRenderableSorter {
 
 	private void logSnapshots() {
 
-		Gdx.app.log("zindex", "____(all "+preSortSnapshot.size+" objects)___");
-		Gdx.app.log("zindex", "____(presort)___");
+		Log.info( "____(all "+preSortSnapshot.size+" objects)___");
+		Log.info( "____(presort)___");
 		debugtest(preSortSnapshot);
-		Gdx.app.log("zindex", "____(postsort)___");
+		Log.info("____(postsort)___");
 		debugtest(postSortSnapshot);
 
 
@@ -688,13 +690,13 @@ public class MySorter extends DefaultRenderableSorter {
 
 				int zindex1  = ((ZIndexAttribute)renderable.material.get(ZIndexAttribute.ID)).zIndex;
 				ZIndexGroup group = ((ZIndexAttribute)renderable.material.get(ZIndexAttribute.ID)).group;
-				Gdx.app.log("zindex","name="+name+ " (zindex = "+zindex1+" , "+group.group_id+" Group DISTANCE:"+group.drawOrderDistance+")");
+				Log.info("name="+name+ " (zindex = "+zindex1+" , "+group.group_id+" Group DISTANCE:"+group.drawOrderDistance+")");
 
 
 
 			} else {
 
-				Gdx.app.log("zindex", "no zindex name="+name +" shader("+renderable.material.id+")");
+				Log.info("no zindex name="+name +" shader("+renderable.material.id+")");
 
 			}
 

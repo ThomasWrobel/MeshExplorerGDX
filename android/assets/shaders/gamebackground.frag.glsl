@@ -65,7 +65,9 @@ void main() {
     //RGB of our normal map
     //vec3 NormalMap = texture2D(u_normals, vTexCoord).rgb;
     
-    vec3 NormalMap = pow(DiffuseColor.rgb,0.5);
+    //vec3 NormalMap = pow(DiffuseColor.rgb,0.5);
+    
+    vec3 NormalMap = pow(DiffuseColor.rgb, vec3(0.5,0.5,0.5) );
     
 
     //The delta position of light

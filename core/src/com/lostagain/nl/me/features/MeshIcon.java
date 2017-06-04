@@ -46,7 +46,7 @@ import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute.StyleParam;
 import com.lostagain.nl.shaders.MySorter;
 import com.lostagain.nl.uti.HSLColor;
 
-import javafx.scene.text.TextAlignment;
+//import javafx.scene.text.TextAlignment;
 
 /** 
  * Will become a 3d icon that can be clicked to turn into a interactive meshFeature.

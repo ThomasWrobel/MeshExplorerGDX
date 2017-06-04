@@ -40,7 +40,7 @@ public class Event extends NativeEvent {
 	//NOTE: this might move to the superclass? Not sure where it fits better
 	/**
 	 * The current 3d location this event just fired at
-	 * @return
+	 * @return (not a copy)
 	 */
 	  public Vector3 getEventsCurrentLocation() {
 		return EventsCurrentLocation;

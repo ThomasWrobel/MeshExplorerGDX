@@ -421,11 +421,14 @@ public class Label extends LabelBase {
 	
 	private static BitmapFont getEffectiveFont(Style style) {
 				
-		BitmapFont rawFont = FontHandling.standdardFont;
+		BitmapFont rawFont = Style.getDefaultFont(); // FontHandling.standdardFont;
 		BitmapFont adjustedFont = rawFont;
 		
 		if (style!=null){
 
+
+			rawFont = style.getFont(); // FontHandling.standdardFont;
+			
 			//make a copy of the font so we can customize the line height data
 			//probably not very efficient?
 			adjustedFont = new BitmapFont(
@@ -1219,6 +1222,13 @@ private static GlyphLayout getNewLayout(String text,
 
 		float textureSizeX = textureAndData.textureItself.getWidth();
 		float textureSizeY = textureAndData.textureItself.getHeight();
+		
+		if (textureSizeX>10000){
+			Log.severe("Texture SizeX Over 10,000! Consider spliting label");
+		}
+		if (textureSizeY>10000){
+			Log.severe("Texture SizeY Over 10,000! Consider spliting label");
+		}
 		
 		//update stats on our texture size
 		super.updateData(new Vector2(textureSizeX,textureSizeY), textureAndData.Cursor,textureAndData.rawPixelData); //TODO: cursor position should always be set to the next position to type. Not sure textureAndData returns this yet

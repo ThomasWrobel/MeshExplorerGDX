@@ -14,18 +14,18 @@ buildscript {
     }
 }
 
-       //gdxVersion = '1.7.0' 
-      //roboVMVersion = '1.9.0
-      
+        // gdxVersion = '1.7.2'          
+        // roboVMVersion = '1.12.0' 
+        
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
     version = '1.0'
     ext {
-        appName = 'MeshExplorerV2' 
-        gdxVersion = '1.7.2'
-        roboVMVersion = '1.12.0'
+        appName = 'MeshExplorerV2'    
+        gdxVersion = '1.9.6'       
+        roboVMVersion = '2.3.0'
     }
 
     repositories {
@@ -60,6 +60,9 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+        
+        compile fileTree(dir: 'libs', include: '*.jar')
+        
     }
 }
 
@@ -84,9 +87,11 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         
-        compile fileTree(dir: 'libs', include: '*.jar')
-        
-        
+        //
+        // compile fileTree(dir: 'libs', include: '*.jar')        
+        // Note; expirement to see if we can take it from Androids directory:
+        //
+   		compile fileTree(dir: '../android/libs', include: '*.jar')
         
     }
 }

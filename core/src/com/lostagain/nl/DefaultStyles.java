@@ -150,67 +150,46 @@ public class DefaultStyles {
 		
 		//Normalize the string by going to lower case and replacing spaces with _
 		newcolorstring = newcolorstring.toLowerCase();
-		newcolorstring = newcolorstring.replace(" ", "_");
+		newcolorstring = newcolorstring.replace(" ", "_").toLowerCase();
 
-		switch(newcolorstring.toLowerCase()) {
-
-		case "black":
+		if (newcolorstring.equals("black")) {
 			newcolor = Color.BLACK;
-			break;
-		case "blue":
+		} else if (newcolorstring.equals("blue")) {
 			newcolor = Color.BLUE;
-			break;
-		case "cyan":
+		} else if (newcolorstring.equals("cyan")) {
 			newcolor = Color.CYAN;
-			break;
-		case "dark_gray":
+		} else if (newcolorstring.equals("dark_gray")) {
 			newcolor = Color.DARK_GRAY;
-			break;    
-		case "gray":
+		} else if (newcolorstring.equals("gray")) {
 			newcolor = Color.GRAY;
-			break;
-		case "green":
+		} else if (newcolorstring.equals("green")) {
 			newcolor = Color.GREEN;
-			break;
-		case "light grey":
+		} else if (newcolorstring.equals("light grey")) {
 			newcolor = Color.LIGHT_GRAY;
-			break;
-		case "magenta":
-			newcolor = Color.MAGENTA;	
-			break; 
-		case "maroon":
+		} else if (newcolorstring.equals("magenta")) {
+			newcolor = Color.MAGENTA;
+		} else if (newcolorstring.equals("maroon")) {
 			newcolor = Color.MAROON;
-			break;
-		case "navy":
+		} else if (newcolorstring.equals("navy")) {
 			newcolor = Color.NAVY;
-			break;
-		case "olive":
+		} else if (newcolorstring.equals("olive")) {
 			newcolor = Color.OLIVE;
-			break;
-		case "orange":
+		} else if (newcolorstring.equals("orange")) {
 			newcolor = Color.ORANGE;
-			break;    
-		case "pink":
+		} else if (newcolorstring.equals("pink")) {
 			newcolor = Color.PINK;
-			break;
-		case "purple":
+		} else if (newcolorstring.equals("purple")) {
 			newcolor = Color.PURPLE;
-			break;
-		case "red":
+		} else if (newcolorstring.equals("red")) {
 			newcolor = Color.RED;
-			break; 
-		case "teal":
+		} else if (newcolorstring.equals("teal")) {
 			newcolor = Color.TEAL;
-			break; 
-		case "white":
+		} else if (newcolorstring.equals("white")) {
 			newcolor = Color.WHITE;
-			break;
-		case "yellow":
+		} else if (newcolorstring.equals("yellow")) {
 			newcolor = Color.YELLOW;
-			break; 
-		default:
+		} else {
 			newcolor = null;
-			break;
 		}
 		return newcolor;
 	}

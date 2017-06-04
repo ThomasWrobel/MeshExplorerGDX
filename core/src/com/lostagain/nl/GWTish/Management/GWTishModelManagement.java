@@ -44,7 +44,7 @@ public class GWTishModelManagement {
 
 	private static String logstag="ME.GWTishModelManagement";
 	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
-	
+
 
 
 	/** All the 3d models we want to render in the standard draw order should go into this list **/
@@ -67,7 +67,7 @@ public class GWTishModelManagement {
 
 	/**all hitable models **/
 	public static ObjectSet<hitable> hitables = new ObjectSet<hitable>(); //should be changed to a set to stop duplicates
-	
+
 	/** everything the mouse is currently down over **/
 	public static ObjectSet<hitable> mousedownOn = new ObjectSet<hitable>();
 
@@ -139,7 +139,7 @@ public class GWTishModelManagement {
 		float Z = position.z; //is this always correct?
 		//float Z = model.transform.getValues()[Matrix4.M23];
 
-	//	Gdx.app.log(logstag,"z = "+Z);
+		//	Gdx.app.log(logstag,"z = "+Z);
 
 		if (order == RenderOrder.STANDARD ){
 			allStandardInstances.add(model);
@@ -198,9 +198,9 @@ public class GWTishModelManagement {
 	}
 
 	//--
-	
+
 	//	public static  GWTishModelManagement the3dscene = new GWTishModelManagement();
-	
+
 	private static ArrayList<hitable> lastHits = new ArrayList<hitable>();
 
 
@@ -210,9 +210,9 @@ public class GWTishModelManagement {
 	public static ArrayList<hitable> getLastHits() {
 		return lastHits;
 	}
-	
 
-	
+
+
 	/**
 	 * tests the sort order of foreground objects
 	 * @param deltatime
@@ -490,7 +490,7 @@ public class GWTishModelManagement {
 			this.atThis = atThis;
 		}
 		/**
-		* NOTE: The equals has been overriden so this can be directly compared with a object list.
+		 * NOTE: The equals has been overriden so this can be directly compared with a object list.
 		 * this means  a.equals(b) will be true even if a is a rayHit and b is a animatedObject.
 		 * This is quite different to how equals normally behaves.
 		 */
@@ -518,7 +518,7 @@ public class GWTishModelManagement {
 	static public class OrderByDistance implements Comparator<rayHit> {
 		@Override
 		public int compare(rayHit o1, rayHit o2) {
-		
+
 			//if either is overlay but not the other, put that on top
 			if (o1.hitthis.isOverlay() && !o2.hitthis.isOverlay() ){
 				return -1;
@@ -527,11 +527,11 @@ public class GWTishModelManagement {
 			if (!o1.hitthis.isOverlay() && o2.hitthis.isOverlay() ){
 				return 1;
 			}	
-			
+
 			//if both are widgets then we compare zindexs if they are in the same group
 			if (o1.hitthis instanceof Widget
-			 && o2.hitthis instanceof Widget){
-				
+					&& o2.hitthis instanceof Widget){
+
 				Widget o1w = (Widget) o1.hitthis;
 				Widget o2w = (Widget) o2.hitthis;
 				// same group?
@@ -540,14 +540,14 @@ public class GWTishModelManagement {
 					int zin2 = o2w.getStyle().getZIndexValue();
 					return -(zin1-zin2);
 				}
-				
+
 			}
-			
-			
+
+
 			//---
 			float hit1 = o1.hitthis.getLastHitsRange();
 			float hit2 = o2.hitthis.getLastHitsRange();		
-			
+
 			return (int) (hit1 - hit2);
 		}
 	};
@@ -586,28 +586,28 @@ public class GWTishModelManagement {
 	private static double ScenePixelScaleX=1;
 	private static double ScenePixelScaleY=1;
 
-	
-	
-	
-	
+
+
+
+
 
 	public static void setSceneScale(double currentSceneRatio, double currentSceneRatio2) 
 	{
 		ScenePixelScaleX = currentSceneRatio;
 		ScenePixelScaleY = currentSceneRatio2;
-		
+
 	}
-	
-/**
- * note; the coordinates must be given unscaled (ie, real pixels of 1:1 viewport)
- * If you wish Event.getCurrentEvent().getClientX/Y to return values scaled  to your current display
- * Set your scene scaleing with setSceneScale(x,y). Values will then be multiplied by this  
- *  
- * @param x - unscaled screen x
- * @param y - unscaled screen y
- * @param camera
- * @return
- */
+
+	/**
+	 * note; the coordinates must be given unscaled (ie, real pixels of 1:1 viewport)
+	 * If you wish Event.getCurrentEvent().getClientX/Y to return values scaled  to your current display
+	 * Set your scene scaleing with setSceneScale(x,y). Values will then be multiplied by this  
+	 *  
+	 * @param x - unscaled screen x
+	 * @param y - unscaled screen y
+	 * @param camera
+	 * @return
+	 */
 	public static ArrayList<hitable> getHitables(float x, float y, Camera camera) 
 	{
 
@@ -655,7 +655,7 @@ public class GWTishModelManagement {
 		//clear event
 		Event.setCurrentEvent(null);
 		lastHits=hits;
-		
+
 		return hits;
 	}
 
@@ -675,15 +675,18 @@ public class GWTishModelManagement {
 	 */
 	public static ArrayList<hitable> getHitables(Ray ray,boolean hitsPenetrate, GWTishModelManagement.TouchState applyTouchAction) {
 
-
-
 		underCursorList.clear();
 		underCursorHits.clear();
+
+		//We ensure no touch events are canceled. This is only ever set to true during a touch/click event of some sort, when we want to cancel further actions
+		cancelCurrentTouchEvent=false;
+		//
+
 
 		//Vector3 position = new Vector3();
 		for (hitable newInstance : hitables) {
 
-		//	position = newInstance.getCenterOnStage();
+			//	position = newInstance.getCenterOnStage();
 
 			//first check if it hits at all. We base this on the hitables internal tester
 			//this lets different hitables use different intersect types (ie, radius, boundingbox, polygon etc)
@@ -696,10 +699,10 @@ public class GWTishModelManagement {
 
 			underCursorHits.add(new rayHit(newInstance,hitPoint));				
 			underCursorList.add(newInstance);
-			
+
 		}
 
-		
+
 		//Gdx.app.log(logstag,"_underCursorList_ :"+underCursorList.toString());		
 
 		//If anything is set to auto-hide and not currently under the cursor, then we hide it, provided this was some sort of click event
@@ -708,13 +711,13 @@ public class GWTishModelManagement {
 			while (autoHideIt.hasNext()) {
 				IsAnimatableModelInstance isAnimatableModelInstance = (IsAnimatableModelInstance) autoHideIt.next();
 
-			//	Gdx.app.log(logstag,"_autoHideTesting_ :"+isAnimatableModelInstance.getClass().getName());	
-				
+				//	Gdx.app.log(logstag,"_autoHideTesting_ :"+isAnimatableModelInstance.getClass().getName());	
+
 				if (!underCursorList.contains(isAnimatableModelInstance)) {
 					Set<IsAnimatableModelInstance> attachments = isAnimatableModelInstance.getAllAttachments();
-					
-				//	Gdx.app.log(logstag,"attachments::::"+attachments .toString());	
-					
+
+					//	Gdx.app.log(logstag,"attachments::::"+attachments .toString());	
+
 					//unfortunately we also need to check for children of the autoHidingObject, as we might be clicking
 					//something on the object (like a button) but not the object itself)					
 					boolean containsNoneOf = Collections.disjoint(underCursorList, attachments);
@@ -731,27 +734,35 @@ public class GWTishModelManagement {
 
 		//sort by distance
 		Collections.sort(underCursorHits,distanceSorter);//todo: might need to take zindex into account 
-	//	listUnderCursorToLog(underCursorHits);//helps debug
-		
-		
+		//	listUnderCursorToLog(underCursorHits);//helps debug
+
+
 		ArrayList<hitable> onesHit = new ArrayList<hitable>();
 
 		//crop to the ones on top, hitting as we go
 		for (rayHit hit : underCursorHits) {
 
 			//allow a chance to cancel
-			if (cancelCurrentTouchEvent){				
+			if (cancelCurrentTouchEvent){	
+
+				Log.info("canceling current touch event:"+applyTouchAction.name());				
 				cancelCurrentTouchEvent = false;
 				return onesHit;
 			}
-			
+
 			//
-			
-			
+
+
 			hitable object = hit.hitthis;
 
 			objectInteractionType type = object.getInteractionType();
 			onesHit.add(object);
+
+			if (type == objectInteractionType.None){
+				//no interactions at all on this object so we just continue to next under mouse
+				//(will still be on the onesHit list)
+				continue;
+			}
 
 			//update the Event data for this specific hit (if hits penetrate each hit might have a different position)
 			Event.getCurrentEvent().setCurrentEventLocation(hit.atThis);
@@ -796,16 +807,16 @@ public class GWTishModelManagement {
 				return onesHit;
 			}
 			if (type == objectInteractionType.Blocker && !hitsPenetrate){
-				
-			//	Gdx.app.log(logstag,"_hit blocker :"+object.getClass()+" totalunder cursor:"+underCursorHits.size());
-				
-				
+
+				//	Gdx.app.log(logstag,"_hit blocker :"+object.getClass()+" totalunder cursor:"+underCursorHits.size());
+
+
 				return onesHit;
 			}
 
 
 		}
-		
+
 		//ensure not canceled for next time
 		cancelCurrentTouchEvent=false;
 
@@ -813,19 +824,20 @@ public class GWTishModelManagement {
 
 	}
 
-  static  boolean cancelCurrentTouchEvent=false;
-    /**
-     * cancels either the current,or next, touch events
-     */
-static	public void cancelCurrentTouchEvents(){
+	static  boolean cancelCurrentTouchEvent=false;
+
+	/**
+	 * cancels the current touch event
+	 */
+	static	public void cancelCurrentTouchEvents(){
 		cancelCurrentTouchEvent = true;
 	}
 
 	private static void listUnderCursorToLog(ArrayList<rayHit> underCursorHits2) {
 		for (rayHit rayhit : underCursorHits2) {
 			Log.info("undercursor last click/touch action    :"+rayhit.hitthis.getName()+"        ("+rayhit.hitthis.getInteractionType()+")");
-				
-			
+
+
 		}
 	}
 
@@ -1144,7 +1156,7 @@ static	public void cancelCurrentTouchEvents(){
 	}
 
 	static HashSet<IsAnimatableModelInstance> modalObjectList = new HashSet<IsAnimatableModelInstance>();
-	
+
 	/**
 	 * Models set to modal are the only ones that can have events run on them IF any models have been set as modal at all.
 	 * Keep the modal list empty for normal behavior.

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Align;
+import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.Style.TextAlign;
 import com.lostagain.nl.GWTish.Style.TextVerticalAlign;
 
@@ -135,6 +136,12 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	public float filter_hue = 0.0f;
 	public float filter_saturation = 1.0f;
 	public float filter_value = 1.0f;
+	//-----
+	//--
+	//-
+	public boolean usesTransformr=false; //should be set to true if transform values arnt default values	
+	public PosRotScale transform = new PosRotScale(); //controls pos, rotation and scale
+	//--
 	
 	
 
@@ -250,7 +257,8 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 			float filter_contrast, 
 			float filter_hue,
 			float filter_saturation, 
-			float filter_value
+			float filter_value,
+			PosRotScale transform
 			) {
 
 		super(ID);
@@ -287,6 +295,9 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		this.filter_hue = filter_hue;
 		this.filter_saturation = filter_saturation;
 		this.filter_value = filter_value;
+		
+		//transform
+		this.transform=transform;
 	}
 
 	/**
@@ -362,7 +373,8 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 				filter_contrast,
 				filter_hue,
 				filter_saturation,
-				filter_value
+				filter_value,
+				transform
 				);
 
 	}
@@ -394,7 +406,9 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 				(((GwtishWidgetShaderAttribute)other).filter_contrast == filter_contrast) &&
 				(((GwtishWidgetShaderAttribute)other).filter_hue == filter_hue      ) &&
 				(((GwtishWidgetShaderAttribute)other).filter_saturation == filter_saturation) &&
-				(((GwtishWidgetShaderAttribute)other).filter_value == filter_value) 
+				(((GwtishWidgetShaderAttribute)other).filter_value == filter_value) &&
+				(((GwtishWidgetShaderAttribute)other).transform.equals(transform)) 
+				
 
 
 
@@ -496,6 +510,15 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	}
 
 	/**
+	 * gets the transform as posrotscale (not a copy)
+	 * @return
+	 */
+	public PosRotScale getTransform() {
+		return transform;
+	}
+
+
+	/**
 	 * checks for default or not default values on various shader variables.
 	 * This will then set or upset flags so the shader - a ubershader - knows what components of itself to use.
 	 * 
@@ -525,13 +548,43 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 			usesHSVPostFilter=false; 
 		}
 		
+		//check for transform
+		if (!transform.equals(new PosRotScale())){			
+			usesTransformr=true;			
+		} else {
+			usesTransformr=false; 
+		}
 		
+	
 	}
 	
 	
 	//--------------------------------------------------
 	//---------------------------------------
 	//--------------------------
+	
+
+	//Todo: support transforms like
+	/*
+@-webkit-keyframes bigbombshake {
+	0% { -webkit-transform: translate(4px, 2px) rotate(0deg) scale(1.1,1.1); } 
+	20% { -webkit-transform: translate(-6px, 0px) rotate(2deg) scale(1.0,1.0); }
+	40% { -webkit-transform: translate(2px, -2px) rotate(2deg) scale(1.0,1.0); }
+	60% { -webkit-transform: translate(-6px, 2px) rotate(0deg) scale(1.1,1.1); }
+	80% { -webkit-transform: translate(-2px, -2px) rotate(2deg) scale(0.9,0.9); }
+	100% { -webkit-transform: translate(2px, -4px) rotate(-2deg) scale(1.1,1.1); }
+}
+
+* This will probably be implemented on the vertext shader, starting with translate
+* rotate and scale also need a origin set somehow (as a %?)
+* If we can express these all as a matrix, then I think its just;
+*   gl_Position = matrix * V_POSITION;
+*  To reposition the vertex.
+*  For the sake of animating, however, its far easier to use a PosRotScale or some other way to keep 
+*  the rotation / position and scale seperate
+*/
+	
+
 	/**
 	 * Below is WIP animation system stuff
 	 */
@@ -540,6 +593,7 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 	 * enum specifying type of style parameter, used for the animation system 
 	 */
 	public enum StyleParam {
+		//pixel effects:
 		/** text color **/
 		color,
 		/** back color **/
@@ -595,7 +649,22 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		/**
 		 * valueFilter  (0.0 = black, 1.0=normal)
 		 */	
-		valueFilter;
+		valueFilter,
+		//--
+		//vertex effects (not yet supported)
+		//--
+		/**
+		 * not supported yet
+		 */		
+		translate,
+		/**
+		 * not supported yet
+		 */
+		rotate,
+		/**
+		 * not supported yet
+		 */		
+		scale;
 	}
 
 	class stylestate {
@@ -1047,6 +1116,10 @@ public class GwtishWidgetShaderAttribute extends Attribute {
     	filter_hue = 0.0f;
     	filter_saturation = 1.0f;
     	filter_value = 1.0f;
+    	
+    	//transform
+    	transform=new PosRotScale();
+    	usesTransformr = false;
     	
     	//and overall opacity
     	Overall_Opacity_Multiplier = 1f;

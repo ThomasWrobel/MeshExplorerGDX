@@ -26,6 +26,7 @@ public class PosRotScale {
 	public Quaternion rotation = new Quaternion();		
 	public Vector3 scale = new Vector3(1f,1f,1f);
 	
+	
 	public PosRotScale(Vector3 position, Quaternion rotation, Vector3 scale) {
 		super();
 		
@@ -199,6 +200,7 @@ public class PosRotScale {
 	 * @return
 	 */
 	public Matrix4 createMatrix() {
+		
 		// TODO Auto-generated method stub
 		return  new Matrix4(position,rotation.nor(),scale);
 	}
@@ -211,5 +213,40 @@ public class PosRotScale {
 	}
 	
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((position == null) ? 0 : position.hashCode());
+		result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
+		result = prime * result + ((scale == null) ? 0 : scale.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PosRotScale other = (PosRotScale) obj;
+		if (position == null) {
+			if (other.position != null)
+				return false;
+		} else if (!position.equals(other.position))
+			return false;
+		if (rotation == null) {
+			if (other.rotation != null)
+				return false;
+		} else if (!rotation.equals(other.rotation))
+			return false;
+		if (scale == null) {
+			if (other.scale != null)
+				return false;
+		} else if (!scale.equals(other.scale))
+			return false;
+		return true;
+	}
 	
 }

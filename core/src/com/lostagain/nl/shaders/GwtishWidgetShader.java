@@ -15,7 +15,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute.TextScalingMode;
 
@@ -108,6 +111,9 @@ public class GwtishWidgetShader implements Shader {
 	int u_filterHue;
 	int u_filterSaturation;
 	int u_filterValue;
+	
+	//transform
+	int u_transformValue;
 	
 	public GwtishWidgetShader(Renderable renderable) {
 		
@@ -206,6 +212,9 @@ public class GwtishWidgetShader implements Shader {
 		u_filterSaturation = program.getUniformLocation("u_filterSaturation");
 		u_filterValue = program.getUniformLocation("u_filterValue");
 				
+		u_transformValue = program.getUniformLocation("u_transformValue");
+		
+		
 		Gdx.app.log(logstag, "....)");
 
 
@@ -219,8 +228,6 @@ public class GwtishWidgetShader implements Shader {
 	
 	private String createPrefix(Renderable renderable) {
 		
-		//none yet
-		//in future there will be at least 4 modes;
 
 		/**
 		 * no text /no back image / other stuff (ie, borders, curved corners)
@@ -335,7 +342,7 @@ public class GwtishWidgetShader implements Shader {
 		
 		//set the variable for the objects world transform to be passed to the shader
 		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
-
+		
 		//float w = renderable.mesh.calculateBoundingBox().getWidth();
 		//float h = renderable.mesh.calculateBoundingBox().getHeight();
 
@@ -638,12 +645,76 @@ public class GwtishWidgetShader implements Shader {
 			program.setUniformf(u_filterSaturation, textStyleData.filter_saturation); 
 			program.setUniformf(u_filterValue, textStyleData.filter_value); 
 
-			
-		//	program.setUniformf(u_filterContrast,   2.0f); 
-		//	program.setUniformf(u_filterBrightness, 1.0f); 
-		//	program.setUniformf(u_filterSaturation, 0.0f); 
 
+			Matrix4 cssLikeTransformMatrix = textStyleData.getTransform().createMatrix();
+			//Experiment
+			float halfthickness=1.0f;
+			float halfh=h/2.0f;
+			float halfw=w/2.0f;
 			
+
+			Matrix4 temp = new Matrix4();
+			if (textStyleData.usesTransformr){
+		//		temp.translate(-halfw, -halfh, -halfthickness); //recenter. Wait, maybe we should add Y rather then subtract?
+				//or maybe we need this relative to the current offset from pivot?
+				//center of bounding box?
+
+				Vector3 position = new Vector3();
+				renderable.worldTransform.getTranslation(position); //just position?
+				
+				Vector3 scale = new Vector3();
+				renderable.worldTransform.getScale(scale); //just position?
+				
+				Quaternion rotation = new Quaternion();
+				renderable.worldTransform.getRotation(rotation);
+				
+				//get center of mesh relative to its pivot
+				float bbcx = renderable.meshPart.mesh.calculateBoundingBox().getCenterX() + position.x;
+				float bbcy = renderable.meshPart.mesh.calculateBoundingBox().getCenterY() + position.y;
+				float bbcz = renderable.meshPart.mesh.calculateBoundingBox().getCenterZ() + position.z;
+				
+				Matrix4 invworld = renderable.worldTransform.cpy();
+				invworld.inv();
+				
+				//move it back so center is at origin
+				//temp.translate(-bbcx, -bbcy, -bbcz); 
+				temp.set(renderable.worldTransform);
+
+				//Matrix4 translationmatrix = new Matrix4().setToTranslation(-bbcx, -bbcy, -bbcz);
+				//temp.mul(translationmatrix);
+				
+				//temp.translate(-bbcx,-bbcy,-bbcz);
+				
+				//random rotation to test
+			//	temp.rotate(Vector3.Z, 30);	
+				
+				//temp.setTranslation(bbcx,bbcy,bbcz);
+				
+			//	temp.setToRotation(Vector3.Z, 30);
+				
+				
+				temp = new Matrix4(new Vector3(0,0,0), new Quaternion(Vector3.Z, 30), scale ); //<-- rotates around origin / easy
+				temp.translate(position);
+				
+				
+				
+				//translationmatrix.inv().rotate(Vector3.Z, 30);	
+				//temp.scl(textStyleData.getTransform().scale); //scaling works - but only if we dont recenter...hu?
+				//temp.rotate(textStyleData.getTransform().rotation);
+				//textStyleData.getTransform().createMatrix();
+				//move back to where we started
+				//temp.translate(bbcx, bbcy,bbcz);
+
+				//temp.mul(translationmatrix.inv());
+				
+				//temp.mul(renderable.worldTransform);
+				program.setUniformMatrix(u_worldTrans, temp,false); //not sure if we should transpose? seems  to effect stuff when we rotate
+
+			}
+			//pass this matrix to the shader
+			//program.setUniformMatrix(u_transformValue, temp,false); //not sure if we should transpose? seems  to effect stuff when we rotate
+			//u_transformValue
+
 
 		 renderable.meshPart.render(program);
 		 

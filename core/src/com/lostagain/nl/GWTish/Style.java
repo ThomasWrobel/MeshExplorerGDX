@@ -8,11 +8,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
 import com.lostagain.nl.GWTish.Management.ZIndexGroup;
@@ -589,6 +592,29 @@ public class Style {
 	}
 	
 	
+	
+	//exp transform
+	public void setTransformPosition(Vector3 displacement){
+		
+		styleAttribute.transform.position.set(displacement);
+		styleAttribute.checkShaderRequirements();
+		
+	}
+	public void setTransformScale(Vector3 scale){
+		
+		styleAttribute.transform.scale.set(scale);
+		styleAttribute.checkShaderRequirements();
+		
+	}
+	
+	public void setTransformRotation(Quaternion rot){
+	
+		styleAttribute.transform.rotation.set(rot);
+		styleAttribute.checkShaderRequirements();
+	
+	}
+
+	
 //	private void ensureHSVFilterEnabled() {		
 //		styleAttribute.usesHSVPostFilter=true; //ensures the post filter part of the shader will be compiled		
 		//TODO:we could test if the filters are all set to default values and turn it off if it can?
@@ -916,6 +942,32 @@ public class Style {
 	public GwtishWidgetShaderAttribute getWidgetShaderAttribute() {
 		return styleAttribute;
 	}
+
+
+	BitmapFont usedFont = FontHandling.standdardFont;
+	
+	
+	/**
+	 * new; get font to use
+	 */
+	public BitmapFont getFont() {
+		return usedFont;
+	}
+
+	/**
+	 * set font to use
+	 */
+	public void setFont(BitmapFont usedFont) {
+		this.usedFont = usedFont;
+		layoutStyleChanged();
+	}
+
+	
+	
+	static public BitmapFont getDefaultFont() {
+		return FontHandling.standdardFont;
+	}
+	
 
 	
 	

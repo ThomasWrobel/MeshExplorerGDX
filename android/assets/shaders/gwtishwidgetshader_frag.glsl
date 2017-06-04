@@ -266,6 +266,12 @@ vec4 getBackColour()
   	 	//should represent the color under the specified backdiffuse)
   		effectivebackcolour = (backdiffuse*backdiffuse.a)+(v_backBackColor*(1-backdiffuse.a));
   	
+  		//fix;
+  	 	vec4 backdiffusefull = backdiffuse;
+  		backdiffusefull.a=1.0f;
+		effectivebackcolour =  mix(v_backBackColor, backdiffusefull ,backdiffuse.a);
+		//if needed the above can be converted to maths as mix is pretty simple
+  	
 	#endif 
   	
   	#ifdef hasProcedralBackground 

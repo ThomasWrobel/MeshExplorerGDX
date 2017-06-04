@@ -126,6 +126,8 @@ varying vec4  v_backCoreColor;
 varying float v_backCornerRadius;
 
 
+//css transform
+uniform mat4 u_transformValue;
 
 //#if defined(colorFlag)
 //varying vec4 v_color;

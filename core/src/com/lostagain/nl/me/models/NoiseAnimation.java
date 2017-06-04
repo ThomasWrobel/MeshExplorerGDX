@@ -19,7 +19,7 @@ public class NoiseAnimation implements ApplicationListener {
     private static final int    FRAME_COLS = 5;     // #1
     private static final int    FRAME_ROWS = 1;     // #2
 
-    Animation           noiseAnimation;      // #3
+    Animation<TextureRegion>           noiseAnimation;      // #3
     Texture             noiseImages;      // #4
     TextureRegion[]         noiseFrames;     // #5
     SpriteBatch         spriteBatch;        // #6

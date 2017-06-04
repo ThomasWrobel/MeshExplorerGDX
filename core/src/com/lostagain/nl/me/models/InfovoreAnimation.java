@@ -19,7 +19,7 @@ public class InfovoreAnimation implements ApplicationListener {
     private static final int    FRAME_COLS = 4;     // #1
     private static final int    FRAME_ROWS = 1;     // #2
 
-    Animation           infovoreAnimation;      // #3
+    Animation<TextureRegion>           infovoreAnimation;      // #3
     Texture             infovoreImages;      // #4
     TextureRegion[]         infovoreFrames;     // #5
     SpriteBatch         spriteBatch;        // #6
