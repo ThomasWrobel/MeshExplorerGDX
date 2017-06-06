@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute.TextScalingMode;
 
 /**
@@ -655,10 +656,9 @@ public class GwtishWidgetShader implements Shader {
 
 			Matrix4 temp = new Matrix4();
 			if (textStyleData.usesTransformr){
-		//		temp.translate(-halfw, -halfh, -halfthickness); //recenter. Wait, maybe we should add Y rather then subtract?
-				//or maybe we need this relative to the current offset from pivot?
-				//center of bounding box?
-
+		
+				//get current pos/rot/scale
+				//
 				Vector3 position = new Vector3();
 				renderable.worldTransform.getTranslation(position); //just position?
 				
@@ -669,16 +669,17 @@ public class GwtishWidgetShader implements Shader {
 				renderable.worldTransform.getRotation(rotation);
 				
 				//get center of mesh relative to its pivot
-				float bbcx = renderable.meshPart.mesh.calculateBoundingBox().getCenterX() + position.x;
-				float bbcy = renderable.meshPart.mesh.calculateBoundingBox().getCenterY() + position.y;
-				float bbcz = renderable.meshPart.mesh.calculateBoundingBox().getCenterZ() + position.z;
-				
-				Matrix4 invworld = renderable.worldTransform.cpy();
-				invworld.inv();
+				float bbcx =  renderable.meshPart.mesh.calculateBoundingBox().getCenterX() ;//+ position.x;
+				float bbcy =  renderable.meshPart.mesh.calculateBoundingBox().getCenterY() ;//+ position.y;
+				float bbcz =  renderable.meshPart.mesh.calculateBoundingBox().getCenterZ() ;//+ position.z;
+				Vector3 middle = new Vector3(bbcx,bbcy,bbcz);
+				 
+			//	Matrix4 invworld = renderable.worldTransform.cpy();
+			//	invworld.inv();
 				
 				//move it back so center is at origin
 				//temp.translate(-bbcx, -bbcy, -bbcz); 
-				temp.set(renderable.worldTransform);
+				//temp.set(renderable.worldTransform);
 
 				//Matrix4 translationmatrix = new Matrix4().setToTranslation(-bbcx, -bbcy, -bbcz);
 				//temp.mul(translationmatrix);
@@ -693,8 +694,8 @@ public class GwtishWidgetShader implements Shader {
 			//	temp.setToRotation(Vector3.Z, 30);
 				
 				
-				temp = new Matrix4(new Vector3(0,0,0), new Quaternion(Vector3.Z, 30), scale ); //<-- rotates around origin / easy
-				temp.translate(position);
+				//temp = new Matrix4(new Vector3(0,0,0), new Quaternion(Vector3.Z, 30), scale ); //<-- rotates around origin / easy
+				//temp.translate(position);
 				
 				
 				
@@ -708,7 +709,43 @@ public class GwtishWidgetShader implements Shader {
 				//temp.mul(translationmatrix.inv());
 				
 				//temp.mul(renderable.worldTransform);
-				program.setUniformMatrix(u_worldTrans, temp,false); //not sure if we should transpose? seems  to effect stuff when we rotate
+				
+
+			//	position =  middle;//           position.add( middle.scl(pos.scale) ).add(pos.position);
+			//	rotation = rotation.add(pos.rotation);
+			//	scale    = scale.add(pos.scale);
+				
+				//However, if you want to rotate an object around a certain point, then it is scale, point translation, rotation and lastly object translation.
+				
+				//Matrix4 worldmix = new Matrix4();
+				//worldmix.setToTranslation(middle);
+				//worldmix.rotate(pos.rotation.nor());
+				//worldmix.translate(middle.scl(-1));
+				
+				
+			//	worldmix.scl(pos.scale);
+			//	worldmix.translate(middle);
+				
+				//
+			//	worldmix.rotate(pos.rotation);
+			//	worldmix.translate(position);
+				
+				
+			//	middle=middle.scl(pos.scale);
+				//Matrix4 worldmix = new Matrix4(position,rotation.nor(),scale);
+			//	worldmix.setTranslation(position.add(middle) );
+				
+				
+
+				Matrix4 world = renderable.worldTransform.cpy(); //normal position etc
+				PosRotScale pos = textStyleData.transform;       //the style information that alters it
+				
+				//Magic line that does the work;
+				world.translate(middle).scl(pos.scale).rotate(pos.rotation).translate(-middle.x,-middle.y,-middle.z).translate(pos.position); //WORKS! rotates about center
+				// :)
+				
+				
+				program.setUniformMatrix(u_worldTrans, world,false); //not sure if we should transpose? seems  to effect stuff when we rotate
 
 			}
 			//pass this matrix to the shader

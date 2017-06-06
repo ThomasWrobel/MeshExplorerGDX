@@ -607,6 +607,10 @@ public class Style {
 		
 	}
 	
+	/**
+	 * 
+	 * @param rot - eg new Quaternion(Vector3.Z,45) for 45deg
+	 */
 	public void setTransformRotation(Quaternion rot){
 	
 		styleAttribute.transform.rotation.set(rot);
@@ -902,9 +906,22 @@ public class Style {
 		
 	}
 	public void addTransitionState(StyleParam type, float time, float value) {
-		styleAttribute.addTransitionState(type, time, value);
-		
+		styleAttribute.addTransitionState(type, time, value);		
 	}
+	public void addTransitionState(StyleParam type, float time, Vector3 value) {
+		styleAttribute.addTransitionState(type, time, value);		
+	}
+	/**
+	 * 
+	 * @param type
+	 * @param time
+	 * @param value    eg new Quaternion(Vector3.Z,45) for 45deg
+	 */
+	public void addTransitionState(StyleParam type, float time, Quaternion value) {
+		styleAttribute.addTransitionState(type, time, value);		
+	}
+	
+	
 	/**
 	 * 
 	 * @param totalAnimationTime - in ms

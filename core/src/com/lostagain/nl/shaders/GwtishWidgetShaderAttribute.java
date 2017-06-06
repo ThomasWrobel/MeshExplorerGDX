@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.Style.TextAlign;
@@ -651,7 +653,22 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 		 */	
 		valueFilter,
 		//--
-		//vertex effects (not yet supported)
+		//css-like transform effects (not yet supported)
+		/*
+		 * should support equilivants of;
+
+@-webkit-keyframes bigbombshake {
+	0% { -webkit-transform: translate(4px, 2px) rotate(0deg) scale(1.1,1.1); } 
+	20% { -webkit-transform: translate(-6px, 0px) rotate(2deg) scale(1.0,1.0); }
+	40% { -webkit-transform: translate(2px, -2px) rotate(2deg) scale(1.0,1.0); }
+	60% { -webkit-transform: translate(-6px, 2px) rotate(0deg) scale(1.1,1.1); }
+	80% { -webkit-transform: translate(-2px, -2px) rotate(2deg) scale(0.9,0.9); }
+	100% { -webkit-transform: translate(2px, -4px) rotate(-2deg) scale(1.1,1.1); }
+}
+
+
+		 */
+		
 		//--
 		/**
 		 * not supported yet
@@ -678,9 +695,22 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 			this.floatValue = value;
 			this.time = time;
 		}
+		public stylestate(Quaternion value, float time) {
+			super();
+			this.rot = value;
+			this.time = time;
+		}
+		public stylestate(Vector3 value, float time) {
+			super();
+			this.vec3 = value;
+			this.time = time;
+		}
 		Color colorValue;
 		float floatValue;
 		float time;
+		Vector3 vec3; //used for translation and scale
+		Quaternion rot; //used for rotation
+		
 	}
 
 
@@ -736,6 +766,16 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 				this.usesProcedralBack = true;
 				continue;
 			}
+			
+			if (type == StyleParam.translate 
+					|| type == StyleParam.scale
+					|| type == StyleParam.rotate)
+			{
+				
+				this.usesTransformr = true;
+				continue;
+			}
+			
 			
 		}
 		
@@ -839,7 +879,33 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 
 	}
 
+	//
+	public void addTransitionState(StyleParam type, float time, Vector3 value) {
 
+		//check time is in range
+		if (time>1.0f || time <0.0f){
+			return;
+		}
+
+		stylestate newstate = new stylestate(value,time);	
+		
+		addTransitionState(type, newstate);
+		
+	}
+	
+	//
+	public void addTransitionState(StyleParam type, float time, Quaternion value) {
+
+		//check time is in range
+		if (time>1.0f || time <0.0f){
+			return;
+		}
+
+		stylestate newstate = new stylestate(value,time);	
+		
+		addTransitionState(type, newstate);
+		
+	}
 	public void addTransitionState(StyleParam type, stylestate newstate) {
 
 		//ensure animation
@@ -1028,7 +1094,19 @@ public class GwtishWidgetShaderAttribute extends Attribute {
 				case valueFilter:
 					filter_value = MathUtils.lerp(startState.floatValue, endState.floatValue, intoSegment);					
 					break;
-				
+					//transforms;
+				case translate:
+										
+					this.transform.position =startState.vec3.cpy().lerp(endState.vec3, intoSegment);
+					
+					break;
+				case scale:
+					this.transform.scale = startState.vec3.cpy().lerp(endState.vec3, intoSegment);
+					
+					break;
+				case rotate:
+					this.transform.rotation =  startState.rot.cpy().slerp(endState.rot, intoSegment);					
+					break;
 				}
 
 
