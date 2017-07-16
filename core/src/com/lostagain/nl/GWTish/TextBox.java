@@ -8,8 +8,14 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
-
-
+//
+//[ERROR] Errors in 'file:/E:/TomsProjects/MeshExplorerV2/core/src/com/lostagain/nl/GWTish/TextBox.java'
+//[ERROR] Line 177: Character.UnicodeBlock cannot be resolved to a type
+//[ERROR] Line 177: UnicodeBlock cannot be resolved or is not a field
+//[ERROR] Line 178: The method isISOControl(char) is undefined for the type Character
+//[ERROR] Line 181: UnicodeBlock cannot be resolved or is not a field
+//
+//TODO:need gwt frfiendly isPrintableChar
 /**
  * A standard single-line input text box.
  ***/
@@ -164,7 +170,7 @@ public class TextBox extends Label implements InputProcessor {
 		
 		if (!dontProcessNextTyped){			
 			//ensure visible character
-			if (isPrintableChar(character)){
+			if (CharacterUtils.isPrintableChar(character)){
 				super.addText(""+	character);
 			}
 		} 
@@ -173,13 +179,14 @@ public class TextBox extends Label implements InputProcessor {
 		return false;
 	}
 	
+	/*
 	private boolean isPrintableChar( char c ) {
         Character.UnicodeBlock block = Character.UnicodeBlock.of( c );
         return (!Character.isISOControl(c)) &&
                 c != KeyEvent.CHAR_UNDEFINED &&
                 block != null &&
                 block != Character.UnicodeBlock.SPECIALS;
-    }
+    }*/
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {

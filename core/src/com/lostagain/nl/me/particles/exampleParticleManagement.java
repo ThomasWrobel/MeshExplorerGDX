@@ -138,6 +138,17 @@ public class exampleParticleManagement {
 	}
 	
 	
+	public static boolean isSetup(){
+		
+		if (particleSystem!=null){
+			return true;
+		}
+		
+		return false;
+		
+		
+	}
+	
 	
 	public static ParticleSystem prepareAndGetParticleSystem() {
 	

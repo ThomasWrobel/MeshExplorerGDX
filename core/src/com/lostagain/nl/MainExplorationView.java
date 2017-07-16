@@ -2,6 +2,7 @@ package com.lostagain.nl;
 
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -77,6 +78,7 @@ import com.lostagain.nl.shaders.NormalMapShader;
 public class MainExplorationView implements Screen {
 
 	final static String logstag = "ME.MainExplorationView";
+	public static Logger Log = Logger.getLogger(logstag); //not we are using this rather then gdxs to allow level control per tag
 
 	private static boolean LeftButtonDown = false;
 
@@ -426,7 +428,8 @@ public class MainExplorationView implements Screen {
 			addDeveloperDrops();
 
 			//also setup particle effects (test for now)
-			exampleParticleManagement.setup(camera);
+			//DOES NOT WORKON HTML
+			//exampleParticleManagement.setup(camera);
 
 
 		}
@@ -520,7 +523,7 @@ public class MainExplorationView implements Screen {
 			@Override
 			public void onClick() {
 				Gdx.app.log(logstag,"____debug button pressed  snapShotNextSort setting... ");
-				GWTishModelManagement.mysorter.snapShotNextSort();
+				((com.lostagain.nl.shaders.MySorter)GWTishModelManagement.mysorter).snapShotNextSort();
 				
 				//ModelManagment_old.mysorter.testSort();
 				
@@ -582,9 +585,12 @@ public class MainExplorationView implements Screen {
 		
 
 		ShaderTestPanel shaderTests = new ShaderTestPanel();
+		Log.info("_ShaderTestPanel_ created");
+
 		shaderTests.setToScale(new Vector3(0.2f,0.2f,0.2f));
 		shaderTests.setToPosition(new Vector3(100f,430f,40f));	
 		GWTishModelManagement.addmodel(shaderTests);//,GWTishModelManagement.RenderOrder.OVERLAY);
+		Log.info("_ShaderTestPanel_ set up");
 	}
 
 
@@ -747,8 +753,10 @@ public class MainExplorationView implements Screen {
 		GWTishModelManagement.modelBatch.render(GWTishModelManagement.allOverlayInstances); 
 
 		
-		if (GameMode.currentGameMode == GameMode.Developer){
-		GWTishModelManagement.modelBatch.render(exampleParticleManagement.prepareAndGetParticleSystem());
+		if (GameMode.currentGameMode == GameMode.Developer && exampleParticleManagement.isSetup()){
+		
+			GWTishModelManagement.modelBatch.render(exampleParticleManagement.prepareAndGetParticleSystem());
+		
 		}
 		//testdefaultShader.end();
 		GWTishModelManagement.modelBatch.end();	

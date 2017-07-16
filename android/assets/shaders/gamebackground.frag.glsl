@@ -95,7 +95,7 @@ void main() {
 
     //the calculation which brings it all together
     vec3 Intensity  = Ambient + Diffuse * Attenuation;
-    vec3 FinalColor = DiffuseColor.rgb  * ((Intensity/2.0f)+0.5f);
+    vec3 FinalColor = DiffuseColor.rgb  * ((Intensity/2.0)+0.5);
     
     //vColor = vec4(1.0,1.0,1.0,1.0);
     

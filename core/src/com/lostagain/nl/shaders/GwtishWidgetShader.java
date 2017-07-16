@@ -45,12 +45,11 @@ public class GwtishWidgetShader implements Shader {
 
 
 	//-----------------------------------------------
-	//This shader heavily relies on two attribute types
+	//This shader heavily relies on attribute type
 	//
-	//GwtishWidgetDistanceFieldAttribute.java  - handles the distance field aspects of the shader (this would typically be how the text is rendered. Its colour, glow,shadow etc)
-	//GwtishWidgetBackgroundAttribute.java     - handles the background. WIP solution that lets you have a curved cornered rectangle as the widgets background
+	//GwtishWidgetShaderAttribute
 	//
-	//These are in their own files purely for neatness
+	//This is in its own file purely for neatness
 	//
 	//-----------------------------------------------
 	//-------------------------------------
@@ -318,7 +317,9 @@ public class GwtishWidgetShader implements Shader {
 		//context.setCullFace(GL20.GL_BACK);
 		
 		//Standard blending;
-		context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA);
+		//	context.setBlending(true,GL20.GL_SRC_ALPHA ,GL20.GL_ONE_MINUS_SRC_ALPHA); //straight alpha
+			context.setBlending(true,GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA); //premultiplied
+		
 		context.setDepthTest(GL20.GL_LESS);  
 		context.setDepthTest(GL20.GL_NONE); //NEW: Completely disable depth testing as Jamgames have lots of things at the same position
 		//instead we manuallt sort with zindex attributes

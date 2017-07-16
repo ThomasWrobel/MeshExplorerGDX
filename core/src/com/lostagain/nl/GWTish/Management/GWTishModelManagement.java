@@ -21,7 +21,9 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultRenderableSorter;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.RenderableSorter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -62,7 +64,7 @@ public class GWTishModelManagement {
 
 	public static ModelBatch modelBatch;
 
-	public static MySorter mysorter;
+	public static RenderableSorter mysorter;
 
 
 	/**all hitable models **/
@@ -247,8 +249,16 @@ public class GWTishModelManagement {
 
 	}
 
-	//TODO: maybe this should be static?
+
 	static public void setup(){
+		setup(true);
+	}
+	
+	/**
+	 * 
+	 * @param useSmartSorter - to support zindex set to true
+	 */
+	static public void setup(boolean useSmartSorter){
 
 		// String vert = Gdx.files.internal("shaders/test.vertex.glsl").readString();//"shaders/distancefield.vert"
 		// String frag = Gdx.files.internal("shaders/test.fragment.glsl").readString();
@@ -256,7 +266,12 @@ public class GWTishModelManagement {
 		//modelBatch = new ModelBatch(vert,frag);
 		//	 MyShaderProvider myshaderprovider = new MyShaderProvider();
 
-		mysorter = new MySorter();
+		if (useSmartSorter){
+			mysorter = new MySorter();
+		} else {
+			mysorter = new DefaultRenderableSorter();
+		}
+		
 		modelBatch = new ModelBatch(myshaderprovider,mysorter);
 
 		//First we add one object at the center with a defaultshader used

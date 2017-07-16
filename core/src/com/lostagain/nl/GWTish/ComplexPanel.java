@@ -270,8 +270,8 @@ public abstract class ComplexPanel extends Widget {
 			}
 			
 			
-			Log.info("width of "+widget.getClass().getName()+" is "+scaleX+"*"+size.getWidth());
-			Log.info(" / "+super.transState.scale.x+" is "+width);
+		//	Log.info("width of "+widget.getClass().getName()+" is "+scaleX+"*"+size.getWidth());
+			//Log.info(" / "+super.transState.scale.x+" is "+width);
 			
 			if (width>largestWidthOfStoredWidgets){
 				
@@ -496,12 +496,12 @@ public abstract class ComplexPanel extends Widget {
 			//NEW: Compensate for our pivots offset
 			Vector2 offset  =  getOffsetForSize(this.getWidth(), this.getHeight(),alignment);
 
-			Log.info(" vp offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
+			//Log.info(" vp offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
 			
 			newLocationY = newLocationY +offset.y;
 			newLocationX = newLocationX +offset.x;
 
-			Log.info(" newLocation= "+newLocationX+","+newLocationY);
+		//	Log.info(" newLocation= "+newLocationX+","+newLocationY);
 			//-------------
 	
 	
@@ -512,7 +512,7 @@ public abstract class ComplexPanel extends Widget {
 			//set the scale of the newLocation to match the scale of the incoming object too (so its size is preserved
 			newLocation.setToScaling(widget.transState.scale);
 			
-			Log.info("______________placing new "+widget.getClass()+" widget at: "+newLocationY+" its scaled size is:"+width+","+height);
+		//	Log.info("______________placing new "+widget.getClass()+" widget at: "+newLocationY+" its scaled size is:"+width+","+height);
 		
 			attachThis(widget, newLocation);
 		
@@ -544,12 +544,12 @@ public abstract class ComplexPanel extends Widget {
 			//NEW: Compensate for our pivots offset
 			Vector2 offset  =  getOffsetForSize(this.getWidth(), this.getHeight(),alignment);
 
-			Log.info(" vp offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
+			//Log.info(" vp offsetFor "+alignment+" of "+getWidth()+","+getHeight()+" is "+offset);
 			
 			newLocationY = newLocationY +offset.y;
 			newLocationX = newLocationX +offset.x;
 
-			Log.info(" newLocation= "+newLocationX+","+newLocationY);
+		//	Log.info(" newLocation= "+newLocationX+","+newLocationY);
 			//-------------
 	
 	

@@ -30,8 +30,8 @@ public class FontHandling {
 	public static BitmapFont Nirmala_BOLDFont = new BitmapFont(Gdx.files.internal("data/fonts/Nirmala_BOLD.fnt"), new TextureRegion(Nirmala_BOLDTexture), true); //font file says size is 32
 	
 	//Segoe UI Black_BOLD   does not work
-	public static Texture SegoeUIBlack_BOLDTexture = new Texture(Gdx.files.internal("data/fonts/SegoeUIBlackBOLD.png"), true);
-	public static BitmapFont SegoeUIBlack_BOLDFont = new BitmapFont(Gdx.files.internal("data/fonts/SegoeUIBlackBOLD.fnt"), new TextureRegion(SegoeUIBlack_BOLDTexture), true); //font file says size is 32
+	//public static Texture SegoeUIBlack_BOLDTexture = new Texture(Gdx.files.internal("data/fonts/SegoeUIBlackBOLD.png"), true);
+	//public static BitmapFont SegoeUIBlack_BOLDFont = new BitmapFont(Gdx.files.internal("data/fonts/SegoeUIBlackBOLD.fnt"), new TextureRegion(SegoeUIBlack_BOLDTexture), true); //font file says size is 32
 	
 	//TektonPro_Ext_BOLD
 	public static Texture TektonPro_Ext_BOLDTexture = new Texture(Gdx.files.internal("data/fonts/TektonPro_Ext_BOLD.png"), true);
@@ -69,7 +69,7 @@ public class FontHandling {
 		
 		sizecache.put(ArialBlackBoldFont,ArialBlackBoldFont.getLineHeight());
 		sizecache.put(Nirmala_BOLDFont,Nirmala_BOLDFont.getLineHeight());
-		sizecache.put(SegoeUIBlack_BOLDFont,SegoeUIBlack_BOLDFont.getLineHeight());
+		//sizecache.put(SegoeUIBlack_BOLDFont,SegoeUIBlack_BOLDFont.getLineHeight());
 		sizecache.put(TektonPro_Ext_BOLDFont,TektonPro_Ext_BOLDFont.getLineHeight());
 		
 		sizecache.put(IndieFlowerFont,IndieFlowerFont.getLineHeight());

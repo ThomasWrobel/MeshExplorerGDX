@@ -3,19 +3,28 @@
 <module rename-to="html">
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 
+
+	
+	<inherits name='ME' />
+	
 	<inherits name="com.google.common.collect.Collect" />
 	
 	<inherits name='com.darkflame.SuperSimpleSemantics' />
-
-	<inherits name='ME' />
-	<entry-point class='com.lostagain.nl.client.HtmlLauncher' />
-
-
+	
 	<inherits name="com.google.gwt.logging.Logging" />
-
-	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
+	
 
 	<set-property name="gwt.logging.enabled" value="TRUE" />
+	
+	<entry-point class='com.lostagain.nl.client.HtmlLauncher' />
+
+	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
+	<set-configuration-property name="gdx.assetpath" value="../android/assets" />
+
+
+	<!-- no longer in gwt as of 2.8: -->
+    <!--  <set-property name="gwt.logging.popupHandler" value="DISABLED"/> -->
+     <!--  -->
 
 	<set-configuration-property name="gdx.assetpath" value="../android/assets" />
 	

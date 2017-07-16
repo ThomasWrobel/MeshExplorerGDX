@@ -17,10 +17,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Align;
+
 import com.darkflame.client.SuperSimpleSemantics;
 import com.darkflame.client.semantic.QueryEngine.DoSomethingWithNodesRunnable;
 import com.darkflame.client.semantic.SSSIndex;
 import com.darkflame.client.semantic.SSSNode;
+
 import com.lostagain.nl.me.creatures.Population;
 import com.lostagain.nl.me.domain.MEDomain;
 import com.lostagain.nl.me.features.ConceptObject;

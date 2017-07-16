@@ -153,12 +153,22 @@ public class Style {
 			styleAttribute.glowColour.set(col);
 		}
 	}
+	/**
+	 * 
+	 * @param size - 0 to 1.0
+	 */
 	public void setTextGlowSize(float size) {
 		if (styleAttribute!=null){			
 			Log.info("_________setting glow size to:"+size);			
 			styleAttribute.glowSize= size;
 		}
 	}
+	/**
+	 * subject to change to make values more intuitive 
+	 * works bad with shadow
+	 * @param inner - try 0.2
+	 * @param outer - try 0.05
+	 */
 	public void setTextOutineLimits(float inner,float outer ) {
 		if (styleAttribute!=null){
 			
