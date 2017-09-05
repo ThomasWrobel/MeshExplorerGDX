@@ -11,11 +11,12 @@ import com.lostagain.nl.ME;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
+import com.lostagain.nl.GWTish.Management.objectInteractionType;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.gui.DataObjectDropTarget;
 import com.lostagain.nl.me.gui.STMemory;
 import com.lostagain.nl.me.locationFeatures.Location;
-import com.lostagain.nl.me.models.objectInteractionType;
+//import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.shaders.DistanceFieldShader.DistanceFieldAttribute;
 import com.lostagain.nl.shaders.MySorter;
 

@@ -33,7 +33,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.GWTish.Button;
 import com.lostagain.nl.GWTish.ClickHandler;
-import com.lostagain.nl.GWTish.EXAMPLES;
 import com.lostagain.nl.GWTish.HorizontalPanel;
 import com.lostagain.nl.GWTish.Image;
 import com.lostagain.nl.GWTish.Label;
@@ -41,6 +40,9 @@ import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement.RenderOrder;
+import com.lostagain.nl.GWTish.tests.EXAMPLES;
+import com.lostagain.nl.GWTish.Management.hitable;
+import com.lostagain.nl.GWTish.Management.objectInteractionType;
 import com.lostagain.nl.me.camera.DebugCamera;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.features.ConceptGunPanel;
@@ -60,11 +62,12 @@ import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.gui.ScreenUtils;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
-import com.lostagain.nl.me.models.MessyModelMaker;
-import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.models.objectInteractionType;
+//import com.lostagain.nl.me.models.MessyModelMaker;
+//import com.lostagain.nl.me.models.hitable;
+//import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.me.particles.exampleParticleManagement;
 import com.lostagain.nl.shaders.InvertShader;
+import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.shaders.NormalMapShader;
 
 //Note; we really need a better algothm for laying out the nodes
@@ -168,8 +171,9 @@ public class MainExplorationView implements Screen {
 	//  boolean newUp = false; //if the next time the mouse is up represents a mouse release
 
 	public static hitable touchedAModel = null;
-	ArrayList<hitable> lastHits = new ArrayList<hitable>();
+	ArrayList<com.lostagain.nl.GWTish.Management.hitable> lastHits = new ArrayList<hitable>();
 
+	
 	
 
 
@@ -283,8 +287,8 @@ public class MainExplorationView implements Screen {
 		camera.update(true);
 
 		Gdx.app.log(logstag,"creating background");
-		GWTishModelManagement.setup();
-
+		GWTishModelManagement.setup(true,new MyShaderProvider());
+		debugStuff.addDebuggingTestModels();
 
 		PlayersData.homeLoc = new Location(PlayersData.computersuri, PlayersData.homelocationX,PlayersData.homelocationY);
 

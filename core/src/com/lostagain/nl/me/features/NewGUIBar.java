@@ -19,8 +19,9 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.GWTish.Management.ZIndexAttribute;
+import com.lostagain.nl.GWTish.Management.objectInteractionType;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement.RenderOrder;
-import com.lostagain.nl.me.models.objectInteractionType;
+//import com.lostagain.nl.me.models.objectInteractionType;
 /**
  * provides togglable shortcuts for various game functions such as going home, activating the concept gun, or opening the inventory
  * 

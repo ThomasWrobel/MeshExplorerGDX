@@ -24,7 +24,7 @@ import com.lostagain.nl.GWTish.Management.ZIndexGroup;
 import com.lostagain.nl.me.features.ConceptObject;
 import com.lostagain.nl.shaders.InvertShader.InvertAttribute;
 import com.lostagain.nl.shaders.PrettyNoiseShader.PrettyNoiseShaderAttribute;
-
+//Doont use class, use gwtish one instead!
 public class MySorter extends DefaultRenderableSorter {
 	public static Logger Log = Logger.getLogger("MySorter");
 

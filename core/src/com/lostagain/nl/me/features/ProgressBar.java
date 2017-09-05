@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.darkflame.client.interfaces.GenericProgressMonitor;
 import com.lostagain.nl.GWTish.Widget;
-import com.lostagain.nl.me.models.objectInteractionType;
+//import com.lostagain.nl.me.models.objectInteractionType;
 
 
 /**

@@ -21,13 +21,15 @@ import com.lostagain.nl.GWTish.Label;
 import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
+import com.lostagain.nl.GWTish.Management.hitable;
+import com.lostagain.nl.GWTish.Management.objectInteractionType;
 import com.lostagain.nl.me.camera.MECamera;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDragRunnable;
 import com.lostagain.nl.me.features.ConceptObjectSlot.OnDropRunnable;
 import com.lostagain.nl.me.models.ConceptBeam;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.models.objectInteractionType;
+//import com.lostagain.nl.me.models.hitable;
+//import com.lostagain.nl.me.models.objectInteractionType;
 import com.lostagain.nl.shaders.ConceptBeamShader;
 
 /**

@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.lostagain.nl.GWTish.shader.GwtishWidgetShader;
+import com.lostagain.nl.GWTish.shader.GwtishWidgetShaderAttribute;
 import com.lostagain.nl.shaders.GameBackgroundShader.GameBackgroundShaderAttribute;
 import com.lostagain.nl.shaders.NormalMapShader.NormalMapShaderAttribute;
 

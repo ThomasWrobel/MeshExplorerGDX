@@ -18,11 +18,13 @@ import com.lostagain.nl.PlayersData;
 import com.lostagain.nl.StaticSSSNodes;
 import com.lostagain.nl.GWTish.DeckPanel;
 import com.lostagain.nl.GWTish.Label;
+import com.lostagain.nl.GWTish.Management.hitable;
+import com.lostagain.nl.GWTish.Management.objectInteractionType;
 import com.lostagain.nl.me.gui.ScanManager;
 import com.lostagain.nl.me.locationFeatures.Location;
 import com.lostagain.nl.me.locationFeatures.LocationsHub_old;
-import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.models.objectInteractionType;
+//import com.lostagain.nl.me.models.hitable;
+//import com.lostagain.nl.me.models.objectInteractionType;
 
 /**
  * Controls the look and status of a single link

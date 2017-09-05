@@ -19,8 +19,6 @@ import com.lostagain.nl.GWTish.Management.IsAnimatableModelInstance;
  * In order to more easily handle animations on camera we make them all extend this, and use this ones functions for all updates
  * This should be very similar to AnimatableObject class (later perhaps a interface of Animateable should be made if we have more then these two?)
  * 
- *  
- * 
  * @author Tom on the excellent and helpful advice of Xoppa
  *
  */

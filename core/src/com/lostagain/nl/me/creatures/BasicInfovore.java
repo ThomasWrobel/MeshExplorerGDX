@@ -21,12 +21,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.darkflame.client.semantic.SSSNode;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.Animating;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
+import com.lostagain.nl.GWTish.Management.Moving;
 import com.lostagain.nl.me.creatures.Population.destructOn;
-import com.lostagain.nl.me.models.Animating;
+//import com.lostagain.nl.me.models.Animating;
 import com.lostagain.nl.me.models.InfovoreAnimation;
 import com.lostagain.nl.me.models.ModelMaker;
-import com.lostagain.nl.me.models.Moving;
+//import com.lostagain.nl.me.models.Moving;
 import com.lostagain.nl.shaders.NormalMapShader;
 
 /** defines what a basic infovore looks like and how it behaves**/

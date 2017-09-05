@@ -24,12 +24,15 @@ import com.lostagain.nl.GWTish.Style.TextAlign;
 import com.lostagain.nl.GWTish.Style.Unit;
 import com.lostagain.nl.GWTish.VerticalPanel;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
+import com.lostagain.nl.GWTish.Management.objectInteractionType;
 import com.lostagain.nl.me.features.ConceptObjectSlot.SlotMode;
 import com.lostagain.nl.me.features.MeshIcon.FeatureState;
 import com.lostagain.nl.me.gui.ScreenUtils;
-import com.lostagain.nl.me.models.hitable;
-import com.lostagain.nl.me.models.objectInteractionType;
-import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
+import com.lostagain.nl.mefonthandling.MeFontHandling;
+//import com.lostagain.nl.me.models.hitable;
+//import com.lostagain.nl.me.models.objectInteractionType;
+//import com.lostagain.nl.shaders.GwtishWidgetShaderAttribute;
+import com.lostagain.nl.GWTish.shader.GwtishWidgetShaderAttribute;
 
 /**
  * represents 1 single email page.
@@ -125,7 +128,7 @@ public class MessagePage extends VerticalPanel implements GenericMeshFeature {
 				
 			LabelStyle labstyle = new LabelStyle(DefaultStyles.linkstyle.get(LabelStyle.class));
 			
-		 	labstyle.font = FontHandling.scramabledFont;
+		 	labstyle.font = MeFontHandling.scramabledFont;
 		 	labstyle.font.getData().setScale(0.3f);
 		 	
 		 	setStyleAsScrambled(labstyle);

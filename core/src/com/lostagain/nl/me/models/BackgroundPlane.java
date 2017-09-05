@@ -19,6 +19,8 @@ import com.lostagain.nl.GWTish.PosRotScale;
 import com.lostagain.nl.GWTish.Management.AnimatableModelInstance;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement;
 import com.lostagain.nl.GWTish.Management.GWTishModelManagement.RenderOrder;
+import com.lostagain.nl.GWTish.Management.hitable;
+import com.lostagain.nl.GWTish.Management.objectInteractionType;
 import com.lostagain.nl.shaders.MyShaderProvider;
 import com.lostagain.nl.shaders.NoiseShader;
 
